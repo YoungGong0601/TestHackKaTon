@@ -100,3 +100,6 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+# Claude Code personal role settings
+CLAUDE.local.md
+.claude/settings.local.json
