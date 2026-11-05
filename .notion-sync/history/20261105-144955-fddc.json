@@ -1,0 +1,78 @@
+{
+  "run_id": "20261105-144955-fddc",
+  "dry_run": false,
+  "started": "2026-11-05T14:49:55+09:00",
+  "items": [
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "title": "해커톤",
+      "file": "해커톤__7e3f2fc2.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-8104-907b-c16291fb7a75",
+      "title": "대회 안내",
+      "file": "대회 안내__91fb7a75.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-8151-9e29-da24e1b417c2",
+      "title": "개요",
+      "file": "개요__e1b417c2.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-81c6-91b9-f91b65666fc4",
+      "title": "회차",
+      "file": "회차__65666fc4.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-81d3-b213-e1126f8cbff3",
+      "title": "실패 대화",
+      "file": "실패 대화__6f8cbff3.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-818d-9d8c-ed91e067c52d",
+      "title": "디버프",
+      "file": "디버프__e067c52d.md",
+      "note": ""
+    },
+    {
+      "status": "UNCHANGED",
+      "page_id": "40fa56ac-5c28-812f-bd79-e90f8decff79",
+      "title": "환경",
+      "file": "환경__8decff79.md",
+      "note": ""
+    },
+    {
+      "status": "MODIFIED",
+      "page_id": "40fa56ac-5c28-810a-91e8-e1d2e3003954",
+      "title": "남은 결정",
+      "file": "남은 결정__e3003954.md",
+      "note": ""
+    }
+  ],
+  "warnings": [],
+  "finished": "2026-11-05T14:49:58+09:00",
+  "counts": {
+    "ADDED": 0,
+    "MODIFIED": 1,
+    "RENAMED": 0,
+    "UNCHANGED": 7,
+    "DELETED": 0,
+    "CONFLICT": 0,
+    "ERROR": 0
+  },
+  "processed": 8,
+  "failed": 0,
+  "scan_complete": true,
+  "success": true
+}

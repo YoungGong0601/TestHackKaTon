@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "pages": {
+    "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2": {
+      "title": "해커톤",
+      "file": "해커톤__7e3f2fc2.md",
+      "hash": "2ee4ee4efc9075234ebc1a1d029d07b4cc49cef684012344d7f1c1aea8acdef7",
+      "last_edited": "2026-11-05T11:29:01+00:00",
+      "parent_id": null,
+      "url": "https://www.notion.so/40fa56ac5c28801390d7fddd7e3f2fc2"
+    },
+    "40fa56ac-5c28-8104-907b-c16291fb7a75": {
+      "title": "대회 안내",
+      "file": "대회 안내__91fb7a75.md",
+      "hash": "41297d25ed868dfbdff570bc820adb7cc33bb69941173a64a90c01e2d197618d",
+      "last_edited": "2026-11-05T09:02:21+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c288104907bc16291fb7a75"
+    },
+    "40fa56ac-5c28-8151-9e29-da24e1b417c2": {
+      "title": "개요",
+      "file": "개요__e1b417c2.md",
+      "hash": "296b478a34577038a15aa95244f171d7d3db437cac9aa0d203b63aa33c9c40b3",
+      "last_edited": "2026-11-05T11:37:50+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c2881519e29da24e1b417c2"
+    },
+    "40fa56ac-5c28-81c6-91b9-f91b65666fc4": {
+      "title": "회차",
+      "file": "회차__65666fc4.md",
+      "hash": "959472da3ad8b1e080e91c41d1431dbd6a07d93c0b19fc2a97da055c2a7d465a",
+      "last_edited": "2026-11-05T05:44:53+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c2881c691b9f91b65666fc4",
+      "deleted": "2026-11-05T20:48:19+09:00"
+    },
+    "40fa56ac-5c28-81d3-b213-e1126f8cbff3": {
+      "title": "실패 대화",
+      "file": "실패 대화__6f8cbff3.md",
+      "hash": "3e25d731fa102b3a36af12c1bc2190737a88e862271fd580ab73e0d3387b6b1b",
+      "last_edited": "2026-11-05T05:43:25+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c2881d3b213e1126f8cbff3",
+      "deleted": "2026-11-05T20:48:19+09:00"
+    },
+    "40fa56ac-5c28-818d-9d8c-ed91e067c52d": {
+      "title": "디버프",
+      "file": "디버프__e067c52d.md",
+      "hash": "19b107147be4e635af86d175a7b51c0f34e0738a57a6125b096b412dcd5d2dee",
+      "last_edited": "2026-11-05T05:41:28+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c28818d9d8ced91e067c52d",
+      "deleted": "2026-11-05T20:48:19+09:00"
+    },
+    "40fa56ac-5c28-812f-bd79-e90f8decff79": {
+      "title": "환경",
+      "file": "환경__8decff79.md",
+      "hash": "ecc33fc236c0182b72a074404adcb9181fff444baef53942856b6b415a9e1b7d",
+      "last_edited": "2026-11-05T05:43:26+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c28812fbd79e90f8decff79",
+      "deleted": "2026-11-05T20:48:20+09:00"
+    },
+    "40fa56ac-5c28-810a-91e8-e1d2e3003954": {
+      "title": "남은 결정",
+      "file": "남은 결정__e3003954.md",
+      "hash": "9a58d374aa90d56c500d25e4285db91209ab9c0fd0e6dedc5fb6abf4cc8acfb7",
+      "last_edited": "2026-11-05T13:03:13+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c28810a91e8e1d2e3003954"
+    },
+    "40fa56ac-5c28-8187-9542-ece2c56f5545": {
+      "title": "플레이 시트",
+      "file": "플레이 시트__c56f5545.md",
+      "hash": "d6a966e9fe65923cfd5adb08c00399bd7e4ff72f2ab26c901bd21ae63a80e385",
+      "last_edited": "2026-11-05T13:03:12+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c2881879542ece2c56f5545"
+    },
+    "40fa56ac-5c28-81f3-95b4-fe1ff173596f": {
+      "title": "회차별 기믹",
+      "file": "회차별 기믹__f173596f.md",
+      "hash": "bea60437ecd0f5441cdc0509624991f84da22701b194b0c618c71771a5aa93cf",
+      "last_edited": "2026-11-05T11:31:26+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c2881f395b4fe1ff173596f"
+    },
+    "40fa56ac-5c28-815c-a7d7-ee3a2fd05120": {
+      "title": "완성도 점검표",
+      "file": "완성도 점검표__2fd05120.md",
+      "hash": "0a3451c00eeabb48c4139d598bfc0d9e6a65b01f70910ff0830cfeaaa226d021",
+      "last_edited": "2026-11-05T10:40:33+00:00",
+      "parent_id": "40fa56ac-5c28-8013-90d7-fddd7e3f2fc2",
+      "url": "https://www.notion.so/40fa56ac5c28815ca7d7ee3a2fd05120"
+    }
+  }
+}
