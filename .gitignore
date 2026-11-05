@@ -100,3 +100,5 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+docs/.DS_Store
+CLAUDE.md
