@@ -208,7 +208,7 @@ class Art3DTools : AssetPostprocessor
         foreach (var group in Read<PhMap>(PhMapPath).rows.GroupBy(r => r.prefab))
         {
             var path = AssetDatabase.FindAssets(group.Key + " t:Prefab").Select(AssetDatabase.GUIDToAssetPath)
-                .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p) == group.Key);
+                .FirstOrDefault(p => p.StartsWith("Assets/Graybox/") && Path.GetFileNameWithoutExtension(p) == group.Key); // 사본 Assets/JeongWoo 는 JWBuild 가 맡는다
             if (path == null)
             {
                 Warn("프리팹 없음 " + group.Key);
