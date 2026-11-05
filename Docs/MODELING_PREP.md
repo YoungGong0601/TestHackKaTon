@@ -5,18 +5,18 @@
 - 기준: 친구 커밋 a607539 위의 저장소, 2026-11-06 01:38 노션 동기화본입니다.
 - 우선순위: 플레이 시트, 실물 프리팹과 코드, 모델링목록.md, Docs/ROUND_PLAN.md 순입니다. ROUND_PLAN 은 기획 갱신 전 문서라서 3회차가 남아 있고, "모델링 제외"는 그레이박스 때의 범위입니다.
 - 회차는 1(20대 버스와 버거집), 2(40대 카페), 4(80대 버거집과 버스), 엔딩입니다. 3회차 영화관은 빠졌습니다.
-- CLAUDE.md 와 메모리는 다른 컴퓨터에 없습니다. 다른 컴퓨터는 이 문서가 규칙입니다.
+- CLAUDE.md 와 메모리는 다른 컴퓨터에 없습니다. 다른 컴퓨터는 이 문서와 루트의 MODELING_SPLIT.md 가 규칙입니다. 누가 무엇을 하는지는 MODELING_SPLIT.md 에 있습니다.
 
 ## 1. 요약
 
-- 모델 155개가 이미 있습니다. 그런데 Assets/Graybox/PH 프리팹에는 FBX 가 하나도 들어가 있지 않습니다. 지금 R 씬이 회색인 이유는 모델이 없어서가 아니라 넣지 않아서입니다.
+- 모델 155개가 이미 있습니다. 0단계에서 PH 프리팹 31개에 모델 57개를 넣었습니다(실제 Unity 로 실행, 경고는 사본용 3행뿐).
 - 3절의 80개 항목 중 47개는 모델링 없이 끝납니다. 고치는 것이 19개, 새로 만드는 것이 14개입니다.
 - 거리, 정류장, 버거집은 새로 만들 것이 거의 없습니다. 새 모델링은 손과 소지품, 카페, 엔딩 소품에 몰려 있습니다.
 - 스크립트 한 번은 수 초에서 1분입니다. 시간은 모델링보다 정확한 자리에 넣는 일에 듭니다.
 
 | 판정 | 뜻 | 항목 수 |
 |---|---|---|
-| 그대로 | 모델과 PH_Map 행이 있습니다. 메뉴만 돌리면 들어갑니다 | 24 |
+| 그대로 | 모델과 PH_Map 행이 있습니다. 0단계로 이미 들어갔습니다 | 24 |
 | 행 추가 | 모델이 있습니다. 맵 행만 더합니다 | 1 |
 | 배치 | 모델이 있습니다. 배경 프리팹이나 씬 오브젝트 아래에 놓습니다 | 15 |
 | 색만 | 메시는 두고 재질이나 텍스처만 바꿉니다 | 7 |
@@ -64,10 +64,10 @@
 | 돋보기 | 4-0, 4-2, 4-4, 4-12, 4-21 | 그대로 | 핵심 | PH_Hand__Lens | Hand_Lens/Visual | 0 |
 | 카드 | 1-3, 1-8, 2-6 | 그대로 | 핵심 | PH_Hand__Card | Hand_Card/Visual | 0 |
 | 펼친 지갑 | 2-6, 4-0, 4-20 | 새로 | 핵심 | Items/_ik.py box, P | Hand_Wallet/Visual | A |
-| 지갑 칸의 카드 | 2-6 | 고침 | 핵심 | PH_Hand__Card 를 세워 다시 내보냄 | Hand_Wallet/Card_Part | A |
+| 지갑 칸의 카드 | 2-6 | 고침 | 핵심 | PH_Hand__Card 를 세운 새 파일 PH_Hand__WalletCard | Hand_Wallet/Card_Part | A |
 | 지갑 칸의 지폐 | 4-0, 4-10, 4-20 | 새로 | 핵심 | 지폐 모델 | Hand_Wallet/Cash_Part | A |
-| 지갑 속 쪽지 | 4-0, 4-0a | 고침 | 핵심 | PH/hand.py memo() 크기 변경 | Hand_Wallet/Note/Visual | A |
-| 지폐 | 1-6, 4-10, 4-21b | 새로 | 핵심 | ik.quad, ik.flat_img, tex2d.paper | Hand_Bill/Visual | A |
+| 지갑 속 쪽지 | 4-0, 4-0a | 고침 | 핵심 | PH/hand.py memo() 를 작게 한 새 파일 PH_Hand__WalletNote | Hand_Wallet/Note/Visual | A |
+| 지폐 | 1-6, 4-10, 4-21b | 새로 | 핵심 | ik.quad, ik.flat_img, tex2d.paper. 손 없는 PH_Hand__Bill 과 손을 구운 PH_Hand__BillHeld | Hand_Bill/Visual | A |
 | 왼 손목과 시계 | 4-16, 4-18, 4-21b | 고침 | 핵심 | GrandpaHand_L 시계. 바늘과 "토 15" 요일창을 뺌 | Hand_Watch/Visual | A |
 | 시침 | 4-16, 4-18, 4-21b | 고침 | 핵심 | GrandpaHand.py:853-867 바늘 하나 | Hand_Watch/HourHand | A |
 | 지팡이 쥔 오른손 | 4회차 머리글, 4-3 | 고침 | 보통 | GrandpaHand_R GripCane 자세, Items/Cane | 자리 없음(D15) | A |
@@ -119,12 +119,12 @@
 
 | 물건 | 시트 | 판정 | 급 | 재료 | 넣을 곳 | 묶음 |
 |---|---|---|---|---|---|---|
-| 키오스크 본체, 날개, 덮개 | 1-7, 1-8, 4-3 | 행 추가 | 핵심 | PH_Kiosk__Body, WingL, WingR, Cover | PH_Kiosk_R4 | D |
-| 구운 "카드 전용" 띠 제거 | 4-3 | 고침 | 핵심 | PH/kiosk.py:134 의 sticker 조건 삭제 | PH_Kiosk__Body, PH_Kiosk_Broken | D |
+| 키오스크 본체, 날개, 덮개 | 1-7, 1-8, 4-3 | 행 추가 | 핵심 | PH_KioskR4__Body(다음 행), PH_Kiosk__WingL, WingR, Cover | PH_Kiosk_R4 | D |
+| 구운 "카드 전용" 띠 제거 | 4-3 | 고침 | 핵심 | PH/kiosk.py 를 복사한 PH/kiosk_r4.py 에서 sticker 조건 삭제(134행). 사본 때문에 원본은 두고 새 파일로 냅니다 | PH_KioskR4__Body, PH_KioskR4__Broken | D |
 | "카드 전용" 스티커 판 | 1-7, 4-3 | 색만 | 핵심 | 회색 판 0.16x0.06 재질 | Sticker_CardOnly/Visual | D |
-| 벽 포스터 빈 판 | 1-7, 4-3 | 고침 | 핵심 | store_tex.py 글자 없는 인쇄면, StorePosters 프레임 | PH_Poster/Visual | D |
+| 벽 포스터 빈 판 | 1-7, 4-3 | 고침 | 핵심 | 글자 없는 인쇄면을 새로 그려 Textures/PH_Poster 에 둡니다. poster_kiosk 는 사본이 쓰므로 고치지 않습니다 | PH_Poster/Visual | D |
 | 앞 어르신 몸 | 1-5, 1-6 | 고침 | 핵심 | NpcOldMan 복사, 옷과 시계 변경, 팔 삭제 | PH_NPC 새 look | D |
-| 어르신 팔과 지폐 | 1-6 | 고침 | 핵심 | GrandpaHand 정적. 지폐는 묶음 A | 씬 Arm_Pivot/Visual, Bill/Visual | D |
+| 어르신 팔과 지폐 | 1-6 | 고침 | 핵심 | 모델은 묶음 A(PH_Elder__Arm, PH_Hand__Bill), 씬에 넣는 일은 D | 씬 Arm_Pivot/Visual, Bill/Visual | D |
 | 어르신 지팡이 | 1-5, 4-3 | 배치 | 보통 | PH_Cane | 씬 NPC_Elder 자식, R4_Stop Walker 도 같게 | D |
 | 줄 손님, 구경하는 손님 | 1-5, 1-6 | 그대로 | 보통 | PH_NPC look 0~7 | 인스턴스마다 look | D |
 | 알바생 | 1-7, 1-9 | 그대로 | 보통 | PH_NPC look 8 | 씬 NPC_Staff 의 look | D |
@@ -140,7 +140,7 @@ R2_Cafe 는 a607539 에서 새 공간이 됐습니다. 방은 안쪽 7.7 x 6.9 m
 
 | 물건 | 시트 | 판정 | 급 | 재료 | 넣을 곳 | 묶음 |
 |---|---|---|---|---|---|---|
-| 키오스크 | 2-2, 2-3, 2-6 | 색만 | 핵심 | 같은 메시, 간판 PNG, 포스터 아틀라스(kiosk_tex.py) | PH_Kiosk | C |
+| 키오스크 | 2-2, 2-3, 2-6 | 색만 | 핵심 | 같은 메시, 새 간판과 포스터. kiosk_tex.py 는 공유 텍스처를 덮으니 돌리지 않습니다 | PH_Kiosk | C |
 | 커피 2잔과 캐리어 | 2-8 | 새로 | 핵심 | FoodDrinkCup.py:70-80 컵 프로필, M_Glass 몸통 | PH_CoffeeCups | C |
 | 바 카운터 | 2-5, 2-8 | 고침 | 핵심 | store_counter.py:11-61 | PH_BarCounter | C |
 | 방 벽, 바닥, 천장 | 2-1 | 새로 | 보통 | store_shell.py W(), tint_copy, 7.2절 타일 | Env_Cafe | C |
@@ -172,8 +172,8 @@ PH_Curb, PH_Rail, PH_OfficeBlock 인스턴스는 스케일로 크기를 만들�
 | 물건 | 시트 | 판정 | 급 | 재료 | 넣을 곳 | 묶음 |
 |---|---|---|---|---|---|---|
 | 세 번째 버스 | 4-19, 4-21b | 배치 | 핵심 | PH_Bus__Body, DoorA, DoorB | 씬 Buses/Bus3 | B |
-| 어르신 뒷모습 | E-1 | 배치 | 핵심 | 어르신 몸(묶음 D) | 씬 Npcs/Walker | B |
-| 가로등 | 머리글, 4-21b | 고침 | 보통 | Street/street_light.py 렌즈 분리, 꺼진 재질 | 씬 Lamps/Lamp0~2 | B |
+| 어르신 뒷모습 | E-1 | 배치 | 핵심 | 양팔이 있는 PH_NPC__Elder_BodyArm 과 머리(묶음 D). 팔을 지운 몸은 R1_Store 전용입니다 | 씬 Npcs/Walker | B |
+| 가로등 | 머리글, 4-21b | 고침 | 보통 | Street/street_light.py 를 복사한 새 파일 PH_StreetLightR4, 렌즈 분리와 꺼진 재질 | 씬 Lamps/Lamp0~2 | B |
 | 정류장 구운 글씨의 흐린 사본 | 공통 규칙, 회차별 기믹 | 색만 | 나중 | 쉼터 광고, BusStopRouteMap 의 BaseColor 를 흐려 새 재질로 | R4_Stop 인스턴스 재질 덮어쓰기(D16) | B |
 
 저녁 장면은 코드가 조명과 하늘 색을 바꿉니다. 저녁용 모델은 없습니다. 가로등 Light 는 지우면 안 되고 모델 높이(7.2 m)에 맞게 옮깁니다.
@@ -182,14 +182,14 @@ PH_Curb, PH_Rail, PH_OfficeBlock 인스턴스는 스케일로 크기를 만들�
 
 | 물건 | 시트 | 판정 | 급 | 재료 | 넣을 곳 | 묶음 |
 |---|---|---|---|---|---|---|
-| 쪽지 쥔 오른손 | E-1a, E-1b | 고침 | 핵심 | GrandpaHand_R HoldMemo 자세 | 씬 End_HandR/Visual | A |
-| 짚는 왼손 | E-1c | 고침 | 핵심 | GrandpaHand_L, POSES 에 펼친 자세 추가 | 씬 End_HandL/Visual | A |
-| 구겨진 쪽지 | E-1b, E-1c | 새로 | 핵심 | 지름 약 0.06, M_Memo_Sheet 재질 | 씬 Note_Ball | A |
-| 펼친 쪽지 | E-1a | 색만 | 보통 | 메시 유지, 재질만. 스케일이 0.085x0.13x0.001 이라 자식을 달면 찌그러집니다 | 씬 Note_Flat | D |
-| 현관 안 | E-1b, E-1c | 배치 | 핵심 | HomeEntry, HomeUmbrella, HomeMedicineBag. Room 치수가 일치합니다 | Env_Home | D |
+| 쪽지 쥔 오른손 | E-1a, E-1b | 고침 | 핵심 | GrandpaHand_R HoldMemo 자세 | 씬 EndHands/End_HandR/Visual | A |
+| 짚는 왼손 | E-1c | 고침 | 핵심 | GrandpaHand_L, POSES 에 펼친 자세 추가 | 씬 EndHands/End_HandL/Visual | A |
+| 구겨진 쪽지 | E-1b, E-1c | 새로 | 핵심 | 지름 약 0.06, M_Memo_Sheet 재질 | 씬 EndHands/End_HandR/Note_Ball | A |
+| 펼친 쪽지 | E-1a | 색만 | 보통 | 메시 유지, 재질만. 스케일이 0.085x0.13x0.001 이라 자식을 달면 찌그러집니다 | 씬 Note_Flat | A |
+| 현관 안 | E-1b, E-1c | 배치 | 핵심 | HomeEntry, HomeUmbrella, HomeUmbrellaRed, HomeMedicineBag. Room 치수가 일치합니다 | Env_Home | A |
 | 현관문, 신발장, 전구, 지팡이 | E-1b | 그대로 | 보통 | PH_Door_Home, PH_ShoeCabinet, PH_Bulb, PH_Cane | 프리팹 | 0 |
-| 밤 골목 | E-1a | 배치 | 보통 | Street.json 의 골목 항목. y -8 모듈과 CarHatch 는 뺌 | Env_Home | D |
-| 가로등 | E-1a | 배치 | 나중 | StreetLight | 씬 Lamp_Mid, Lamp_Far | D |
+| 밤 골목 | E-1a | 배치 | 보통 | Street.json 의 골목 항목. y -8 모듈과 CarHatch 는 뺌 | Env_Home | A |
+| 가로등 | E-1a | 배치 | 나중 | StreetLight. (-2.3, -0.13, 8.5), (2.3, -0.13, 16). 기둥 Lamp_Mid_Pole, Lamp_Far_Pole 은 끕니다 | Env_Home | A |
 
 HomeCorridor 는 5층 복도라 쓸 수 없습니다. 집 앞 벽 HouseFront 는 해당 모델이 없고 밤에 짧게 보여서 PH_Wall 그대로 둡니다.
 
@@ -255,7 +255,7 @@ Hand_Lens 에 손을 구울 때는 렌즈 원 밖에 둡니다. 원 안은 후�
 | PH_Poster 판 | 0.7 x 1.0 x 0.01, 앞면 z 0~+0.001 | StorePosters_Kiosk 외곽은 0.634 x 0.881 입니다. 빈 인쇄면으로 다시 만듭니다. poster_kiosk 의 "현금 결제 불가" 문구도 뺍니다 |
 | Sticker_CardOnly 판 | 0.16 x 0.06 x 0.01 | 재질만 입힙니다 |
 
-PH_Kiosk_R4 행은 PH_Kiosk 행(Visual, Wing_L/Visual, Wing_R/Visual, 빈 행들)을 복사하고 Cover/Hinge/Visual 에 PH_Kiosk__Cover 를 더합니다. Card/Visual 은 자리가 없습니다. 구운 "카드 전용" 띠를 먼저 빼고 Body 를 다시 내보낸 뒤에 행을 넣습니다. 순서가 바뀌면 4회차에 돋보기 없이 읽힙니다.
+PH_Kiosk_R4 행은 PH_Kiosk 행(Wing_L/Visual, Wing_R/Visual, 빈 행들)을 복사하고 Visual 은 PH_KioskR4__Body, Cover/Hinge/Visual 은 PH_Kiosk__Cover 로 씁니다. Card/Visual 은 자리가 없습니다. 띠를 뺀 PH_KioskR4__Body 를 만든 뒤에 행을 넣습니다. 옛 Body 를 넣으면 4회차에 돋보기 없이 읽힙니다.
 
 ### 카페 (실측 크기, 모델링목록과 다른 값은 실측이 맞습니다)
 
@@ -270,25 +270,25 @@ PH_Kiosk_R4 행은 PH_Kiosk 행(Visual, Wing_L/Visual, Wing_R/Visual, 빈 행들
 | PH_StreetTree | 2.95 x 5.1 x 2.6 | StorePlant 는 화분이 한 메시라 못 씁니다 |
 | PH_CoffeeCups | 0.26 x 0.26 x 0.14 | 불투명 종이컵이면 얼음과 커피가 안 보여 투명 컵입니다. 코드는 루트를 켜고 끕니다 |
 
-카페 키오스크는 Visual/Sign 을 씬이 끄고 있는데 모델이 간판을 합치면 그 끄기가 사라집니다. 버거대왕 간판과 포스터가 보이지 않게 PH/kiosk_cafe.py 를 새로 만들어 Body 를 카페용으로 내보내고, PH_Map_Cafe.json 에서 PH_Kiosk 의 Visual, Wing_L/Visual, Wing_R/Visual 을 빈 행으로 지운 뒤 새 모델을 넣습니다.
+카페 키오스크는 Visual/Sign 을 씬이 끄고 있었는데 0단계로 그 끄기가 사라져 지금 버거대왕 간판이 보입니다. PH/kiosk_cafe.py 를 새로 만들어 PH_KioskCafe__Body, __WingL, __WingR 로 내보내고, PH_Map_Cafe.json 에서 PH_Kiosk 의 Visual, Wing_L/Visual, Wing_R/Visual 을 빈 행으로 지운 뒤 새 모델을 넣습니다. Sticker_CardOnly 는 R2_Cafe 가 꺼 두어 판이 필요 없습니다.
 
 ## 6. 작업 묶음
 
-파일이 겹치지 않게 나눈 단위입니다. 네 대에 배정할 때 이 표를 씁니다. 소유 파일 밖은 고치지 않습니다.
+파일이 겹치지 않게 나눈 단위입니다. 컴퓨터 배정과 정확한 소유 파일, 순서는 MODELING_SPLIT.md 가 정본입니다. 소유 파일 밖은 고치지 않습니다.
 
 | 묶음 | 내용 | 맵 파일 | 프리팹 | 씬 | 주로 고치는 스크립트 |
 |---|---|---|---|---|---|
-| 0단계 | 기존 모델 넣기. 한 대가 맨 처음 합니다 | PH_Map.json(고치지 않음) | PH 프리팹 31개 | 없음 | 없음 |
-| A 손과 소지품 | 3.1, 3.9 의 손과 쪽지, 지폐 | PH_Map_Hand.json | PH_Hand | 없음(엔딩 손 모델은 D 가 씬에 넣음) | PH/hand.py, Hands/, 새 Items/ |
-| B 버스와 정류장 | 3.2, 3.3, 3.8 | PH_Map_Bus.json | PH_Bus, PH_BusInterior, PH_BusTerminal, PH_Notice_Cashless | R1_Stop, R4_Stop | PH/bus*.py, Street/street_light.py |
+| 0단계 | 기존 모델 넣기. 끝났습니다 | PH_Map.json(고치지 않음) | PH 프리팹 31개 | 없음 | 없음 |
+| A 손, 소지품, 엔딩 | 3.1, 3.9 | PH_Map_Hand.json | PH_Hand | Ending_Home | PH/hand.py, Hands/, 새 Items/ |
+| B 버스와 정류장 | 3.2, 3.3, 3.8 | PH_Map_Bus.json | PH_Bus, PH_BusInterior, PH_BusTerminal, PH_Notice_Cashless | R1_Stop, R4_Stop | PH/bus*.py, 새 PH/street_light_r4.py |
 | C 카페 | 3.6 | PH_Map_Cafe.json | PH_Kiosk, 카페 10종 | R2_Cafe | 새 PH/cafe_*.py, PH/kiosk_cafe.py, 새 Food/ |
-| D 버거집, 사람, 엔딩 | 3.4, 3.5, 3.7, 3.9 | PH_Map_Store.json | PH_Kiosk_R4, PH_Kiosk_Broken, PH_Poster, PH_NPC | R1_Storefront, R4_Storefront, R1_Store, R4_Store, Ending_Home | PH/kiosk.py, PH/npc.py, Characters/, Store/ |
+| D 버거집과 사람 | 3.4, 3.5, 3.7 | PH_Map_Store.json | PH_Kiosk_R4, PH_Kiosk_Broken, PH_Poster, PH_NPC | R1_Storefront, R4_Storefront, R1_Store, R4_Store | 새 PH/kiosk_r4.py, PH/poster.py, PH/npc.py, Characters/ |
 
 순서입니다.
 
-1. 0단계를 끝내고 push 합니다. 그동안 다른 컴퓨터는 Unity 첫 임포트를 돌리고 Blender 작업을 시작합니다. 프리팹 저장은 0단계를 pull 한 뒤에 합니다.
+1. 0단계는 끝나서 main 에 있습니다. 받아서 시작합니다.
 2. A, B, C, D 는 동시에 진행합니다. 에셋이 끝날 때마다 작게 push 합니다.
-3. 의존은 세 곳입니다. 지폐와 손(A)이 나와야 D 가 어르신 팔과 엔딩 손을 씬에 넣습니다. 어르신 몸(D)이 나와야 B 가 Walker 를 넣습니다. 카페 직원 look 번호(D)가 나와야 C 가 씬에 지정합니다. 사람 모습은 PH_NPC 소유자인 D 만 더합니다. 먼저 끝나는 쪽이 push 하면 pull 합니다.
+3. 의존은 세 곳입니다. 지폐와 어르신 팔(A)이 나와야 D 가 씬에 넣습니다. 어르신 몸(D)이 나와야 B 가 Walker 를 넣습니다. 카페 직원 look 번호(D)가 나와야 C 가 씬에 지정합니다. 사람 모습은 PH_NPC 소유자인 D 만 더합니다. 먼저 끝나는 쪽이 push 하면 pull 합니다.
 4. 마지막에 한 대가 씬 8개를 차례로 열어 경고와 분홍 재질이 없는지 봅니다. 플레이 시험은 사람이 합니다.
 
 컴퓨터 배정 때 볼 사실입니다.
@@ -356,7 +356,7 @@ blender -b --factory-startup --python ArtSource/Blender/scripts/k3d.py -- valida
 
 재질 규칙입니다.
 
-- 이름은 M_<이름> 입니다. 접두사 M_Glass(투명), M_Dyn(런타임 텍스처), M_Tile(타일링)은 굽지 않고 그대로 나갑니다. 나머지는 bake 가 오브젝트당 텍스처 1세트로 합칩니다.
+- 이름은 M_<이름> 입니다. 접두사 M_Glass(투명), M_Dyn(런타임 텍스처), M_Tile(타일링)은 굽지 않고 그대로 나갑니다. 나머지는 bake 가 오브젝트당 텍스처 1세트로 합칩니다. 투명 컵을 M_Cafe_ 로 시작하면 불투명으로 구워집니다.
 - Unity 재질 이름은 전역입니다. 같은 이름은 같은 .mat 으로 갑니다. 새 재질은 자기 에셋 이름으로 시작합니다.
 - 공유 타일을 고치지 않습니다. 색을 바꾸려면 새 이름으로 틴트 사본을 만듭니다(store_shell.py:24-33 tint_copy). M_Tile_Store_* 는 버거집과 공유합니다.
 
@@ -411,12 +411,12 @@ Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap P
 씬에만 있는 자리(3절에 씬이라고 쓴 곳)와 배경은 메뉴가 닿지 않습니다.
 
 - 배경은 프리팹 하나로 묶어 Assets/Art3D/Env 에 둡니다(Env_Street, Env_Storefront, Env_StoreInterior, Env_Cafe, Env_Home). 씬에는 인스턴스 하나와 회색 Visual 끄기, RenderSettings 만 남겨 씬 충돌을 줄입니다.
-- 배치 데이터는 Assets/JeongWoo/Layouts/*.json 이고 코드는 Assets/JeongWoo/Editor/JWDress.cs 입니다. JWDress 의 Street, Storefront, Store 가 쓰는 씬 경로는 R 씬에 전부 있습니다(19/19, 27/27, 35/35). 다만 어셈블리와 타입이 달라 그대로는 안 돕니다. 도구 함수(36-262행)를 Assets/Editor 로 복사하고 Root 경로, JWBuild.Warn, Npc(), Group, 영수증, StoreDirector.sharedRoom 부분을 고칩니다. Sky_Overcast, Fence_Construction 은 Assets/Art3D 로 복사해야 R 씬이 사본에 묶이지 않습니다.
+- 배치 데이터는 Assets/JeongWoo/Layouts/*.json 입니다. 공용 도구는 Assets/Editor/DressKit.cs 이고 각 컴퓨터는 자기 Dress<이름>.cs 만 씁니다(같은 어셈블리라 클래스 이름이 겹치면 안 됩니다). Assets/JeongWoo/Editor/JWDress.cs 는 참고 코드입니다. 그 씬 경로는 R 씬에 전부 있습니다(19/19, 27/27, 35/35). Sky_Overcast, Fence_Construction 은 Assets/Art3D/Env 에 복사해 두어 R 씬이 사본에 묶이지 않습니다.
 - JWDress.Storefront 는 매장 안을 겹쳐 보여 주는 전제입니다. R 씬은 Env_StoreInterior 를 같이 넣습니다.
 - 복사본인 Bus3, Walker, Watcher0~4 는 Visual, DoorLeafA, DoorLeafB, HeadPivot/Visual 아래에 FBX 를 직접 넣습니다. 오브젝트 이름과 참조는 유지합니다. 코드가 fileID 로 참조하므로 지우고 다시 만들면 끊어집니다.
 - 코드가 이름으로 찾는 것은 HeadPivot 하나입니다. 지우거나 옮기면 안 되는 것은 Interactable, Readable, 앵커, Bounds 콜라이더입니다. Visual 아래 회색 메시는 지워도 됩니다.
 
-씬을 눈으로 볼 때는 플레이하지 않고 에디터 카메라 Camera.Render 로 찍습니다.
+씬을 눈으로 볼 때는 플레이하지 않고 DressKit.Shot 으로 찍습니다.
 
 ## 8. 파일 정책
 
@@ -452,18 +452,18 @@ Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap P
 
 한 대만 하는 일입니다.
 
-- 0단계 메뉴(`Tools/키오스크/PH 프리팹에 모델 넣기`)입니다. 31개 프리팹을 한꺼번에 저장합니다.
+- 메뉴 `Tools/키오스크/PH 프리팹에 모델 넣기` 는 0단계로 끝났습니다. 모든 프리팹을 저장하므로 다시 쓰지 않고 FillMap 만 씁니다.
 - 노션 동기화입니다. 플러그인 버전에 따라 변환 결과가 달라 번갈아 돌리면 계속 바뀝니다.
 - 빌드와 `JWBuild.All` 입니다. 빌드는 PC_RPAsset, UniversalRenderPipelineGlobalSettings 를 바꿉니다. 이 둘은 커밋하지 않고 stash 합니다.
 
-0단계 뒤에 씬 값이 사라지는 곳이 있습니다. 씬 주인이 맞춥니다.
+0단계로 씬 값이 사라진 곳이 있습니다. 씬 주인이 맞춥니다.
 
 | 곳 | 증상 | 처리 |
 |---|---|---|
 | R1_Stop, R4_Stop Rail_E | 길이가 80.4 에서 85.4 로 돌아갑니다 | 인스턴스 루트 X 스케일 0.941 |
 | R1_Store NPC_Elder | 몸 재질 덮어쓰기가 사라집니다 | NpcLook.look 을 어르신 번호로 |
 | R2_Cafe 키오스크 | 버거대왕 간판과 포스터가 보입니다 | 5절 카페 키오스크 |
-| 모든 키오스크 | 구운 "카드 전용" 띠가 보입니다 | 3.5 고침 |
+| R1, R4 키오스크 | 구운 "카드 전용" 띠가 보입니다 | 3.5 고침 |
 
 ## 10. 알려진 문제
 
@@ -481,7 +481,7 @@ Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap P
 ## 11. 확인하지 못한 것
 
 - Windows 에서는 아직 한 번도 돌려 보지 않았습니다. 코드와 문서로만 고쳤습니다. 첫 실행이 setup.py 입니다. 실패하면 그 출력으로 판단합니다.
-- Unity 를 실행하지 않았습니다. Art3DTools.cs 는 Unity 컴파일러로 컴파일만 통과했습니다. FillMap, 폰트 설정, 메뉴 결과는 코드와 YAML 을 읽어 판단했습니다. PH_Kiosk_R4 처럼 화면 프리팹이 중첩된 프리팹을 저장했을 때의 결과는 미확인입니다.
+- Unity 는 이 Mac 에서 배치로만 돌렸습니다. 0단계, FillMap, 폰트 설정, DressKit.Shot 은 실제로 확인했습니다. PH_Kiosk_R4 처럼 화면 프리팹이 중첩된 프리팹을 저장했을 때의 결과는 미확인입니다. 플레이는 하지 않았습니다.
 - Unity 첫 임포트 시간, 다른 컴퓨터의 라이선스와 git 설정은 미확인입니다.
 - Windows 에서 Apply 가 .mat 을 다시 쓸 때 값이 달라지는지 미확인입니다. 내 것이 아닌 .mat 이 바뀌면 규칙 8 을 따릅니다.
-- JWDress 재사용과 Env 프리팹 구성은 제안이고 아직 돌려 보지 않았습니다.
+- DressKit 의 SaveEnv, PutEnv, Model, Off, Look, Shot 은 Unity 에서 시험 프리팹으로 확인했습니다. 씬별 Env 구성은 아직 만들지 않았습니다.
