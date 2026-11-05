@@ -1,0 +1,60 @@
+{
+ "asset": "PH_KioskCafe__WingL",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Kiosk_Body/T_Kiosk_Body_BaseColor.jpg",
+    "Normal": "Textures/Kiosk_Body/T_Kiosk_Body_Normal.png",
+    "MS": "Textures/Kiosk_Body/T_Kiosk_Body_MS.png",
+    "Emission": "Textures/Kiosk_Body/T_Kiosk_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_PH_KioskCafe_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/PH_KioskCafe/T_PH_KioskCafe_Paper_BaseColor.jpg",
+    "Normal": "Textures/Kiosk/T_Kiosk_Paper_Normal.jpg"
+   },
+   "name": "M_PH_KioskCafe_Paper"
+  },
+  {
+   "baseColor": [
+    0.86,
+    0.84,
+    0.74,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_PH_KioskCafe_Tape"
+  }
+ ],
+ "notes": "Wing_L/Visual. 원점 = 포스터 중심, 앞 -Z. 회전은 프리팹 Wing 이 준다. 안쪽 클램프 끝은 Body 레일 안으로 들어간다."
+}

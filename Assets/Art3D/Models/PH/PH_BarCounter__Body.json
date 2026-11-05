@@ -1,0 +1,36 @@
+{
+ "asset": "PH_BarCounter__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_BarCounter__Body/T_PH_BarCounter__Body_BaseColor.jpg",
+    "Normal": "Textures/PH_BarCounter__Body/T_PH_BarCounter__Body_Normal.png",
+    "MS": "Textures/PH_BarCounter__Body/T_PH_BarCounter__Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_BarCounter__Body"
+  },
+  {
+   "baseColor": [
+    0.035,
+    0.028,
+    0.022,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "name": "M_PH_BarCounter__Body_Dark"
+  }
+ ],
+ "notes": "바 카운터. 원점 = 바닥의 Body 중심(경계 상자 중심 아님), 앞 -Z, 상판 윗면 y 1.06. M_PH_BarCounter__Body_Dark 는 슬랫 틈과 뒷면의 단색이라 굽지 않았다."
+}

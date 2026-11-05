@@ -1,0 +1,134 @@
+{
+ "asset": "PH_CafeRoom__Shell",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_CafeRoom__Shell/T_PH_CafeRoom__Shell_BaseColor.jpg",
+    "Normal": "Textures/PH_CafeRoom__Shell/T_PH_CafeRoom__Shell_Normal.png",
+    "MS": "Textures/PH_CafeRoom__Shell/T_PH_CafeRoom__Shell_MS.png",
+    "Emission": "Textures/PH_CafeRoom__Shell/T_PH_CafeRoom__Shell_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_PH_CafeRoom__Shell"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Home_WoodFloor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Home_WoodFloor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Home_WoodFloor_MS.png"
+   },
+   "baseColor": [
+    0.82,
+    0.74,
+    0.66,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomFloor"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Home_Ceiling_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Home_Ceiling_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Home_Ceiling_MS.png"
+   },
+   "baseColor": [
+    1.0,
+    1.0,
+    1.0,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomCeiling"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_Paint_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_Paint_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_Paint_MS.png"
+   },
+   "baseColor": [
+    1.0,
+    0.95,
+    0.84,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomWall"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_RedBrick_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_RedBrick_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_RedBrick_MS.png"
+   },
+   "baseColor": [
+    0.9,
+    0.84,
+    0.8,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomBrick"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Home_WoodFloor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Home_WoodFloor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Home_WoodFloor_MS.png"
+   },
+   "baseColor": [
+    0.3,
+    0.24,
+    0.2,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomDarkWood"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Home_WoodFloor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Home_WoodFloor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Home_WoodFloor_MS.png"
+   },
+   "baseColor": [
+    0.9,
+    0.8,
+    0.68,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Cafe_RoomWood"
+  }
+ ],
+ "notes": "Env_Cafe 에 씬 원점, 회전 0 으로 둔다. 원점 = 씬 원점이라 바닥 중앙이 아니다. min_z -0.1 은 바닥판 두께로 의도한 값. 앞 z -3 은 비어 있고 PH_CafeFront 가 막는다. 범위 x -4.65~3.25, y -0.1~3.4, z -3.025~4.0, 안쪽 x -4.55~3.15, z -3~3.9, 높이 3.2. Wall_BarEnd(x 0.72~0.8) 포함. 징두리는 양옆 벽과 칸막이 오른쪽 뒷벽에만 있고 키오스크 자리 x 1.555~2.245 는 비운다. 천장 앞면은 벽 끝면과 지글거리지 않게 z -3.015 다. 천장 등 5개는 발광 3.0 재질만이고 Light 는 없다. 타일은 공유 텍스처의 틴트 사본 M_Tile_Cafe_Room*."
+}

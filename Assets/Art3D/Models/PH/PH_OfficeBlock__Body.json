@@ -1,0 +1,52 @@
+{
+ "asset": "PH_OfficeBlock__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "baseColor": [
+    0.54,
+    0.515,
+    0.456,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "name": "M_PH_OfficeBlock__Body_Wall"
+  },
+  {
+   "baseColor": [
+    0.045,
+    0.054,
+    0.065,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "name": "M_PH_OfficeBlock__Body_Frame"
+  },
+  {
+   "baseColor": [
+    0.02,
+    0.033,
+    0.05,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "name": "M_PH_OfficeBlock__Body_GlassDark"
+  },
+  {
+   "baseColor": [
+    0.032,
+    0.062,
+    0.1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "name": "M_PH_OfficeBlock__Body_GlassLight"
+  }
+ ],
+ "notes": "원점 = 프리팹 원점(몸통 바닥 중앙), 앞 -Z. 회색 Body, Canopy, Fin, Band, Lobby 자리와 같다. 유리는 벽면 0.15 안쪽, 차양 뒷면은 벽면. Fin 아래 끝은 회색 2.5 에서 바닥까지 내렸다. 굽기 없음, 유리는 불투명."
+}

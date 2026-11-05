@@ -1,0 +1,25 @@
+{
+ "asset": "PH_StreetTree__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_StreetTree__Body/T_PH_StreetTree__Body_BaseColor.jpg",
+    "Normal": "Textures/PH_StreetTree__Body/T_PH_StreetTree__Body_Normal.png",
+    "MS": "Textures/PH_StreetTree__Body/T_PH_StreetTree__Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_StreetTree__Body"
+  }
+ ],
+ "notes": "원점은 밑동 바닥 중앙이고 프리팹 회색 자리에 맞췄다. x 범위 -1.45 ~ 1.5. 잎은 색과 메시이고 노멀은 평평하다."
+}
