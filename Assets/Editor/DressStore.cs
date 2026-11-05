@@ -40,7 +40,7 @@ public static class DressStore
         var cafe = Open("R2_Cafe");
         Wear(cafe, "NPCs/NPC_Staff", 10);
         Wear(cafe, "NPCs/NPC_Cook", 10);
-        Wear(cafe, "NPCs/NPC_Rookie", 11);
+        Rookie(cafe);
         string[] guests = { "Queue0", "Queue1", "Queue2", "Queue3", "Queue4", "Wait0", "Wait1", "Wait2", "Eater" };
         int[] looks = { 0, 12, 6, 4, 14, 13, 2, 3, 1 };
         for (int i = 0; i < guests.Length; i++) Wear(cafe, "NPCs/NPC_" + guests[i], looks[i]);
@@ -53,6 +53,15 @@ public static class DressStore
         if (t == null) return;
         t.GetComponent<NpcPose>().look = look;
         Keep(t.GetComponent<NpcPose>());
+    }
+
+    // NPC_Rookie 는 프리팹 연결이 풀린 복사본이라 PH_NPC 의 새 모습이 없다. 모델을 직접 붙이고 그 순서를 쓴다
+    static void Rookie(Scene s)
+    {
+        var t = Find(s, "NPCs/NPC_Rookie");
+        var visual = t.Find("ReactPivot/Visual");
+        if (visual.Find("NpcRookie") == null) Add(visual, "NpcRookie", s);
+        t.GetComponent<NpcPose>().look = visual.Find("NpcRookie").GetSiblingIndex();
     }
 
     // 키오스크 앞 어르신. 서 있기만 하면 뻣뻣해 화면을 두드리게 하고, 4회차 주인공과 같은 사람이라 지팡이를 짚는다
@@ -93,26 +102,32 @@ public static class DressStore
             foreach (var asset in Added)
             {
                 if (visual.Find(asset) != null) continue;
-                var model = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "Models/Characters/" + asset + ".fbx");
-                if (model == null)
-                {
-                    Warn("모델 없음 " + asset);
-                    return;   // 번호가 밀리면 안 되니 더 넣지 않는다
-                }
-                var go = (GameObject)PrefabUtility.InstantiatePrefab(model, root.scene);
-                go.name = asset;
-                go.transform.SetParent(visual, false);
-                go.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);   // 리깅 FBX 는 -Z 를 본다
-                var animator = go.AddComponent<Animator>();
-                animator.runtimeAnimatorController = Controller(asset);
-                animator.applyRootMotion = false;
-                Phone(go, asset);
-                foreach (var t in go.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = root.layer;
-                go.SetActive(false);
+                if (Add(visual, asset, root.scene) == null) return;   // 번호가 밀리면 안 되니 더 넣지 않는다
             }
             PrefabUtility.SaveAsPrefabAsset(root, path);
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
+    static GameObject Add(Transform visual, string asset, Scene scene)
+    {
+        var model = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "Models/Characters/" + asset + ".fbx");
+        if (model == null)
+        {
+            Warn("모델 없음 " + asset);
+            return null;
+        }
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(model, scene);
+        go.name = asset;
+        go.transform.SetParent(visual, false);
+        go.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);   // 리깅 FBX 는 -Z 를 본다
+        var animator = go.AddComponent<Animator>();
+        animator.runtimeAnimatorController = Controller(asset);
+        animator.applyRootMotion = false;
+        Phone(go, asset);
+        foreach (var t in go.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = visual.gameObject.layer;
+        go.SetActive(false);
+        return go;
     }
 
     // 상태 이름으로 CrossFade 한다. 클립 경로가 모델마다 달라 컨트롤러도 모델마다 만든다. JWBuild.NpcController 와 같은 규칙이다

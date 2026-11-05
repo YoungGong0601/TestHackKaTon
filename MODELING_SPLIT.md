@@ -147,7 +147,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 4. R1_Stop, R4_Stop 에 적용합니다. Off 12개, Fence 재질, World/Rail_E 루트 X 스케일 0.94145 와 BoxCollider 길이 85.4 입니다. 하늘은 두 씬 모두 `RenderSettings.skybox = Sky()` 입니다. R1_Stop 에만 StreetSun 값을 씁니다. R4_Stop 은 R4StopDirector 의 배열이 조명을 덮습니다. 씬에 직렬화된 값이라 고쳐도 됩니다. 코드는 고치지 않습니다.
 5. 씬 전용 자리입니다: Buses/Bus3/Visual, Buses/Bus3/DoorLeafA/Visual, Buses/Bus3/DoorLeafB/Visual. Npcs/Student, Npcs/Worker, PH_BusInterior/Driver 의 look. BusStop_Area/Notice_Pole 재질. R1_Stop 의 BuildingSalon 을 x 쪽으로 약 0.52 옮깁니다(Env_Street 인스턴스 값으로).
 6. 가로등입니다. Street/street_light.py 는 고치지 않습니다. 복사해 PH/street_light_r4.py 로 렌즈를 나눈 PH_StreetLightR4 와 렌즈판을 만듭니다. Lamps/Lamp0~2/Visual 에 넣고, Lamps/LampN/Light 는 지우지 않고 모델 높이에 맞게 옮깁니다. 렌즈판은 Light 아래에 두면 같이 켜집니다.
-7. Npcs/Walker 의 NpcPose.look 을 9(NpcElder)로 정하고 PH_Cane 을 ReactPivot 자식으로 더합니다. 1번 결과는 올라가 있습니다. DressStore.Elder 를 참고합니다. PH_NPC__Elder_* 모델은 만들지 않았습니다.
+7. R4_Stop Npcs/Walker 는 프리팹 연결이 풀린 복사본이고 친구가 NpcYouth 하나만 두었습니다. 어르신으로 바꾸려면 look 만으로는 안 되고 DressStore.Rookie 처럼 NpcElder 모델을 Visual 에 붙입니다. 지팡이는 DressStore.Elder 를 참고합니다. PH_NPC__Elder_* 모델은 만들지 않았습니다.
 8. 흐린 사본입니다(D16, PREP 3.8). 나중입니다.
 
 ## 8. 4번 령기컴: 카페
@@ -171,7 +171,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 
 | 만드는 쪽 | 파일 | 받는 쪽 | 자리 |
 |---|---|---|---|
-| 1번 | PH_NPC look 9 NpcElder (올라감) | 3번 | R4_Stop Npcs/Walker 의 NpcPose.look |
+| 1번 | Models/Characters/NpcElder.fbx, PH_NPC look 9 (올라감) | 3번 | R4_Stop Npcs/Walker (7절 7번) |
 | 1번 | PH_NPC look 10 NpcCafeStaff (올라감, R2_Cafe 에 적용함) | 4번 | R2_Cafe NPCs/NPC_Staff, NPC_Cook |
 
 어르신 팔과 지폐 넘기기는 지폐 넣는 동작을 빼서 필요 없습니다. R2_Cafe 의 인물 모습은 1번이 DressStore 로 정했습니다. 4번은 씬을 고치기 전에 pull 합니다.
