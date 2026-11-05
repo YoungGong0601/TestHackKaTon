@@ -22,7 +22,7 @@ public class R1ProtoPack : KioskPack
     };
     static readonly Dictionary<string, string> Back = new Dictionary<string, string>
     {
-        ["cart"] = "menu", ["pay"] = "cart", ["card"] = "pay",
+        ["place"] = "idle", ["menu"] = "place", ["cart"] = "menu", ["pay"] = "cart", ["card"] = "pay",
     };
 
     readonly KioskState K = new KioskState();
@@ -323,6 +323,59 @@ public class R1ProtoPack : KioskPack
         Ctl.Sfx("paper_tear", 0.9f);
         if (hw) hw.Tear();
         Ctl.Finish();
+    }
+
+    /// <summary>어르신이 주문을 끝낸 결제 화면.</summary>
+    public void ElderScreen()
+    {
+        var bulgogi = ById("bulgogi");
+        K.cart.Clear();
+        K.cart.Add(new CartLine { item = bulgogi.id, price = bulgogi.price + Combo("combo").add });
+        K.screen = "pay";
+        Draw();
+    }
+
+    /// <summary>어르신 결제 화면에서 카드만 꽂고 뺀다. 메뉴와 화면 조작은 하지 않는다.</summary>
+    public IEnumerator ProxyPay(Transform slot)
+    {
+        var player = PlayerController.I;
+        hw = Ctl.GetComponent<KioskHardware>();
+        float step = Bal.G("R1_ProxyStepSec", 0.35f);
+        HandRig.I.Equip(ItemId.Card);
+        yield return player.LookAt(slot.position, 0.3f);
+        AudioManager.I.Play("card_insert", slot.position, 0.8f);
+        HandRig.I.Equip(ItemId.None);
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.In);
+        progress = 0f;
+        K.screen = "paying";
+        Draw();
+        for (int i = 1; i <= 3; i++)
+        {
+            yield return new WaitForSeconds(step);
+            progress = i / 3f;
+            Draw();
+        }
+        AudioManager.I.Play("kiosk_ok", slot.position, 0.8f);
+        K.screen = "cardout";
+        Draw();
+        yield return new WaitForSeconds(step);
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.Out);
+        AudioManager.I.Play("card_insert", slot.position, 0.5f, 1.25f);
+        HandRig.I.Equip(ItemId.Card);
+        yield return new WaitForSeconds(step);
+        HandRig.I.Equip(ItemId.None);
+        int number = Bal.I("R1_ElderNumber", 273);
+        GameState.I.Order.number = number;
+        K.screen = "done";
+        Draw();
+        string price = Won(K.cart[0].price);
+        float print = Bal.G("R1_ProxyPrintSec", 1.2f);
+        if (hw) hw.Print($"불고기 버거 세트  {price}", price, number, print);
+        AudioManager.I.Play("receipt_print", slot.position, 0.9f);
+        yield return new WaitForSeconds(print);
+        AudioManager.I.Play("paper_tear", slot.position, 0.9f);
+        if (hw) hw.Tear();
+        K.cart.Clear();
     }
 
     // 1-9 알바생이 도와줄 때 다음에 누를 곳을 번쩍여 보여 준다

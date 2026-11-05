@@ -50,7 +50,6 @@ PayPoint는 Interactable이 같이 있으면 onUse로 클릭을 받는다(PH_Bus
 |---|---|
 | yield return Mash.Climb(bottom, top) | 시선은 top의 y 회전. 끝나면 이전 모드로 돌아가고 조작 잠금은 부르기 전 상태 |
 | yield return Mash.Descend(top, bottom) | 입력 없음 |
-| yield return Watch.Look(hour) | R4_WatchHour1 등 |
 | yield return Choice.Ask(labels, i => ...) | 최대 4줄 |
 | yield return Cine.BackShot(npc, to, sec) | 끝나면 플레이어를 원래 자리로 돌린다 |
 | Hud.I.SideNote(text) | 왼쪽 위 작은 글자 |

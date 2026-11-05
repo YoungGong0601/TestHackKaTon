@@ -19,6 +19,7 @@ public static class ItemKeys
             if (id == ItemId.Memo || id == ItemId.Cash || (id == ItemId.Card && profile.Has(ItemId.Wallet))) continue;
             slots.Add(id);
         }
+        if (HandRig.I != null && HandRig.I.HasReceipt) slots.Add(ItemId.Receipt);   // 얻으면 줄 끝에 붙는다
         return slots;
     }
 

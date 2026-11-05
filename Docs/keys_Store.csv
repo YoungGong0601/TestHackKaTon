@@ -53,3 +53,4 @@ Queue_MinBack,키오스크 뒤 최소 손님,Int,2,명,뒤에 사람이 늘 있�
 Queue_ClearDist,다음 손님이 출발하는 플레이어 이탈 거리,Float,1.1,m,키오스크 앞 구역
 Queue_StandBlockDist,자리에 플레이어가 있으면 손님이 멈추는 거리,Float,0.7,m,플레이어를 뚫지 않음
 Queue_NextGapSec,손님이 떠난 뒤 다음 손님까지,Float,1,sec,이어받기 간격
+Npc_BlendSec,사람 동작 전환과 걸음 가감속 시간,Float,0.25,sec,걷기 서기 앉기가 뚝 끊기지 않음

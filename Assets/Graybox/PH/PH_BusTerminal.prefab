@@ -450,6 +450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd03a0cd4eae71c42b9556549774989c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: KioskGame::PayPoint
+  DeferOk: 0
 --- !u!1 &7870406894846235919
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,6 +693,10 @@ PrefabInstance:
     - target: {fileID: 9217959490620280233, guid: b950d13266ffe3a4da2065728bce13e5, type: 3}
       propertyPath: m_Name
       value: Notice_Cashless
+      objectReference: {fileID: 0}
+    - target: {fileID: 9217959490620280233, guid: b950d13266ffe3a4da2065728bce13e5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

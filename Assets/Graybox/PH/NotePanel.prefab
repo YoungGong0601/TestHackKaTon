@@ -59,6 +59,7 @@ MonoBehaviour:
     soft: 0
     kind: 1
   - key: age80
-    text: "\uBD88\uACE0\uAE30 \uBC84\uAC70 \uC138\uD2B8\n\uC0AC\uC774\uB2E4\uB85C"
+    text: "\uC190\uC8FC\uAC00 \uC88B\uC544\uD558\uB294 \uAC83\n\uC2DC\uC7A5 \uC785\uAD6C
+      \uBC84\uAC70\uB300\uC655\n\uBD88\uACE0\uAE30 \uBC84\uAC70 \uC138\uD2B8\n\uC0AC\uC774\uB2E4"
     soft: 0
     kind: 0

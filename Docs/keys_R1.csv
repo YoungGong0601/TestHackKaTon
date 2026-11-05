@@ -46,3 +46,22 @@ Bus_DriverArmUpper,기사 위팔 드는 각,Float,40,deg,운전대 쪽
 Bus_DriverArmLower,기사 아래팔 드는 각,Float,32,deg,운전대 쪽
 R1_ElderMutterSec,어르신 혼잣말 간격,Float,2.5,sec,줄 서서 기다리는 동안
 Note_PutSec,쪽지 넣는 소리 길이,Float,0.3,sec,끝에서 짧게 줄인다
+R1_ElderMutterGapSec,어르신 혼잣말 간격(짧게),Float,0.4,sec,어르신 장면을 길게 두지 않는다
+R1_ElderNumber,어르신 주문 번호,Int,273,,플레이어 앞 번호
+R1_ElderCallSec,플레이어 주문 뒤 어르신 호출까지,Float,1,sec,어르신이 먼저 받는다
+R1_ElderHandDist,지폐를 건넬 때 어르신과 거리,Float,0.95,m,손을 뻗는 거리
+R1_ProxyStepSec,대리 결제 화면 넘김 간격,Float,0.35,sec,빠르게 지나간다
+R1_ProxyPrintSec,대리 결제 영수증 출력,Float,1.2,sec,빠르게 지나간다
+R2_WonderSec,키오스크 연 뒤 혼잣말까지,Float,1.5,sec,메뉴를 볼 틈
+Bus_AccelSec,버스 출발 가속 시간,Float,3,sec,0에서 천천히 오름
+Bus_BrakeSec,버스 도착 감속 시간,Float,3,sec,천천히 멈춤
+Bus_RideEngineIdle,정차 때 엔진음 비율,Float,0.55,ratio,속도에 맞춰 커짐
+R1_IntroWalkSec,시작 걷기 시간,Float,3,sec,이징
+R1_IntroTurnSec,시작 시선 전환 시간,Float,1.1,sec,부드러운 보간
+R1_IntroSignSec,간판 보는 시간,Float,0.9,sec,잠시
+R1_IntroDoorSec,문 보는 시간,Float,0.3,sec,잠시
+R1_IntroNoteDelay,문 본 뒤 쪽지까지,Float,0.2,sec,조금 뒤
+R1_IntroNoteRate,쪽지 드는 빠르기,Float,2.5,배,평소 9보다 천천히
+R1_IntroNoteRiseSec,쪽지 올리고 조작 돌려줄 때까지,Float,1.2,sec,천천히
+R1_OrderWaitSec,어르신 호출 뒤 내 번호까지,Float,13,sec,조리 소리와 다른 번호 호출
+R1_IntroLookAt,걷기 중 시선을 옮기기 시작하는 시점,Float,0.4,비율,걷는 도중

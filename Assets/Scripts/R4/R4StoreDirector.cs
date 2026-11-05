@@ -1,15 +1,22 @@
-// 4회차 가게: 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도한다. 지폐가 3번 튕기면 뒷사람과 말을 나누고 돌아서서 시선을 받으며 못 사고 나간다.
+// 4회차 가게. 프로토타입 StoreDirector 진행: 안 도와주는 알바생, 키오스크, 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도. 지폐가 3번 튕기면 뒷사람이 자기 카드로 결제해 주고, 호출, 수령, 대사 뒤 결과로 끝난다.
 // R4_Store 씬 Director 오브젝트에 부착.
 // 배치: kiosk = PH_Kiosk, pack = KioskCanvas (R4ProtoPack), queue = QueueManager
-// 배치: stand = Anchor_KioskStand, kioskLook = Anchor_KioskLook, staffPos = Anchor_Staff, exitPos = Anchor_FrontDoor
-// 배치: orderKiosk = Interact_Order, talkStaff = Interact_Staff, brokenKiosk = Interact_Broken, exitDoor = Interact_Exit (label 나가기)
+// 배치: stand = Anchor_KioskStand, kioskLook = Anchor_KioskLook, staffPos = Anchor_Staff, exitPos = Anchor_FrontDoor, exitLook = Anchor_ExitLook
+// 배치: orderKiosk = Interact_Order, talkStaff = Interact_Staff, brokenKiosk = Interact_Broken, exitDoor = Interact_Exit (늘 꺼 둔다), takeBag = Interact_Take
 // 배치: pool = 줄 손님 NPC_Queue0~4 (맨 앞 사람이 뒷사람), tray = Tray_Pass (쟁반, 처음 꺼짐), trayFrom, trayTo = 쟁반이 지나는 양 끝
+// 배치: pickupPos = Anchor_PickupLook, cook = NPC_Cook, cookA, cookB = Anchor_CookA, Anchor_CookB, board = PH_PickupBoard
+// 배치: shelf = Pickup_Shelf, shelfCup = 그 자식 Cup, carried = Carried_Bag, cupLabels = 두 컵의 Label
+// 배치: receiptView = Receipt_View (시작할 때 HandRoot로), receiptNumber = Sharp/Number, receiptLines = Sharp/Lines
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class R4StoreDirector : MonoBehaviour
 {
     enum Leave { None, Bounced, Back }
+    enum Phase { Order, Kiosk, Pickup, Called, End }
 
     [SerializeField] KioskController kiosk;
     [SerializeField] R4ProtoPack pack;
@@ -26,13 +33,30 @@ public class R4StoreDirector : MonoBehaviour
     [SerializeField] GameObject tray;
     [SerializeField] Transform trayFrom;
     [SerializeField] Transform trayTo;
+    [SerializeField] Transform exitLook;
+    [SerializeField] Transform pickupPos;
+    [SerializeField] NpcMover cook;
+    [SerializeField] Transform cookA;
+    [SerializeField] Transform cookB;
+    [SerializeField] PickupBoard board;
+    [SerializeField] GameObject shelf;
+    [SerializeField] GameObject shelfCup;
+    [SerializeField] Transform carried;
+    [SerializeField] GameObject receiptView;
+    [SerializeField] TMP_Text[] receiptNumber;
+    [SerializeField] TMP_Text[] receiptLines;
+    [SerializeField] TMP_Text[] cupLabels;
+    [SerializeField] Interactable takeBag;
 
     Leave leave;
+    Phase phase;
     NpcMover rival;
     bool talking, muttering, ordered, atKiosk;
-    int retries;
-    float nextBeep = 12f, nextNotify = 16f;
+    int retries, talk;
+    float nextBeep = 12f, nextNotify = 16f, carryT, carryWant;
     Transform fryerPos;
+    readonly List<int> ready = new List<int> { 269, 271, 272 };
+    int call = 268;
 
     static string Me => GameState.I.Profile.speakerKey;
     static Hud Ui => Hud.I;
@@ -50,8 +74,9 @@ public class R4StoreDirector : MonoBehaviour
         orderKiosk.onUse.AddListener(OnOrder);
         talkStaff.onUse.AddListener(OnTalk);
         if (brokenKiosk) brokenKiosk.onUse.AddListener(OnBroken);
-        exitDoor.onUse.AddListener(OnExit);
+        takeBag.onUse.AddListener(OnTake);
         kiosk.StaffCalled += OnStaffCalled;
+        pack.Helping += OnHelping;
         pack.Bounced += OnBounced;
     }
 
@@ -60,17 +85,34 @@ public class R4StoreDirector : MonoBehaviour
         orderKiosk.onUse.RemoveListener(OnOrder);
         talkStaff.onUse.RemoveListener(OnTalk);
         if (brokenKiosk) brokenKiosk.onUse.RemoveListener(OnBroken);
-        exitDoor.onUse.RemoveListener(OnExit);
+        takeBag.onUse.RemoveListener(OnTake);
         kiosk.StaffCalled -= OnStaffCalled;
+        pack.Helping -= OnHelping;
         pack.Bounced -= OnBounced;
+    }
+
+    void OnDestroy()
+    {
+        // 손은 씬을 건너가므로 붙인 물건은 같이 치운다
+        if (carried) Destroy(carried.gameObject);
+        if (receiptView) Destroy(receiptView);
     }
 
     IEnumerator Start()
     {
+        shelf.SetActive(false);
+        shelfCup.SetActive(false);
+        carried.gameObject.SetActive(false);
+        Transform hand = PlayerController.I.HandRoot;
+        carried.SetParent(hand, false);
+        HandRig.I.SetReceiptView(receiptView.transform);
+        takeBag.active = false;
+        ready.Add(Number);
+        board.Show(ready, call);
         AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.5f));
         yield return Round.Open();
         PlayerController.I.Freeze(true);
-        yield return Ui.Say(null, "주문은... 어디다 하는 거지.", Me + "_whereorder");
+        yield return Ui.Say(Me, "주문은... 어디다 하는 거지.", Me + "_whereorder");
         if (!ordered) PlayerController.I.Freeze(false);
     }
 
@@ -89,7 +131,13 @@ public class R4StoreDirector : MonoBehaviour
             nextNotify = Random.Range(Bal.G("Store_PhoneNotifyMin", 24f), Bal.G("Store_PhoneNotifyMax", 40f));
             AudioManager.I.Play("phone_notify", staffPos.position, 0.22f);
         }
+
+        carryT = StoreFlow.Damp(carryT, carryWant, 4f, dt);
+        carried.localPosition = new Vector3(0.06f, -0.62f + carryT * 0.33f + Mathf.Sin(Time.time * 1.6f) * 0.004f, 0.5f);
+        carried.localRotation = Quaternion.Euler(-6.9f, 14.3f, 2.3f);
     }
+
+    int Number => Bal.I("R4_OrderNumber", 273);
 
     // ---- 알바생과 고장 난 기계 ----
 
@@ -105,13 +153,17 @@ public class R4StoreDirector : MonoBehaviour
         StartCoroutine(Talk(false));
     }
 
-    // 임시 T08: 4-7 휴대폰만 보고 같은 말을 한다
+    // 임시 T08: 4-7 휴대폰만 보고 말한다. 프로토타입 Talk의 세 문구를 돈다
     IEnumerator Talk(bool ask)
     {
         talking = true;
-        if (ask) yield return Ui.Say(null, "저기요...", Me + "_staff2");
+        talk++;
+        if (ask && talk == 1) yield return Ui.Say(Me, "저기요...", Me + "_staff2");
         AudioManager.I.Play("phone_notify", staffPos.position, 0.3f);
-        yield return Ui.Say(null, "주문은 키오스크에서 해주세요.", "staff_1", -1f, staffPos.position);
+        if (phase == Phase.Pickup || phase == Phase.Called) yield return Ui.Say("staff", "네?", "staff_2", -1f, staffPos.position);
+        else if (talk % 3 == 2) yield return Ui.Say("staff", "거기 화면 누르시면 돼요.", "staff_3", -1f, staffPos.position);
+        else if (talk % 3 == 0) yield return Ui.Say("staff", "네?", "staff_2", -1f, staffPos.position);
+        else yield return Ui.Say("staff", "주문은 키오스크에서 해주세요.", "staff_1", -1f, staffPos.position);
         talking = false;
     }
 
@@ -125,7 +177,7 @@ public class R4StoreDirector : MonoBehaviour
     {
         muttering = true;
         AudioManager.I.Play("kiosk_tap", brokenKiosk.transform.position, 0.5f);
-        yield return Ui.Say(null, "이게 왜 안 돼.", Me + "_why2");
+        yield return Ui.Say(Me, "이게 왜 안 돼.", Me + "_why2");
         muttering = false;
     }
 
@@ -140,9 +192,6 @@ public class R4StoreDirector : MonoBehaviour
 
     NunchiRule Rule() => new NunchiRule
     {
-        low = new[] { "아, 늦었는데." },
-        mid = new[] { "저기요, 빨리 좀 해요.", "왜 저렇게 오래 걸려." },
-        high = new[] { "뒤에 사람 기다려요.", "그거 아니에요." },   // 임시 T33
         onFull = OnFull,
         start = retries > 0 ? Bal.G("R4_RetryNunchi", 50f) : 0f,   // 임시: 초기화 값 미정, 절반
     };
@@ -150,6 +199,7 @@ public class R4StoreDirector : MonoBehaviour
     IEnumerator RunKiosk()
     {
         var player = PlayerController.I;
+        phase = Phase.Kiosk;
         orderKiosk.active = false;
         if (brokenKiosk) brokenKiosk.active = false;
         talkStaff.active = false;
@@ -174,7 +224,8 @@ public class R4StoreDirector : MonoBehaviour
             leave = Leave.None;
             retries++;
         }
-        yield return Sent();
+        yield return Helped();
+        StartCoroutine(Pickup());
     }
 
     // 임시: 대기 시간 미정. 비켜나 줄 맨 뒤로 가고, 앞사람이 카드로 금방 결제하고, 쟁반이 지나간 뒤 차례가 온다
@@ -216,38 +267,47 @@ public class R4StoreDirector : MonoBehaviour
         if (leave != Leave.None || pack.Done) return;
         leave = Leave.Back;
         pack.Stop();
-        kiosk.Finish();
+        kiosk.Finish(Bal.G("Nunchi_FullLeaveSec", 0.2f));
     }
 
-    // 4-10a. 입력 없음. 슬픈 얼굴은 보이지 않고 시선을 내리고 돌아선 뒤, 키오스크 앞을 비우면 뒷사람이 쓴다
-    IEnumerator Sent()
+    void OnHelping() => rival = Front();
+
+    // 입력 없음. 비켜서면 뒷사람이 와서 카드를 대고, 비켜 준 자리로 돌아와 지폐를 내밀며 인사한다
+    IEnumerator Helped()
     {
         var player = PlayerController.I;
-        rival = Front();
-        float sad = Bal.G("R4_SadPitch", -28f);
-        yield return player.TurnTo(player.Yaw, sad, Bal.G("R4_SadLookSec", 1.2f));
-        yield return player.TurnTo(player.Yaw + 180f, sad, Bal.G("R4_SadTurnSec", 1.6f));
-
-        Vector3 way = exitPos.position - stand.position;
-        way.y = 0f;
-        Vector3 aside = stand.position + way.normalized * (Bal.G("Queue_ClearDist", 1.1f) + Bal.G("R4_SentStepDist", 0.6f)) + Vector3.right * 0.8f;
+        float speed = Bal.F("MoveSpeed", 1.15f);
+        Vector3 right = Vector3.right * Bal.G("R4_HelpAsideX", 1.1f), back = Vector3.back * Bal.G("R4_HelpAsideZ", 0.6f);
+        Vector3 aside = stand.position + right + back;
         aside.y = player.transform.position.y;
-        yield return StoreFlow.Race(this, player.WalkTo(aside, Bal.F("MoveSpeed", 1.15f)), Bal.G("R4_RequeueWalkSec", 3f));
-        // 1회차와 같은 순서: 어르신이 돌아서 나가는 동안 뒷사람이 키오스크로 가서 카드로 결제한다
-        StartCoroutine(RivalPays());
-        yield return player.TurnTo(player.Yaw, 0f, Bal.G("R4_SadTurnSec", 1.6f));
+        yield return StoreFlow.Race(this, player.WalkTo(aside, speed), Bal.G("R4_HelpWalkSec", 2.5f));
+        yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
 
-        // 4-10b. 어르신은 그냥 돌아서 나간다
-        exitDoor.active = true;
+        float rivalSpeed = Bal.G("R4_RivalSpeed", 1.4f);
+        yield return StoreFlow.Race(this, rival.WalkTo(stand.position, rivalSpeed), Bal.G("R4_HelpWalkSec", 2.5f));
+        rival.Face(kioskLook.position);
+        rival.TryGetComponent(out NpcPose pose);
+        if (pose) pose.pose = "Tap";
+        yield return pack.HelpPay();
+        if (pose) pose.pose = "Idle";
+
+        // 뒷사람은 왼쪽으로 비켜 주고 플레이어가 키오스크 앞으로 돌아온다
+        Vector3 side = stand.position - right + back;
+        yield return StoreFlow.Race(this, rival.WalkTo(side, rivalSpeed), Bal.G("R4_HelpWalkSec", 2.5f));
+        rival.Face(stand.position);
+        Vector3 home = stand.position;
+        home.y = player.transform.position.y;
+        yield return StoreFlow.Race(this, player.WalkTo(home, speed), Bal.G("R4_HelpWalkSec", 2.5f));
+        yield return player.LookAt(rival.transform.position + Vector3.up * 1.5f, Bal.G("Cine_BlendSec", 1f));
+
+        HandRig.I.Equip(ItemId.Cash);
+        yield return Ui.Say(Me, "아이고, 고맙구먼.", Me + "_thanks");
+        HandRig.I.Equip(ItemId.None);
+        rival.React(true);
+        yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
+        pack.TearReceipt();
+        yield return new WaitForSeconds(Bal.G("R4_TearSec", 0.5f));
         player.Freeze(false);
-    }
-
-    IEnumerator RivalPays()
-    {
-        yield return Takeover();
-        yield return Tray(rival);
-        var served = rival;
-        served.Go(exitPos.position, Bal.G("R4_RivalSpeed", 1.4f), () => queue.Done(served));
     }
 
     // 지금 키오스크에 가장 가까운 줄 손님. 아직 아무도 안 왔으면 줄 맨 앞에 세운다
@@ -295,18 +355,104 @@ public class R4StoreDirector : MonoBehaviour
         tray.SetActive(false);
     }
 
-    void OnExit()
+    // ---- 호출과 수령. 프로토타입 Pickup, Take ----
+
+    IEnumerator Pickup()
     {
-        exitDoor.active = false;
-        StartCoroutine(Exit());
+        phase = Phase.Pickup;
+        talkStaff.active = true;
+        float cookSpeed = Bal.G("Queue_CookSpeed", 1.3f);
+        cook.Go(cookA.position, cookSpeed, () => cook.Go(cookB.position, cookSpeed, () => cook.Face(pickupPos.position)));
+        FillReceipt();
+        HandRig.I.GiveReceipt();
+        queue.ServeWhenClear();
+        yield return new WaitForSeconds(Bal.G("Pickup_ReadDelay", 2.2f));
+        yield return Ui.Say(Me, "글씨가 왜 이렇게 작아.", Me + "_read1");
+
+        foreach (int num in new[] { 269, 271, 272 })
+        {
+            yield return new WaitForSeconds(Random.Range(Bal.G("Pickup_CallMin", 8f), Bal.G("Pickup_CallMax", 10f)));
+            yield return CallOne(num);
+        }
+        yield return new WaitForSeconds(Random.Range(Bal.G("Pickup_LastMin", 7f), Bal.G("Pickup_LastMax", 9f)));
+
+        string cup = pack.Cider ? "사이다" : "콜라";
+        foreach (TMP_Text t in cupLabels) t.text = cup;
+        ready.Clear();
+        call = Number;
+        board.Show(ready, call);
+        shelf.SetActive(true);
+        shelfCup.SetActive(true);
+        phase = Phase.Called;
+        takeBag.active = true;
+        PutOnShelf();
+        AudioManager.I.Play("pager_call", pickupPos.position, 1f);
+        Ui.Say("crew", $"{{g:{Number}번}} 고객님.", $"staff_call_{Number}");
+        yield return new WaitForSeconds(3f);
+
+        bool scold = false;
+        while (phase == Phase.Called)
+        {
+            yield return new WaitForSeconds(Bal.G("Pickup_RecallSec", 13f));
+            if (phase != Phase.Called) break;
+            AudioManager.I.Play("pager_call", pickupPos.position, 0.8f);
+            if (scold) Ui.Say("crew", $"{{g:{Number}번}} 고객님, 메뉴 가져가세요.", $"staff_scold_{Number}");
+            else Ui.Say("crew", $"{{g:{Number}번}} 고객님.", $"staff_call_{Number}");
+            scold = !scold;
+        }
     }
 
-    IEnumerator Exit()
+    IEnumerator CallOne(int num)
     {
-        PlayerController.I.Freeze(true);
-        AudioManager.I.Play("door_chime", exitPos.position, 0.7f);
-        AudioManager.I.Play("door_glass_open", exitPos.position, 0.7f);
-        GameState.I.CompleteChapter();   // 임시 T11
-        yield break;
+        ready.Remove(num);
+        call = num;
+        board.Show(ready, call);
+        AudioManager.I.Play("pager_call", pickupPos.position, 0.8f);
+        Ui.Say("crew", $"{{g:{num}번}} 고객님.", $"staff_call_{num}", -1f, staffPos.position);
+        shelf.SetActive(true);
+        PutOnShelf();
+        yield return queue.WaiterPickup(() => shelf.SetActive(false));
+    }
+
+    // 받는 곳에 음식이 놓이는 소리
+    void PutOnShelf() => AudioManager.I.Play("tray_put", pickupPos.position, Bal.G("Pickup_TrayVolume", 0.6f));
+
+    void FillReceipt()
+    {
+        foreach (TMP_Text t in receiptNumber) t.text = Number.ToString();
+        foreach (TMP_Text t in receiptLines) t.text = pack.Lines;
+    }
+
+    void OnTake()
+    {
+        if (phase != Phase.Called) return;
+        StartCoroutine(Take());
+    }
+
+    // 받고 대사 뒤 문 쪽을 본 채 결과로 간다
+    IEnumerator Take()
+    {
+        var player = PlayerController.I;
+        phase = Phase.End;
+        takeBag.active = false;
+        talkStaff.active = false;
+        player.Freeze(true);
+        HandRig.I.TakeReceipt();
+        HandRig.I.SetEnabled(false);
+        Ui.Views(null);
+        Ui.ClearSubs();
+        AudioManager.I.Play("bag_rustle", null, 0.9f);
+        shelf.SetActive(false);
+        carried.gameObject.SetActive(true);
+        carryWant = 1f;
+        StartCoroutine(player.LookAt(exitLook.position, 1.1f));
+        yield return new WaitForSeconds(1f);
+        yield return Ui.Say(Me, "됐다... 됐어.", Me + "_done");
+        yield return new WaitForSeconds(0.5f);
+        if (!pack.Cider) yield return Ui.Say(null, "{r:콜라}", null, 1.6f);
+        yield return Ui.Say(Me, "이거 하나 사기가 이렇게 힘들어서야.", Me + "_end");
+        yield return new WaitForSeconds(0.7f);
+        yield return Ui.Fade(1f, 1.8f);
+        GameState.I.CompleteChapter();
     }
 }

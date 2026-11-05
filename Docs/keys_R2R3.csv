@@ -11,3 +11,5 @@ R2_DoorOpenSec,카페 자동문 열림 유지,Float,2.5,s,2-1
 R2_ServeTapSec,앞사람 키오스크 터치 간격,Float,0.4,s,눈치 실패 뒤 앞사람들이 금방 결제
 R2_NoteSoft,2회차 쪽지 번짐,Float,0,ratio,쪽지는 돋보기 없이 읽는다
 R2_ShotPrice,샷 추가 금액,Int,500,won,합계 표시
+R2_OrderWaitSec,주문 뒤 첫 호출까지,Float,15,sec,조리 소리와 다른 호출
+R2_QueueSpacing,카페 줄 간격,Float,1,m,낑기지 않음
