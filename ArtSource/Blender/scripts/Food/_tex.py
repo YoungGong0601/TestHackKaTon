@@ -172,7 +172,7 @@ def qr(n, px, seed=3):
 # ---------------------------------------------------------------- 컵 (원통 전개, u=0.5 가 정면)
 def cup(kind):
     W, H = 2400, 1440
-    band, name, en = (RED, "콜라", "COLA") if kind == "cola" else ("#2f7d4f", "사이다", "CIDER")
+    band = RED if kind == "cola" else "#2f7d4f"
     im = paper_noise(W, H, "#f4ead6", 6, seed=11).convert("RGBA")
     d = ImageDraw.Draw(im)
     y0, y1 = int(H * .20), int(H * .74)
@@ -181,10 +181,9 @@ def cup(kind):
     d.rectangle([0, y1 + 16, W, y1 + 26], fill=band)
     # 정면: 로고 (크림색 글씨)
     paste(im, logo(3.1, tc="#fbf1dc"), W * .5, (y0 + y1) / 2 - 4)
-    # 양옆: 음료 이름 (프로토타입 x0 처럼 두 번)
+    # 양옆: 작은 로고. 음료 이름은 넣지 않는다 (주문한 음료와 달라 보이면 어색하다)
     for cx in (W * .18, W * .82):
-        text(d, (cx, (y0 + y1) / 2 - 60), name, "black", 230, "#fffaf0")
-        text(d, (cx, (y0 + y1) / 2 + 120), en, "xbold", 74, "#fffaf0")
+        paste(im, logo(1.7, tc="#fbf1dc"), cx, (y0 + y1) / 2 - 4)
     # 뒤(이음매 근처) 작은 글씨
     text(d, (W * .04, H * .5), "", "reg", 20, "#000")
     small = ["재질: 종이(PE 코팅)  ·  용량 16oz(473ml)", "제조: (주)왕컵산업  ·  1회용 종이컵", "뜨거운 음료에 사용하지 마세요"]
@@ -200,17 +199,6 @@ def cup(kind):
     d.ellipse([cx - 44, cy - 44, cx + 44, cy + 44], outline=band, width=6)
     text(d, (cx, cy - 8), "종이컵", "xbold", 24, band)
     text(d, (cx, cy + 18), "분리배출", "med", 18, band)
-    # 주문 스티커 (정면 왼쪽 아래, 비스듬히)
-    st = Image.new("RGBA", (360, 170), (0, 0, 0, 0))
-    sd = ImageDraw.Draw(st)
-    sd.rounded_rectangle([4, 4, 356, 166], 14, fill=(252, 251, 246, 255), outline=(200, 196, 186, 255), width=2)
-    text(sd, (180, 40), "주문 274", "bold", 34, "#222")
-    text(sd, (180, 102), f"{name}(M)", "black", 62, "#111")
-    text(sd, (180, 148), "얼음 보통 · 11:42", "med", 22, "#444")
-    st = st.rotate(-4, expand=True, resample=Image.BICUBIC)
-    sh = tint(st, (0, 0, 0, 60)).filter(ImageFilter.GaussianBlur(5))
-    paste(im, sh, W * .5 + 4, H * .895 + 5)
-    paste(im, st, W * .5, H * .895)
     im.convert("RGB").save(os.path.join(OUT, f"cup_{kind}.png"))
 
 
