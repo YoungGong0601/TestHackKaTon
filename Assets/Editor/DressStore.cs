@@ -20,10 +20,14 @@ public static class DressStore
     {
         Art3DTools.Apply();   // 배치 모드에서는 새 FBX 의 재질이 자동으로 연결되지 않는다
         People();
+        foreach (var file in Directory.GetFiles(Npc, "*.controller")) SitPhone(file);
         Printed();
         foreach (var name in new[] { "R1_Store", "R4_Store" })
         {
             var s = Open(name);
+            var seat = Find(s, "NPCs/NPC_SeatOld").GetComponent<NpcPose>();
+            seat.pose = "SitPhone";
+            Keep(seat);
             // 할아버지 모습(5)은 어르신 장면과 겹쳐 손님에게 쓰지 않는다
             Wear(s, "NPCs/NPC_SeatOld", 13);
             Wear(s, "NPCs/NPC_Wait2", 12);
@@ -35,6 +39,8 @@ public static class DressStore
             poster.position = new Vector3(0.75f, 2.28f, poster.position.z);
             poster.localScale = Vector3.one * 0.9f;
             Keep(poster);
+            var street = Find(s, "Room/Env_Shared");
+            DressStreetEnds.Alleys(street, street);
             Save(s);
         }
         // 비워 두면 이름 해시로 고르고 인물 수에 따라 바뀐다. 손님이 어르신이나 직원이 되지 않게 전부 정한다
@@ -197,6 +203,24 @@ public static class DressStore
             if (c.Key == "Walk" && !rig62) state.speed = 0.8f;   // 31본 보폭이 게임 속도보다 빠르다
         }
         return controller;
+    }
+
+    // 31본에는 앉아서 폰 보는 동작이 없다. 앉은 몸에 폰 보는 팔과 고개를 얹는다. 62본은 FBX 에 있어 건너뛴다
+    static void SitPhone(string path)
+    {
+        var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+        var machine = controller.layers[0].stateMachine;
+        var motions = machine.states.ToDictionary(s => s.state.name, s => s.state.motion as AnimationClip);
+        if (motions.ContainsKey("SitPhone") || !motions.TryGetValue("SitIdle", out var sit)) return;
+        var clip = new AnimationClip { name = "SitPhone" };
+        foreach (var b in AnimationUtility.GetCurveBindings(sit))
+            AnimationUtility.SetEditorCurve(clip, b, AnimationUtility.GetEditorCurve(b.path.Contains("/Torso/") ? motions["Phone"] : sit, b));
+        var settings = AnimationUtility.GetAnimationClipSettings(clip);
+        settings.loopTime = true;
+        AnimationUtility.SetAnimationClipSettings(clip, settings);
+        AssetDatabase.AddObjectToAsset(clip, controller);
+        machine.AddState("SitPhone").motion = clip;
+        AssetDatabase.SaveAssets();
     }
 
     static void Phone(GameObject go, string asset)
