@@ -1,0 +1,49 @@
+{
+ "asset": "PH_CoffeeCups__Set",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_CoffeeCups__Set/T_PH_CoffeeCups__Set_BaseColor.jpg",
+    "Normal": "Textures/PH_CoffeeCups__Set/T_PH_CoffeeCups__Set_Normal.png",
+    "MS": "Textures/PH_CoffeeCups__Set/T_PH_CoffeeCups__Set_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_CoffeeCups__Set"
+  },
+  {
+   "baseColor": [
+    0.15,
+    0.17,
+    0.17,
+    0.12
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.94,
+   "transparent": true,
+   "name": "M_Glass_PH_CoffeeCups"
+  },
+  {
+   "baseColor": [
+    0.28,
+    0.31,
+    0.31,
+    0.14
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.94,
+   "transparent": true,
+   "name": "M_Glass_PH_CoffeeCups_Lid"
+  }
+ ],
+ "notes": "커피 2잔과 크라프트 캐리어. 앞 -Z, 원점 바닥 중앙. 왼쪽(-X) 아이스 아메리카노 샷 추가, 오른쪽(+X) 디지털 샥그라인 얼음 적게. 슬롯 0 은 구운 불투명(액체, 얼음, 빨대, 캐리어, 스티커), 슬롯 1 은 M_Glass_PH_CoffeeCups(컵 몸통), 슬롯 2 는 M_Glass_PH_CoffeeCups_Lid(뚜껑, 컵 입구 띠)."
+}

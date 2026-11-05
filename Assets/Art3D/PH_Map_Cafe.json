@@ -8,6 +8,7 @@
  {"prefab": "PH_BarCounter", "target": "Visual", "model": "Models/PH/PH_BarCounter__Body.fbx"},
  {"prefab": "PH_CafeFront", "target": "Visual", "model": "Models/PH/PH_CafeFront__Body.fbx"},
  {"prefab": "PH_CafeTable", "target": "Visual", "model": "Models/PH/PH_CafeTable__Body.fbx"},
+ {"prefab": "PH_CoffeeCups", "target": "Visual", "model": "Models/PH/PH_CoffeeCups__Set.fbx"},
  {"prefab": "PH_StreetTree", "target": "Visual", "model": "Models/PH/PH_StreetTree__Body.fbx"},
  {"prefab": "PH_OfficeBlock", "target": "Visual", "model": "Models/PH/PH_OfficeBlock__Body.fbx"}
 ]}
