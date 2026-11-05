@@ -3,9 +3,6 @@ R4_BigTextScale,큰 글씨 배율,Float,1.6,x,T21 결제 버튼이 밀려남
 R4_Bus1ArriveSec,첫 버스 도착,Float,8,s,T25
 R4_NextBusSec,다음 버스 간격,Float,6,s,T26
 R4_DriverRepeatSec,기사 반복 간격,Float,6,s,N8
-R4_WatchHour1,첫 손목시계 바늘,Int,2,h,시트 값
-R4_WatchHour2,둘째 손목시계 바늘,Int,4,h,시트 값
-R4_WatchHour3,셋째 손목시계 바늘,Int,6,h,시트 값
 R4_CardOnlyBlinkSec,카드 전용 깜빡임,Float,1.2,s,튕김이 버그로 안 보이게
 R4_GazeTurn,시선 고개 회전,Float,5,1/s,4-10b
 R4_GazeBodyTurn,시선 몸 회전,Float,1.2,1/s,4-10b
@@ -34,7 +31,6 @@ R4_LookAroundSec,4-10b 둘러보는 시간,Float,3,sec,임시 타이밍 미정
 R4_IntroHandSec,4회차 시작 두 손만 보이는 시간,Float,2.5,sec,노인 손 인지
 R4_IntroLiftSec,시선이 올라오며 배경이 걷히는 시간,Float,2.5,sec,연출
 R4_IntroPitch,시작 시선 각도,Float,-38,deg,손을 내려다봄
-R4_IntroWatchHour,시작 때 왼손 시계 바늘,Int,10,hour,낮
 R4_IntroFogStart,시작 때 검은 안개 시작,Float,0.7,m,손 뒤만 가림
 R4_IntroFogEnd,시작 때 검은 안개 끝,Float,1,m,손 뒤만 가림
 Door_SeatLookSec,문 소리에 손님이 돌아보는 시간,Float,2.6,sec,연출
@@ -52,3 +48,13 @@ R4_SkyExposureEnd,정류장 마지막 하늘 밝기,Float,0.75,배,어둡게 내
 R4_NoticeLookSec,버스 안 안내문을 보는 시간,Float,2,sec,입력 없음
 R4_BoardCutDist,자동 승차 때 암전으로 옮기는 거리,Float,5,m,
 R4_SentStepDist,돌아선 뒤 키오스크 앞을 벗어나는 추가 거리,Float,0.6,m,뒷사람이 쓸 자리를 비움
+R4_HomeBlackSec,장면 C 시작 암전,Float,3,sec,앞 장면과 분리
+R4_NoteReadDelaySec,쪽지를 든 뒤 읽는 말까지,Float,0.6,sec,연출
+R4_OrderNumber,4회차 주문 번호,Int,273,,1회차 어르신 번호
+R4_HelpPaySteps,뒷사람 결제 막대 단계,Int,3,,느낌만
+R4_HelpPayStepSec,뒷사람 결제 단계 시간,Float,0.4,sec,느낌만
+R4_HelpAsideX,비켜서는 옆 거리,Float,1.1,m,뒷사람 결제
+R4_HelpAsideZ,비켜서는 뒤 거리,Float,0.6,m,뒷사람 결제
+R4_HelpWalkSec,비켜서고 돌아오는 최대 시간,Float,2.5,sec,뒷사람 결제
+R4_TearSec,영수증 뜯은 뒤 잠깐,Float,0.5,sec,연출
+R4_GrandsonWalkDelaySec,골목 혼잣말까지,Float,3,sec,R4_Stop 시작 뒤

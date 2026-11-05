@@ -56,6 +56,6 @@ public static class KioskPick
 
     static void Apply(Scene scene)
     {
-        if (scene.name.StartsWith("R1_")) Note.Set(NoteText);
+        if (scene.name == "R1_Storefront" || scene.name == "R1_Store") Note.Set(NoteText);   // R1_Home은 80대 챕터다
     }
 }

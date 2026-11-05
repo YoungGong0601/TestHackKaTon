@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,9 @@ public class RoundUi : MonoBehaviour
     [SerializeField] TMP_Text endSource;
     [SerializeField] TMP_Text endTitle;
     [SerializeField] GameObject endStatImage, endTitleImage;   // 서울알림체 글자 그림. TMP는 투명으로 남아 문구 기록만 맡는다
+    [SerializeField] UnityEngine.UI.Image endNumber;    // 배치: End/Stat_Image/Number (Filled 세로)
+    [SerializeField] CanvasGroup endCopy;               // 배치: End/Stat_Image/Stat
+    [SerializeField] CanvasGroup endFoot;               // 배치: End/Stat_Image/Source, End/Restart를 묶은 EndFoot
 
     public int ChoiceSlots => choiceRows.Length;
     public bool ChoiceOpen { get; private set; }
@@ -113,12 +117,32 @@ public class RoundUi : MonoBehaviour
         if (endSource != null) endSource.text = source;
     }
 
+    /// <summary>화면이 서서히 밝아지고 숫자가 아래에서 차오른 뒤 카피와 출처가 나온다.</summary>
+    public IEnumerator EndReveal()
+    {
+        float fade = Bal.G("End_FadeSec", 1f), fill = Bal.G("End_FillSec", 1.2f), copy = Bal.G("End_CopySec", 0.6f);
+        if (endNumber) endNumber.fillAmount = 0f;
+        if (endCopy) endCopy.alpha = 0f;
+        if (endFoot) endFoot.alpha = 0f;
+        yield return Run(fade, k => endGroup.alpha = k);
+        yield return Run(fill, k => { if (endNumber) endNumber.fillAmount = k; });
+        yield return Run(copy, k => { if (endCopy) endCopy.alpha = k; if (endFoot) endFoot.alpha = k; });
+    }
+
+    static IEnumerator Run(float sec, System.Action<float> set)
+    {
+        for (float t = 0f; t < sec; t += Time.unscaledDeltaTime)
+        {
+            float k = t / sec;
+            set(k * k * (3f - 2f * k));
+            yield return null;
+        }
+        set(1f);
+    }
+
     public void EndTitle(string title)
     {
-        if (endStatImage != null) endStatImage.SetActive(false);
         if (endTitleImage != null) endTitleImage.SetActive(true);
-        if (endStat != null) endStat.text = "";
-        if (endSource != null) endSource.text = "";
         if (endTitle != null) endTitle.text = title;
     }
 

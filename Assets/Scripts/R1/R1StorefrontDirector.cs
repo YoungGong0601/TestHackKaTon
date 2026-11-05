@@ -1,8 +1,8 @@
-// 1-4 버거집 앞. 당기기 하나만 활성, 한 번에 열린다(T20). 4회차와 같은 문, 같은 스티커.
+// 게임의 첫 장면, 버거집 앞. 쪽지를 잠깐 펴고 당기기 하나만 활성, 한 번에 열린다(T20). 4회차와 같은 문, 같은 스티커.
 // 배치: doorHandle = Anchor_DoorHandle, doorPivot = PH_Door_Glass 안 DoorPivot, doorBlock = Door_Block
 // 배치: pullStand, insideLook, insidePoint = 기존 앵커
+// 배치: introStart, introBend, introEnd = Anchor_IntroStart, Anchor_IntroBend, Anchor_IntroEnd (시작 걷기 곡선), signLook = PH_Storefront 안 Anchor_SignLook
 // 배치: pullDoor = Interact_DoorPull (label 당기기, key E), pushDoor = Interact_DoorPush (이 씬에서는 쓰지 않음)
-// 배치: bus = PH_Bus 떠나는 버스, 없어도 동작
 using System.Collections;
 using UnityEngine;
 
@@ -14,12 +14,15 @@ public class R1StorefrontDirector : MonoBehaviour
     [SerializeField] Transform pullStand;
     [SerializeField] Transform insideLook;
     [SerializeField] Transform insidePoint;
+    [SerializeField] Transform introStart;
+    [SerializeField] Transform introBend;
+    [SerializeField] Transform introEnd;
+    [SerializeField] Transform signLook;
     [SerializeField] Interactable pullDoor;
     [SerializeField] Interactable pushDoor;
-    [SerializeField] Transform bus;
 
-    bool leaving, busGo;
-    float busV = 0.5f, doorA, doorWant;
+    bool leaving;
+    float doorA, doorWant;
     Quaternion doorBase;
 
     void Awake()
@@ -35,12 +38,32 @@ public class R1StorefrontDirector : MonoBehaviour
     IEnumerator Start()
     {
         AudioManager.I.Ambience(("amb_city_morning", 0.5f));
-        if (bus)
+        var player = PlayerController.I;
+        if (!introStart || !introBend || !introEnd || !signLook)
         {
-            AudioManager.I.Play("bus_leave", bus.position + Vector3.up, 0.7f);
-            busGo = true;
+            yield return Round.Open();
+            Note.Peek();
+            yield break;
         }
+        Vector3 way = introBend.position - introStart.position;
+        player.Teleport(introStart.position, Mathf.Atan2(way.x, way.z) * Mathf.Rad2Deg);
         yield return Round.Open();
+        player.Freeze(true);
+        // 걷는 도중에 시선이 간판으로 옮겨 가고, 이어서 문으로 간다. 서서 기다리는 구간을 두지 않는다
+        float walkSec = Bal.G("R1_IntroWalkSec", 3f), turnSec = Bal.G("R1_IntroTurnSec", 1.1f);
+        Coroutine walking = StartCoroutine(player.WalkCurve(introEnd.position, introBend.position, walkSec));
+        yield return new WaitForSeconds(walkSec * Bal.G("R1_IntroLookAt", 0.4f));
+        yield return player.LookArc(signLook.position, turnSec);
+        yield return new WaitForSeconds(Bal.G("R1_IntroSignSec", 0.9f));
+        yield return player.LookArc(doorHandle.position, turnSec);
+        yield return walking;
+        yield return new WaitForSeconds(Bal.G("R1_IntroDoorSec", 0.3f));
+        yield return new WaitForSeconds(Bal.G("R1_IntroNoteDelay", 0.2f));
+        HandRig.I.paperRate = Bal.G("R1_IntroNoteRate", 2.5f);
+        Note.Peek();
+        yield return new WaitForSeconds(Bal.G("R1_IntroNoteRiseSec", 1.2f));
+        HandRig.I.paperRate = 9f;
+        player.Freeze(false);
     }
 
     void OnPull()
@@ -57,16 +80,16 @@ public class R1StorefrontDirector : MonoBehaviour
         Vector3 handle = doorHandle.position;
         player.Freeze(true);
         HandRig.I.Equip(ItemId.None);
+        StartCoroutine(player.LookArc(handle, Bal.G("Door_LookSec", 0.5f)));
         AudioManager.I.Play("door_handle", handle, 0.8f);
         Coroutine step = StartCoroutine(player.WalkTo(pullStand.position, Bal.F("MoveSpeed", 2.2f)));
         yield return new WaitForSeconds(0.25f);
-        AudioManager.I.Play("door_glass_open", handle, 0.8f);
         AudioManager.I.Play("door_chime", handle, 0.75f);
         doorWant = Bal.G("Door_OpenAngle", 1.45f);
         yield return new WaitForSeconds(0.55f);
         StopCoroutine(step);
         doorBlock.enabled = false;
-        yield return StoreFlow.Race(this, player.LookAt(insideLook.position, 0.4f), 0.45f);
+        StartCoroutine(player.LookArc(insideLook.position, Bal.G("Door_LookInSec", 0.9f)));
         yield return StoreFlow.Race(this, player.WalkTo(insidePoint.position, Bal.F("MoveSpeed", 2.2f)), 1.6f);
         GameState.I.CompleteChapter();
     }
@@ -74,16 +97,6 @@ public class R1StorefrontDirector : MonoBehaviour
     void Update()
     {
         float dt = Time.deltaTime;
-        if (busGo)
-        {
-            busV = Mathf.Min(Bal.G("Bus_LeaveMaxSpeed", 9f), busV + dt * Bal.G("Bus_LeaveAccel", 1.7f));
-            bus.position += bus.right * (busV * dt);   // PH_Bus의 앞은 로컬 +X
-            if (Mathf.Abs(bus.position.x) > 125f)   // 안개 끝(플레이어에서 110m) 너머, 도로는 140까지 있다
-            {
-                bus.gameObject.SetActive(false);
-                busGo = false;
-            }
-        }
         doorA = StoreFlow.Damp(doorA, doorWant, 5f, dt);
         doorPivot.localRotation = doorBase * Quaternion.Euler(0f, doorA * Mathf.Rad2Deg, 0f);
     }

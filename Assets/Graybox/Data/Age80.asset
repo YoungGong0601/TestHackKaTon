@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Age80
   m_EditorClassIdentifier: KioskGame::CharacterProfile
   id: age80
-  displayName: 
+  displayName: "\uB098"
   keyPrefix: Age80_
   speakerKey: gp
   handLook: 3

@@ -10,14 +10,18 @@ public class GameState : MonoBehaviour
 {
     public static GameState I { get; private set; }
 
+    // 에디터에서 열어 두는 씬. 80대 챕터로도 쓰여서, 여기서 플레이를 시작하면 챕터 대신 0번 챕터로 보낸다
+    const string BootScene = "R1_Home";
+
     public ChapterFlow flow;
     public int chapterIndex;
 
     public CharacterProfile Profile { get; private set; }
     public OrderData Order { get; private set; } = new();
     public RunStats Stats { get; private set; } = new();
-    /// <summary>1회차 어르신에게 고른 말. 재도전과 처음 복귀에도 유지, 건너뛰면 0.</summary>
-    public int CashLine { get; set; }
+
+    /// <summary>BootScene으로 시작해 0번 챕터 씬을 불러오는 중. 이 동안 BootScene의 Director는 연출을 시작하지 않는다.</summary>
+    public bool Booting { get; private set; }
 
     bool loading;
     Coroutine finish;
@@ -36,20 +40,28 @@ public class GameState : MonoBehaviour
             return;
         }
         I = this;
+        string startScene = root.scene.name;   // 씬을 비동기로 불러올 때는 활성 씬이 아직 앞 씬일 수 있다
         DontDestroyOnLoad(root);
+        QualitySettings.realtimeReflectionProbes = true;   // 씬의 반사 프로브가 시작 때 한 번 찍는다. 공용 설정은 꺼져 있다
 
-        // 어느 씬에서 시작해도 그 씬의 챕터로 맞춘다
-        int i = flow != null ? flow.chapters.FindIndex(c => c.sceneName == SceneManager.GetActiveScene().name) : -1;
-        if (i < 0) Debug.LogWarning($"ChapterFlow에 씬 {SceneManager.GetActiveScene().name} 없음, 0번 챕터로 시작");
-        chapterIndex = Mathf.Max(i, 0);
+        // 어느 씬에서 시작해도 그 씬의 챕터로 맞춘다. 단 BootScene은 처음부터. 이 Awake는 게임을 켤 때만 돌고, 진행 중 80대 도착은 아래 OnSceneLoaded가 받는다
+        int i = flow != null ? flow.chapters.FindIndex(c => c.sceneName == startScene) : -1;
+        if (i < 0) Debug.LogWarning($"ChapterFlow에 씬 {startScene} 없음, 0번 챕터로 시작");
+        Booting = i > 0 && startScene == BootScene;
+        chapterIndex = Booting ? 0 : Mathf.Max(i, 0);
         Profile = Current?.profile;
     }
 
     void Start()
     {
         Stats.startTime = Time.time;
-        EnterChapter();
         SceneManager.sceneLoaded += OnSceneLoaded;
+        if (Booting)
+        {
+            if (Hud.I != null) Hud.I.Fade(1f, 0f);
+            SceneManager.LoadScene(Current.sceneName, LoadSceneMode.Single);   // 제목은 도착한 뒤 EnterChapter가 띄운다
+        }
+        else EnterChapter();
     }
 
     void OnDestroy()
@@ -62,6 +74,7 @@ public class GameState : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (mode != LoadSceneMode.Single) return;
+        Booting = false;
         if (Current == null || Current.sceneName != scene.name)
         {
             int i = flow != null ? flow.chapters.FindIndex(c => c.sceneName == scene.name) : -1;

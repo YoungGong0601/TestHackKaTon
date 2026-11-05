@@ -59,7 +59,7 @@ public class NpcPose : MonoBehaviour
         string want = walking ? "Walk" : pose;
         if (want == now) return;
         if (now == null) anim.Play(want, 0, Random.value);   // 같은 자세 손님이 같이 움직이지 않게
-        else anim.CrossFadeInFixedTime(want, 0.25f);
+        else anim.CrossFadeInFixedTime(want, Bal.G("Npc_BlendSec", 0.25f));
         now = want;
     }
 }

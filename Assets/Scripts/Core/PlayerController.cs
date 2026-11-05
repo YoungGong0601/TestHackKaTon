@@ -33,11 +33,13 @@ public class PlayerController : MonoBehaviour
     public float Walk01 => Mathf.Clamp01(moving / 1.15f);
     public Vector2 Cursor01 => cursor01;        // 뷰포트 좌표, 왼쪽 아래가 (0,0)
 
-    class Turn { public float t, sec, y0, y1, p0, p1; }
-    class Walk { public Vector3 target; public float speed, stuck; }
+    class Turn { public float t, sec, y0, y1, p0, p1, back, arc; }
+    class Walk { public Vector3 target; public float speed, stuck; public Vector3 from, bend; public float sec, t; }
 
     Turn turn;
     Walk walk;
+    Vector3? gaze;
+    float idle;
     Vector2 cursor01 = new(0.5f, 0.5f), cursorWant = new(0.5f, 0.5f);
     float groundY, moving, stepAcc, bob, shake;
     int stepsTaken;
@@ -67,7 +69,31 @@ public class PlayerController : MonoBehaviour
         if (Hud.I != null) Hud.I.Cross(m == Mode.Fps);
     }
 
-    public void Freeze(bool on) => Frozen = on;
+    public void Freeze(bool on)
+    {
+        Frozen = on;
+        if (on) return;
+        gaze = null;
+        idle = 0f;
+    }
+
+    /// <summary>조작이 잠긴 동안 시선을 천천히 옮겨 줄 곳. 말하는 사람이나 관심 대상.</summary>
+    public void Gaze(Vector3 world)
+    {
+        if (Frozen) gaze = world;
+    }
+
+    // 잠겨 있는 동안 정해진 곳으로 시선이 천천히 간다. 정해진 곳이 없으면 잠시 뒤 가까운 목표로
+    void Follow(float dt)
+    {
+        idle += dt;
+        if (gaze == null && idle > Bal.G("Look_IdleSec", 2f)) gaze = Interactable.Nearest(EyePos, Bal.G("Look_IdleDist", 6f));
+        if (gaze == null) return;
+        Vector3 d = gaze.Value - EyePos;
+        float k = 1f - Mathf.Exp(-dt * 3f / Mathf.Max(Bal.G("Look_FollowSec", 0.6f), 0.01f));
+        Yaw += Mathf.DeltaAngle(Yaw, Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg) * k;
+        Pitch = Mathf.Lerp(Pitch, Mathf.Atan2(d.y, new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg, k);
+    }
 
     /// <summary>순간이동 직전에 부른다. 지금 보이는 시점에서 Cine_BlendSec 동안 새 시점으로 옮겨 간다. 암전 컷에는 쓰지 않는다.</summary>
     public void BlendCamera()
@@ -110,6 +136,7 @@ public class PlayerController : MonoBehaviour
     {
         turn = null;
         walk = null;
+        gaze = null;
         moving = 0f;
         groundY = pos.y;
         Yaw = yaw;
@@ -122,6 +149,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator LookAt(Vector3 world, float sec = 1f)
     {
+        Gaze(world);
         Vector3 d = world - EyePos;
         float yaw = Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg;
         float pitch = Mathf.Atan2(d.y, new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg;
@@ -141,6 +169,29 @@ public class PlayerController : MonoBehaviour
         var w = new Walk { target = world, speed = speed > 0f ? speed : MoveSpeed };
         walk = w;
         while (walk == w) yield return null;
+    }
+
+    // 자동 연출 공통. sec 동안 서서히 출발해 서서히 멈춘다. bend 쪽으로 살짝 휘어 간다
+    public IEnumerator WalkCurve(Vector3 world, Vector3 bend, float sec)
+    {
+        var w = new Walk { target = world, from = transform.position, bend = bend, sec = Mathf.Max(sec, 0.01f) };
+        walk = w;
+        while (walk == w) yield return null;
+    }
+
+    // 자동 연출 공통. 시선이 호를 그리며 가서 살짝 지나쳤다가 되돌아온다
+    public IEnumerator LookArc(Vector3 world, float sec)
+    {
+        Gaze(world);
+        Vector3 d = world - EyePos;
+        float yaw = Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg;
+        var w = new Turn
+        {
+            sec = sec, y0 = Yaw, y1 = Yaw + Mathf.DeltaAngle(Yaw, yaw), p0 = Pitch, p1 = Mathf.Atan2(d.y, new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg,
+            back = Bal.G("Cam_LookBack", 1.2f), arc = Bal.G("Cam_LookArcDeg", 2f),
+        };
+        turn = w;
+        while (turn == w) yield return null;
     }
 
     void Update()
@@ -174,10 +225,16 @@ public class PlayerController : MonoBehaviour
             var w = turn;
             w.t = Mathf.Min(1f, w.t + dt / Mathf.Max(w.sec, 1e-3f));
             float e = w.t * w.t * (3f - 2f * w.t);
-            Yaw = Mathf.Lerp(w.y0, w.y1, e);
-            Pitch = Mathf.Lerp(w.p0, w.p1, e);
+            if (w.back > 0f)
+            {
+                float u = e - 1f;
+                e = 1f + (w.back + 1f) * u * u * u + w.back * u * u;   // 지나쳤다가 되돌아온다
+            }
+            Yaw = Mathf.LerpUnclamped(w.y0, w.y1, e);
+            Pitch = Mathf.LerpUnclamped(w.p0, w.p1, e) + Mathf.Sin(w.t * Mathf.PI) * w.arc;
             if (w.t >= 1f) turn = null;
         }
+        else if (CurrentMode == Mode.Fps && Frozen && walk == null) Follow(dt);
         else if (CurrentMode == Mode.Fps && !Frozen && mouse != null)
         {
             Vector2 d = mouse.delta.ReadValue();
@@ -198,7 +255,17 @@ public class PlayerController : MonoBehaviour
         float speed = MoveSpeed;
         Vector3 dir = Vector3.zero;
         float want = 0f;
-        if (walk != null)
+        if (walk != null && walk.sec > 0f)
+        {
+            walk.t = Mathf.Min(1f, walk.t + dt / walk.sec);
+            float e = walk.t * walk.t * (3f - 2f * walk.t);
+            Vector3 d = Vector3.Lerp(Vector3.Lerp(walk.from, walk.bend, e), Vector3.Lerp(walk.bend, walk.target, e), e) - transform.position;
+            d.y = 0f;
+            float dist = d.magnitude;
+            if (dist > 0.0001f) { dir = d / dist; want = dist / Mathf.Max(dt, 0.001f); }
+            if (walk.t >= 1f) walk = null;
+        }
+        else if (walk != null)
         {
             Vector3 d = walk.target - transform.position;
             d.y = 0f;
@@ -258,7 +325,7 @@ public class PlayerController : MonoBehaviour
 
         // 왼다리가 불편한 걸음: 위아래가 좌우 비대칭
         float h = Mathf.Lerp(Bal.Age("BobHeight", 0.018f, 0.026f, 0.034f, 0.042f), CanRun ? Bal.F("RunBobHeight", 0.06f) : 0f, Run01);
-        float by = (Mathf.Abs(s) * h - h * 0.476f) * amp + Mathf.Sin(t * 1.3f) * 0.0035f;
+        float by = (Mathf.Abs(s) * h - h * 0.476f) * amp + Mathf.Sin(t * 1.3f) * (0.0035f + (Frozen ? Bal.G("Cam_BreathAmp", 0.005f) : 0f));
         float roll = c * Bal.F("LimpRoll", 0.016f) * amp * limp + Mathf.Sin(t * 0.7f) * 0.0022f;
         float sway = c * Bal.F("LimpSway", 0.018f) * amp * limp;
 
@@ -268,8 +335,9 @@ public class PlayerController : MonoBehaviour
             sway + Random.Range(-1f, 1f) * sh * 0.012f,
             EyeHeight + by + Random.Range(-1f, 1f) * sh * 0.012f,
             0f);
-        float pitch = Pitch + (Random.Range(-1f, 1f) * sh * 0.006f + Mathf.Sin(t * 0.9f) * 0.0016f) * Mathf.Rad2Deg;
-        eye.transform.localRotation = Quaternion.Euler(-pitch, 0f, roll * Mathf.Rad2Deg);
+        float calm = Frozen ? Bal.G("Look_BreathDeg", 0.3f) : 0f;   // 잠겨 있어도 시선이 굳지 않게 숨 쉬듯 흔든다
+        float pitch = Pitch + (Random.Range(-1f, 1f) * sh * 0.006f + Mathf.Sin(t * 0.9f) * 0.0016f) * Mathf.Rad2Deg + Mathf.Sin(t * 1.1f) * calm;
+        eye.transform.localRotation = Quaternion.Euler(-pitch, Mathf.Sin(t * 0.73f) * calm * 0.7f, roll * Mathf.Rad2Deg);
 
         if (blendT < 0f) return;
         if (blendFovTo < 0f) blendFovTo = eye.fieldOfView;

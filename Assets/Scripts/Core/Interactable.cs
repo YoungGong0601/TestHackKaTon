@@ -23,6 +23,20 @@ public class Interactable : MonoBehaviour
     void OnEnable() => all.Add(this);
     void OnDisable() => all.Remove(this);
 
+    /// <summary>켜진 것 중 가장 가까운 자리. 시선을 줄 곳이 없을 때 쓴다.</summary>
+    public static Vector3? Nearest(Vector3 from, float within)
+    {
+        Vector3? best = null;
+        float dist = within * within;
+        foreach (var it in all)
+        {
+            if (!it.active) continue;
+            float d = (it.transform.position - from).sqrMagnitude;
+            if (d < dist) { dist = d; best = it.transform.position; }
+        }
+        return best;
+    }
+
     // PlayerController가 FPS 모드에서 매 프레임 부른다
     public static void Tick(Vector3 eye, Vector3 forward)
     {

@@ -12,7 +12,7 @@ public class StreetNpc : MonoBehaviour
     [SerializeField] Transform head;
 
     Quaternion headRest;
-    float nod, glance, stepAcc;
+    float nod, glance, stepAcc, pace;
     Transform bone;
 
     public Vector3 HeadPos => head.position;
@@ -53,12 +53,17 @@ public class StreetNpc : MonoBehaviour
     public IEnumerator WalkTo(Vector3 world, float speed)
     {
         world.y = transform.position.y;
-        Face(world);
         Walking = true;
+        float blend = Mathf.Max(Bal.G("Npc_BlendSec", 0.25f), 0.01f);
         while (transform.position != world)
         {
-            transform.position = Vector3.MoveTowards(transform.position, world, speed * Time.deltaTime);
-            AudioManager.I.Footstep(transform.position, speed * Time.deltaTime, ref stepAcc);
+            float dt = Time.deltaTime;
+            Vector3 d = world - transform.position;
+            // 출발은 서서히, 도착 앞에서는 줄이고, 방향은 돌면서 맞춘다
+            pace = Mathf.MoveTowards(pace, Mathf.Min(speed, Mathf.Max(0.2f, d.magnitude / blend)), speed / blend * dt);
+            if (d.sqrMagnitude > 0.0001f) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(d), 1f - Mathf.Exp(-8f * dt));
+            transform.position = Vector3.MoveTowards(transform.position, world, pace * dt);
+            AudioManager.I.Footstep(transform.position, pace * dt, ref stepAcc);
             yield return null;
         }
         Walking = false;

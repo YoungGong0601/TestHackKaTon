@@ -104,6 +104,8 @@ public class KioskController : MonoBehaviour
         if (!nunchi) return;
         nunchi.CanBlow = () => !Busy && Pack.CanGiveUp;
         if (queue) nunchi.QueueCount = () => queue.Count;
+        nunchi.ScreenId = () => Screen;
+        if (pay) pay.CashRejected += _ => nunchi.Miss();
     }
 
     // 시연자 키로 빠져나가면 ReleaseControl이 안 불린다. 카메라 화각을 돌려놓는다
@@ -112,8 +114,22 @@ public class KioskController : MonoBehaviour
         if (Active && Pc) view.Restore(Eye);
     }
 
+    // 틈을 맞추려면 커서가 아래로 가기 쉽다. 판정만 아래로 넓힌다. 위와 좌우는 그대로이고, 틈끼리의 세로 간격보다 작아야 한다
+    void WidenSlots()
+    {
+        float below = Bal.G("Kiosk_SlotHitBelow", 0.035f);
+        foreach (var box in GetComponentsInChildren<BoxCollider>(true))
+        {
+            if (!box.name.StartsWith("Slot_")) continue;
+            float local = below / Mathf.Max(box.transform.lossyScale.y, 0.0001f);
+            box.size += Vector3.up * local;
+            box.center -= Vector3.up * (local * 0.5f);
+        }
+    }
+
     void Start()
     {
+        WidenSlots();
         screens.SetTimer(0, false);
         screens.SetToast(null);
         packScreens.Show(Pack.FirstScreen);
@@ -167,16 +183,17 @@ public class KioskController : MonoBehaviour
         lens.Apply(0);
     }
 
-    public void Finish()
+    // delay를 안 주면 결제 끝난 뒤의 Kiosk_FinishDelay
+    public void Finish(float delay = -1f)
     {
         if (!Active) return;
         Busy = true;
-        StartCoroutine(FinishRun());
+        StartCoroutine(FinishRun(delay >= 0f ? delay : Bal.G("Kiosk_FinishDelay", 0.9f)));
     }
 
-    IEnumerator FinishRun()
+    IEnumerator FinishRun(float delay)
     {
-        yield return new WaitForSeconds(Bal.G("Kiosk_FinishDelay", 0.9f));
+        yield return new WaitForSeconds(delay);
         Pc.BlendCamera();
         ReleaseControl();
         if (nunchi) nunchi.End();
@@ -362,7 +379,11 @@ public class KioskController : MonoBehaviour
 
     // ---- 흐름이 부르는 것 ----
 
-    public void Sfx(string key, float vol, float rate = 1f) => AudioManager.I.Play(key, null, vol, rate);
+    public void Sfx(string key, float vol, float rate = 1f)
+    {
+        AudioManager.I.Play(key, null, vol, rate, true);   // 내 손이 낸 소리는 먹먹함을 받지 않는다
+        if (nunchi && (key == "kiosk_error" || key == "card_slide_wrong")) nunchi.Miss();
+    }
 
     public Coroutine Say(string who, string text, string vo = null, Vector3? pos = null)
     {
@@ -371,7 +392,12 @@ public class KioskController : MonoBehaviour
         return Hud.I.Say(who, text, vo);
     }
 
-    public void Mutter() { if (nunchi && nunchi.Running) nunchi.Mutter(); }
+    public void Mutter()
+    {
+        if (!nunchi || !nunchi.Running) return;
+        nunchi.Miss();
+        nunchi.Mutter();
+    }
 
     // ---- 다음 손님 ----
 

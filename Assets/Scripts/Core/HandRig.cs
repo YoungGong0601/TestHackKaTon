@@ -13,9 +13,9 @@ using UnityEngine.InputSystem;
 // 배치: pointerTip = Hand_Pointer 자식 Tip (손끝 위치)
 // 배치: wallet = HandRoot 자식 Hand_Wallet (펼친 지갑, 자식에 카드, 지폐, 쪽지. 왼손 자리)
 // 배치: bill = HandRoot 자식 Hand_Bill (지폐 한 장, Hand_Card와 같은 축)
-// 배치: watch = HandRoot 자식 Hand_Watch (왼 손목과 시계판), watchHour = 그 자식 HourHand (시계판 중심, +Y가 12시)
 // 배치: paper = HandRoot 자식 Hand_Note (손에 든 쪽지, 왼손 자리), paperKinds = 그 자식 종이들(0 구겨진 쪽지, 1 포스트잇), paperTexts = 각 종이의 글자. 내용은 Note가 넣는다
 // 배치: cane = HandRoot 자식 Hand_Cane (원점이 손잡이, 자식에 PH_Cane). 다리를 저는 인물만 든다
+// 배치: briefcase = HandRoot 자식 Hand_Briefcase (원점이 손잡이, 모델은 자식 Visual에 넣는다). 프로필 briefcase 인물만 든다
 // 배치: skins = 손 단계별 묶음(look은 프로필 handLook, parts는 소매와 반지까지 그 단계에서 켤 오브젝트)
 [Serializable]
 public class HandSkin
@@ -35,19 +35,22 @@ public class HandRig : MonoBehaviour
     [SerializeField] Transform pointerTip;
     [SerializeField] Transform wallet;
     [SerializeField] Transform bill;
-    [SerializeField] Transform watch;
-    [SerializeField] Transform watchHour;
     [SerializeField] Transform paper;
     [SerializeField] GameObject[] paperKinds = new GameObject[0];
     [SerializeField] TMP_Text[] paperTexts = new TMP_Text[0];
     [SerializeField] Transform cane;
+    [SerializeField] Transform briefcase;
     [SerializeField] HandSkin[] skins = new HandSkin[0];
 
     public float tremble;           // 눈치가 쓰는 떨림
+    public float paperRate = 9f;    // 쪽지가 올라오는 빠르기
     public bool walletOut;          // Held와 따로 든다. 돋보기와 같이 쓰기 때문
     public float? pointerDist;      // 포인터가 닿는 거리. 없으면 0.6
 
     public ItemId Held { get; private set; }
+    // 영수증은 돋보기와 같이 보므로 Held가 아니다. 씬의 Receipt_View를 손에 붙여 오른쪽에서 들어 올린다
+    public bool HasReceipt { get; private set; }
+    public bool ReceiptOn { get; private set; }
     public bool Pointer { get; private set; }
     public bool ItemsEnabled { get; private set; } = true;
     public Readable LensHit { get; private set; }
@@ -56,16 +59,19 @@ public class HandRig : MonoBehaviour
     float Shake => Debuff.TrembleAmp(tremble + Debuff.Tremble, Time.time - trembleFrom);
     static float TrembleRad => Bal.G("Tremble_Freq", 1.8f) * Mathf.PI * 2f;
 
+    Transform receiptView;
+    float tReceipt;
     float trembleFrom = -100f, lastMove;
     bool handMoving;
 
     static readonly Vector3 Shoulder = new(0.24f, -1f, 0.22f);
     static readonly int LensViewId = Shader.PropertyToID("_LensView");
+    static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
 
     readonly Ray[] rim = new Ray[6];
 
-    float tap, kick, tLens, tCard, tBill, tWallet, tWatch, tPaper, tPoint, tCane;
-    bool watchUp, paperUp;
+    float tap, kick, tLens, tCard, tBill, tWallet, tPaper, tPoint, tCane, tCase;
+    bool paperUp;
     float paperSoft, paperSoftNow = -1f;
     int paperKind;
     RenderTexture lensFull;
@@ -157,8 +163,13 @@ public class HandRig : MonoBehaviour
         Pointer = false;
         pointerDist = null;
         tremble = 0f;
+        paperRate = 9f;
         walletOut = false;
         ItemsEnabled = true;
+        receiptView = null;
+        HasReceipt = false;
+        ReceiptOn = false;
+        tReceipt = 0f;
         RefreshHud();
     }
 
@@ -170,6 +181,48 @@ public class HandRig : MonoBehaviour
     }
 
     public void SetPointer(bool on) => Pointer = on;
+
+    /// <summary>씬의 영수증 그림을 손에 붙인다. 씬이 끝날 때 부른 쪽이 치운다.</summary>
+    public void SetReceiptView(Transform view)
+    {
+        receiptView = view;
+        view.gameObject.SetActive(false);
+        view.SetParent(transform, false);
+    }
+
+    /// <summary>또렷한 쪽 번호와 메뉴 글자를 넣는다.</summary>
+    public void FillReceipt(int number, string lines)
+    {
+        if (!receiptView) return;
+        Transform n = receiptView.Find("Sharp/Number"), l = receiptView.Find("Sharp/Lines");
+        if (n && n.TryGetComponent(out TMP_Text nt)) nt.text = number.ToString();
+        if (l && l.TryGetComponent(out TMP_Text lt)) lt.text = lines;
+    }
+
+    /// <summary>영수증을 얻어 든다. 소지품 줄 끝에 붙는다.</summary>
+    public void GiveReceipt()
+    {
+        HasReceipt = true;
+        ReceiptOn = true;
+        if (AudioManager.I != null) AudioManager.I.Play("paper_rustle", null, 0.5f);
+        RefreshHud();
+    }
+
+    public void TakeReceipt()
+    {
+        HasReceipt = false;
+        ReceiptOn = false;
+        RefreshHud();
+    }
+
+    void MoveReceipt(float dt)
+    {
+        if (!receiptView) return;
+        tReceipt = Damp(tReceipt, ReceiptOn ? 1f : 0f, 9f, dt);
+        bool show = tReceipt > 0.01f;
+        if (receiptView.gameObject.activeSelf != show) receiptView.gameObject.SetActive(show);
+        receiptView.localPosition = new Vector3(Bal.G("Hand_ReceiptX", 0.13f), Bal.G("Hand_ReceiptY", -0.06f) - (1f - tReceipt) * 0.34f, 0.4f);
+    }
 
     /// <summary>손 자세 자리를 켠다. Pose_ 로 시작하는 자식 중 이름이 맞는 것만 켠다. Pose_Open은 반전 짝(Pose_Open_Mirror)도 같이 켠다.</summary>
     public void SetPose(string pose)
@@ -190,14 +243,6 @@ public class HandRig : MonoBehaviour
         kick = 1f;
         if (AudioManager.I != null) AudioManager.I.Play("card_slide_wrong", null, 0.5f);
     }
-
-    public void ShowWatch(int hour)
-    {
-        watchUp = true;
-        if (watchHour != null) watchHour.localRotation = Quaternion.Euler(0f, 0f, -hour * 30f);
-    }
-
-    public void HideWatch() => watchUp = false;
 
     /// <summary>쪽지를 들거나 내린다. body가 있으면 글을 바꾼다. soft 0 또렷, 클수록 번진다.</summary>
     public void SetPaper(bool up, string body = null, float soft = 0f, int kind = 0)
@@ -250,6 +295,25 @@ public class HandRig : MonoBehaviour
             foreach (var part in skin.parts)
                 if (part != null) part.SetActive(true);
         }
+        TintSkin();
+    }
+
+    // 나이별 손 색. 재질 이름에 Skin이 든 칸이면 어느 자세, 어느 모델이든 같은 색을 곱한다
+    void TintSkin()
+    {
+        var tint = new Color(Bal.Age("HandTintR", 1.16f, 0.96f, 0.84f, 0.72f), Bal.Age("HandTintG", 1.08f, 0.86f, 0.73f, 0.62f), Bal.Age("HandTintB", 1f, 0.78f, 0.66f, 0.58f));
+        var block = new MaterialPropertyBlock();
+        foreach (var r in GetComponentsInChildren<Renderer>(true))
+        {
+            var mats = r.sharedMaterials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (mats[i] == null || !mats[i].name.Contains("Skin") || !mats[i].HasProperty(BaseColorId)) continue;
+                r.GetPropertyBlock(block, i);
+                block.SetColor(BaseColorId, tint);
+                r.SetPropertyBlock(block, i);
+            }
+        }
     }
 
     // 떨림이 들어간 포인터(뷰포트 좌표)
@@ -280,6 +344,12 @@ public class HandRig : MonoBehaviour
         var kb = Keyboard.current;
         var mode = PlayerController.I.CurrentMode;
         if (kb == null || !ItemsEnabled || mode == PlayerController.Mode.Locked || mode == PlayerController.Mode.Hidden) return;
+        if (HasReceipt && ItemKeys.Pressed(kb, ItemId.Receipt))
+        {
+            ReceiptOn = !ReceiptOn;
+            if (AudioManager.I != null) AudioManager.I.Play("paper_rustle", null, 0.5f);
+            RefreshHud();
+        }
         if (kb.ctrlKey.isPressed) return;   // 시연자 키
         if (ItemKeys.Pressed(kb, ItemId.Lens)) Toggle(ItemId.Lens);
         else if (ItemKeys.Pressed(kb, ItemId.Card)) Toggle(ItemId.Card);
@@ -320,9 +390,9 @@ public class HandRig : MonoBehaviour
         tLens = Damp(tLens, Held == ItemId.Lens ? 1f : 0f, 9f, dt);
         tCard = Damp(tCard, Held == ItemId.Card ? 1f : 0f, 9f, dt);
         tBill = Damp(tBill, Held == ItemId.Cash ? 1f : 0f, 9f, dt);
+        MoveReceipt(dt);
         tWallet = Damp(tWallet, walletOut ? 1f : 0f, 9f, dt);
-        tWatch = Damp(tWatch, watchUp ? 1f : 0f, 9f, dt);
-        tPaper = Damp(tPaper, paperUp && player.CurrentMode != PlayerController.Mode.Hidden ? 1f : 0f, 9f, dt);
+        tPaper = Damp(tPaper, paperUp && player.CurrentMode != PlayerController.Mode.Hidden ? 1f : 0f, paperRate, dt);
         tPoint = Damp(tPoint, Pointer && Held == ItemId.None ? 1f : 0f, 9f, dt);
 
         float sway = Mathf.Sin(t * 1.2f) * 0.003f;
@@ -361,14 +431,25 @@ public class HandRig : MonoBehaviour
 
         // 지팡이: 빈손일 때 오른쪽 아래에 들고, 걸음에 맞춰 약하게 흔든다. 원본 street.js makeCane
         var who = GameState.I != null ? GameState.I.Profile : null;
-        bool caneOn = who != null && who.limp && ItemsEnabled && Held == ItemId.None && !Pointer && !walletOut
+        bool handFree = who != null && ItemsEnabled && Held == ItemId.None && !Pointer && !walletOut
             && player.CurrentMode != PlayerController.Mode.Hidden;
+        bool caneOn = handFree && who.limp;
         tCane = Damp(tCane, caneOn ? 1f : 0f, 8f, dt);
         if (Show(cane, tCane))
         {
             float amp = player.Walk01, ph = player.Bob * 0.5f;
             cane.localPosition = new Vector3(0.3f + Mathf.Sin(ph) * 0.008f * amp, Bal.G("Hand_CaneY", -0.13f) - (1f - tCane) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * 0.022f * amp, 0.5f);
             cane.localRotation = Rad(-0.32f - Mathf.Cos(ph) * 0.11f * amp, 0f, 0.13f);
+        }
+
+        // 서류가방: 지팡이와 같은 자리에서 빈손일 때만 윗부분이 보인다. 쪽지와 영수증을 볼 때도 내린다
+        tCase = Damp(tCase, handFree && who.briefcase && !paperUp && !ReceiptOn ? 1f : 0f, 8f, dt);
+        if (Show(briefcase, tCase))
+        {
+            float amp = player.Walk01, ph = player.Bob * 0.5f, swing = Bal.G("Hand_BriefcaseSway", 0.012f);
+            briefcase.localPosition = new Vector3(Bal.G("Hand_BriefcaseX", 0.42f) + Mathf.Sin(ph) * swing * amp,
+                Bal.G("Hand_BriefcaseY", -0.27f) - (1f - tCase) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * swing * amp, Bal.G("Hand_BriefcaseZ", 0.5f));
+            briefcase.localRotation = Rad(-0.05f, Bal.G("Hand_BriefcaseYaw", 1.25f), Mathf.Sin(ph) * swing * 3f * amp);
         }
 
         if (Show(bill, tBill))
@@ -388,12 +469,6 @@ public class HandRig : MonoBehaviour
         {
             wallet.localPosition = new Vector3(-0.1f * cam.aspect / 1.78f + jx, -0.34f + tWallet * 0.24f + sway + jy, 0.34f);
             wallet.localRotation = Rad(0.25f, -0.12f, 0.03f);
-        }
-
-        if (Show(watch, tWatch))
-        {
-            watch.localPosition = new Vector3(-0.05f + jx, -0.34f + tWatch * 0.26f + jy, 0.3f);
-            watch.localRotation = Rad(-0.5f, 0f, 0f);
         }
 
         // 쪽지: 왼손 자리. 흔들림은 지갑과 같은 만큼만

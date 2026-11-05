@@ -1,4 +1,4 @@
-// 4회차 키오스크. 프로토타입 화면 14개와 KioskFlow를 Pack 자리에 끼운다. 지폐는 튕기고 카드가 없어 사지 못한다.
+// 4회차 키오스크. 프로토타입 화면 14개와 KioskFlow를 Pack 자리에 끼운다. 지폐는 튕기고 뒷사람이 자기 카드로 결제해 준다.
 // 부착: PH_Kiosk_R4 의 KioskCanvas (KioskScreens와 같은 오브젝트)
 // 배치: cover = IC 틈을 가린 PosterFlap
 using System;
@@ -8,7 +8,9 @@ public class R4ProtoPack : KioskPack
 {
     [SerializeField] PosterFlap cover;
 
-    /// <summary>지폐가 정해진 횟수만큼 튕기고 뒷사람과 말을 마쳤다. 4-10a로 넘어간다.</summary>
+    /// <summary>지폐가 정해진 횟수만큼 튕겨 뒷사람이 말을 걸기 시작한다.</summary>
+    public event Action Helping;
+    /// <summary>뒷사람과 말을 마쳤다. 플레이어가 비켜서고 뒷사람이 결제한다.</summary>
     public event Action Bounced;
 
     public KioskFlow Flow { get; private set; }
@@ -17,7 +19,14 @@ public class R4ProtoPack : KioskPack
     KioskScreens scr;
     KioskHardware hw;
     bool whatSaid, cashTold, done;
-    int cashLine;
+    int cashSaid, cashWant;
+    string receiptLines = "";
+    int receiptTotal;
+
+    /// <summary>주문에 사이다가 들어갔다. 쪽지대로 샀는지 본다.</summary>
+    public bool Cider { get; private set; }
+    /// <summary>영수증 메뉴 줄.</summary>
+    public string Lines { get; private set; } = "";
     float blinkT;
 
     static string Me => GameState.I.Profile.speakerKey;
@@ -35,7 +44,8 @@ public class R4ProtoPack : KioskPack
     public override void OnEnter()
     {
         done = false;
-        cashLine = 0;
+        cashSaid = 0;
+        cashWant = 0;
         cashTold = false;
         blinkT = 0f;
         hw = Ctl.GetComponent<KioskHardware>();
@@ -97,27 +107,97 @@ public class R4ProtoPack : KioskPack
         }
         Flow.CardOnly();
         blinkT = Bal.G("R4_CardOnlyBlinkSec", 1.2f);
-        // 첫 튕김은 1회차 어르신과 같은 머뭇거림, 그 뒤는 두 혼잣말을 번갈아 한다
-        if (cashLine == 0) Ctl.Say(Me, "왜 안 되지?", Me + "_why1");
-        else if (cashLine % 2 == 1) Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
-        else Ctl.Say(Me, "왜 기계가 돈을 안먹지? 이상하네", Me + "_no_eat");
-        cashLine++;
+        // 튕길 때마다 혼잣말 하나. 말하는 중이면 끝난 뒤 차례로 나온다
+        bool idle = cashWant == cashSaid;
+        cashWant++;
+        if (idle) StartCoroutine(CashLines());   // 코루틴은 첫 yield까지 바로 돈다. cashWant를 먼저 올려야 첫 줄이 나온다
         if (count < Bal.I("Cash_BounceCount", 3) || cashTold) return;
         cashTold = true;
         Stop();
         StartCoroutine(CashTalk());
     }
 
-    // 뒷사람이 1회차에 플레이어가 고른 말을 그대로 한다
+    System.Collections.IEnumerator CashLines()
+    {
+        while (cashSaid < cashWant)
+        {
+            int i = Mathf.Min(cashSaid, 2);
+            if (i == 0) yield return Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
+            else if (i == 1) yield return Ctl.Say(Me, "왜 기계가 돈을 안먹지? 이상하네", Me + "_no_eat");
+            else yield return Ctl.Say(Me, "어허, 또 나오네.", Me + "_again");
+            cashSaid++;
+        }
+    }
+
+    // 혼잣말이 끝나면 뒷사람이 말을 건다. 결제는 비켜선 뒤 HelpPay가 맡는다
     System.Collections.IEnumerator CashTalk()
     {
-        int said = GameState.I.CashLine;
-        yield return Ctl.Say("back", KioskData.CashLines[said], KioskData.CashVo("back", said));
+        while (cashSaid < cashWant) yield return null;
+        KeepOrder();
+        Helping?.Invoke();
+        yield return Ctl.Say("back", "어르신, 이거 돈 안 들어가요.", "a20_cant1");
         yield return Ctl.Say(Me, "아, 그려?", Me + "_really");
-        yield return Ctl.Say(Me, "그러면 방법이 없는겨?", Me + "_nomore");
-        yield return Ctl.Say("back", "일단 현금은 안된다네요.", "back_nocash");
-        yield return Ctl.Say(Me, "그려? 어쩔 수 없구만...", Me + "_giveup");
+        yield return Ctl.Say(Me, "그러면 방법이 없는겨?");
+        yield return Ctl.Say("back", "제 카드로 결제해 드릴게요.", "a20_paycard");
         Bounced?.Invoke();
+    }
+
+    // 다음 손님이 화면을 쓰면 장바구니가 비니 영수증에 쓸 내용을 남긴다
+    void KeepOrder()
+    {
+        var names = new System.Collections.Generic.List<string>();
+        string drink = null;
+        foreach (var l in Flow.K.cart)
+        {
+            names.Add(KioskData.ById(l.item)?.name);
+            if (l.side != null) names.Add(KioskData.ById(l.side)?.name);
+            if (l.drink != null) { drink = l.drink; names.Add(KioskData.ById(l.drink)?.name); }
+            else if (KioskData.ById(l.item)?.kind == "drink") drink = l.item;
+        }
+        Lines = string.Join("\n", names);
+        receiptLines = string.Join("  ", names);
+        receiptTotal = Flow.K.Total;
+        Cider = drink != null && (drink.Contains("cider") || (KioskData.ById(drink)?.name ?? "").Contains("사이다"));
+    }
+
+    /// <summary>뒷사람이 카드를 대고 끝낸다. 카드 소리, 화면 넘김, 영수증만 낸다. 키오스크 모드 밖에서 부른다.</summary>
+    public System.Collections.IEnumerator HelpPay()
+    {
+        int number = Bal.I("R4_OrderNumber", 273);
+        GameState.I.Order.number = number;
+        var at = Ctl.transform.position + Vector3.up;
+        var K = Flow.K;
+        K.cardMsg = null;
+        K.payProgress = 0f;
+        AudioManager.I.Play("card_insert", at, 0.8f);
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.In);
+        Flow.Show("paying");
+        int steps = Bal.I("R4_HelpPaySteps", 3);
+        for (int i = 1; i <= steps; i++)
+        {
+            yield return new WaitForSeconds(Bal.G("R4_HelpPayStepSec", 0.4f));
+            K.payProgress = (float)i / steps;
+            Flow.Redraw();
+        }
+        AudioManager.I.Play("kiosk_ok", at, 0.8f);
+        Flow.Show("cardout");
+        yield return new WaitForSeconds(Bal.G("R4_HelpPayStepSec", 0.4f));
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.Out);
+        AudioManager.I.Play("card_insert", at, 0.5f, 1.25f);
+        yield return new WaitForSeconds(Bal.G("R4_HelpPayStepSec", 0.4f));
+        Flow.Show("done");
+        float print = Bal.G("Kiosk_ReceiptPrintSec", 3.1f);
+        string sum = KioskData.Won(receiptTotal);
+        if (hw) hw.Print($"{receiptLines}  {sum}", sum, number, print);
+        AudioManager.I.Play("receipt_print", at, 0.9f);
+        yield return new WaitForSeconds(print);
+    }
+
+    /// <summary>나온 영수증을 뜯는다.</summary>
+    public void TearReceipt()
+    {
+        AudioManager.I.Play("paper_tear", Ctl.transform.position + Vector3.up, 0.9f);
+        if (hw) hw.Tear();
     }
 
     void OnEmpty()
@@ -139,6 +219,7 @@ public class R4ProtoPack : KioskPack
 
     public void ScreenChanged(string id)
     {
+        if (!Ctl.Active) return;   // 뒷사람이 결제하는 동안
         Ctl.SetDown(id == "card");
         if (id == "menu" && !whatSaid) { whatSaid = true; StartCoroutine(WhatLine()); }
     }
