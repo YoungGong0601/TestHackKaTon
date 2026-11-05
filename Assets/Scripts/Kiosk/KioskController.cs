@@ -68,6 +68,8 @@ public class KioskController : MonoBehaviour
         RefreshViews();
     }
 
+    public bool IsScreen(Collider col) => col.transform == screenQuad;
+
     public void ResetTimer() => timer = Bal.F("KioskTimeoutSec", 40f);
 
     KioskView view;
@@ -100,6 +102,12 @@ public class KioskController : MonoBehaviour
         if (queue) nunchi.QueueCount = () => queue.Count;
     }
 
+    // 시연자 키로 빠져나가면 ReleaseControl이 안 불린다. 카메라 화각을 돌려놓는다
+    void OnDestroy()
+    {
+        if (Active && Pc) view.Restore(Eye);
+    }
+
     void Start()
     {
         screens.SetTimer(0, false);
@@ -120,7 +128,7 @@ public class KioskController : MonoBehaviour
         if (baseCamera)
         {
             int reveal = LayerMask.GetMask("KioskReveal");
-            baseCamera.cullingMask = profile.kioskHideMeaning ? baseCamera.cullingMask & ~reveal : baseCamera.cullingMask | reveal;
+            baseCamera.cullingMask = profile.kioskHideMeaning || !Pack.ShowMeaning ? baseCamera.cullingMask & ~reveal : baseCamera.cullingMask | reveal;
         }
         Pc.Freeze(true);
         view.Save(Eye);
@@ -165,6 +173,7 @@ public class KioskController : MonoBehaviour
     IEnumerator FinishRun()
     {
         yield return new WaitForSeconds(Bal.G("Kiosk_FinishDelay", 0.9f));
+        Pc.BlendCamera();
         ReleaseControl();
         if (nunchi) nunchi.End();
         Vector3 p = Floor + Out * Bal.G("Kiosk_LeaveDist", 1.1f);
@@ -186,6 +195,9 @@ public class KioskController : MonoBehaviour
         HandRig.I.SetPointer(v == "kiosk");
         if (v != "kiosk" && HandRig.I.Held == ItemId.Card) HandRig.I.Equip(ItemId.None); // 고개를 돌리면 손을 내려 시야를 비운다
     }
+
+    // 사과 문구와 음성은 노인 것이다. 4회차 인물만
+    bool CanSorry => nunchi && GameState.I.Profile.limp;
 
     void RefreshViews() => Hud.I.Views($"A 알바생  S 뒤  D 키오스크  W {(view.Down ? "위" : "아래")}");
 
@@ -216,21 +228,25 @@ public class KioskController : MonoBehaviour
     }
 
     // 터치 판정. 터치 안 먹음, 옆 버튼 눌림은 여기서 끝내고 Pack은 확정된 버튼만 받는다
+    // 둘 다 버튼 가장자리를 눌렀을 때만 일어난다. 가운데를 누르면 항상 그 버튼이 눌린다
     void PackTouch(Vector2 uv)
     {
         var profile = GameState.I.Profile;
         ResetTimer();
-        Sfx("kiosk_tap", 0.8f, UnityEngine.Random.Range(0.95f, 1.08f));
-        if (profile.kioskTouchFail && UnityEngine.Random.value < Bal.Age("TouchFailChance", 0f, 0f, 0.08f, 0.12f))
+        var b = packScreens.At(uv);
+        Vector3 at = packScreens.World(uv);
+        bool edge = b && profile.kioskTouchFail && b.EdgeRatio(at) > 1f - Bal.G("Kiosk_TouchEdgeFrac", 0.25f);
+        if (edge && UnityEngine.Random.value < Bal.Age("TouchFailChance", 0f, 0f, 0.07f, 0.07f))
         {
+            Sfx("kiosk_tap", 0.3f, 0.6f);   // 낮고 둔한 소리로 빗나갔음을 알린다
             HandRig.I.TapMiss();
             Mutter();
             return;
         }
-        var b = packScreens.At(uv);
-        if (b && profile.kioskTouchFail && UnityEngine.Random.value < Bal.Age("TouchMissChance", 0f, 0f, 0.2f, 0.3f))
+        Sfx("kiosk_tap", 0.8f, UnityEngine.Random.Range(0.95f, 1.08f));
+        if (edge && UnityEngine.Random.value < Bal.Age("TouchMissChance", 0f, 0f, 0.1f, 0.15f))
         {
-            var side = Neighbor(b);
+            var side = Neighbor(b, at);
             if (side) { b = side; HandRig.I.TapMiss(); }
         }
         if (!b)
@@ -243,14 +259,15 @@ public class KioskController : MonoBehaviour
         Pack.OnPress(b.id);
     }
 
-    KioskButton Neighbor(KioskButton b)
+    // 누른 자리에 가장 가까운 옆 버튼. 화면 전체를 덮는 뒷판 버튼은 옆 버튼이 아니다
+    KioskButton Neighbor(KioskButton b, Vector3 at)
     {
         KioskButton best = null;
         float dist = float.MaxValue;
         foreach (var o in packScreens.Buttons())
         {
-            if (o == b) continue;
-            float d = (o.CenterWorld - b.CenterWorld).sqrMagnitude;
+            if (o == b || o.Contains(at)) continue;
+            float d = (o.CenterWorld - at).sqrMagnitude;
             if (d < dist) { dist = d; best = o; }
         }
         return best;
@@ -279,7 +296,11 @@ public class KioskController : MonoBehaviour
             else if (kb.sKey.wasPressedThisFrame) SetView("back");
             else if (kb.dKey.wasPressedThisFrame) SetView("kiosk");
             else if (kb.wKey.wasPressedThisFrame) { if (View == "kiosk") { view.ToggleDown(); RefreshViews(); } }
-            else if (kb.eKey.wasPressedThisFrame && View == "staff") StaffCalled?.Invoke();
+            else if (kb.eKey.wasPressedThisFrame)
+            {
+                if (View == "staff") StaffCalled?.Invoke();
+                else if (View == "back" && CanSorry) nunchi.Sorry();
+            }
         }
         var mouse = Mouse.current;
         if (mouse != null && mouse.leftButton.wasPressedThisFrame && View == "kiosk") Click();
@@ -308,7 +329,7 @@ public class KioskController : MonoBehaviour
         else if (lastSec != -1) { lastSec = -1; screens.SetTimer(0, false); }
 
         // 프롬프트
-        string label = View == "staff" ? "E 저기요" : "";
+        string label = View == "staff" ? "E 저기요" : View == "back" && CanSorry && nunchi.Running && nunchi.Cooldown <= 0f ? "E 죄송합니다" : "";
         if (label != promptShown) { promptShown = label; Hud.I.Prompt(label == "" ? null : label); }
     }
 

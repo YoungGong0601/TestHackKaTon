@@ -10,6 +10,7 @@ public class CharacterProfile : ScriptableObject
     public string speakerKey;
     public int handLook;        // 손 단계 0~3. 3은 소매, 반지, 손목시계. Bal.Age의 fallback 칸이기도 하다
     public ItemId[] items;
+    public bool canRun;         // Shift로 달리기
     public bool limp;
     public bool visionBlur;
     public bool kioskBlur;

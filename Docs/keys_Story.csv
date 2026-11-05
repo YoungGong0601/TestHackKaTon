@@ -50,4 +50,7 @@ Traffic_LaneCheckPast,정류장 지나 검사하는 거리,Float,8,m,HTML 값
 Traffic_CrosswalkFirstSec,첫 횡단보도 신호음까지,Float,9,sec,HTML판에 없어 새로 정함
 Traffic_CrosswalkGapMin,횡단보도 신호음 간격 최소,Float,22,sec,HTML판에 없어 새로 정함
 Traffic_CrosswalkGapMax,횡단보도 신호음 간격 최대,Float,38,sec,HTML판에 없어 새로 정함
-Traffic_CrosswalkVolume,횡단보도 신호음 볼륨,Float,0.45,ratio,멀리서 들리는 배경
+Traffic_CrosswalkVolume,횡단보도 신호음 볼륨,Float,1,ratio,멀리서 들리는 배경
+Traffic_MinGap,같은 차선 앞차와 최소 간격,Float,9,m,차가 겹치지 않게
+Traffic_LaneWidth,같은 차선으로 보는 폭,Float,1.6,m,차선 판정
+Traffic_StartRetrySec,나올 자리가 막혔을 때 재시도,Float,1,sec,차가 겹치지 않게

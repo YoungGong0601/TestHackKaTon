@@ -25,4 +25,10 @@ public static class NunchiLines
         { "read1", "글씨가 왜 이렇게 작아." },
     };
 
+    public static readonly string[,] Sorry =
+    {
+        { "sorry1", "아이고, 죄송합니다." },
+        { "sorry2", "미안합니다, 금방 해요." },
+    };
+
 }

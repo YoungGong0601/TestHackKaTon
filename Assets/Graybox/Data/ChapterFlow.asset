@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: ChapterFlow
   m_EditorClassIdentifier: KioskGame::ChapterFlow
   chapters:
+  - sceneName: R1_Home
+    profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
+    spawnId: r1_home
   - sceneName: R1_Stop
     profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
     spawnId: r1_stop

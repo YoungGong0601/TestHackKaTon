@@ -12,9 +12,9 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
-# Blender 원본, 백업, 모델링 작업 폴더. 저장소에 올리지 않는다
-*.blend*
-ArtSource/
+# Blender backup files
+*.blend1
+*.blend1.meta
 
 # MemoryCaptures can get excessive in size.
 /[Mm]emoryCaptures/

@@ -21,3 +21,10 @@ Tremble_Tau,손떨림 줄어드는 시간,Float,0.8,sec,exp(-t/tau)
 Tremble_Freq,손떨림 빠르기,Float,1.8,Hz,기존 값
 Tremble_StillSec,멈춤으로 보는 시간,Float,0.12,sec,시작 판정
 Tremble_MoveDelta,움직임으로 보는 마우스 변화,Float,4,px제곱,시작 판정
+Hand_WalletFrontDist,지갑이 펴졌을 때 손과 돋보기 거리,Float,0.26,m,지갑 0.34보다 앞
+R1_PaySteps,1회차 결제 진행 단계,Int,6,,카드 빼지 마세요 기다림
+R1_DoorOpenSec,1-0 현관문 여는 시간,Float,0.45,sec,가볍게
+Age20_RunSpeed,Shift 달리기 속도,Float,3.96,m/s,걷기의 1.8배
+Age20_RunStepStride,달릴 때 걸음 소리 간격,Float,0.95,m,보폭이 넓음
+Age20_RunBobRate,달릴 때 고개 흔들림 속도,Float,3.3,rad/m,파이를 보폭으로 나눔
+Age20_RunBobHeight,달릴 때 고개 위아래 폭,Float,0.06,m,걷기보다 크게

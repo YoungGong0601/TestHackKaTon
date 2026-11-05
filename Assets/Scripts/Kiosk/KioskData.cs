@@ -101,6 +101,31 @@ public static class KioskData
     public static readonly (string id, int add)[] SideOpts = { ("fries_r", 0), ("fries_l", 500), ("nugget", 800), ("coleslaw", 0), ("cheesestick", 900), ("onion", 700) };
     public static readonly (string id, int add)[] DrinkOpts = { ("cola", 0), ("cola_full", 0), ("cider", 0), ("orange", 500), ("tea", 500), ("americano", 0), ("shake", 1000), ("water", 0) };
 
+    static readonly Dictionary<string, string> Pictures = new Dictionary<string, string>
+    {
+        ["kgrill"] = "burger_bulgogi", ["bulgogi"] = "burger_bulgogi",
+        ["crown3"] = "burger_double", ["wagyu"] = "burger_double", ["crownmax"] = "burger_double", ["bulgogi2"] = "burger_double", ["mushtower"] = "burger_double",
+        ["habanero"] = "burger_bacon", ["smokehouse"] = "burger_bacon", ["brisket"] = "burger_bacon", ["mushroom"] = "burger_bacon",
+        ["buttermilk"] = "burger_chicken", ["katsu"] = "burger_chicken", ["chicken"] = "burger_chicken", ["fish"] = "burger_chicken",
+        ["lobster"] = "burger_shrimp", ["shrimp"] = "burger_shrimp",
+        ["fries_r"] = "fries", ["fries_l"] = "fries", ["onion"] = "fries", ["coleslaw"] = "fries",
+        ["nugget"] = "nuggets", ["cheesestick"] = "nuggets", ["churro"] = "nuggets",
+        ["cola"] = "cola", ["cola_full"] = "cola", ["tea"] = "cola",
+        ["cider"] = "cider", ["orange"] = "cider", ["water"] = "cider",
+        ["americano"] = "coffee", ["shake"] = "softcone", ["cone"] = "softcone", ["sundae"] = "softcone", ["pie"] = "softcone",
+    };
+    public static string Picture(string id) => Pictures.TryGetValue(id, out var p) ? p : "burger_cheese";
+
+    /// <summary>업셀 화면의 콤보 사진.</summary>
+    public static string ComboPicture(string id) => id switch
+    {
+        "bulgogi2" => "combo_bulgogi2",
+        "cheese" => "combo_cheese",
+        "shrimp" => "combo_shrimp",
+        "crown3" or "crownmax" or "wagyu" => "combo_triple",
+        _ => "combo_bulgogi",
+    };
+
     static Dictionary<string, MenuItem> all;
     public static MenuItem ById(string id)
     {

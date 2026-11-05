@@ -130,7 +130,7 @@ public class R2CafeDirector : MonoBehaviour
             queue.KioskOn = true;
             player.Freeze(true);
             yield return StoreFlow.Race(this, player.WalkTo(stand.position, Bal.F("MoveSpeed", 1.9f)), 4f);
-            yield return player.LookAt(kioskLook.position, 0.5f);
+            yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
             yield return kiosk.Enter();
             queue.KioskOn = false;
             player.SetMode(PlayerController.Mode.Fps);
@@ -160,7 +160,7 @@ public class R2CafeDirector : MonoBehaviour
         float speed = Bal.F("MoveSpeed", 1.9f);
         foreach (var t in aside) yield return StoreFlow.Race(this, player.WalkTo(t.position, speed), 3f);
         yield return StoreFlow.Race(this, player.WalkTo(Tail(queue.Count), speed), 3f);
-        yield return player.LookAt(kioskLook.position, 0.5f);
+        yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
         while (queue.Count > 0)
         {
             queue.ShuffleForward();
@@ -168,6 +168,14 @@ public class R2CafeDirector : MonoBehaviour
             yield return StoreFlow.Race(this, player.WalkTo(Tail(queue.Count), speed), 2f);
             yield return Served(Nearest());
         }
+
+        // 앞사람이 끝나면 암전으로 차례가 온다. 뒤에는 새 손님이 선다
+        yield return Hud.I.Fade(1f, 0.4f);
+        queue.Refill();
+        Vector3 to = kioskLook.position - stand.position;
+        player.Teleport(stand.position, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg);
+        yield return player.LookAt(kioskLook.position, 0.01f);
+        yield return Hud.I.Fade(0f, 0.4f);
     }
 
     // 지금 키오스크에 가장 가까운 줄 손님
@@ -202,7 +210,7 @@ public class R2CafeDirector : MonoBehaviour
         n.GoVia(aside, doorIn.position, walk, () =>
         {
             queue.OpenDoor(2.2f);
-            n.Go(doorOut.position, walk, n.Hide);
+            n.Go(doorOut.position, walk, () => queue.Done(n));
         });
     }
 

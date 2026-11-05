@@ -15,6 +15,14 @@ public class KioskButton : MonoBehaviour
 
     public Vector3 CenterWorld => Rect.TransformPoint(Rect.rect.center);
 
+    /// <summary>가운데 0, 가장자리 1. 터치가 버튼 끝에 얼마나 가까운가.</summary>
+    public float EdgeRatio(Vector3 world)
+    {
+        var r = Rect.rect;
+        Vector2 p = (Vector2)Rect.InverseTransformPoint(world) - r.center;
+        return Mathf.Max(Mathf.Abs(p.x) / Mathf.Max(r.width * 0.5f, 1f), Mathf.Abs(p.y) / Mathf.Max(r.height * 0.5f, 1f));
+    }
+
     public void Flash()
     {
         var g = button ? button.targetGraphic : null;

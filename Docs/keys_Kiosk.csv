@@ -50,3 +50,4 @@ Kiosk_TouchRange,터치 레이 길이,Float,3,m,키오스크 앞에서 충분한
 Kiosk_BlurBase,화면 기본 번짐 반지름,Float,12,px,캔버스 1080 x 1920 기준 16점 번짐. 겨우 알아볼 듯 말 듯. 프로필 kioskBlur일 때만
 Kiosk_PosterAngle,포스터 들춤 각도,Float,146.1,deg,뒤의 틈이 보임
 Kiosk_PosterSpeed,포스터 들춤 속도,Float,4,per sec,연출
+Kiosk_TouchEdgeFrac,터치 흔들림이 나는 버튼 가장자리 폭,Float,0.25,ratio,가운데는 항상 눌림

@@ -58,13 +58,13 @@ public class R1ElderScene : MonoBehaviour
         float t0 = Time.time;
         Player.Freeze(true);
         Player.HoldStill = false;
-        yield return Player.LookAt(slot.position, 0.6f * k);
+        yield return Player.LookAt(slot.position, Bal.G("Cine_BlendSec", 1f));
         int bounces = Bal.I("Cash_BounceCount", 3);
         for (int i = 0; i < bounces; i++) yield return Bounce();
 
         yield return Hud.I.Say(null, "그거 지폐 안 받아요.", GameState.I.Profile.speakerKey + "_nobill", 1.5f * k);
         elder.Face(Player.transform.position, 5f);
-        yield return Player.LookAt(ElderHead, 0.3f * k);
+        yield return Player.LookAt(ElderHead, Bal.G("Cine_BlendSec", 1f));
         yield return Hud.I.Say(null, "그려? 어쩔 수 없구만...", "gp_giveup", 1.6f * k, ElderHead);
 
         // 고개를 숙이고 돌아선다

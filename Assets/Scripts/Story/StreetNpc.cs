@@ -12,11 +12,25 @@ public class StreetNpc : MonoBehaviour
     [SerializeField] Transform head;
 
     Quaternion headRest;
-    float nod, glance;
+    float nod, glance, stepAcc;
+    Transform bone;
 
     public Vector3 HeadPos => head.position;
+    public bool Walking { get; private set; }
 
     void Awake() => headRest = head.localRotation;
+
+    void Start()
+    {
+        foreach (var t in GetComponentsInChildren<Transform>())   // 켜진 모델만 돈다
+            if (t.name == "Head") { bone = t; break; }
+    }
+
+    // Animator 가 뼈를 놓은 뒤에 HeadPivot 회전을 머리뼈에 얹는다. 뼈 축이 모델마다 달라 루트 기준으로 곱한다
+    void LateUpdate()
+    {
+        if (bone) bone.rotation = head.rotation * Quaternion.Inverse(transform.rotation) * bone.rotation;
+    }
 
     void Update()
     {
@@ -40,10 +54,13 @@ public class StreetNpc : MonoBehaviour
     {
         world.y = transform.position.y;
         Face(world);
+        Walking = true;
         while (transform.position != world)
         {
             transform.position = Vector3.MoveTowards(transform.position, world, speed * Time.deltaTime);
+            AudioManager.I.Footstep(transform.position, speed * Time.deltaTime, ref stepAcc);
             yield return null;
         }
+        Walking = false;
     }
 }

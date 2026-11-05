@@ -20,8 +20,9 @@ public class NpcMover : MonoBehaviour
     readonly Queue<Vector3> route = new Queue<Vector3>();
     Vector3 heading;
     int side;
-    float bestDist, stuck;
+    float bestDist, stuck, stepAcc;
     StreetNpc look;
+    Transform hand;
 
     bool turning;
     float wantYaw, turnRate = 8f;
@@ -113,7 +114,21 @@ public class NpcMover : MonoBehaviour
 
     public void ShowBag()
     {
-        if (bag) bag.SetActive(true);
+        if (!bag) return;
+        bag.SetActive(true);
+        foreach (Transform t in GetComponentsInChildren<Transform>())
+        {
+            if (t.name == "Palm.R" || t.name.EndsWith("_Socket_HandR")) hand = t;
+            if (t.name.EndsWith("_Phone")) t.gameObject.SetActive(false);
+        }
+    }
+
+    // Animator 가 손을 놓은 뒤 봉투 높이를 손에 맞춘다. 회전은 그대로 둬서 봉투가 수직을 유지한다
+    void LateUpdate()
+    {
+        if (!hand) return;
+        Vector3 p = bag.transform.parent.InverseTransformPoint(hand.position);
+        bag.transform.localPosition = new Vector3(0.32f, p.y - 0.16f, p.z);
     }
 
     /// <summary>사과 반응: 몸은 그대로 두고 고개만 움직인다. nod면 끄덕, 아니면 살짝 돌린다.</summary>
@@ -190,7 +205,6 @@ public class NpcMover : MonoBehaviour
             if (o.walking && Vector3.Dot(o.heading, dir) > 0.5f) continue;   // 같은 쪽으로 가는 사람은 따라간다
             Consider(o.transform.position - p, dir, right, gap, ref along, ref lateral, ref hit);
         }
-        if (PlayerController.I) Consider(PlayerController.I.transform.position - p, dir, right, gap, ref along, ref lateral, ref hit);
 
         if (!hit)
         {
@@ -222,7 +236,6 @@ public class NpcMover : MonoBehaviour
         float min = Bal.G("Npc_MinGap", 0.5f);
         foreach (NpcMover o in everyone)
             if (o != this) step = BlockOne(o.transform.position - p, step, min);
-        if (PlayerController.I) step = BlockOne(PlayerController.I.transform.position - p, step, min);
         return step;
     }
 

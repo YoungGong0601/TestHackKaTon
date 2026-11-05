@@ -55,6 +55,7 @@ ROWS = [
  ("drv_there", "drv", "거기 써 있잖아요."),
  ("drv_card", "drv", "카드 찍으세요."),
  ("drv_app", "drv", "앱에서 하세요."),
+ ("gp_wallet", "gp", "지갑에 뭐라 썼더라..."),
  ("gp_wherecash", "gp", "현금은 어디에 넣어요?"),
  ("gp_notice2", "gp", "현금 없는 버스 운행 안내. 이 버스는 현금을 받지 않습니다."),
  ("gp_onlycash", "gp", "현금밖에 없는데요."),

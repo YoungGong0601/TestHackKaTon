@@ -57,7 +57,6 @@ public class R1StorefrontDirector : MonoBehaviour
         Vector3 handle = doorHandle.position;
         player.Freeze(true);
         HandRig.I.Equip(ItemId.None);
-        HandRig.I.Tap();
         AudioManager.I.Play("door_handle", handle, 0.8f);
         Coroutine step = StartCoroutine(player.WalkTo(pullStand.position, Bal.F("MoveSpeed", 2.2f)));
         yield return new WaitForSeconds(0.25f);

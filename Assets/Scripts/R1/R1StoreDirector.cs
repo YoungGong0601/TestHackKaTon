@@ -31,7 +31,7 @@ public class R1StoreDirector : MonoBehaviour
 
     Phase phase;
     bool talking, early;
-    float staffQuietUntil, nextBeep = 12f, carryT, carryWant;
+    float staffQuietUntil, nextBeep = 12f, nextNotify = 16f, carryT, carryWant;
 
     static PlayerController Player => PlayerController.I;
     int Number => Bal.I("R1_OrderNumber", 274);
@@ -70,7 +70,7 @@ public class R1StoreDirector : MonoBehaviour
         carried.SetParent(Player.HandRoot, false);
         ShowBoard(268);
         SetPhase(Phase.Queue);
-        AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.2f));
+        AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.5f));
         Player.HoldStill = true;
         yield return Round.Open();
         yield return elder.Play();
@@ -143,7 +143,7 @@ public class R1StoreDirector : MonoBehaviour
         Player.Freeze(true);
         HandRig.I.Equip(ItemId.None);
         yield return StoreFlow.Race(this, Player.WalkTo(stand.position, Bal.F("MoveSpeed", 2.2f)), 2.5f);
-        yield return Player.LookAt(kioskLook.position, 0.35f);
+        yield return Player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
         kiosk.Nunchi.Configure(new NunchiRule());
         yield return kiosk.Enter();
         queue.KioskOn = false;
@@ -158,6 +158,7 @@ public class R1StoreDirector : MonoBehaviour
     IEnumerator Pickup()
     {
         SetPhase(Phase.Pickup);
+        CookWalk();
         yield return new WaitForSeconds(Bal.G("R1_PickupWaitSec", 5f));
         ShowBoard(Number);
         shelf.SetActive(true);
@@ -169,6 +170,15 @@ public class R1StoreDirector : MonoBehaviour
             Hud.I.Say(null, CallLine, "staff_call2", -1f, pickupPos.position);
             yield return new WaitForSeconds(Bal.G("Pickup_RecallSec", 13f));
         }
+    }
+
+    // 요리사가 받는 곳으로 간다. 씬 필드를 늘리지 않고 이름으로 찾고, 없으면 건너뛴다
+    void CookWalk()
+    {
+        GameObject c = GameObject.Find("NPC_Cook"), a = GameObject.Find("Anchor_CookA"), b = GameObject.Find("Anchor_CookB");
+        if (!c || !a || !b || !c.TryGetComponent(out NpcMover cook)) return;
+        float speed = Bal.G("Queue_CookSpeed", 1.3f);
+        cook.Go(a.transform.position, speed, () => cook.Go(b.transform.position, speed, () => cook.Face(pickupPos.position)));
     }
 
     void OnTake()
@@ -214,7 +224,13 @@ public class R1StoreDirector : MonoBehaviour
         if (nextBeep <= 0f)
         {
             nextBeep = Random.Range(Bal.G("Store_FryerBeepMin", 18f), Bal.G("Store_FryerBeepMax", 32f));
-            AudioManager.I.Play("fryer_beep", fryerPos.position, 0.3f);
+            AudioManager.I.Play("fryer_beep", fryerPos.position, 0.8f);
+        }
+        nextNotify -= dt;
+        if (nextNotify <= 0f)
+        {
+            nextNotify = Random.Range(Bal.G("Store_PhoneNotifyMin", 24f), Bal.G("Store_PhoneNotifyMax", 40f));
+            AudioManager.I.Play("phone_notify", staffPos.position, 0.22f);
         }
         carryT = StoreFlow.Damp(carryT, carryWant, 4f, dt);
         carried.localPosition = new Vector3(0.06f, -0.62f + carryT * 0.33f + Mathf.Sin(Time.time * 1.6f) * 0.004f, 0.5f);

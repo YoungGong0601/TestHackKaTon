@@ -19,7 +19,7 @@ public class TrafficMover : MonoBehaviour
     [SerializeField] int order;
     [SerializeField] bool scooter;
 
-    float wait, speed;
+    float wait, speed, now;
     bool moving, heard;
 
     float X => transform.position.x;
@@ -53,12 +53,20 @@ public class TrafficMover : MonoBehaviour
             wait -= Time.deltaTime;
             if (wait > 0f) return;
             if (dir > 0 && BusBusy) { wait = Bal.G("Traffic_BusRetrySec", 3f); return; }
+            if (StartBlocked()) { wait = Bal.G("Traffic_StartRetrySec", 1f); return; }
             Launch();
             return;
         }
 
+        // 앞차를 넘지 않는다. 간격 안으로 들어오면 앞차 속도에 맞추고, 더 가까우면 늦춘다
+        now = speed;
+        float gap = Bal.G("Traffic_MinGap", 9f);
+        var ahead = Ahead(out float dist);
+        if (ahead != null && dist < gap)
+            now = Mathf.Min(speed, ahead.now * Mathf.Clamp(dist / gap, 0.5f, 1f));
+
         var p = transform.position;
-        p.x += dir * speed * Time.deltaTime;
+        p.x += dir * now * Time.deltaTime;
         transform.position = p;
         Listen();
         if (Mathf.Abs(p.x) > Bal.G("Traffic_EndX", 130f))
@@ -69,12 +77,38 @@ public class TrafficMover : MonoBehaviour
         }
     }
 
+    bool SameLane(TrafficMover o) => o != this && o.moving && o.dir == dir
+        && Mathf.Abs(o.transform.position.z - transform.position.z) < Bal.G("Traffic_LaneWidth", 1.6f);
+
+    TrafficMover Ahead(out float dist)
+    {
+        TrafficMover best = null;
+        dist = float.MaxValue;
+        foreach (var o in All)
+        {
+            if (!SameLane(o)) continue;
+            float d = (o.X - X) * dir;
+            if (d > 0f && d < dist) { dist = d; best = o; }
+        }
+        return best;
+    }
+
+    // 나올 자리에 아직 앞차가 있으면 기다린다
+    bool StartBlocked()
+    {
+        float start = -dir * Bal.G("Traffic_StartX", 125f), gap = Bal.G("Traffic_MinGap", 9f) * 2f;
+        foreach (var o in All)
+            if (SameLane(o) && (o.X - start) * dir < gap) return true;
+        return false;
+    }
+
     void Launch()
     {
         speed = scooter ? Bal.G("Traffic_ScooterSpeed", 12f) : Random.Range(Bal.G("Traffic_CarSpeedMin", 8.8f), Bal.G("Traffic_CarSpeedMax", 11f));
         var p = transform.position;
         p.x = -dir * Bal.G("Traffic_StartX", 125f);
         transform.position = p;
+        now = speed;
         moving = true;
         heard = false;
         visual.SetActive(true);

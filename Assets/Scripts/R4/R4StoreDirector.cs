@@ -34,6 +34,8 @@ public class R4StoreDirector : MonoBehaviour
     NpcMover rival;
     bool talking, muttering, ordered, atKiosk;
     int retries;
+    float nextBeep = 12f, nextNotify = 16f;
+    Transform fryerPos;
 
     static string Me => GameState.I.Profile.speakerKey;
     static Hud Ui => Hud.I;
@@ -43,6 +45,8 @@ public class R4StoreDirector : MonoBehaviour
         exitDoor.active = false;
         if (tray) tray.SetActive(false);
         foreach (var w in watchers) w.gameObject.SetActive(false);
+        GameObject fryer = GameObject.Find("Anchor_Fryer");
+        fryerPos = fryer ? fryer.transform : staffPos;
     }
 
     void OnEnable()
@@ -68,12 +72,32 @@ public class R4StoreDirector : MonoBehaviour
 
     IEnumerator Start()
     {
-        AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.2f));
+        AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.5f));
         yield return Round.Open();
         Wallet.I.NoteMissed += OnNoteMissed;
+        PlayerController.I.Freeze(true);
+        yield return Ui.Say(null, "주문은... 어디다 하는 거지.", Me + "_whereorder");
+        if (!ordered) PlayerController.I.Freeze(false);
     }
 
-    void OnNoteMissed() => Ui.Say(null, "뭐라고 썼더라.", Me + "_note");
+    void Update()
+    {
+        float dt = Time.deltaTime;
+        nextBeep -= dt;
+        if (nextBeep <= 0f)
+        {
+            nextBeep = Random.Range(Bal.G("Store_FryerBeepMin", 18f), Bal.G("Store_FryerBeepMax", 32f));
+            AudioManager.I.Play("fryer_beep", fryerPos.position, 0.8f);
+        }
+        nextNotify -= dt;
+        if (nextNotify <= 0f)
+        {
+            nextNotify = Random.Range(Bal.G("Store_PhoneNotifyMin", 24f), Bal.G("Store_PhoneNotifyMax", 40f));
+            AudioManager.I.Play("phone_notify", staffPos.position, 0.22f);
+        }
+    }
+
+    void OnNoteMissed() => Ui.Say(null, "지갑에 뭐라 썼더라...", Me + "_wallet");
 
     // ---- 알바생과 고장 난 기계 ----
 
@@ -142,8 +166,8 @@ public class R4StoreDirector : MonoBehaviour
         HandRig.I.Equip(ItemId.None);
         while (true)
         {
-            yield return StoreFlow.Race(this, player.WalkTo(stand.position, Bal.F("MoveSpeed", 0.9f)), 4f);
-            yield return player.LookAt(kioskLook.position, 0.5f);
+            yield return StoreFlow.Race(this, player.WalkTo(stand.position, Bal.F("MoveSpeed", 1.15f)), 4f);
+            yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
             kiosk.Nunchi.Configure(Rule());
             queue.KioskOn = true;
             atKiosk = true;
@@ -170,12 +194,22 @@ public class R4StoreDirector : MonoBehaviour
         back.y = 0f;
         Vector3 tail = stand.position + back.normalized * (back.magnitude + Bal.G("R4_RequeueGap", 0.9f) * Mathf.Max(queue.Count, 1));
         tail.y = player.transform.position.y;
-        yield return StoreFlow.Race(this, player.WalkTo(tail + Vector3.right * 0.8f, Bal.F("MoveSpeed", 0.9f)), Bal.G("R4_RequeueWalkSec", 3f));
-        yield return player.LookAt(kioskLook.position, 0.5f);
+        yield return StoreFlow.Race(this, player.WalkTo(tail + Vector3.right * 0.8f, Bal.F("MoveSpeed", 1.15f)), Bal.G("R4_RequeueWalkSec", 3f));
+        yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
         yield return Takeover();
-        yield return Tray();
-        rival.Go(exitPos.position, Bal.G("R4_RivalSpeed", 1.4f), rival.Hide);
+        yield return Tray(rival);
+        var served = rival;
+        served.Go(exitPos.position, Bal.G("R4_RivalSpeed", 1.4f), () => queue.Done(served));
         yield return new WaitForSeconds(Bal.G("R4_RequeueWaitSec", 2f));
+
+        // 앞사람이 끝나면 암전으로 차례가 온다. 뒤에는 새 손님이 선다
+        yield return Ui.Fade(1f, 0.4f);
+        if (served.isActiveAndEnabled) queue.Done(served);
+        queue.Refill();
+        Vector3 to = kioskLook.position - stand.position;
+        player.Teleport(stand.position, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg);
+        yield return player.LookAt(kioskLook.position, 0.01f);
+        yield return Ui.Fade(0f, 0.4f);
     }
 
     void OnBounced()
@@ -200,7 +234,7 @@ public class R4StoreDirector : MonoBehaviour
         rival = Front();
         Vector3 back = rival.transform.position + Vector3.up * 1.5f;
         {
-            yield return player.LookAt(back, 0.7f);
+            yield return player.LookAt(back, Bal.G("Cine_BlendSec", 1f));
             yield return Ui.Say(null, "그거 지폐 안 받아요.", "a20_nobill", 2f, rival.transform.position + Vector3.up * 1.5f, 1f, true);
             yield return new WaitForSeconds(0.4f);
             yield return Ui.Say(null, "그려? 어쩔 수 없구만...", Me + "_giveup", 2.4f);
@@ -210,8 +244,8 @@ public class R4StoreDirector : MonoBehaviour
         yield return player.TurnTo(player.Yaw, Bal.G("R4_SadPitch", -28f), Bal.G("R4_SadLookSec", 1.2f));
         yield return player.TurnTo(player.Yaw + 180f, Bal.G("R4_SadPitch", -28f), Bal.G("R4_SadTurnSec", 1.6f));
 
-        StartCoroutine(Takeover());
-        yield return Tray();
+        yield return Takeover();
+        yield return Tray(rival);
         yield return player.TurnTo(player.Yaw, 0f, 0.8f);
 
         // 4-10b
@@ -276,15 +310,22 @@ public class R4StoreDirector : MonoBehaviour
         AudioManager.I.Play("kiosk_ok", at, 0.8f);
     }
 
-    IEnumerator Tray()
+    // 결제한 손님이 두 손으로 쟁반을 들고 지나간다. 들고 갈 사람이 없으면 쟁반은 안 보인다
+    IEnumerator Tray(NpcMover carrier)
     {
         if (!tray) yield break;
+        if (!carrier || !carrier.isActiveAndEnabled) { tray.SetActive(false); yield break; }
+        float hand = Bal.G("R4_TrayHandY", 1.05f), reach = Bal.G("R4_TrayReach", 0.32f), sec = Bal.G("R4_TraySec", 2.4f);
+        Vector3 to = trayTo.position;
+        to.y = carrier.transform.position.y;
+        carrier.Go(to, Vector3.Distance(carrier.transform.position, to) / Mathf.Max(sec, 0.01f));
         tray.SetActive(true);
-        float sec = Bal.G("R4_TraySec", 2.4f);
-        AudioManager.I.Play("tray_put", trayFrom.position, 0.4f);
-        for (float t = 0f; t < 1f; t += Time.deltaTime / sec)
+        AudioManager.I.Play("tray_put", carrier.transform.position, 0.4f);
+        for (float t = 0f; t < sec && carrier.isActiveAndEnabled; t += Time.deltaTime)
         {
-            tray.transform.position = Vector3.Lerp(trayFrom.position, trayTo.position, t);
+            var c = carrier.transform;
+            tray.transform.position = c.position + Vector3.up * hand + c.forward * reach;
+            tray.transform.rotation = Quaternion.Euler(0f, c.eulerAngles.y, 0f);
             yield return null;
         }
         tray.SetActive(false);

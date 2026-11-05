@@ -82,7 +82,7 @@ public abstract class RoundFixture
         InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
 
         yield return Until(() => ConfigTableLoader.IsLoaded, 20f, "설정 로드");
-        yield return SceneManager.LoadSceneAsync("R1_Stop", LoadSceneMode.Single);
+        yield return SceneManager.LoadSceneAsync("R1_Home", LoadSceneMode.Single);
         yield return null;
         yield return null;
         Assert.IsNotNull(GameState.I, "GameState 없음");
@@ -550,17 +550,29 @@ public abstract class RoundFixture
         }
     }
 
-    protected IEnumerator PlayR1Stop()
+    /// <summary>1-0 현관. 쪽지를 보고 문을 열고 나간다.</summary>
+    protected IEnumerator PlayR1Home()
     {
         yield return InChapter(0);
-        var d = Object.FindAnyObjectByType<R1StopDirector>();
-        yield return Until(() => !Pc.Frozen, 20f, "1회차 시작");
+        var d = Object.FindAnyObjectByType<R1HomeDirector>();
+        var door = Field<Interactable>(d, "doorUse");
+        yield return Until(() => door.active && !Pc.Frozen, 20f, "현관 시작");
 
         // 쪽지는 1 키로 접고 편다
         Assert.IsTrue(Note.Available, "1회차 쪽지");
         bool was = Note.Opened;
         yield return Tap(Key.Digit1);
         Assert.AreNotEqual(was, Note.Opened, "1 키 쪽지");
+
+        yield return Use(door);
+        yield return InChapter(1);
+    }
+
+    protected IEnumerator PlayR1Stop()
+    {
+        yield return InChapter(1);
+        var d = Object.FindAnyObjectByType<R1StopDirector>();
+        yield return Until(() => !Pc.Frozen, 20f, "1회차 시작");
 
         // 1-0 골목에서 정류장까지 걷는다
         var zone = Field<Collider>(d, "stopZone");
@@ -576,13 +588,13 @@ public abstract class RoundFixture
         yield return Free();
         Assert.AreEqual(ItemId.Card, HandRig.I.Held, "버스 안 카드");
         yield return Use(Field<PayPoint>(d, "terminal").GetComponent<Interactable>());
-        yield return InChapter(1);
+        yield return InChapter(2);
     }
 
     protected IEnumerator PlayR1Storefront()
     {
         yield return Use("당기기", 30f);
-        yield return InChapter(2);
+        yield return InChapter(3);
     }
 
     /// <summary>1-7, 1-8. 포인터와 좌클릭만으로 결제까지.</summary>
@@ -602,9 +614,30 @@ public abstract class RoundFixture
         yield return Touch("pay_card");
         yield return Screen("card");
         Assert.AreEqual(ItemId.Card, HandRig.I.Held, "카드 화면에서 카드를 듦");
+        // 종이를 넘기고 틈에 꽂는다. 넘기기 전 틈은 가려져 있다
+        var flap = Object.FindAnyObjectByType<PosterFlap>();
+        Assert.IsFalse(flap.Opened, "종이가 틈을 가리고 시작");
+        yield return Real(0.6f);
+        yield return Shot("r1-poster");
         yield return ClickPay();
-        yield return Until(() => Kiosk.Screen == "paying" || Kiosk.Screen == "done", 3f, "카드 승인");
-        yield return Screen("done", 8f);
+        Assert.IsTrue(flap.Opened, "종이 넘김");
+        yield return Screen("paying", 3f);
+        Assert.AreEqual(ItemId.None, HandRig.I.Held, "카드가 틈으로 들어감");
+        yield return Real(0.4f);
+        yield return Shot("r1-card-in");
+
+        // 기다렸다가 카드를 뺀다
+        yield return Screen("cardout", 15f);
+        yield return ClickPay();
+        yield return Screen("done", 5f);
+
+        // 영수증이 다 나오면 뜯는다
+        var hit = Field<Collider>(Object.FindAnyObjectByType<KioskReceipt>(FindObjectsInactive.Include), "hit");
+        yield return Until(() => hit.enabled, 15f, "영수증 다 나옴");
+        Assert.IsTrue(Kiosk.Active, "뜯기 전에는 안 끝남");
+        yield return Shot("r1-receipt");
+        yield return Point(() => hit.bounds.center);
+        yield return Click();
     }
 
     protected IEnumerator PlayR1Store()
@@ -624,7 +657,7 @@ public abstract class RoundFixture
         var exit = Field<Interactable>(d, "exitDoor");
         yield return Until(() => exit.active, 10f, "나가기 켜짐");
         yield return Use(exit);
-        yield return InChapter(3);
+        yield return InChapter(4);
     }
 
     /// <summary>2-3, 2-4. 쪽지대로 2잔을 담고 잔마다 옵션을 고른다.</summary>
@@ -671,7 +704,7 @@ public abstract class RoundFixture
         var cup = Field<Interactable>(Object.FindAnyObjectByType<R2CafeDirector>(), "takeCup");
         yield return Until(() => Object.FindAnyObjectByType<R2CafeDirector>() != null && rec.Saw("...번 고객..."), 40f, "카페 호출");
         yield return Use(cup);
-        yield return InChapter(4);
+        yield return InChapter(5);
     }
 
     protected IEnumerator PlayR4Storefront()
@@ -685,7 +718,7 @@ public abstract class RoundFixture
         var part = Field<Transform>(Wallet.I, "notePart");
         yield return Point(() => part.position);
         yield return Click();
-        yield return Until(() => rec.Saw("뭐라고 썼더라."), 6f, "쪽지 혼잣말");
+        yield return Until(() => rec.Saw("지갑에 뭐라 썼더라..."), 6f, "쪽지 혼잣말");
 
         // 돋보기로 쪽지
         bool read = false;
@@ -713,12 +746,14 @@ public abstract class RoundFixture
         Wallet.I.NoteRead -= hit;
         Assert.IsTrue(read, "쪽지가 돋보기로 안 읽힘");
         yield return Free(20f);
+        // 돋보기를 내린다. 든 채로 문을 보면 스티커가 읽힌다
+        if (HandRig.I.Held == ItemId.Lens) yield return Tap(Key.Digit2);
 
         // 민다. 안 열린다
         yield return Use("밀기", 20f);
         yield return Until(() => rec.Saw("어? 왜 안 열려."), 10f, "4-1 대사");
         yield return Real(0.6f);
-        Assert.AreEqual(4, Game.chapterIndex, "미는 것으로 안 넘어감");
+        Assert.AreEqual(5, Game.chapterIndex, "미는 것으로 안 넘어감");
         Assert.IsNull(Usable("당기기"), "읽기 전 당기기");
 
         // 돋보기로 읽고 당긴다
@@ -726,7 +761,7 @@ public abstract class RoundFixture
         yield return Until(() => Usable("당기기") != null, 5f, "당기기 생김");
         yield return Use("당기기");
         yield return Until(() => rec.Saw("아, 당기는 거구먼."), 15f, "4-2 대사");
-        yield return InChapter(5);
+        yield return InChapter(6);
     }
 
     protected static KioskState K => ((R4ProtoPack)Kiosk.Pack).Flow.K;
@@ -776,7 +811,7 @@ public abstract class RoundFixture
     protected IEnumerator R4Leave()
     {
         yield return Use("나가기", 60f);
-        yield return InChapter(6);
+        yield return InChapter(7);
     }
 
     protected IEnumerator PlayR4Stop(bool lastOnly = false)
@@ -840,7 +875,7 @@ public abstract class RoundFixture
 
     protected IEnumerator PlayEnding()
     {
-        yield return InChapter(7, 120f);
+        yield return InChapter(8, 120f);
         var d = Object.FindAnyObjectByType<EndingHomeDirector>();
         yield return Until(() => !Pc.Frozen, 30f, "엔딩 걷기 시작");
 

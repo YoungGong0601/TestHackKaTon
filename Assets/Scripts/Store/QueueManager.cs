@@ -74,11 +74,25 @@ public class QueueManager : MonoBehaviour
         nextArrive = Bal.G("Queue_FirstArrive", 5f);
     }
 
+    void OnEnable() => nunchi.Sorried += Sorry;
+    void OnDisable() => nunchi.Sorried -= Sorry;
+
+    /// <summary>사과: 앞사람은 고개를 까딱, 뒷사람은 고개를 살짝 돌림.</summary>
+    public void Sorry()
+    {
+        for (int i = 0; i < queue.Count; i++)
+            queue[i].React(i == 0);
+    }
+
     void Update()
     {
         float dt = Time.deltaTime;
 
-        if (doorWant != 0f && Time.time > doorUntil) doorWant = 0f;
+        if (doorWant != 0f && Time.time > doorUntil)
+        {
+            doorWant = 0f;
+            AudioManager.I.Play("door_glass_open", doorPivot.position, 0.35f, 0.8f);
+        }
         doorA = StoreFlow.Damp(doorA, doorWant, doorWant != 0f ? 5f : 3f, dt);
         doorPivot.localRotation = doorBase * Quaternion.Euler(0f, doorA * Mathf.Rad2Deg, 0f);
 
@@ -86,7 +100,7 @@ public class QueueManager : MonoBehaviour
         if ((KioskOn || (nunchi != null && nunchi.Running)) && nunchi != null)
         {
             int max = Bal.I("Queue_Max", 4);
-            int want = 1 + Mathf.FloorToInt(nunchi.Value / Mathf.Max(Bal.G("Nunchi_Max", 100f), 1f) * max);
+            int want = Mathf.Max(Bal.I("Queue_MinBack", 2), 1 + Mathf.FloorToInt(nunchi.Value / Mathf.Max(Bal.G("Nunchi_Max", 100f), 1f) * max));
             nextArrive -= dt;
             if (nextArrive <= 0f && queue.Count < Mathf.Min(want, max) && pool.Count > 0)
             {
@@ -101,6 +115,29 @@ public class QueueManager : MonoBehaviour
         doorWant = Bal.G("Door_StoreOpenAngle", 1.15f);
         doorUntil = Time.time + sec;
         AudioManager.I.Play("door_chime", doorPivot.position + Vector3.up * 2f, 0.55f);
+    }
+
+    /// <summary>주문을 끝내고 나간 손님을 풀로 돌린다.</summary>
+    public void Done(NpcMover n)
+    {
+        queue.Remove(n);
+        if (n.TryGetComponent(out NpcPose pose)) pose.pose = "Idle";
+        n.Hide();
+        if (!pool.Contains(n)) pool.Add(n);
+    }
+
+    /// <summary>줄이 비지 않게 최소 인원까지 바로 세운다.</summary>
+    public void Refill()
+    {
+        int min = Bal.I("Queue_MinBack", 2);
+        while (queue.Count < min && pool.Count > 0)
+        {
+            NpcMover n = TakeFromPool();
+            n.Place(Slot(queue.Count));
+            n.Show();
+            queue.Add(n);
+            Settle(n);
+        }
     }
 
     void Arrive()
@@ -140,42 +177,22 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    /// <summary>주문을 마친 뒤 줄이 앞으로 간다. 플레이어가 키오스크 앞을 비울 때까지 맨 앞 손님은 기다리며 재촉한다.</summary>
+    /// <summary>주문을 마친 뒤 줄이 앞으로 간다. 플레이어가 서 있어도 멈추지 않는다.</summary>
     public void ShuffleForward()
     {
         StartCoroutine(NextUp());
     }
 
-    bool PlayerAtStand
-    {
-        get
-        {
-            Vector3 d = PlayerController.I.transform.position - stand.position;
-            d.y = 0f;
-            return d.magnitude < Bal.G("Queue_MoveClearDist", 0.9f);
-        }
-    }
-
     IEnumerator NextUp()
     {
-        float wait = Bal.G("Queue_MoveWaitSec", 6f);
-        while (queue.Count > 0 && PlayerAtStand)
-        {
-            wait -= Time.deltaTime;
-            if (wait <= 0f)
-            {
-                NpcMover front = queue[0];
-                front.Face(PlayerController.I.transform.position);
-                Vector3 head = front.transform.position + Vector3.up * 1.5f;
-                Hud.I.Say(null, "비키세요.", "y_move2", -1f, head);
-                wait = Bal.G("Queue_MoveAgainSec", 7f);
-            }
-            yield return null;
-        }
         if (queue.Count == 0) yield break;
         NpcMover n = queue[0];
         queue.RemoveAt(0);
-        n.Go(stand.position, WalkSpeed, () => n.Face(kioskLook.position));
+        n.Go(stand.position, WalkSpeed, () =>
+        {
+            n.Face(kioskLook.position);
+            if (n.TryGetComponent(out NpcPose pose)) pose.pose = "Tap";
+        });
         CloseUp();
     }
 

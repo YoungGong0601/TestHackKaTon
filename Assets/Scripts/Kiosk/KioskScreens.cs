@@ -81,11 +81,17 @@ public class KioskScreens : MonoBehaviour
         return list;
     }
 
+    /// <summary>쿼드 UV를 캔버스 위 세계 좌표로.</summary>
+    public Vector3 World(Vector2 uv)
+    {
+        var r = canvas.rect;
+        return canvas.TransformPoint(new Vector3(r.xMin + uv.x * r.width, r.yMin + uv.y * r.height, 0f));
+    }
+
     /// <summary>쿼드 UV 위의 버튼. 위에 그려진 것부터 찾는다.</summary>
     public KioskButton At(Vector2 uv)
     {
-        var r = canvas.rect;
-        Vector3 world = canvas.TransformPoint(new Vector3(r.xMin + uv.x * r.width, r.yMin + uv.y * r.height, 0f));
+        Vector3 world = World(uv);
         var list = Buttons();
         for (int i = list.Count - 1; i >= 0; i--) if (list[i].Contains(world)) return list[i];
         return null;

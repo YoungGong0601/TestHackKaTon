@@ -1171,7 +1171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8708538769972343576
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1567,15 +1567,8 @@ MonoBehaviour:
   nunchiFill: {fileID: 824116352410790612}
   fade: {fileID: 1135714586567882984}
   titlePanel: {fileID: 7853459241622828804}
-  resultGroup: {fileID: 0}
-  resultValues:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   debugText: {fileID: 7642462802893344045}
+  CardName: "\uCE74\uB4DC"
 --- !u!114 &9188849852746964454
 MonoBehaviour:
   m_ObjectHideFlags: 0

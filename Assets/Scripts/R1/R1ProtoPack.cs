@@ -18,6 +18,9 @@ public class R1ProtoPack : KioskPack
         ["menu"] = ("k_menu", "원하시는 메뉴를 선택해 주세요."),
         ["pay"] = ("k_pay", "결제 수단을 선택해 주세요."),
         ["card"] = ("k_card", "카드를 투입구에 삽입해 주세요."),
+        ["paying"] = ("k_cardhold", "결제가 완료될 때까지 카드를 빼지 마세요."),
+        ["cardout"] = ("k_cardout", "카드를 제거해 주세요."),
+        ["done"] = ("k_receipt", "영수증을 받아 가세요."),
     };
     static readonly Dictionary<string, string> Back = new Dictionary<string, string>
     {
@@ -28,12 +31,15 @@ public class R1ProtoPack : KioskPack
     KioskScreens scr;
     KioskPresenter view;
     PayPoint pay;
-    bool paid;
+    KioskHardware hw;
+    bool paid, pulled, canTear;
+    float progress;
 
     static int SetPrice => Bal.I("R1_SetPrice", 8900);
 
     public override string FirstScreen => "idle";
     public override bool CanGiveUp => false;
+    public override bool ShowMeaning => false;   // 1회차는 쉽다. 돋보기도 뜻 풀이도 없다
 
     void Awake()
     {
@@ -50,9 +56,12 @@ public class R1ProtoPack : KioskPack
 
     public override void OnEnter()
     {
+        hw = Ctl.GetComponent<KioskHardware>();
+        if (hw) hw.Clear();    // 어르신이 나간 뒤 종이는 다시 틈을 가린다
         pay = Ctl.Pay;
         if (pay)
         {
+            pay.DeferOk = true;
             pay.Approved += OnPaid;
             pay.Empty += OnEmpty;
         }
@@ -70,7 +79,7 @@ public class R1ProtoPack : KioskPack
     {
         K.screen = id;
         Draw();
-        Ctl.SetDown(id == "card");
+        Ctl.SetDown(id == "card" || id == "paying" || id == "cardout" || id == "done");
         HandRig.I.Equip(id == "card" ? ItemId.Card : ItemId.None);
         if (Voice.TryGetValue(id, out var v)) Ctl.Say("kiosk", v.text, v.vo);
     }
@@ -90,6 +99,7 @@ public class R1ProtoPack : KioskPack
             c.Text("desc", "신메뉴");
             c.Text("tag", "NEW");
             c.Show("tag_box", true);
+            view.Put(c, Picture(SetItem));
         }
         else if (K.screen == "cart" && K.cart.Count > 0 && s.cells.Length > 0)
         {
@@ -97,6 +107,7 @@ public class R1ProtoPack : KioskPack
             c.Text("name", SetName);
             c.Text("mean", "");
         }
+        else if (K.screen == "paying") s.Fill("bar", progress);
         else if (K.screen == "done") s.Text("number", GameState.I.Order.number.ToString());
     }
 
@@ -171,13 +182,43 @@ public class R1ProtoPack : KioskPack
 
     public override bool Hit(Collider col)
     {
-        if (col.GetComponentInParent<PayPoint>()) return false;
-        if (col.GetComponentInParent<PosterFlap>() || col.GetComponentInParent<CardSlot>() || col.GetComponentInParent<KioskSpot>())
+        if (col.GetComponentInParent<PosterFlap>())
         {
-            Ctl.Sfx("kiosk_tap", 0.35f, 0.7f);
+            if (hw) hw.OpenCover();
+            Ctl.Sfx("paper_rustle", 0.8f);
             return true;
         }
-        return false;
+        var spot = col.GetComponentInParent<KioskSpot>();
+        if (spot && spot.id == "paper")
+        {
+            TakeReceipt();
+            return true;
+        }
+        if (col.GetComponentInParent<PayPoint>())
+        {
+            if (K.screen != "cardout") return false;
+            pulled = true;
+            return true;
+        }
+        var slot = col.GetComponentInParent<CardSlot>();
+        if (slot && K.screen == "card")
+        {
+            K.cardMsg = slot.id == "receipt" ? "인식할 수 없는 매체입니다" : "카드를 인식할 수 없습니다";
+            if (hw) hw.CardAt(slot.id, Ctl.Out, KioskCard.Move.Bounce);
+            Ctl.Sfx("card_slide_wrong", 0.9f);
+            Draw();
+            return true;
+        }
+        if (spot && spot.id == "call")
+        {
+            Ctl.Sfx("kiosk_tap", 0.7f, 0.8f);
+            Ctl.Sfx("fryer_beep", 0.6f);
+            Toast("직원을 호출했습니다", 2.4f);
+            return true;
+        }
+        if (Ctl.IsScreen(col)) return false;
+        Ctl.Sfx("kiosk_tap", 0.35f, 0.7f);
+        return true;
     }
 
     void OnEmpty() => Toast(K.screen == "card" ? "3 카드" : "카드 전용");
@@ -197,11 +238,42 @@ public class R1ProtoPack : KioskPack
 
     IEnumerator Finish()
     {
-        GameState.I.Order.number = Bal.I("R1_OrderNumber", 274);
+        int number = Bal.I("R1_OrderNumber", 274);
+        GameState.I.Order.number = number;
+        K.cardMsg = null;
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.In);
+        progress = 0f;
         Go("paying");
-        yield return new WaitForSeconds(Bal.G("R1_PayingSec", 0.8f));
+        int steps = Bal.I("R1_PaySteps", 6);
+        for (int i = 1; i <= steps; i++)
+        {
+            yield return new WaitForSeconds(Bal.G("Kiosk_PayStepSec", 0.5f));
+            progress = (float)i / steps;
+            Draw();
+        }
+        Ctl.Sfx("kiosk_ok", 0.8f);
+        pulled = false;
+        Go("cardout");
+        float until = Time.time + Bal.G("Kiosk_CardOutWait", 6f);
+        while (!pulled && Time.time < until) yield return null;
+        if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.Out);
+        Ctl.Sfx("card_insert", 0.5f, 1.25f);
+        yield return new WaitForSeconds(Bal.G("Kiosk_CardOutDelay", 0.5f));
         Go("done");
-        yield return new WaitForSeconds(Bal.G("R1_DoneShowSec", 1.6f));
+        float print = Bal.G("Kiosk_ReceiptPrintSec", 3.1f);
+        if (hw) hw.Print($"{SetName}  {Won(SetPrice)}", Won(SetPrice), number, print);
+        Ctl.Sfx("receipt_print", 0.9f);
+        yield return new WaitForSeconds(print);
+        if (hw) hw.ReceiptReady();
+        canTear = true;
+    }
+
+    void TakeReceipt()
+    {
+        if (!canTear) return;
+        canTear = false;
+        Ctl.Sfx("paper_tear", 0.9f);
+        if (hw) hw.Tear();
         Ctl.Finish();
     }
 

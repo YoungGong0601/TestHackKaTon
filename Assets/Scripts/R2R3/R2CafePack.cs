@@ -13,6 +13,11 @@ public class R2CafePack : KioskPack
 
     class Cup { public string id, name, shot, ice; }
 
+    // 배치: slots = MY ORDER 칸 Image 3개, cupArt = americano, latte, 그 밖 순서의 잔 그림, emptyArt = 빈 칸 그림
+    [SerializeField] UnityEngine.UI.Image[] slots = new UnityEngine.UI.Image[0];
+    [SerializeField] Sprite[] cupArt = new Sprite[0];
+    [SerializeField] Sprite emptyArt;
+
     readonly List<Cup> cart = new List<Cup>();
     int cup;
     string now;
@@ -71,6 +76,7 @@ public class R2CafePack : KioskPack
             case "americano": Add(id, "아이스 아메리카노"); break;
             case "latte": Add(id, "아이스 카페라떼"); break;
             case "icon0": case "icon1": case "icon2": case "icon3": Add(id, "다른 메뉴"); break;
+            case "slot0": case "slot1": case "slot2": Remove(id[4] - '0'); break;
             case "next": if (cart.Count == Cups) ToCup(0); else Refuse(cart.Count == 0 ? "메뉴 미선택" : "2잔 미선택"); break;
             case "shot0": case "shot1": cart[cup].shot = id == "shot1" ? "샷 추가" : null; ToIce(); break;
             case "ice0": cart[cup].ice = "얼음 적게"; NextCup(); break;
@@ -85,15 +91,39 @@ public class R2CafePack : KioskPack
     // 2잔이 차 있으면 가장 먼저 담은 잔이 빠진다
     void Add(string id, string name)
     {
+        // 이미 담은 메뉴를 다시 누르면 뺀다
+        int have = cart.FindIndex(c => c.id == id);
+        if (have >= 0) { Remove(have); return; }
         if (cart.Count == Cups) cart.RemoveAt(0);
         cart.Add(new Cup { id = id, name = name });
         ShowCart();
         Ctl.Toast($"{name} {cart.Count}잔째");
     }
 
+    void Remove(int i)
+    {
+        if (i < 0 || i >= cart.Count) { Refuse("빈 칸"); return; }
+        cart.RemoveAt(i);
+        ShowCart();
+        Ctl.Sfx("kiosk_tap", 0.8f);
+    }
+
+    static int Price(Cup c) => c.id == "latte" ? 5000 : 4500;
+
     void ShowCart()
     {
         var menu = Scr.Get("menu");
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (!slots[i]) continue;
+            int art = i < cart.Count ? (cart[i].id == "americano" ? 0 : cart[i].id == "latte" ? 1 : 2) : -1;
+            slots[i].sprite = art >= 0 && art < cupArt.Length ? cupArt[art] : emptyArt;
+            slots[i].color = art >= 0 ? Color.white : new Color(1f, 1f, 1f, 0.25f);
+            slots[i].preserveAspect = true;
+        }
+        int total = 0;
+        foreach (var c in cart) total += Price(c);
+        menu.Text("cart_total", total.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + "원");
         menu.Show("on_americano", cart.Exists(c => c.id == "americano"));
         menu.Show("on_latte", cart.Exists(c => c.id == "latte"));
         menu.Text("cart_count", $"{cart.Count} ITEM");

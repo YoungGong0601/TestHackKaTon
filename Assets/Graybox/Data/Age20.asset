@@ -18,6 +18,7 @@ MonoBehaviour:
   speakerKey: a20
   handLook: 0
   items: 03000000
+  canRun: 1
   limp: 0
   visionBlur: 0
   kioskBlur: 0

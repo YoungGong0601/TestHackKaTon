@@ -185,7 +185,7 @@ public class GameState : MonoBehaviour
         }
         if (kb.f7Key.wasPressedThisFrame) ConfigTableLoader.Load();
         if (kb.homeKey.wasPressedThisFrame) Restart();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 9; i++)
             if (kb[Key.Digit1 + i].wasPressedThisFrame) JumpChapter(i);
     }
 }
