@@ -317,7 +317,7 @@ def extent(o):
 k3d.reset()
 m_straw = F.Sh(M + "_Straw", "#1f8a5e", .28).out("#1f8a5e", .28)
 m_straw_in = F.Sh(M + "_StrawIn", "#0c3a28", .5).out("#0c3a28", .5)
-ice_l = ice_mat("_IceL", LEVEL_L, "#160b06", "#a97a4e", "#4a2c17")
+ice_l = ice_mat("_IceL", LEVEL_L, "#160b06", "#553623", "#2a170c")   # 대비가 크면 브라우니처럼 보인다
 ice_r = ice_mat("_IceR", LEVEL_R, "#c99e6e", "#e4c9a4", "#d3ad80")
 
 straw_l, hole_l = straw(-CX, math.radians(20), m_straw, m_straw_in)
