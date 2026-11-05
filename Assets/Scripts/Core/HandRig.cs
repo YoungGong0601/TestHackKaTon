@@ -45,7 +45,12 @@ public class HandRig : MonoBehaviour
     public bool ItemsEnabled { get; private set; } = true;
     public Readable LensHit { get; private set; }
 
-    float Shake => Mathf.Max(tremble, Debuff.Tremble);
+    // 인물과 눈치 단계가 더해진다. 시작은 손이나 돋보기가 멈출 때, 물건을 꺼낼 때
+    float Shake => Debuff.TrembleAmp(tremble + Debuff.Tremble, Time.time - trembleFrom);
+    static float TrembleRad => Bal.G("Tremble_Freq", 1.8f) * Mathf.PI * 2f;
+
+    float trembleFrom = -100f, lastMove;
+    bool handMoving;
 
     static readonly Vector3 Shoulder = new(0.24f, -1f, 0.22f);
     static readonly int LensViewId = Shader.PropertyToID("_LensView");
@@ -130,6 +135,7 @@ public class HandRig : MonoBehaviour
     {
         if (Held == id) return;
         Held = id;
+        if (id != ItemId.None) trembleFrom = Time.time;
         if (AudioManager.I != null) AudioManager.I.Play("pocket_rummage", null, 0.55f);
         RefreshHud();
     }
@@ -192,8 +198,8 @@ public class HandRig : MonoBehaviour
     // 떨림이 들어간 포인터(뷰포트 좌표)
     public Vector2 Ptr01()
     {
-        float t = Time.time, j = Shake * Bal.G("Hand_TrembleScale", 0.012f);
-        return PlayerController.I.Cursor01 + new Vector2(Mathf.Sin(t * 31f) * j * 0.6f, Mathf.Cos(t * 27f) * j);
+        float t = Time.time * TrembleRad, j = Shake * Bal.G("Hand_TrembleScale", 0.012f);
+        return PlayerController.I.Cursor01 + new Vector2(Mathf.Sin(t * 1.07f) * j * 0.6f, Mathf.Cos(t * 0.93f) * j);
     }
 
     public Ray PointerRay()
@@ -222,8 +228,28 @@ public class HandRig : MonoBehaviour
         else if (kb.digit3Key.wasPressedThisFrame)
         {
             var profile = GameState.I != null ? GameState.I.Profile : null;
-            if (profile != null && profile.Has(ItemId.Wallet) && Wallet.I != null) Wallet.I.SetOpen(!Wallet.I.Open);
+            if (profile != null && profile.Has(ItemId.Wallet) && Wallet.I != null)
+            {
+                Wallet.I.SetOpen(!Wallet.I.Open);
+                if (Wallet.I.Open) trembleFrom = Time.time;
+            }
             else Toggle(ItemId.Card);
+        }
+    }
+
+    // 움직이던 손이 Tremble_StillSec 동안 멈추면 떨림을 다시 큰 폭에서 시작한다
+    void WatchStill()
+    {
+        var mouse = Mouse.current;
+        if (mouse != null && mouse.delta.ReadValue().sqrMagnitude > Bal.G("Tremble_MoveDelta", 4f))
+        {
+            lastMove = Time.time;
+            handMoving = true;
+        }
+        else if (handMoving && Time.time - lastMove > Bal.G("Tremble_StillSec", 0.12f))
+        {
+            handMoving = false;
+            trembleFrom = Time.time;
         }
     }
 
@@ -232,6 +258,7 @@ public class HandRig : MonoBehaviour
         var player = PlayerController.I;
         if (player == null) return;
         Keys();
+        WatchStill();
 
         float dt = Mathf.Min(Time.deltaTime, 0.05f), t = Time.time;
         var cam = player.Eye;
@@ -245,7 +272,7 @@ public class HandRig : MonoBehaviour
         tPoint = Damp(tPoint, Pointer && Held == ItemId.None ? 1f : 0f, 9f, dt);
 
         float sway = Mathf.Sin(t * 1.2f) * 0.003f;
-        float jx = Mathf.Sin(t * 29f) * Shake * 0.0035f, jy = Mathf.Cos(t * 23f) * Shake * 0.0035f;
+        float jx = Mathf.Sin(t * TrembleRad) * Shake * 0.0035f, jy = Mathf.Cos(t * TrembleRad * 0.8f) * Shake * 0.0035f;
 
         // 포인터를 따르는 것들: 화면 위치에서 카메라 앞 평면으로
         Vector2 ndc = Pointer ? Ptr01() * 2f - Vector2.one : Vector2.zero;

@@ -10,7 +10,7 @@ using UnityEngine.TestTools;
 
 public class RoundPathTests : RoundFixture
 {
-    const int R3 = 4, R4Front = 5, R4Store = 6, R4Stop = 7;
+    const int R2 = 3, R4Front = 4, R4Store = 5, R4Stop = 6, EndHome = 7;
 
     [UnityTest, Timeout(Limit)]
     public IEnumerator FullRun()
@@ -21,7 +21,6 @@ public class RoundPathTests : RoundFixture
         yield return PlayR1Storefront();
         yield return PlayR1Store();
         yield return PlayR2();
-        yield return PlayR3();
         yield return PlayR4Storefront();
         yield return EnterKiosk();
         yield return R4ToPay();
@@ -30,11 +29,64 @@ public class RoundPathTests : RoundFixture
         yield return PlayR4Stop();
         yield return PlayEnding();
 
-        AssertSaw("112번 버스를 타고 버거집에 가세요.", "112번 버스를 타세요.", "왜 안 되지?", "그거 지폐 안 받아요.", "그려? 어쩔 수 없구만...",
-            "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.", "아메리카노를 주문하세요.", "영화표를 사세요.",
+        AssertSaw("112번 버스를 타세요.", "왜 안 되지?", "그거 지폐 안 받아요.", "그려? 어쩔 수 없구만...",
+            "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.", 
             "이건 또 뭐야.", "돈을 어디다 넣으라는 거야.", "117번이요.", "아이고, 아니구먼.", "벌써 이렇게 됐구먼.", "172번이요.");
         Assert.AreEqual(new[] { 2, 4, 6 }, rec.Hours.ToArray(), "손목시계 바늘");
         AssertCleanText();
+    }
+
+    // ---- 촬영. 평소 시험에서는 돌지 않는다 ----
+
+    class Shooter : MonoBehaviour
+    {
+        readonly System.Collections.Generic.HashSet<string> done = new();
+        bool busy;
+
+        void Update()
+        {
+            if (busy || Game == null || Pc == null) return;
+            string c = "c" + Game.chapterIndex + "-" + Scene;
+            var k = Object.FindAnyObjectByType<KioskController>();
+            string want = !Pc.Frozen && Pc.CurrentMode == PlayerController.Mode.Fps ? c + "-start"
+                : k != null && k.Active && k.Screen != "" ? c + "-" + k.Screen : null;
+            if (want != null && done.Add(want)) StartCoroutine(Take(want));
+        }
+
+        System.Collections.IEnumerator Take(string name)
+        {
+            busy = true;
+            float end = Time.realtimeSinceStartup + 0.5f;
+            while (Time.realtimeSinceStartup < end) yield return null;
+            yield return Shot(name);
+            busy = false;
+        }
+    }
+
+    [UnityTest, Explicit, Timeout(Limit)]
+    public IEnumerator Capture()
+    {
+        SteadyHands();
+        rec.gameObject.AddComponent<Shooter>();
+        Time.timeScale = 2f;
+        yield return PlayR1Stop();
+        yield return PlayR1Storefront();
+        yield return PlayR1Store();
+        yield return PlayR2();
+        yield return PlayR4Storefront();
+        yield return EnterKiosk();
+        yield return R4ToPay();
+        yield return Bounce(3);
+        yield return R4Leave();
+        yield return PlayR4Stop();
+        var group = Field<CanvasGroup>(RoundUi.I, "endGroup");
+        yield return Until(() => group.gameObject.activeSelf, 120f, "엔딩");
+        yield return Until(() => rec.Saw(Ending.Stat), 20f, "엔딩 문구");
+        yield return Real(0.3f);
+        yield return Shot("end-stat");
+        yield return Until(() => rec.Saw(Ending.Title), 20f, "엔딩 제목");
+        yield return Real(0.3f);
+        yield return Shot("end-title");
     }
 
     // ---- 1-8 카드: 포인터와 좌클릭만으로 ----
@@ -44,15 +96,7 @@ public class RoundPathTests : RoundFixture
     {
         yield return Chapter(2);
         Time.timeScale = Fast;
-        yield return EnterKiosk();
-        yield return Screen("menu");
-        yield return Touch("burger");
-        yield return Screen("pay");
-        Time.timeScale = 1f;
-        Assert.AreEqual(ItemId.Card, HandRig.I.Held, "결제 창에서 카드를 듦");
-        yield return ClickPay();
-        yield return Screen("done", 3f);
-        Time.timeScale = Fast;
+        yield return R1Kiosk();
         yield return Free(30f);
         Assert.AreEqual(274, Game.Order.number);
     }
@@ -64,7 +108,7 @@ public class RoundPathTests : RoundFixture
         yield return PlayR1Stop();
         yield return PlayR1Storefront();
         yield return PlayR1Store();
-        AssertSaw("112번 버스를 타고 버거집에 가세요.", "112번 버스를 타세요.", "왜 안 되지?", "그거 지폐 안 받아요.", "그려? 어쩔 수 없구만...",
+        AssertSaw("112번 버스를 타세요.", "왜 안 되지?", "그거 지폐 안 받아요.", "그려? 어쩔 수 없구만...",
             "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.");
     }
 
@@ -77,81 +121,53 @@ public class RoundPathTests : RoundFixture
         yield return PlayR4Storefront();
     }
 
-    // ---- 3회차 실패 ----
-
-    [UnityTest, Timeout(Limit)]
-    public IEnumerator R3_GiveUp_Leave()
-    {
-        SteadyHands();
-        yield return Chapter(R3);
-        Time.timeScale = Fast;
-        yield return EnterKiosk();
-        yield return Screen("movie");
-        yield return Chord(Key.F6);
-        yield return PressGiveUp();
-        yield return Pick("다음에 볼게요");
-        yield return InChapter(R4Front, 40f);
-        Assert.IsFalse(RoundUi.I.GiveUpShown, "버튼이 다음 챕터에 남음");
-    }
-
-    [UnityTest, Timeout(Limit)]
-    public IEnumerator R3_GiveUp_Stay()
-    {
-        SteadyHands();
-        yield return Chapter(R3);
-        Time.timeScale = Fast;
-        yield return R3ToSms();
-        var nunchi = Kiosk.Nunchi;
-        yield return Chord(Key.F6);
-        yield return PressGiveUp();
-        yield return Pick("조금만요");
-        Assert.Less(nunchi.Value, 60f, "조금만요 뒤 게이지");
-        Assert.IsTrue(Kiosk.Active, "조금만요 뒤 키오스크");
-        Assert.AreEqual("sms", Kiosk.Screen, "화면 유지");
-        yield return R3Finish();
-        yield return InChapter(R4Front, 40f);
-    }
-
     // ---- 4회차 버거집 실패 ----
 
+    /// <summary>게이지가 다 차면 선택지 없이 줄 맨 뒤로 갔다가 다시 시도한다. 횟수 제한 없음, 나가는 길은 4-10a뿐.</summary>
     [UnityTest, Timeout(Limit)]
-    public IEnumerator R4_GiveUp_Leave()
+    public IEnumerator R4_GaugeFull_Requeue()
     {
         SteadyHands();
         yield return Chapter(R4Store);
         Time.timeScale = Fast;
         yield return EnterKiosk();
-        yield return Screen("idle");
-        yield return Touch("start");
-        yield return Chord(Key.F6);
-        yield return PressGiveUp();
-        yield return Pick("먼저 하세요");
-        yield return Until(() => !Kiosk.Active, 20f, "키오스크 떠남");
+        for (int round = 0; round < 2; round++)
+        {
+            yield return Screen("idle");
+            yield return Touch("start");
+            yield return Screen("place");
+            yield return Chord(Key.F6);
+            yield return Real(0.1f);
+            Assert.IsFalse(RoundUi.I.ChoiceOpen, "선택지가 뜸");
+            Assert.IsFalse(RoundUi.I.GiveUpShown, "버튼이 뜸");
+            yield return Until(() => !Kiosk.Active, 10f, "키오스크에서 비켜남");
+            Assert.AreEqual(R4Store, Game.chapterIndex, "가게를 나가지 않음");
+            Assert.IsNull(Usable("나가기"), "줄 뒤에서 나가기가 켜짐");
+            yield return Until(() => Kiosk.Active && !Kiosk.Busy, 60f, "차례가 다시 옴");
+            Assert.Greater(Kiosk.Nunchi.Value, 40f, "게이지 절반쯤");
+            Assert.Less(Kiosk.Nunchi.Value, 70f, "게이지 절반쯤");
+        }
+        yield return Real(0.5f);
+        yield return R4ToPay();
+        yield return Bounce(3);
         yield return R4Leave();
     }
 
+    // ---- 2회차 줄 맨 뒤 ----
+
     [UnityTest, Timeout(Limit)]
-    public IEnumerator R4_GiveUp_Stay()
+    public IEnumerator R2_GaugeFull_Requeue()
     {
-        SteadyHands();
-        yield return Chapter(R4Store);
+        yield return Chapter(R2);
         Time.timeScale = Fast;
         yield return EnterKiosk();
-        yield return Screen("idle");
-        yield return Touch("start");
         yield return Screen("menu");
-        var nunchi = Kiosk.Nunchi;
         yield return Chord(Key.F6);
-        yield return PressGiveUp();
-        yield return Pick("조금만요");
-        Assert.Less(nunchi.Value, 60f, "조금만요 뒤 게이지");
-        Assert.AreEqual("menu", Kiosk.Screen);
-        yield return Real(0.3f);
-        Assert.IsFalse(RoundUi.I.GiveUpShown, "버튼 사라짐");
-
-        // 다시 100이면 다시 뜬다
-        yield return Chord(Key.F6);
-        yield return Until(() => RoundUi.I.GiveUpShown, 3f, "다시 버튼");
+        yield return Until(() => !Kiosk.Active, 10f, "키오스크에서 비켜남");
+        Assert.IsFalse(RoundUi.I.ChoiceOpen, "선택지가 뜸");
+        yield return Until(() => Kiosk.Active && !Kiosk.Busy, 90f, "차례가 다시 옴");
+        yield return Real(0.5f);
+        yield return Touch("americano");
         Assert.IsTrue(Kiosk.Active);
     }
 
@@ -171,6 +187,7 @@ public class RoundPathTests : RoundFixture
         yield return ClickPay();
         yield return ClickPay();
         Assert.IsTrue(Kiosk.Active, "결제 창 밖 지폐로 끝남");
+        yield return Tap(Key.W);
         yield return Tap(Key.Digit3);
         Assert.IsFalse(Wallet.I.Open, "지갑 닫기");
 
@@ -178,7 +195,7 @@ public class RoundPathTests : RoundFixture
         Assert.IsFalse(RoundUi.I.GiveUpShown, "결제 창에서는 버튼 없음");
         yield return Bounce(2);
         Assert.IsTrue(Kiosk.Active && !Kiosk.Busy, "두 번까지는 남음");
-        var pay = PackScreens.Get("pay");
+        Assert.AreEqual("카드 전용", K.cardMsg, "튕김 안내");
         yield return ClickPay();
         yield return Until(() => !Kiosk.Active, 20f, "세 번째에 떠남");
         yield return Until(() => rec.Saw("그거 지폐 안 받아요."), 15f, "뒷사람 말");
@@ -187,7 +204,33 @@ public class RoundPathTests : RoundFixture
         yield return R4Leave();
     }
 
+    [UnityTest, Timeout(Limit)]
+    public IEnumerator R4_NoCardPath()
+    {
+        SteadyHands();
+        yield return Chapter(R4Store);
+        Assert.IsFalse(Game.Profile.Has(ItemId.Card), "4회차 카드 소지");
+        Time.timeScale = Fast;
+        yield return EnterKiosk();
+        yield return R4ToPay();
+        // 빈손으로 틈을 눌러도 결제되지 않는다
+        yield return ClickPay();
+        Assert.AreEqual("card", Kiosk.Screen);
+        Assert.AreEqual("카드 전용", K.cardMsg);
+        Assert.IsTrue(Kiosk.Active);
+    }
+
     // ---- 4회차 시간 초과 ----
+
+    protected IEnumerator ToMenu()
+    {
+        yield return Touch("start");
+        yield return Screen("place");
+        yield return Touch("takeout");
+        yield return Screen("member");
+        yield return Touch("skip");
+        yield return Screen("menu");
+    }
 
     [UnityTest, Timeout(Limit)]
     public IEnumerator R4_Timeout()
@@ -195,23 +238,25 @@ public class RoundPathTests : RoundFixture
         SteadyHands();
         yield return Chapter(R4Store);
         yield return EnterKiosk();
-        yield return Touch("start");
-        yield return Touch("list");
-        yield return Touch("item_0");
-        Assert.AreEqual(1, Field<System.Collections.Generic.List<int>>(Kiosk.Pack, "cart").Count, "담김");
+        yield return ToMenu();
+        yield return Touch("tab_SIDE");
+        yield return Touch("item_nugget");
+        Assert.AreEqual(1, K.cart.Count, "담김");
+        var timer = Field<KioskFields>(Field<KioskScreens>(Kiosk, "screens"), "timer");
+        yield return Real(0.2f);
+        Assert.IsTrue(timer.gameObject.activeInHierarchy, "남은 시간 표시");
 
         Time.timeScale = 8f;
         yield return Until(() => Kiosk.Screen == "idle", 12f, "40초 뒤 처음 화면");
         Time.timeScale = 1f;
         yield return Real(0.1f);
         AssertSaw("시간이 초과되어 처음 화면으로 돌아갑니다.");
-        Assert.AreEqual(0, Field<System.Collections.Generic.List<int>>(Kiosk.Pack, "cart").Count, "장바구니 비움");
+        Assert.AreEqual(0, K.cart.Count, "장바구니 비움");
         Assert.Greater(Kiosk.Nunchi.Value, 0f, "게이지 유지");
         Assert.IsTrue(Kiosk.Active, "키오스크 유지");
 
-        // 처음 화면에서는 시간이 안 흐르고 다시 시작할 수 있다
         yield return Touch("start");
-        yield return Screen("menu");
+        yield return Screen("place");
     }
 
     [UnityTest, Timeout(Limit)]
@@ -221,38 +266,35 @@ public class RoundPathTests : RoundFixture
         yield return Chapter(R4Store);
         Time.timeScale = Fast;
         yield return EnterKiosk();
-        yield return Touch("start");
-        yield return Touch("list");
-        yield return Touch("item_0");
-        yield return Touch("next");
-        yield return Touch("x");
-        yield return Touch("check");
-        yield return Touch("x");
-        yield return Touch("x");
-        yield return Screen("pop_point");
-        yield return Touch("x");
+        yield return ToMenu();
+        yield return Touch("tab_SIDE");
+        yield return Touch("item_nugget");
+        yield return Touch("cart");
+        yield return Screen("cart");
+        yield return Touch("checkout");
+        yield return Touch("info_close");
+        yield return Touch("info_close");
+        yield return Until(() => K.info != null && K.info.title == "포인트 적립", 5f, "마지막 팝업");
+        yield return Touch("info_close");
         yield return Screen("idle");
+        yield return Real(0.1f);
         AssertSaw("처음 화면으로 돌아갑니다.");
     }
 
     [UnityTest, Timeout(Limit)]
-    public IEnumerator R4_BigText_PushesNextAway()
+    public IEnumerator R4_BigText()
     {
         SteadyHands();
         yield return Chapter(R4Store);
         Time.timeScale = Fast;
         yield return EnterKiosk();
         yield return Touch("start");
-        yield return Screen("menu");
-        var content = Field<RectTransform>(Kiosk.Pack, "content");
-        Assert.IsNotNull(content, "내용 루트 없음");
-        Vector2 before = PackScreens.Uv(PackScreens.Find("next"));
-        yield return Touch("big");
-        Assert.Greater(content.localScale.x, 1.2f, "큰 글씨");
-        Vector2 after = PackScreens.Uv(PackScreens.Find("next"));
-        Assert.IsTrue(after.x > 1f || after.x < 0f || after.y > 1f || after.y < 0f, $"다음 버튼이 화면 안 {before} {after}");
-        yield return Touch("big");
-        Assert.AreEqual(1f, content.localScale.x, 0.001f, "되돌림");
+        yield return Screen("place");
+        yield return Touch("access");
+        var pack = (R4ProtoPack)Kiosk.Pack;
+        Assert.IsTrue(pack.Big, "큰 글씨");
+        yield return Touch("access");
+        Assert.IsFalse(pack.Big, "되돌림");
     }
 
     // ---- 도움 없음: 알바생과 터치 확률 ----
@@ -263,7 +305,9 @@ public class RoundPathTests : RoundFixture
         SteadyHands();
         yield return Chapter(R4Store);
         Time.timeScale = Fast;
-        yield return Use("말 걸기", 30f);
+        var staff = Field<Interactable>(Object.FindAnyObjectByType<R4StoreDirector>(), "talkStaff");
+        yield return Until(() => staff.active && !Pc.Frozen, 30f, "알바생");
+        yield return Use(staff);
         yield return Until(() => rec.Saw("주문은 키오스크에서 해주세요."), 15f, "알바생 답");
         yield return EnterKiosk();
         yield return Touch("start");
@@ -274,32 +318,33 @@ public class RoundPathTests : RoundFixture
         yield return Real(1f);
         yield return Tap(Key.D);
         Assert.AreEqual("kiosk", Kiosk.View);
-        Assert.AreEqual("menu", Kiosk.Screen, "알바생이 화면을 바꾸지 않음");
-        var pack = Kiosk.Pack.GetType();
-        Assert.IsFalse(pack.GetMethods(BindingFlags.Public | BindingFlags.Instance).Any(m => m.Name == "Hint"), "4회차에 도움 경로");
+        Assert.AreEqual("place", Kiosk.Screen, "알바생이 화면을 바꾸지 않음");
     }
 
-    /// <summary>시트 재량 값 그대로(터치 실패, 옆 버튼, 떨림)로 결제 창까지 갈 수 있는가.</summary>
+    /// <summary>재량 값 그대로(터치 실패, 옆 버튼, 떨림)로 카드 화면까지 갈 수 있는가.</summary>
     [UnityTest, Timeout(Limit)]
     public IEnumerator R4_RealTouchNoise_ReachesPay()
     {
         yield return Chapter(R4Store);
         Time.timeScale = 2f;
         yield return EnterKiosk();
-        float end = Time.realtimeSinceStartup + 150f;
-        while (Kiosk.Screen != "pay")
+        float end = Time.realtimeSinceStartup + 170f;
+        while (Kiosk.Screen != "card")
         {
-            if (Time.realtimeSinceStartup > end) Assert.Fail("결제 창까지 못 감, 화면 " + Kiosk.Screen);
-            if (RoundUi.I.GiveUpShown) { yield return PressGiveUp(); yield return Pick("조금만요"); continue; }
-            string now = Kiosk.Screen;
-            var cart = Field<System.Collections.Generic.List<int>>(Kiosk.Pack, "cart");
-            string id = now switch
+            if (Time.realtimeSinceStartup > end) Assert.Fail("카드 화면까지 못 감, 화면 " + Kiosk.Screen);
+            if (!Kiosk.Active || Kiosk.Busy) { yield return null; continue; }
+            var k = K;
+            string id = k.info != null ? (PackScreens.Find("pop_skip") ? "pop_skip" : "info_close") : Kiosk.Screen switch
             {
                 "idle" => "start",
-                "menu" => cart.Count > 0 ? "next" : PackScreens.Find("item_0") ? "item_0" : "list",
-                "pop_code" or "pop_app" => "x",
-                "pop_robot" => Field<bool>(Kiosk.Pack, "robot") ? "x" : "check",
-                "pop_point" => "skip",
+                "place" => "takeout",
+                "member" => "skip",
+                "menu" => k.cart.Count > 0 ? "cart" : k.tab != "CLASSIC" ? "tab_CLASSIC" : "item_bulgogi",
+                "option" => "opt_combo",
+                "side" or "drink" => "next",
+                "upsell" => "up_no",
+                "cart" => k.cart.Count > 0 ? "checkout" : "add_more",
+                "pay" => "pay_card",
                 _ => null,
             };
             if (id == null || !PackScreens.Find(id)) { yield return null; continue; }
@@ -365,22 +410,22 @@ public class RoundPathTests : RoundFixture
         yield return InChapter(1);
         yield return Chord(Key.F3);
         yield return InChapter(0);
-        for (int i = 7; i >= 1; i -= 3)
+        for (int i = 6; i >= 1; i -= 3)
         {
             yield return Chord(Key.Digit1 + i);
             yield return InChapter(i);
         }
 
         // 처음으로. 회차 안, 키오스크 안, 엔딩에서
-        yield return Chord(Key.Digit5);
-        yield return InChapter(R3);
+        yield return Chord(Key.Digit4);
+        yield return InChapter(R2);
         yield return EnterKiosk();
         yield return Chord(Key.Home);
         yield return InChapter(0);
         yield return Real(1f);
         Assert.AreEqual(PlayerController.Mode.Fps, Pc.CurrentMode, "처음으로 뒤 모드");
 
-        yield return Chord(Key.Digit8);
+        yield return Chord(Key.Digit7);
         yield return InChapter(R4Stop);
         yield return Chord(Key.Home);
         yield return InChapter(0);
@@ -388,7 +433,7 @@ public class RoundPathTests : RoundFixture
 
         // 엔딩 안에서 처음으로
         yield return Chord(Key.Digit8);
-        yield return InChapter(R4Stop);
+        yield return InChapter(EndHome);
         yield return Real(2f);
         yield return Chord(Key.F2);
         var end = Field<CanvasGroup>(RoundUi.I, "endGroup");

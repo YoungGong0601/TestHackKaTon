@@ -16,33 +16,25 @@ MonoBehaviour:
   - sceneName: R1_Stop
     profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
     spawnId: r1_stop
-    hasKiosk: 0
   - sceneName: R1_Storefront
     profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
     spawnId: r1_storefront
-    hasKiosk: 0
   - sceneName: R1_Store
     profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
     spawnId: r1_store
-    hasKiosk: 1
   - sceneName: R2_Cafe
     profile: {fileID: 11400000, guid: 102cb6147c402e441a7b0647ca5a99f7, type: 2}
     spawnId: r2_cafe
-    hasKiosk: 1
-  - sceneName: R3_Cinema
-    profile: {fileID: 11400000, guid: f4185e9c1708c6c41abd0b6dafd3bb5f, type: 2}
-    spawnId: r3_cinema
-    hasKiosk: 1
   - sceneName: R4_Storefront
     profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
     spawnId: r4_storefront
-    hasKiosk: 0
   - sceneName: R4_Store
     profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
     spawnId: r4_store
-    hasKiosk: 1
   - sceneName: R4_Stop
     profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
     spawnId: r4_stop
-    hasKiosk: 0
+  - sceneName: Ending_Home
+    profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
+    spawnId: ending_home
   speakers: []

@@ -61,6 +61,13 @@ public class KioskController : MonoBehaviour
         toastUntil = text != null ? Time.time + Bal.G("Kiosk_ToastSec", 1.8f) : 0f;
     }
 
+    /// <summary>고개를 투입구 쪽으로. 화면을 직접 그리는 Pack이 부른다.</summary>
+    public void SetDown(bool on)
+    {
+        view.SetDown(on);
+        RefreshViews();
+    }
+
     public void ResetTimer() => timer = Bal.F("KioskTimeoutSec", 40f);
 
     KioskView view;
@@ -195,7 +202,7 @@ public class KioskController : MonoBehaviour
         bool found = false;
         foreach (var h in Physics.RaycastAll(HandRig.I.PointerRay(), Bal.G("Kiosk_TouchRange", 3f), touchMask, QueryTriggerInteraction.Collide))
         {
-            if (!h.collider.transform.IsChildOf(transform) || (found && h.distance >= hit.distance)) continue;
+            if (h.collider.gameObject.layer == 2 || !h.collider.transform.IsChildOf(transform) || (found && h.distance >= hit.distance)) continue;   // 2 = Ignore Raycast, 몸을 막는 경계
             hit = h;
             found = true;
         }
@@ -255,6 +262,7 @@ public class KioskController : MonoBehaviour
         HandRig.I.Tap();
         if (Pick(out var hit))
         {
+            if (Pack.Hit(hit.collider)) return;
             if (hit.collider.transform == screenQuad) { PackTouch(ScreenUv(hit.point)); return; }
             var point = hit.collider.GetComponentInParent<PayPoint>();
             if (point) { point.Click(); return; }

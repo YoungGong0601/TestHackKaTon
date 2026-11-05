@@ -73,7 +73,6 @@ public class R1StoreDirector : MonoBehaviour
         AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.2f));
         Player.HoldStill = true;
         yield return Round.Open();
-        Round.Goal(null);
         yield return elder.Play();
         Player.Freeze(false);
         SetPhase(Phase.Order);
@@ -123,7 +122,7 @@ public class R1StoreDirector : MonoBehaviour
         }
         else
         {
-            var pack = kiosk.GetComponentInChildren<R1BurgerPack>(true);
+            var pack = kiosk.GetComponentInChildren<R1ProtoPack>(true);
             if (pack && phase == Phase.Kiosk) pack.Hint();
             yield return Hud.I.Say(null, "여기 누르시면 돼요. 제가 도와드릴게요.", "staff_help", -1f, staffPos.position);
         }

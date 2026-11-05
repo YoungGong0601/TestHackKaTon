@@ -3709,7 +3709,7 @@ MonoBehaviour:
   key: E
   radius: 3.3
   cone: 0.66
-  active: 1
+  active: 0
   onUse:
     m_PersistentCalls:
       m_Calls: []

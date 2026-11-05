@@ -5,12 +5,16 @@
 ## 씬 시작과 끝
 ```csharp
 IEnumerator Start() {
-  yield return Round.Open("112번 버스를 타고 버거집에 가세요.");  // 4회차는 인수 없이
+  yield return Round.Open();
+  Note.Peek();                     // 목표 문구 대신 쪽지를 잠깐 편다. 4회차는 부르지 않아도 된다
   ...
   GameState.I.CompleteChapter();   // 프로필이 바뀌면 눈 감기, 같으면 암전. 마지막 챕터는 엔딩
 }
 ```
-Round.Open을 부르지 않으면 화면이 안 열린다. 목표는 대사가 끝나면 자막 자리로 돌아온다. Round.Goal(null)로 지운다.
+Round.Open을 부르지 않으면 화면이 안 열린다. 목표 문구는 없다. Round.Open의 인수와 Round.Goal은 아무 일도 하지 않으니 지운다.
+
+## 쪽지
+Note.Peek(sec)로 잠깐 펴고, 플레이어는 1 키로 열고 닫는다(걷기, 키오스크 어디서나, HUD에 1 쪽지). 내용은 Assets/Graybox/PH/NotePanel.prefab(Systems 자식)의 entries에서 씬 이름, 프로필 id 순으로 찾고(age20, age40 입력됨), Note.Set(text, soft)이 그 씬에서 우선한다. Memo가 있는 인물(4회차)은 지갑 쪽지를 쓰고 1 키는 동작하지 않는다.
 
 ## 키오스크
 PH_Kiosk 인스턴스의 KioskCanvas 아래에 Pack 프리팹 하나. Pack 루트에 KioskPack 파생과 KioskScreens를 같이 붙이고, KioskScreens.screens에 화면을 넣는다. canvas 칸은 비워도 된다(KioskController가 넣음). 화면의 buttons는 KioskScreen.Collect로 모은다.

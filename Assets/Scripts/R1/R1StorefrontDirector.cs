@@ -40,7 +40,7 @@ public class R1StorefrontDirector : MonoBehaviour
             AudioManager.I.Play("bus_leave", bus.position + Vector3.up, 0.7f);
             busGo = true;
         }
-        yield return Round.Open("버거집에 가세요.");
+        yield return Round.Open();
     }
 
     void OnPull()

@@ -51,7 +51,7 @@ public class NunchiSystem : MonoBehaviour
     public void Begin()
     {
         if (!GameState.I.Profile.kioskNunchi) return;
-        gauge = 0f; RateMul = 1f; LookingBack = false;
+        gauge = rule != null ? rule.start : 0f; RateMul = 1f; LookingBack = false;
         hurryMul = 1f; sighMul = 1f; asking = false;
         hurryWait = 0f; hurryIdx = 0; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
         nextHurry = Range("Nunchi_HurryFirstMin", 16f, "Nunchi_HurryFirstMax", 26f);
@@ -178,6 +178,13 @@ public class NunchiSystem : MonoBehaviour
                 hurryWait -= dt;
                 if (hurryWait <= 0f) Add(Bal.G("Nunchi_HurryIgnored", 8f));
             }
+        }
+
+        // 버튼 없이 줄 맨 뒤로 가는 규칙
+        if (gauge >= Max && rule != null && rule.onFull != null && (CanBlow == null || CanBlow()))
+        {
+            rule.onFull();
+            return;
         }
 
         // 다 차면 버튼. 규칙에 선택지가 없으면 100에서 멈추고 한숨만 계속된다

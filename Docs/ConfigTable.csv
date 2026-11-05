@@ -134,8 +134,36 @@ Door_SignLookSec,간판 올려다보는 시간,Float,3.2,sec,로고를 천천히
 Door_SpringD,유리문 스프링 감쇠,Float,24,per s,빠르게 튕겨 돌아옴
 Door_SpringK,유리문 스프링 강성,Float,620,per s2,빠르게 튕겨 돌아옴
 Door_StoreOpenAngle,매장 안에서 손님이 드나들 때 각도,Float,1.15,rad,드나듦이 보임
+End_AmbVol,밤 주변음 음량,Float,0.18,,
+End_BendEye,허리 숙인 눈 높이,Float,0.85,m,
+End_BlackSec,암막 뒤 문구까지,Float,1,s,
+End_BreathVol,숨소리 음량,Float,0.6,,
+End_CrushHoldSec,구긴 뒤 멈춤,Float,1.6,s,
+End_CrushSec,쪽지 쥐는 시간,Float,1.4,s,
+End_DoorReach,문 앞 E-1b 시작 거리,Float,1.1,m,
+End_DoorSec,문 여는 시간,Float,1.6,s,
+End_FadeOutSec,암막 페이드,Float,4,s,
+End_HandTremble,손 떨림 크기,Float,0.003,m,
+End_KeySec,열쇠 소리 뒤 대기,Float,1.2,s,
+End_LeanBreath,숨 고르는 눈 흔들림,Float,0.012,m,
+End_LeanEye,벽 짚은 눈 높이,Float,1.42,m,
+End_LeanHoldSec,음성 뒤 암막까지,Float,1.2,s,
+End_LeanPitch,벽 짚을 때 시선 아래각,Float,-14,deg,
+End_LeanRoll,시선 기울기,Float,4,deg,
+End_LeanSec,벽 짚는 시간,Float,1.3,s,
+End_LeanYawOff,벽 짚을 때 복도 쪽 시선,Float,22,deg,
+End_NoteRestSec,쪽지 둔 뒤 멈춤,Float,0.8,s,
+End_NoteRestY,쪽지 바닥 높이,Float,0.025,m,
+End_RiseSec,일어서는 시간,Float,2,s,
+End_SighRate,큰 한숨 재생 속도,Float,0.8,x,낮을수록 길다
+End_SighSec,일어선 뒤 한숨 대기,Float,1.8,s,
+End_SighVol,큰 한숨 음량,Float,1,,
 End_StatSec,통계 문구 시간,Float,5,s,ROUND_PLAN 7절
+End_StrainEverySec,걷는 동안 소리 간격,Float,4.5,s,
+End_StrainFirstSec,첫 소리까지,Float,1.5,s,
+End_StrainVol,힘들어하는 음성 음량,Float,0.8,,
 End_TitleMinSec,제목 뒤 클릭을 받기까지,Float,1.5,s,ROUND_PLAN 7절
+End_WalkSpeed,E-1a 걸음 속도,Float,0.35,m/s,아주 느림
 Hand_TrembleScale,손 떨림이 포인터에 주는 폭,Float,0.012,화면 비율,키오스크 포인터 떨림
 Home_FadeInSec,현관 시작 밝아짐,Float,1.4,sec,첫 장면 호흡
 Home_MemoScale,현관에서 읽는 메모 배율,Float,1.34,배,화면 대부분을 메모가 채움
@@ -198,6 +226,7 @@ Lens_FocusPeriodSec,초점 흐려짐 주기,Float,8,s,ROUND_PLAN 7절
 Lens_Radius,돋보기 유리 반지름,Float,0.06,m,Hand_Lens Rim 모델과 같게
 Lens_Zoom,돋보기 확대,Float,1.45,배,키오스크와 월드 글 공용
 Mash_DescendSec,계단 내려가는 시간,Float,1.4,s,ROUND_PLAN 7절
+Note_PeekSec,쪽지를 자동으로 펴 두는 시간,Float,4,sec,목표 문구 대신
 Npc_AvoidGap,비켜 지나갈 때 옆 간격,Float,0.62,m,겹치지 않음
 Npc_AvoidLook,손님이 앞을 살피는 거리,Float,1.2,m,미리 옆으로 돌아감
 Npc_MinGap,더 다가가지 않는 최소 거리,Float,0.5,m,겹치지 않음
@@ -342,16 +371,22 @@ R1_ElderHeadDownDeg,어르신 고개 숙임,Float,28,deg,슬픈 얼굴 대신(T1
 R1_ElderSceneSec,1-6 어르신 장면 길이,Float,15,sec,시트 값
 R1_ElderShotDist,뒷모습 컷을 시작할 문까지 거리,Float,2.7,m,카메라가 벽 안에 들도록
 R1_ElderWalkSpeed,어르신 나가는 걸음,Float,1.1,m/s,뒷모습을 오래 보임
-R1_GoalReadSec,목표를 읽을 틈,Float,2.5,sec,안내 전
 R1_GreetDelaySec,장면 뒤 알바생 인사까지,Float,0.5,sec,먼저 인사
 R1_OrderNumber,내 호출 번호,Int,274,번,T14
+R1_PayingSec,결제 중 화면,Float,0.8,sec,바로 승인
 R1_PickupWaitSec,호출까지,Float,5,sec,픽업도 매우 쉽게
+R1_RideSec,1-3a 버스 암전 컷 길이,Float,1.6,sec,금방 도착
+R1_SetPrice,불고기 버거 세트 가격,Int,8900,원,쪽지 메뉴
 R1_StaffQuietSec,시선으로 알바생이 다시 말할 간격,Float,6,sec,반복 방지
 R2_CallFirstSec,주문 뒤 첫 호출까지,Float,6,s,2-7 대기
 R2_CallRepeatSec,다시 부름,Float,12,s,2-7 놓치면 다시 부른다
 R2_CallShowSec,화면 번호 표시,Float,3,s,2-7 잠깐 뜬다
 R2_CallVolume,호출 음성 음량,Float,0.3,ratio,2-7 작고 웅얼거린다
 R2_DoneShowSec,주문 완료 화면 표시,Float,2.5,s,T14 번호를 읽을 시간
+R2_DoorOpenDist,카페 자동문이 열리는 거리,Float,2.4,m,2-1 다가가면 열림
+R2_DoorOpenSec,카페 자동문 열림 유지,Float,2.5,s,2-1
+R2_NoteSoft,2회차 쪽지 번짐,Float,0.25,ratio,약간 흐리지만 읽힌다
+R2_ServeTapSec,앞사람 키오스크 터치 간격,Float,0.4,s,눈치 실패 뒤 앞사람들이 금방 결제
 R3_SmsLimitSec,문자 번호 제한 시간,Float,30,s,3-8
 R3_VoiceListenSec,음성 상담 듣는 시간,Float,1.5,s,3-5
 R4_BigTextScale,큰 글씨 배율,Float,1.6,x,T21 결제 버튼이 밀려남
@@ -366,17 +401,26 @@ R4_EndWalkSec,E-1 걷는 시간,Float,8,s,T28
 R4_GazeBodyTurn,시선 몸 회전,Float,1.2,1/s,4-10b
 R4_GazeTurn,시선 고개 회전,Float,5,1/s,4-10b
 R4_LastDuskSec,마지막 저무는 시간,Float,2,s,가로등 켜짐
+R4_LookAroundDeg,4-10b 둘러보는 각도,Float,75,deg,임시
+R4_LookAroundSec,4-10b 둘러보는 시간,Float,3,sec,임시 타이밍 미정
 R4_NextBusSec,다음 버스 간격,Float,6,s,T26
 R4_NoteHoldSec,쪽지 읽은 뒤 지갑 닫기까지,Float,2,s,4-0
+R4_RequeueGap,줄 한 사람 간격,Float,0.9,m,임시
+R4_RequeueWaitSec,앞사람 결제 뒤 차례까지,Float,2,sec,임시 대기 시간 미정
+R4_RequeueWalkSec,줄 맨 뒤까지 걷는 최대 시간,Float,3,sec,임시
+R4_RetryNunchi,줄 뒤로 갔다 돌아왔을 때 게이지,Float,50,,임시 초기화 값 미정
 R4_RevealSec,초점 맞는 시간,Float,1.6,s,4-21
 R4_RivalSpeed,뒷사람 걸음,Float,1.4,m/s,금방 결제
 R4_SadLookSec,시선 내리는 시간,Float,1.2,s,T13
 R4_SadPitch,돌아설 때 시선 각도,Float,-28,deg,T13
 R4_SadTurnSec,돌아서는 시간,Float,1.6,s,T13
+R4_TerminalLookSec,4-19 고개가 들리는 시간,Float,1.2,sec,임시
 R4_TraySec,쟁반 지나는 시간,Float,2.4,s,4-10a
+R4_WalletHabitSec,4-20 지갑을 여는 시간,Float,2,sec,임시
 R4_WatchHour1,첫 손목시계 바늘,Int,2,h,시트 값
 R4_WatchHour2,둘째 손목시계 바늘,Int,4,h,시트 값
 R4_WatchHour3,셋째 손목시계 바늘,Int,6,h,시트 값
+R4_WhatLineDelaySec,메뉴 안내 뒤 혼잣말까지,Float,2.6,sec,안내 음성과 겹치지 않게
 Round_BlinkCloseSec,눈 감기,Float,0.6,s,ROUND_PLAN 7절
 Round_BlinkOpenSec,눈 뜨기,Float,0.9,s,ROUND_PLAN 7절
 Round_GoalKeepSec,"목표 표시 시간, 0은 계속",Float,0,s,ROUND_PLAN 7절
@@ -423,5 +467,11 @@ Traffic_ScooterSpeed,오토바이 속도,Float,12,m/s,HTML 값
 Traffic_ScooterVolume,오토바이 소리 볼륨,Float,0.5,ratio,HTML 값
 Traffic_SoundLead,차 소리를 앞쪽에 두는 거리,Float,14,m,지나가는 방향으로 소리가 먼저 감
 Traffic_StartX,차가 나오는 x 거리,Float,125,m,화면 밖에서 시작
+Tremble_Base,손떨림 계속 폭(인물과 눈치 값에 곱함),Float,0.22,배,0이 안 됨
+Tremble_Freq,손떨림 빠르기,Float,1.8,Hz,기존 값
+Tremble_MoveDelta,움직임으로 보는 마우스 변화,Float,4,px제곱,시작 판정
+Tremble_Peak,손떨림 시작 폭(인물과 눈치 값에 곱함),Float,0.7,배,멈추거나 꺼낼 때
+Tremble_StillSec,멈춤으로 보는 시간,Float,0.12,sec,시작 판정
+Tremble_Tau,손떨림 줄어드는 시간,Float,0.8,sec,exp(-t/tau)
 Wallet_PartRadius,지갑 클릭 자리 반지름,Float,0.07,화면 높이,ROUND_PLAN 7절
 Watch_LookSec,손목시계 보는 시간,Float,2,s,ROUND_PLAN 7절

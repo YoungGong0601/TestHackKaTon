@@ -8,7 +8,7 @@ public static class Round
 
     static bool eyesShut;
 
-    /// <summary>눈 뜨기, 프로필이 바뀌었으면 손을 들어 보여 줌, 목표, Freeze 해제.</summary>
+    /// <summary>눈 뜨기, 프로필이 바뀌었으면 손을 들어 보여 줌, Freeze 해제. goal은 쓰지 않는다(쪽지가 대신한다).</summary>
     public static IEnumerator Open(string goal = null)
     {
         var pc = PlayerController.I;
@@ -35,12 +35,11 @@ public static class Round
             HandRig.I.SetPointer(false);
         }
 
-        if (goal != null) Goal(goal);
         pc.Freeze(false);
     }
 
-    /// <summary>목표 한 줄 교체. null이면 지움. 4회차는 안 부른다.</summary>
-    public static void Goal(string text) => Hud.I.Objective(text, Bal.G("Round_GoalKeepSec", 0f));
+    /// <summary>쓰지 않는다. 목표 문구는 쪽지로 바뀌었다. 부르는 곳이 없어지면 지운다.</summary>
+    public static void Goal(string text) { }
 
     // GameState 전용
     public static IEnumerator CloseEyes()

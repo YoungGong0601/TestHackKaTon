@@ -144,9 +144,9 @@ public static class Cine
 // 마지막 챕터의 CompleteChapter가 부른다. 암막, 통계 문구, 작은 출처, 제목, 클릭 대기, Restart
 public static class Ending
 {
-    // 임시 T32: 시트 문구 그대로. 근거 확인은 STAT_CHECK.md, 사용자 판단
-    public const string Stat = "고령층의 45.8%는 키오스크를 이용하지 않습니다.";
-    public const string Source = "2025 디지털정보격차 실태조사, 만 55세 이상";
+    // 임시 T32: 사용자 지시 문구(시트 문구를 대신함)
+    public const string Stat = "80~84세 노인 중 키오스크로 주문할 수 있는 사람은 2.3%입니다.";
+    public const string Source = "출처: 2023년도 노인실태조사(보건복지부, 한국보건사회연구원),\n김세진, 「노인의 여가 및 정보화 현황」, 보건복지포럼 2024년 11월호";
     public const string Title = "불고기버거 세트 하나";
 
     public static IEnumerator Play()

@@ -572,7 +572,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fa5969a4188de845af9b6f8f55e12eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: KioskGame::HandRig
-  memo: {fileID: 0}
   lens: {fileID: 6179875867776871504}
   lensEye: {fileID: 0}
   card: {fileID: 1817531890148090659}
@@ -597,8 +596,6 @@ MonoBehaviour:
     - {fileID: 1869140676119786423}
   tremble: 0
   walletOut: 0
-  memoSide: 0
-  memoScale: 1
 --- !u!114 &2887381858821512228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1301,7 +1298,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uBD88\uACE0\uAE30 \uBC84\uAC70 \uC138\uD2B8\n112\uBC88 \uBC84\uC2A4"
+  m_text: "\uC190\uC790\uAC00 \uBD80\uD0C1\uD55C \uAC83\n\uBD88\uACE0\uAE30 \uBC84\uAC70
+    \uC138\uD2B8\n112\uBC88 \uBC84\uC2A4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6566793c82c5da94ca563d19d48715b1, type: 2}
   m_sharedMaterial: {fileID: 3668255665897074793, guid: 6566793c82c5da94ca563d19d48715b1, type: 2}
@@ -1323,7 +1321,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

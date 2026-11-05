@@ -2,7 +2,6 @@ ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
 R1_ElderSceneSec,1-6 어르신 장면 길이,Float,15,sec,시트 값
 R1_ElderWalkSpeed,어르신 나가는 걸음,Float,1.1,m/s,뒷모습을 오래 보임
 R1_ElderShotDist,뒷모습 컷을 시작할 문까지 거리,Float,2.7,m,카메라가 벽 안에 들도록
-R1_GoalReadSec,목표를 읽을 틈,Float,2.5,sec,안내 전
 R1_ElderHeadDownDeg,어르신 고개 숙임,Float,28,deg,슬픈 얼굴 대신(T13)
 R1_BusArriveSec,안내 뒤 버스 출발까지,Float,6,sec,행인에게 물을 틈
 R1_BusDriveSec,버스 도착 주행,Float,7,sec,1회차는 짧게
@@ -12,3 +11,13 @@ R1_StaffQuietSec,시선으로 알바생이 다시 말할 간격,Float,6,sec,반�
 R1_OrderNumber,내 호출 번호,Int,274,번,T14
 R1_DoneShowSec,주문 완료 화면 표시,Float,1.6,sec,번호를 보는 틈
 R1_PickupWaitSec,호출까지,Float,5,sec,픽업도 매우 쉽게
+R1_RideSec,1-3a 버스 암전 컷 길이,Float,1.6,sec,금방 도착
+Note_PeekSec,쪽지를 자동으로 펴 두는 시간,Float,4,sec,목표 문구 대신
+R1_SetPrice,불고기 버거 세트 가격,Int,8900,원,쪽지 메뉴
+R1_PayingSec,결제 중 화면,Float,0.8,sec,바로 승인
+Tremble_Peak,손떨림 시작 폭(인물과 눈치 값에 곱함),Float,0.7,배,멈추거나 꺼낼 때
+Tremble_Base,손떨림 계속 폭(인물과 눈치 값에 곱함),Float,0.22,배,0이 안 됨
+Tremble_Tau,손떨림 줄어드는 시간,Float,0.8,sec,exp(-t/tau)
+Tremble_Freq,손떨림 빠르기,Float,1.8,Hz,기존 값
+Tremble_StillSec,멈춤으로 보는 시간,Float,0.12,sec,시작 판정
+Tremble_MoveDelta,움직임으로 보는 마우스 변화,Float,4,px제곱,시작 판정

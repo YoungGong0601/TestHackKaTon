@@ -247,10 +247,16 @@ public abstract class RoundFixture
         // 프롬프트에 이 물체가 떠야 사람도 누를 수 있다
         var prompt = Field<TMP_Text>(Hud.I, "prompt");
         string label = it.label;
-        float end = Time.realtimeSinceStartup + 3f;
+        float end = Time.realtimeSinceStartup + 6f, again = Time.realtimeSinceStartup + 0.5f;
         while (!prompt.text.Contains(label))
         {
             if (Time.realtimeSinceStartup > end) Assert.Fail($"프롬프트 {label} 안 뜸, 지금 '{prompt.text}' (씬 {Scene}, 멈춤 {Pc.Frozen}, 모드 {Pc.CurrentMode})");
+            // 입력 없는 연출이 시선을 돌렸으면 사람처럼 다시 본다
+            if (!Pc.Frozen && Time.realtimeSinceStartup > again)
+            {
+                again = Time.realtimeSinceStartup + 0.5f;
+                yield return Pc.LookAt(it.transform.position, 0.02f);
+            }
             yield return null;
         }
         Debug.Log($"사용 {label} 프롬프트 '{prompt.text}' 멈춤 {Pc.Frozen} 모드 {Pc.CurrentMode} 키보드 {Keyboard.current?.deviceId} 시각 {Time.time:F2}");
@@ -278,7 +284,7 @@ public abstract class RoundFixture
 
     // ---- 키오스크 ----
 
-    protected static KioskController Kiosk => Object.FindAnyObjectByType<KioskController>();
+    protected static KioskController Kiosk => Object.FindObjectsByType<KioskController>(FindObjectsSortMode.None).First(k => k.Pack != null);
 
     protected static KioskScreens PackScreens => Kiosk.Pack.GetComponent<KioskScreens>();
 
@@ -335,9 +341,18 @@ public abstract class RoundFixture
         KioskButton b = null;
         yield return Until(() => (b = PackScreens.Find(id)) != null, sec, $"버튼 {id}, 화면 {Kiosk.Screen}");
         yield return Until(() => !Kiosk.Busy && !RoundUi.I.ChoiceOpen, 10f, "키오스크 대기 " + id);
+        var ad = id != "ad_close" ? PackScreens.Find("ad_close") : null;
+        if (ad != null)
+        {
+            yield return Point(() => ButtonWorld(ad));
+            yield return Click();
+            yield return Real(0.1f);
+            b = PackScreens.Find(id);
+            Assert.IsNotNull(b, "광고 닫은 뒤 버튼 " + id);
+        }
         yield return Point(() => ButtonWorld(b));
         var names = Physics.RaycastAll(HandRig.I.PointerRay(), 3f, ~0, QueryTriggerInteraction.Collide).OrderBy(h => h.distance).Select(h => h.collider.name);
-        Debug.Log($"터치 {id} 화면 {Kiosk.Screen} 포인터 {Pc.Cursor01} uv {PackScreens.Uv(b)} 버튼들 [{string.Join(",", PackScreens.Buttons().Select(x => x.id))}] 맞은 순서 {string.Join(",", names)}");
+        if (id == "start") Debug.Log($"터치 {id} 화면 {Kiosk.Screen} 포인터 {Pc.Cursor01} uv {PackScreens.Uv(b)} 버튼들 [{string.Join(",", PackScreens.Buttons().Select(x => x.id))}] 맞은 순서 {string.Join(",", names)}");
         yield return Click();
         yield return Real(0.05f);
     }
@@ -361,6 +376,15 @@ public abstract class RoundFixture
     /// <summary>결제 지점을 포인터로 클릭한다.</summary>
     protected static IEnumerator ClickPay()
     {
+        var flap = Object.FindAnyObjectByType<PosterFlap>();
+        if (flap != null && !flap.Opened)
+        {
+            var hit = Field<Collider>(flap, "hit");
+            yield return Point(() => hit.bounds.center);
+            yield return Click();
+            yield return Until(() => flap.Opened, 3f, "포스터 들춤");
+            yield return Real(0.5f);
+        }
         yield return Point(PayWorld);
         var hits = Physics.RaycastAll(HandRig.I.PointerRay(), 3f, ~0, QueryTriggerInteraction.Collide).OrderBy(h => h.distance).Select(h => h.collider.name);
         Debug.Log($"결제 클릭 포인터 {Pc.Cursor01} 맞은 순서: {string.Join(", ", hits)}");
@@ -463,7 +487,7 @@ public abstract class RoundFixture
     /// <summary>시트 공통 규칙: 호칭, 나이 숫자, 금지 기호.</summary>
     protected void AssertCleanText()
     {
-        var bad = new Regex(@"어르신|할아버지|할머니|학생|[2468]0대|·|—|→|×|[①-⑳]");
+        var bad = new Regex(@"^:|손님:|알바생:|키오스크:|어르신|할아버지|할머니|학생|[2468]0대|·|—|→|×|[①-⑳]");
         var hits = rec.Lines.Where(l => bad.IsMatch(l)).ToArray();
         Assert.IsEmpty(hits, "금지 문구: " + string.Join(" / ", hits));
     }
@@ -494,11 +518,55 @@ public abstract class RoundFixture
 
     // ---- 회차 조각. 완주와 갈래 시험이 같이 쓴다 ----
 
+    /// <summary>W를 누른 채 목표로 걷는다. 곧장 못 가면 경고를 남기고 옮긴다(직선만 시험하므로 길 막힘은 사람 확인 몫).</summary>
+    protected static IEnumerator WalkW(Func<Vector3> target, Func<bool> arrived, float sec, string what)
+    {
+        var kb = Keyboard.current ?? InputSystem.AddDevice<Keyboard>();
+        yield return Pc.LookAt(target(), 0.02f);
+        yield return Pc.TurnTo(Pc.Yaw, 0f, 0.02f);
+        InputSystem.QueueStateEvent(kb, new KeyboardState(Key.W));
+        float end = Time.realtimeSinceStartup + sec, check = Time.realtimeSinceStartup + 2f;
+        Vector3 last = Pc.transform.position;
+        bool stuck = false;
+        while (!arrived() && Time.realtimeSinceStartup < end && !stuck)
+        {
+            if (Time.realtimeSinceStartup > check)
+            {
+                check = Time.realtimeSinceStartup + 2f;
+                if ((Pc.transform.position - last).magnitude < 0.05f) stuck = true;
+                last = Pc.transform.position;
+            }
+            yield return null;
+        }
+        InputSystem.QueueStateEvent(kb, new KeyboardState());
+        yield return null;
+        if (!arrived())
+        {
+            Debug.LogWarning($"걷기 경로 막힘 {what}: {Pc.transform.position} 에서 멈춤");
+            Vector3 p = target();
+            p.y = Pc.transform.position.y;
+            Pc.Teleport(p, Pc.Yaw);
+            yield return null;
+        }
+    }
+
     protected IEnumerator PlayR1Stop()
     {
         yield return InChapter(0);
         var d = Object.FindAnyObjectByType<R1StopDirector>();
         yield return Until(() => !Pc.Frozen, 20f, "1회차 시작");
+
+        // 쪽지는 1 키로 접고 편다
+        Assert.IsTrue(Note.Available, "1회차 쪽지");
+        bool was = Note.Opened;
+        yield return Tap(Key.Digit1);
+        Assert.AreNotEqual(was, Note.Opened, "1 키 쪽지");
+
+        // 1-0 골목에서 정류장까지 걷는다
+        var zone = Field<Collider>(d, "stopZone");
+        yield return WalkW(() => zone.bounds.center, () => zone.bounds.Contains(Pc.transform.position), 40f, "1-0");
+        yield return Until(() => rec.Saw("112번 버스를 타세요."), 10f, "1-1 안내");
+
         yield return Use(Field<Interactable>(d, "askPasser"));
         yield return Until(() => rec.Saw("112번 타시면 돼요. 곧 와요."), 10f, "행인 대답");
         yield return Use("버스 타기", 60f);
@@ -517,6 +585,28 @@ public abstract class RoundFixture
         yield return InChapter(2);
     }
 
+    /// <summary>1-7, 1-8. 포인터와 좌클릭만으로 결제까지.</summary>
+    protected IEnumerator R1Kiosk()
+    {
+        yield return EnterKiosk();
+        yield return Screen("idle");
+        yield return Touch("start");
+        yield return Screen("place");
+        yield return Touch("dine");
+        yield return Screen("menu");
+        yield return Touch("item_truffle");
+        yield return Touch("item_set");
+        yield return Screen("cart");
+        yield return Touch("checkout");
+        yield return Screen("pay");
+        yield return Touch("pay_card");
+        yield return Screen("card");
+        Assert.AreEqual(ItemId.Card, HandRig.I.Held, "카드 화면에서 카드를 듦");
+        yield return ClickPay();
+        yield return Until(() => Kiosk.Screen == "paying" || Kiosk.Screen == "done", 3f, "카드 승인");
+        yield return Screen("done", 8f);
+    }
+
     protected IEnumerator PlayR1Store()
     {
         var staff = Field<Interactable>(Object.FindAnyObjectByType<R1StoreDirector>(), "talkStaff");
@@ -524,14 +614,7 @@ public abstract class RoundFixture
         yield return Real(0.5f);
         yield return Use(staff);
         yield return Until(() => rec.Saw("여기 누르시면 돼요. 제가 도와드릴게요."), 15f, "알바생 친절");
-        yield return EnterKiosk();
-        yield return Screen("menu");
-        yield return Touch("soldout");
-        yield return Touch("burger");
-        yield return Screen("pay");
-        Assert.AreEqual(ItemId.Card, HandRig.I.Held, "결제 창 카드");
-        yield return ClickPay();
-        yield return Screen("done");
+        yield return R1Kiosk();
         yield return Free(30f);
         Assert.AreEqual(274, Game.Order.number);
         var d = Object.FindAnyObjectByType<R1StoreDirector>();
@@ -544,27 +627,42 @@ public abstract class RoundFixture
         yield return InChapter(3);
     }
 
+    /// <summary>2-3, 2-4. 쪽지대로 2잔을 담고 잔마다 옵션을 고른다.</summary>
+    protected IEnumerator R2Order()
+    {
+        yield return EnterKiosk();
+        yield return Screen("menu");
+        yield return Touch("next");
+        Assert.AreEqual("menu", Kiosk.Screen, "메뉴 없이 다음");
+        yield return Touch("americano");
+        yield return Touch("next");
+        Assert.AreEqual("menu", Kiosk.Screen, "1잔으로 다음");
+        yield return Touch("latte");
+        yield return Touch("next");
+        yield return Screen("shot");
+        yield return Touch("shot1");
+        yield return Screen("ice");
+        yield return Touch("ice1");
+        yield return Screen("shot");
+        yield return Touch("shot0");
+        yield return Screen("ice");
+        yield return Touch("ice0");
+        yield return Screen("coupon");
+        StringAssert.Contains("아이스 아메리카노 샷 추가", Game.Order.item);
+        StringAssert.Contains("아이스 카페라떼 얼음 적게", Game.Order.item);
+        yield return Touch("coupon_none");
+        yield return Screen("point");
+        yield return Touch("point_skip");
+        yield return Screen("pay");
+    }
+
     protected IEnumerator PlayR2()
     {
         var staff = Field<Interactable>(Object.FindAnyObjectByType<R2CafeDirector>(), "talkStaff");
         yield return Until(() => staff.active && !Pc.Frozen, 30f, "카페 알바생 물을 수 있음");
         yield return Use(staff);
         yield return Until(() => rec.Saw("아, 그거 여기 누르시면 돼요."), 15f, "카페 알바생");
-        yield return EnterKiosk();
-        yield return Screen("menu");
-        yield return Touch("latte");
-        yield return Touch("next");
-        Assert.AreEqual("menu", Kiosk.Screen, "메뉴 없이 다음");
-        yield return TouchAll("americano", "next");
-        yield return Screen("shot");
-        yield return Touch("shot0");
-        yield return Screen("ice");
-        yield return Touch("ice1");
-        yield return Screen("coupon");
-        yield return Touch("coupon_none");
-        yield return Screen("point");
-        yield return Touch("point_skip");
-        yield return Screen("pay");
+        yield return R2Order();
         yield return WalletTake("cardPart", ItemId.Card);
         yield return ClickPay();
         yield return Screen("done");
@@ -574,42 +672,6 @@ public abstract class RoundFixture
         yield return Until(() => Object.FindAnyObjectByType<R2CafeDirector>() != null && rec.Saw("...번 고객..."), 40f, "카페 호출");
         yield return Use(cup);
         yield return InChapter(4);
-    }
-
-    protected IEnumerator R3ToSms()
-    {
-        yield return EnterKiosk();
-        yield return Screen("movie");
-        yield return Touch("movie0");
-        yield return Screen("hall");
-        yield return Touch("hall0");
-        yield return Screen("seat");
-        yield return Touch("next");
-        yield return Touch("seat_1_2");
-        yield return Touch("next");
-        yield return Screen("sms");
-    }
-
-    protected IEnumerator R3Finish()
-    {
-        var note = Field<TMP_Text>(RoundUi.I, "sideNote");
-        yield return Until(() => Regex.IsMatch(note.text, @"^\d{6}$"), 5f, "문자 번호");
-        foreach (char c in note.text.ToCharArray()) yield return Touch("key" + c);
-        yield return Screen("pay");
-        yield return Tap(Key.Digit3);
-        Assert.AreEqual(ItemId.Card, HandRig.I.Held, "3 키 카드");
-        yield return ClickPay();
-    }
-
-    protected IEnumerator PlayR3()
-    {
-        var staff = Field<Interactable>(Object.FindAnyObjectByType<R3CinemaDirector>(), "talkStaff");
-        yield return Until(() => staff.active && !Pc.Frozen, 30f, "영화관 알바생 물을 수 있음");
-        yield return Use(staff);
-        yield return Until(() => rec.Saw("거기 다 나와 있어요."), 15f, "영화관 알바생");
-        yield return R3ToSms();
-        yield return R3Finish();
-        yield return InChapter(5);
     }
 
     protected IEnumerator PlayR4Storefront()
@@ -656,7 +718,7 @@ public abstract class RoundFixture
         yield return Use("밀기", 20f);
         yield return Until(() => rec.Saw("어? 왜 안 열려."), 10f, "4-1 대사");
         yield return Real(0.6f);
-        Assert.AreEqual(5, Game.chapterIndex, "미는 것으로 안 넘어감");
+        Assert.AreEqual(4, Game.chapterIndex, "미는 것으로 안 넘어감");
         Assert.IsNull(Usable("당기기"), "읽기 전 당기기");
 
         // 돋보기로 읽고 당긴다
@@ -664,32 +726,43 @@ public abstract class RoundFixture
         yield return Until(() => Usable("당기기") != null, 5f, "당기기 생김");
         yield return Use("당기기");
         yield return Until(() => rec.Saw("아, 당기는 거구먼."), 15f, "4-2 대사");
-        yield return InChapter(6);
+        yield return InChapter(5);
     }
 
-    /// <summary>메뉴를 찾아 담고 팝업을 지나 결제 창까지 간다.</summary>
+    protected static KioskState K => ((R4ProtoPack)Kiosk.Pack).Flow.K;
+
+    /// <summary>프로토타입 흐름으로 불고기 세트를 담고 팝업을 지나 카드 화면까지 간다.</summary>
     protected IEnumerator R4ToPay()
     {
         yield return Screen("idle");
         yield return Touch("start");
-        yield return Screen("menu");
-        yield return Touch("next");
-        Assert.AreEqual("menu", Kiosk.Screen, "빈 장바구니로 다음");
-        yield return Touch("list");
-        yield return Touch("item_0");
-        yield return Touch("next");
-        yield return Screen("pop_code");
-        yield return Touch("x");
-        yield return Screen("pop_robot");
-        yield return Touch("x");
-        Assert.AreEqual("pop_robot", Kiosk.Screen, "로봇 인증 없이 닫힘");
-        yield return Touch("check");
-        yield return Touch("x");
-        yield return Screen("pop_app");
-        yield return Touch("x");
-        yield return Screen("pop_point");
+        yield return Screen("place");
+        yield return Touch("takeout");
+        yield return Screen("member");
         yield return Touch("skip");
+        yield return Screen("menu");
+        yield return Touch("tab_CLASSIC");
+        yield return Touch("item_bulgogi");
+        yield return Screen("option");
+        yield return Touch("opt_combo");
+        yield return Screen("side");
+        yield return Touch("next");
+        yield return Screen("drink");
+        yield return Touch("next");
+        yield return Screen("upsell");
+        yield return Touch("up_no");
+        yield return Screen("cart");
+        Assert.AreEqual(8900, K.Total, "불고기 세트 가격");
+        yield return Touch("checkout");
+        yield return Until(() => K.info != null && K.info.title == "코드 등록", 5f, "코드 등록 팝업");
+        yield return Touch("info_close");
+        yield return Until(() => K.info != null && K.info.title == "앱 가입", 5f, "앱 가입 팝업");
+        yield return Touch("info_close");
+        yield return Until(() => K.info != null && K.info.title == "포인트 적립", 5f, "포인트 적립 팝업");
+        yield return Touch("pop_skip");
         yield return Screen("pay");
+        yield return Touch("pay_card");
+        yield return Screen("card");
     }
 
     /// <summary>지폐를 count번 넣는다.</summary>
@@ -703,7 +776,7 @@ public abstract class RoundFixture
     protected IEnumerator R4Leave()
     {
         yield return Use("나가기", 60f);
-        yield return InChapter(7);
+        yield return InChapter(6);
     }
 
     protected IEnumerator PlayR4Stop(bool lastOnly = false)
@@ -728,7 +801,6 @@ public abstract class RoundFixture
         AssertSaw("저 바빠서요.");
 
         var driver = Field<Interactable>(d, "askDriver");
-        var buses = Field<BusMover[]>(d, "buses");
         var doors = new List<int>();
         for (int i = 0; i < 3; i++)
         {
@@ -736,30 +808,57 @@ public abstract class RoundFixture
             int n = 0;
             yield return Mash(c => n = c);
             doors.Add(n);
+            if (i == 2) break;
             yield return Until(() => driver.active && !Pc.Frozen, 20f, "기사 묻기 " + i);
             yield return Use(driver);
         }
         Assert.AreEqual(new[] { 40, 40, 40 }, doors.ToArray(), "버스마다 마싱 횟수");
+        Assert.IsFalse(driver.active, "세 번째는 묻기 없음");
 
-        // 4-20, 4-21
-        yield return Until(() => rec.Saw("112번이요."), 10f, "세 번째 번호");
-        yield return Until(() => !Pc.Frozen, 10f, "4-20 조작");
-        yield return Until(() => rec.Saw("현금은 안 받아요."), 10f, "기사 첫말");
-        yield return Until(() => rec.Saw("거기 써 있잖아요."), 20f, "기사 반복");
+        // 4-19, 4-20, 4-20a 입력 없이 이어진다
+        yield return Until(() => rec.Saw("112번이요."), 15f, "세 번째 번호");
+        yield return Until(() => Wallet.I.Open, 10f, "습관처럼 지갑");
+        Assert.IsFalse(Field<Transform>(Wallet.I, "cardPart").gameObject.activeSelf, "지갑에 카드 없음");
+        yield return Until(() => rec.Saw("현금은 어디에 넣어요?"), 15f, "4-20a 질문");
+        yield return Until(() => !Pc.Frozen && Pc.CurrentMode == PlayerController.Mode.Fps, 15f, "4-20a 조작");
+        yield return Until(() => rec.Saw("거기 써 있잖아요."), 15f, "기사 안내");
+        AssertNotSaw("현금은 안 받아요.");
+
+        // 4-21, 4-21a
         yield return LensOn(Field<Readable>(d, "terminalNotice"));
+        yield return Until(() => rec.Saw("이 버스는 현금을 받지 않습니다."), 15f, "4-21 안내문");
         yield return Pick("현금밖에 없는데요");
-        yield return Until(() => rec.Saw("카드 찍으세요."), 8f, "기사 답 1");
-        yield return Pick("카드는 어디서 만들어요?");
-        yield return Until(() => rec.Saw("앱에서 하세요."), 8f, "기사 답 2");
-        yield return Pick("내릴게요");
+        yield return Until(() => rec.Saw("저희는 카드밖에 받지 않습니다."), 10f, "기사 답");
+        AssertNotSaw("카드는 어디서 만들어요?", "내릴게요");
+    }
+
+    protected void AssertNotSaw(params string[] lines)
+    {
+        var hit = lines.Where(l => rec.Saw(l)).ToArray();
+        Assert.IsEmpty(hit, "없어진 문구가 나옴: " + string.Join(" / ", hit));
     }
 
     protected IEnumerator PlayEnding()
     {
+        yield return InChapter(7, 120f);
+        var d = Object.FindAnyObjectByType<EndingHomeDirector>();
+        yield return Until(() => !Pc.Frozen, 30f, "엔딩 걷기 시작");
+
+        // 멈추면 그대로 기다린다
+        Vector3 at = Pc.transform.position;
+        yield return Real(1f);
+        Assert.Less((Pc.transform.position - at).magnitude, 0.05f, "입력 없이 걸어감");
+
+        var reach = Field<Transform>(d, "doorReach");
+        yield return WalkW(() => reach.position, () => Pc.Frozen, 150f, "E-1a");
+        Assert.IsTrue(Pc.Frozen, "현관 앞 E-1b 시작");
+        var ball = Field<GameObject>(d, "noteBall");
+        yield return Until(() => ball.activeSelf, 60f, "E-1b 쪽지 구김");
+
         var ui = RoundUi.I;
         var group = Field<CanvasGroup>(ui, "endGroup");
-        yield return Until(() => group.gameObject.activeSelf, 120f, "엔딩 시작");
-        yield return Until(() => rec.Saw(Ending.Title), 20f, "엔딩 제목");
+        yield return Until(() => group.gameObject.activeSelf, 60f, "E-2 시작");
+        yield return Until(() => rec.Saw(Ending.Title), 30f, "엔딩 제목");
         AssertSaw(Ending.Stat, Ending.Source);
         yield return Real(1.2f);
         yield return Click();

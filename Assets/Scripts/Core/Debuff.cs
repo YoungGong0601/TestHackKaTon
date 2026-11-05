@@ -17,6 +17,13 @@ public static class Debuff
 
     public static float Tremble => P != null && P.tremble ? Bal.Age("Tremble", 0f, 0f, 0.6f, 1f) : 0f;
 
+    /// <summary>손떨림 폭. level은 인물과 눈치를 합친 값, sec은 떨림이 시작된 뒤 지난 시간. 큰 폭에서 줄어들어 작은 폭으로 계속된다.</summary>
+    public static float TrembleAmp(float level, float sec)
+    {
+        float peak = Bal.G("Tremble_Peak", 0.7f) * level, floor = Bal.G("Tremble_Base", 0.22f) * level;
+        return floor + (peak - floor) * Mathf.Exp(-sec / Mathf.Max(Bal.G("Tremble_Tau", 0.8f), 0.01f));
+    }
+
     public static float CursorLagSec => P != null && P.cursorLag ? Bal.Age("CursorLagSec", 0f, 0f, 0.12f, 0.2f) : 0f;
 
     /// <summary>돋보기 초점 흐림 0~1. 주기 끝의 Lens_FocusBlurSec 동안 서서히 흐려졌다 돌아온다.</summary>

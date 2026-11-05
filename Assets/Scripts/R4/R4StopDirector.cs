@@ -174,9 +174,8 @@ public class R4StopDirector : MonoBehaviour
             StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, 0.4f));
             yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 0.9f)), 6f);
             yield return Mash.Climb(stepBottom, stepTop);
+            if (i == 2) break;   // 4-19: 세 번째는 묻지 않아도 고개가 들리며 단말기가 보인다
             yield return Enter();
-
-            if (i == 2) break;
 
             string number = i == 0 ? "117번이요." : "172번이요.";
             yield return Ui.Say(null, number, i == 0 ? "drv_117" : "drv_172", 1.8f, driverPos.position);
@@ -220,29 +219,39 @@ public class R4StopDirector : MonoBehaviour
     IEnumerator Third()
     {
         BusMover bus = buses[Mathf.Min(2, buses.Length - 1)];
+
+        // 4-19 입력 없이 고개가 들리며 단말기가 보인다
+        Player.Teleport(inside.position, inside.eulerAngles.y);
+        Player.Freeze(true);
+        yield return Player.LookAt(terminalPay.transform.position, Bal.G("R4_TerminalLookSec", 1.2f));
         yield return Ui.Say(null, "112번이요.", "drv_112", 1.8f, driverPos.position);
+
+        // 4-20 습관처럼 지갑을 열지만 현금뿐이다
+        Wallet.I.SetOpen(true);
+        yield return new WaitForSeconds(Bal.G("R4_WalletHabitSec", 2f));
+        Wallet.I.SetOpen(false);
+        Player.Freeze(true);
+
+        // 4-20a
+        yield return Ui.Say(null, "현금은 어디에 넣어요?", Me + "_wherecash", 2f);
         asked = true;
         terminalUse.active = true;
         foreach (var x in terminalTexts) x.alpha = 0f;     // 4-21에서 초점이 맞으며 드러난다
         Player.Freeze(false);
-        StartCoroutine(Repeat());     // 4-20: 돋보기를 쓸 때까지 같은 말
+        StartCoroutine(Repeat());     // 돋보기를 쓸 때까지 같은 말
         yield return Until(() => noticeRead);
         Player.Freeze(true);
         terminalUse.active = false;
         Ui.ClearSubs();
         yield return Reveal();
-        yield return Ui.Say(null, "현금 없는 버스 운행 안내", Me + "_notice", 2.4f);
+        yield return Ui.Say(null, "현금 없는 버스 운행 안내. 이 버스는 현금을 받지 않습니다.", Me + "_notice2", 3f);
 
-        var left = new List<string> { "현금밖에 없는데요", "카드는 어디서 만들어요?", "내릴게요" };
-        string pick = null;
-        while (pick != "내릴게요")
-        {
-            yield return Choice.Ask(left.ToArray(), i => pick = left[i]);
-            left.Remove(pick);
-            if (pick == "현금밖에 없는데요") yield return Ui.Say(null, "카드 찍으세요.", "drv_card", 1.8f, driverPos.position);
-            else if (pick == "카드는 어디서 만들어요?") yield return Ui.Say(null, "앱에서 하세요.", "drv_app", 1.8f, driverPos.position);
-        }
+        // 4-21a 선택지는 하나뿐이다
+        yield return Choice.Ask(new[] { "현금밖에 없는데요" }, _ => { });
+        yield return Ui.Say(null, "현금밖에 없는데요.", Me + "_onlycash", 1.8f);
+        yield return Ui.Say(null, "저희는 카드밖에 받지 않습니다.", "drv_cardonly", 2f, driverPos.position);
 
+        // 4-21b
         Player.Teleport(stepTop.position, stepTop.eulerAngles.y);
         yield return Mash.Descend(stepTop, stepBottom);
         Sound.Play("bus_door", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
@@ -265,19 +274,18 @@ public class R4StopDirector : MonoBehaviour
 
     IEnumerator Repeat()
     {
-        int n = 0;
         while (!noticeRead)
         {
-            if (!driverBusy) yield return DriverLine(n++ % 2 == 0);
+            if (!driverBusy) yield return DriverLine();
             float until = Time.time + Bal.G("R4_DriverRepeatSec", 6f);
             while (!noticeRead && Time.time < until) yield return null;
         }
     }
 
-    IEnumerator DriverLine(bool cash)
+    IEnumerator DriverLine()
     {
         driverBusy = true;
-        yield return Ui.Say(null, cash ? "현금은 안 받아요." : "거기 써 있잖아요.", cash ? "drv_nocash" : "drv_there", 1.8f, driverPos.position);
+        yield return Ui.Say(null, "거기 써 있잖아요.", "drv_there", 1.8f, driverPos.position);
         driverBusy = false;
     }
 
@@ -286,7 +294,7 @@ public class R4StopDirector : MonoBehaviour
     void OnTerminalEmpty()
     {
         if (!asked || noticeRead || driverBusy) return;
-        StartCoroutine(DriverLine(true));
+        StartCoroutine(DriverLine());
     }
 
     // 4-21: 초점이 서서히 맞으며 글씨가 드러난다

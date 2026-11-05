@@ -11,4 +11,5 @@ public abstract class KioskPack : MonoBehaviour
     public virtual void OnEnter() { }
     public virtual void OnTimeout() { }         // 시간 초과
     public virtual void OnTick(float dt) { }
+    public virtual bool Hit(Collider col) => false;   // 화면 밖 본체 클릭을 Pack이 받으면 true
 }

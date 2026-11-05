@@ -22,3 +22,12 @@ R4_CashHoldSec,지폐 쥔 손 시간,Float,2,s,마지막 버스
 R4_RevealSec,초점 맞는 시간,Float,1.6,s,4-21
 R4_EndWalkSec,E-1 걷는 시간,Float,8,s,T28
 R4_NoteHoldSec,쪽지 읽은 뒤 지갑 닫기까지,Float,2,s,4-0
+R4_RetryNunchi,줄 뒤로 갔다 돌아왔을 때 게이지,Float,50,,임시 초기화 값 미정
+R4_RequeueGap,줄 한 사람 간격,Float,0.9,m,임시
+R4_RequeueWalkSec,줄 맨 뒤까지 걷는 최대 시간,Float,3,sec,임시
+R4_RequeueWaitSec,앞사람 결제 뒤 차례까지,Float,2,sec,임시 대기 시간 미정
+R4_WhatLineDelaySec,메뉴 안내 뒤 혼잣말까지,Float,2.6,sec,안내 음성과 겹치지 않게
+R4_TerminalLookSec,4-19 고개가 들리는 시간,Float,1.2,sec,임시
+R4_WalletHabitSec,4-20 지갑을 여는 시간,Float,2,sec,임시
+R4_LookAroundDeg,4-10b 둘러보는 각도,Float,75,deg,임시
+R4_LookAroundSec,4-10b 둘러보는 시간,Float,3,sec,임시 타이밍 미정

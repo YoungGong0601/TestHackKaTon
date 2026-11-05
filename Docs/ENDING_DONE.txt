@@ -1,0 +1,4 @@
+엔딩 완료 2026-11-06
+씬 Ending_Home(ChapterFlow 7번, Build Settings 끝). 코드 Assets/Scripts/Ending/EndingHomeDirector.cs, 키 Docs/keys_Ending.csv.
+E-1a 밤 골목 직접 걷기, E-1b 현관 쪽지 구겨 바닥에 둠, E-1c 큰 한숨 뒤 왼손 벽 짚고 숨 고름, 암막, E-2 새 문구와 제목.
+PlayMode 미실행, 소리 미청취.

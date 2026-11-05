@@ -94,3 +94,7 @@ a60_why2,a60,이게 왜 안 돼.,ko-KR-InJoonNeural
 a60_why3,a60,이건 또 뭐야.,ko-KR-InJoonNeural
 a60_what1,a60,이게 무슨 말이야.,ko-KR-InJoonNeural
 a60_read1,a60,글씨가 왜 이렇게 작아.,ko-KR-InJoonNeural
+gp_wherecash,gp,현금은 어디에 넣어요?,ko-KR-InJoonNeural
+gp_notice2,gp,현금 없는 버스 운행 안내. 이 버스는 현금을 받지 않습니다.,ko-KR-InJoonNeural
+gp_onlycash,gp,현금밖에 없는데요.,ko-KR-InJoonNeural
+drv_cardonly,drv,저희는 카드밖에 받지 않습니다.,ko-KR-HyunsuMultilingualNeural

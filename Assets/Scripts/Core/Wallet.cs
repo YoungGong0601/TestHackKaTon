@@ -102,7 +102,7 @@ public class Wallet : MonoBehaviour
     {
         var hands = HandRig.I;
         hands.Equip(hands.Held == id ? ItemId.None : id);
-        if (ownCursor) SetOpen(false);   // 들고 결제 지점까지 걸어간다
+        SetOpen(false);   // 집으면 닫는다. 키오스크에서는 지갑이 투입구를 가려 클릭을 먹는다
     }
 
     void Update()

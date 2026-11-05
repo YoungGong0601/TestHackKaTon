@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// HUD. GTA 방식 자막(상자 없는 흰 글자와 외곽선, 화자와 핵심어만 색)과 목표, 프롬프트, 소지품, 눈치, 암전, 제목, 결과
+// HUD. GTA 방식 자막(상자 없는 흰 글자와 외곽선, 화자와 핵심어만 색)과 프롬프트, 소지품, 눈치, 암전, 제목, 결과
 // 글자는 TextMeshProUGUI(리치 텍스트 켬), Debug만 UnityEngine.UI.Text. 폰트는 Assets/UI/Fonts의 Hud_MalgunOS SDF, 외곽선은 같은 폴더의 Outline 재질로 배치한다
 // 그리는 순서: HUD 요소들, Fade, Title, Result (제목과 결과는 암전 위)
 // 배치: subs = Subs (아래 중앙, 가운데 정렬, 흰색)
@@ -53,11 +53,12 @@ public class Hud : MonoBehaviour
     static readonly Regex MarkRegex = new(@"\{([yrgb]):([^}]*)\}");
 
     int subToken, fadeToken;
-    string goalLine = "";   // keep 0인 목표. 대사가 끝나면 자막 자리로 돌아온다
     float nunchiNow, nunchiWant, nunchiAlpha;
     bool titleOpen;
 
     public bool TitleOpen => titleOpen;
+
+    public string CardName = "카드";   // 소지품 칸의 카드 이름. 1-3은 버스카드
 
     void Awake()
     {
@@ -92,7 +93,7 @@ public class Hud : MonoBehaviour
     IEnumerator SayRoutine(string speaker, string text, string voKey, float hold, Vector3? pos, float vol, bool clear)
     {
         int token = ++subToken;
-        subs.text = Wrap(Name(speaker) + Mark(text));
+        subs.text = Wrap(Mark(text));   // 임시 T08: 화자 이름 표시 안 함
         float len = hold >= 0f ? hold : Mathf.Max(1.5f, text.Length * 0.1f);
         if (!string.IsNullOrEmpty(voKey))
         {
@@ -100,16 +101,7 @@ public class Hud : MonoBehaviour
             len = Mathf.Max(vo > 0f ? vo : len, hold >= 0f ? hold : 0.6f);
         }
         yield return new WaitForSeconds(len);
-        if (token == subToken) subs.text = goalLine;
-    }
-
-    // 자막 자리에 표시, keep초 뒤 사라진다. keep 0이면 지울 때까지 남고 대사가 끝나면 돌아온다
-    public void Objective(string text, float keep = 6f)
-    {
-        int token = ++subToken;
-        subs.text = string.IsNullOrEmpty(text) ? "" : Wrap(Mark(text));
-        goalLine = keep > 0f ? "" : subs.text;
-        if (!string.IsNullOrEmpty(text) && keep > 0f) StartCoroutine(ClearAfter(token, keep));
+        if (token == subToken) subs.text = "";
     }
 
     // 왼쪽 위 작은 글자. null이면 지움
@@ -118,16 +110,9 @@ public class Hud : MonoBehaviour
         if (RoundUi.I != null) RoundUi.I.SideNote(text);
     }
 
-    IEnumerator ClearAfter(int token, float sec)
-    {
-        yield return new WaitForSeconds(sec);
-        if (token == subToken) subs.text = "";
-    }
-
     public void ClearSubs()
     {
         subToken++;
-        goalLine = "";
         subs.text = "";
     }
 
@@ -183,6 +168,12 @@ public class Hud : MonoBehaviour
         int n = 0;
         if (profile != null && profile.items != null && hands != null && hands.ItemsEnabled)
         {
+            if (Note.Available && n < itemSlots.Length)
+            {
+                var slot = itemSlots[n++];
+                slot.gameObject.SetActive(true);
+                slot.text = $"<color={(Note.Opened ? ItemOn : ItemOff)}><b>1</b> 쪽지</color>";
+            }
             foreach (var id in profile.items)
             {
                 // 지갑 속 물건은 칸에 나오지 않는다
@@ -196,10 +187,10 @@ public class Hud : MonoBehaviour
         for (; n < itemSlots.Length; n++) itemSlots[n].gameObject.SetActive(false);
     }
 
-    static string ItemName(ItemId id) => id switch
+    string ItemName(ItemId id) => id switch
     {
         ItemId.Lens => "돋보기",
-        ItemId.Card => "카드",
+        ItemId.Card => CardName,
         ItemId.Wallet => "지갑",
         _ => "",
     };
