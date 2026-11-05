@@ -21,8 +21,8 @@ Unity 는 정우맥만 씁니다. 정우컴은 Blender 만 씁니다. 두 대가
 | 7 | 커피 머신 | PH_BackShelf__Machine | PH/cafe_machine.py | 정우컴 |
 | 8 | 진열장 | PH_Showcase__Body | PH/cafe_showcase.py | 정우컴 |
 | 9 | 둥근 탁자 | PH_CafeTable__Body | PH/cafe_table.py | 정우컴 |
-| 10 | 가로수 | PH_StreetTree__Body | PH/cafe_tree.py | 정우컴 |
-| 11 | 사무 빌딩 | PH_OfficeBlock__Body | PH/cafe_office.py | 정우컴 |
+| 10 | 가로수 | PH_StreetTree__Body | PH/cafe_tree.py | 정우맥 |
+| 11 | 사무 빌딩 | PH_OfficeBlock__Body | PH/cafe_office.py | 정우맥 |
 
 정우맥이 자기 일을 끝내면 정우컴 목록의 뒤에서부터 가져갑니다. 가져갈 때 이 표의 담당을 정우맥으로 고쳐 main 에 올립니다. 정우컴은 다음 에셋을 시작하기 전에 `git fetch origin` 뒤 `git show origin/main:CAFE_SPLIT.md` 로 이 표를 봅니다. 담당이 바뀐 에셋은 건너뜁니다.
 
@@ -57,7 +57,7 @@ MODELING_SPLIT.md 와 다른 점입니다.
 
 ## 4. 정우컴 에셋 규격
 
-공통입니다. 단위는 미터, 정적 메시, 원점은 프리팹 원점입니다. 스크립트 기본형은 PREP 7.2 이고 앞면은 Unity -Z 이므로 `ph.part(A, parts, ph.turn(180))` 입니다. 아래 좌표는 Unity 프리팹 좌표이고 회색 자리의 실측입니다. 회색 Cylinder 는 Y 스케일의 2배가 높이입니다.
+공통입니다. 단위는 미터, 정적 메시, 원점은 프리팹 원점입니다. 스크립트 기본형은 PREP 7.2 이고 앞면은 Unity -Z 이므로 `ph.part(A, parts, ph.turn(180))` 입니다. 이때 Unity (x, y, z) 는 소스 Blender (x, z, y) 입니다. 소스의 -Y 가 앞면이고 Blender Z 가 높이입니다. 아래 좌표는 Unity 프리팹 좌표이고 회색 자리의 실측입니다. 회색 Cylinder 는 Y 스케일의 2배가 높이입니다.
 
 매번 미리보기 PNG(ArtSource/Previews)를 실제로 열어 크기, 앞면, 원점을 봅니다. 그리고 `blender -b --factory-startup --python ArtSource/Blender/scripts/k3d.py -- validate Assets/Art3D/Models/PH/<모델>.fbx <높이>` 를 돌립니다. 시점은 1인칭 눈높이 약 1.6 m 입니다. 베이크는 1024 면 충분합니다.
 
