@@ -1,0 +1,2343 @@
+{
+ "scene": "Street",
+ "notes": "Blender 좌표 (Z-up, m), 과제 공식 (x3, -z3, y3) = 프로토타입 three 좌표. rotZ = Blender Z 회전(deg). 골목 y -11..31 (+Y 로 큰길), 앞 보도 y 31.02..35.2, 차도 35.2..43.2 (노면 z=-0.14, 중앙선 y=39.2), 건너편 보도 43.2..47.38. 버스: 차로 y=37 에서 +X 로 진행 (프로토타입 x -90 -> 31.75 정차 -> 170), 정차 시 원점 = anchors.BusStopOrigin, rotZ 90 (앞문 = anchors.CityBus_Socket_DoorFront). 건너편 차로 y=41.3 은 -X 진행. BusShelter_Socket_BusDoor 와 StreetRoadBusStop_Socket_BusStop 은 이 배치에서 쓰지 않는다 (거기에 앞문을 맞추면 버스가 4.5 m 뒤로 가서 '버스 정차' 글자를 덮는다). anchors = 배치 후 소켓·게임 지점의 월드 좌표 (Blender). 플레이어 정류장 도착 판정 x>23 & y>30 (프로토타입). hide = 끌 자식 오브젝트(도구 미지원: StreetRoadAlley_TextSlow 는 y=16 모듈만 켬). socket = 원점을 맞춘 BusShelter 소켓. 앞 보도 StreetSidewalk 는 의도적으로 rotZ 0 (노트의 180 이면 선형 유도 띠가 승차대 벤치 밑을 지남). NPC clip = 처음 재생할 클립. 하늘: 흐린 아침 C4CED8 근처, 안개 Exponential Squared 9AA3AB 밀도 0.0125 (프로토타입). 조명 color = linear (도구가 sRGB 로 바꿈).",
+ "items": [
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    -45.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    -33.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    -21.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    -9.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    2.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    14.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    44.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    56.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    68.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    80.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    92.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    104.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    116.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "StreetRoad",
+   "pos": [
+    128.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadBusStop.fbx",
+   "name": "StreetRoadBusStop",
+   "pos": [
+    29.5,
+    39.2,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -51.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -51.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -51.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -51.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -39.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -39.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -39.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -39.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -27.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -27.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -27.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -27.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -15.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -15.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -15.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -15.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -3.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    -3.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -3.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    -3.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    8.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    8.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    8.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    8.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    20.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    20.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    20.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    20.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    32.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    32.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    32.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    32.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    44.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    44.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    44.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    44.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    56.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    56.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    56.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    56.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    68.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    68.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    68.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    68.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    80.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    80.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    80.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    80.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    92.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    92.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    92.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    92.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    104.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    104.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    104.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    104.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    116.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    116.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    116.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    116.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    128.5,
+    35.2,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "StreetCurb",
+   "pos": [
+    128.5,
+    43.2,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    128.5,
+    33.02,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "StreetSidewalk",
+   "pos": [
+    128.5,
+    45.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    28,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    28,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    22,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    22,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    16,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": []
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    16,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    10,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    10,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    4,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    4,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    -2,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    -2,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "StreetRoadAlley",
+   "pos": [
+    0,
+    -8,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -2.43,
+    -8,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -38,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -33,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -18,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    -13,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    6,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    11,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    18,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    23,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    48,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    53,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    62,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    67,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    76,
+    35.37,
+    -0.14
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "StreetDrain",
+   "pos": [
+    81,
+    43.03,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetManhole.fbx",
+   "name": "StreetManhole",
+   "pos": [
+    0.7,
+    6.2,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetManhole.fbx",
+   "name": "StreetManhole",
+   "pos": [
+    -1.0,
+    24.4,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetManhole.fbx",
+   "name": "StreetManhole",
+   "pos": [
+    8.0,
+    37.6,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/LayoutStreet/StreetGround.fbx",
+   "name": "StreetGround",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    -34.395,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    -21.405,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    -8.8,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    8.87,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    22.39,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    36.645,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    49.985,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    63.917,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    78.407,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    90.427,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    103.767,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    116.434,
+    31.02,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    -40.215,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    -27.548,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    -12.708,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    1.547,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    13.567,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    26.234,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    41.074,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    55.329,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    67.761,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    80.366,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    94.856,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    109.111,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    121.543,
+    47.38,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "BuildingVilla",
+   "pos": [
+    -2.6,
+    0.197,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "BuildingRealEstate",
+   "pos": [
+    -2.6,
+    13.52,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "BuildingSalon",
+   "pos": [
+    2.6,
+    -2.735,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "BuildingShopRow",
+   "pos": [
+    2.6,
+    10.78,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_Home",
+   "pos": [
+    0,
+    -10,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_0",
+   "pos": [
+    -30,
+    112,
+    0
+   ],
+   "rotZ": 4,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_1",
+   "pos": [
+    25,
+    120,
+    0
+   ],
+   "rotZ": -3,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_2",
+   "pos": [
+    80,
+    108,
+    0
+   ],
+   "rotZ": 2,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_3",
+   "pos": [
+    135,
+    125,
+    0
+   ],
+   "rotZ": -5,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_4",
+   "pos": [
+    -150,
+    39,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_5",
+   "pos": [
+    175,
+    39,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_6",
+   "pos": [
+    40,
+    -75,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_7",
+   "pos": [
+    -40,
+    -80,
+    0
+   ],
+   "rotZ": 176,
+   "scale": 1
+  },
+  {
+   "model": "Models/BusStop/BusShelter.fbx",
+   "name": "BusShelter",
+   "pos": [
+    33.3,
+    32.8,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/BusStop/BusStopBIS.fbx",
+   "name": "BusStopBIS",
+   "pos": [
+    28.6,
+    33.1,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1,
+   "socket": "BusShelter_Socket_BIS"
+  },
+  {
+   "model": "Models/BusStop/BusStopSign.fbx",
+   "name": "BusStopSign",
+   "pos": [
+    37.6,
+    34.35,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1,
+   "socket": "BusShelter_Socket_Sign"
+  },
+  {
+   "model": "Models/BusStop/BusStopRouteMap.fbx",
+   "name": "BusStopRouteMap",
+   "pos": [
+    31.1,
+    31.801,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1,
+   "socket": "BusShelter_Socket_RouteMap"
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    -60,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    -60,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    -35,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    -35,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    -10,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    -10,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    15,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    15,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    40,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    40,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    65,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    65,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    90,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "StreetWires",
+   "pos": [
+    90,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "StreetUtilityPole",
+   "pos": [
+    115,
+    34.75,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    -22,
+    34.85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    3,
+    34.85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    53,
+    34.85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    78,
+    34.85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    103,
+    34.85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    -8,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    17,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    42,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    67,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    92,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight",
+   "pos": [
+    117,
+    43.55,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetTrashCan.fbx",
+   "name": "StreetTrashCan",
+   "pos": [
+    22.5,
+    34.45,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetClothingBin.fbx",
+   "name": "StreetClothingBin",
+   "pos": [
+    19.0,
+    31.65,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetNoParking.fbx",
+   "name": "StreetNoParking",
+   "pos": [
+    -1.9,
+    29.9,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetBollard.fbx",
+   "name": "StreetBollard",
+   "pos": [
+    2.9,
+    34.7,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetBollard.fbx",
+   "name": "StreetBollard",
+   "pos": [
+    -2.9,
+    34.7,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CityBus.fbx",
+   "name": "CityBus_112",
+   "pos": [
+    31.75,
+    37.0,
+    -0.14
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CarHatch.fbx",
+   "name": "CarHatch",
+   "pos": [
+    22.0,
+    42.1,
+    -0.14
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CarSedan.fbx",
+   "name": "CarSedan",
+   "pos": [
+    -5.2,
+    -3.703,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CarSedan.fbx",
+   "name": "CarSedan",
+   "pos": [
+    1.6,
+    15.6,
+    0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CarHatch.fbx",
+   "name": "CarHatch",
+   "pos": [
+    1.55,
+    6.4,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/DeliveryScooter.fbx",
+   "name": "DeliveryScooter",
+   "pos": [
+    -1.9,
+    19.9,
+    0
+   ],
+   "rotZ": 175,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/Bicycle.fbx",
+   "name": "Bicycle",
+   "pos": [
+    -2.15,
+    27.5,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Characters/NpcStudentMan.fbx",
+   "name": "NpcStudentMan",
+   "pos": [
+    33.9,
+    33.75,
+    0
+   ],
+   "rotZ": 34.4,
+   "scale": 1,
+   "clip": "Phone"
+  },
+  {
+   "model": "Models/Characters/NpcAjumma.fbx",
+   "name": "NpcAjumma",
+   "pos": [
+    7.4,
+    32.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1,
+   "clip": "Idle"
+  },
+  {
+   "model": "Models/Characters/NpcYoungWoman.fbx",
+   "name": "NpcYoungWoman",
+   "pos": [
+    20.0,
+    45.3,
+    0
+   ],
+   "rotZ": -90,
+   "scale": 1,
+   "clip": "Walk"
+  },
+  {
+   "model": "Models/Characters/NpcOfficeMan.fbx",
+   "name": "NpcOfficeMan",
+   "pos": [
+    -6.0,
+    45.7,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "clip": "Walk"
+  },
+  {
+   "model": "Models/Characters/NpcOldMan.fbx",
+   "name": "NpcOldMan",
+   "pos": [
+    52.0,
+    45.0,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "clip": "Walk"
+  }
+ ],
+ "lights": [
+  {
+   "name": "OvercastSun",
+   "type": "Directional",
+   "pos": [
+    20,
+    30,
+    40
+   ],
+   "dir": [
+    -0.0451,
+    0.3159,
+    -0.9477
+   ],
+   "color": [
+    0.7379,
+    0.7913,
+    0.855
+   ],
+   "intensity": 1.15,
+   "range": 0,
+   "spotAngle": 0
+  }
+ ],
+ "anchors": {
+  "BusStopBIS_Socket_LookTarget": [
+   28.515,
+   33.1,
+   2.71
+  ],
+  "BusStopBIS_Socket_LookTarget_Back": [
+   28.685,
+   33.1,
+   2.71
+  ],
+  "BusStopSign_Socket_LookTarget_Routes": [
+   37.6,
+   34.391,
+   1.46
+  ],
+  "BusStopSign_Socket_LookTarget_Head": [
+   37.6,
+   34.391,
+   2.62
+  ],
+  "BusStopRouteMap_Socket_LookTarget": [
+   31.1,
+   31.876,
+   1.32
+  ],
+  "BusShelter_Socket_Wait": [
+   31.7,
+   34.0,
+   0.0
+  ],
+  "BusShelter_Socket_Sit_0": [
+   34.1,
+   32.3,
+   0.45
+  ],
+  "BusShelter_Socket_Sit_1": [
+   33.3,
+   32.3,
+   0.45
+  ],
+  "BusShelter_Socket_Sit_2": [
+   32.5,
+   32.3,
+   0.45
+  ],
+  "BusShelter_Socket_LookTarget_Name": [
+   33.3,
+   34.621,
+   2.395
+  ],
+  "CityBus_Socket_DoorFront": [
+   36.2,
+   35.305,
+   -0.14
+  ],
+  "CityBus_Socket_DoorMid": [
+   30.85,
+   35.305,
+   -0.14
+  ],
+  "BusShelter_Socket_BusDoor": [
+   31.7,
+   35.2,
+   0.0
+  ],
+  "StreetRoadBusStop_Socket_BusStop": [
+   31.5,
+   36.7,
+   -0.14
+  ],
+  "Spawn": [
+   0.3,
+   -4.7,
+   0.0
+  ],
+  "BusStopArrive": [
+   23.0,
+   33.0,
+   0.0
+  ],
+  "BusStopOrigin": [
+   31.75,
+   37.0,
+   -0.14
+  ],
+  "BusEnter": [
+   -90.0,
+   37.0,
+   -0.14
+  ],
+  "BusExit": [
+   170.0,
+   37.0,
+   -0.14
+  ]
+ },
+ "ambient": {
+  "sky": [
+   0.552,
+   0.6172,
+   0.6867
+  ],
+  "ground": [
+   0.107,
+   0.1022,
+   0.0931
+  ],
+  "intensity": 0.9
+ },
+ "fog": {
+  "color": [
+   0.3231,
+   0.3663,
+   0.4072
+  ],
+  "density": 0.0125
+ },
+ "camera": {
+  "pos": [
+   0.3,
+   -4.7,
+   1.55
+  ],
+  "lookAt": [
+   0.3,
+   30.0,
+   1.4
+  ]
+ }
+}

@@ -1,0 +1,1602 @@
+{
+ "scene": "Storefront",
+ "notes": "블렌더 좌표(Z-up, m)입니다. 프로토타입 three (x,y,z) = 블렌더 (x,-z,y)이고 rotZ는 블렌더 Z 회전(deg)입니다. 매장 안·매장 앞 거리 항목은 Layouts/Store.json과 이름·자리가 같습니다(문을 열고 Store 씬으로 넘어갈 때 그대로 이어집니다). 보도는 4.18 m(유리선 y=-3.8 ~ 경계석 뒷면 y=-7.8)이고 도로·경계석은 z=-0.14입니다. StoreGlassDoor: 회전 0이 닫힘이고 Leaf를 로컬 Z로 돌립니다. 당기면 거리 쪽으로 최대 1.45rad 열리고, 밀면 매장 쪽 0.0011rad에서 막고 거리 쪽으로 0.012rad 되튑니다(소리·카메라 흔들림). 상호작용 점은 StoreGlassDoor_Socket_Handle 입니다. 클로저 2링크는 StorefrontFacade_Socket_CloserShoe로 풉니다. Bus: 씬 시작 때 자기 정면(로컬 -Y = Unity transform.forward, 월드 -X)으로 가속해 떠나고 x<-46에서 숨깁니다. 프로토타입은 +x로 떠나지만 우측통행이라 매장 쪽 차로는 -X입니다. Seat_NpcStudentWoman: 세 번째 밀기 때 문 쪽(Handle 소켓)으로 2.6초 돌아봤다가 원래 방향으로 돌아갑니다(프로토타입 ye()). Staff는 SitPhone입니다. hide = 이 인스턴스에서 끌 자식 오브젝트, parts = 자식의 로컬 회전(deg)입니다. 조명 color는 sRGB입니다. 매장 안 조명은 Store.json과 같고, 하늘은 흐린 아침(회청색 0.70,0.75,0.82) 스카이박스입니다.",
+ "items": [
+  {
+   "model": "Models/Store/StoreShell.fbx",
+   "name": "StoreShell",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreKitchen.fbx",
+   "name": "StoreKitchen",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StorePosters.fbx",
+   "name": "StorePosters",
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreCounter.fbx",
+   "name": "StoreCounter",
+   "pos": [
+    -2.96,
+    1.25,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreMenuBoard.fbx",
+   "name": "StoreMenuBoard",
+   "pos": [
+    -2.575,
+    1.98,
+    2.28
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreOrderBoard.fbx",
+   "name": "StoreOrderBoard",
+   "pos": [
+    -2.575,
+    -0.9,
+    2.31
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Storefront/StorefrontFacade.fbx",
+   "name": "StorefrontFacade",
+   "pos": [
+    0,
+    -3.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Storefront/StoreGlassDoor.fbx",
+   "name": "StoreGlassDoor",
+   "pos": [
+    0.942,
+    -3.826,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Storefront/StorefrontAC.fbx",
+   "name": "StorefrontAC_1",
+   "pos": [
+    -1.85,
+    -3.83,
+    5.15
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Storefront/StorefrontAC.fbx",
+   "name": "StorefrontAC_2",
+   "pos": [
+    5.55,
+    -3.83,
+    8.25
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Storefront/StorefrontAC.fbx",
+   "name": "StorefrontAC_3",
+   "pos": [
+    5.55,
+    -3.83,
+    11.35
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Kiosk/Kiosk.fbx",
+   "name": "Kiosk",
+   "pos": [
+    -0.6,
+    3.82,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Kiosk/Kiosk_B.fbx",
+   "name": "Kiosk_B",
+   "pos": [
+    0.72,
+    3.82,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable.fbx",
+   "name": "Table0",
+   "pos": [
+    2.75,
+    -1.7,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table0_ChairBack",
+   "pos": [
+    2.75,
+    -1.08,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table0_ChairFront",
+   "pos": [
+    2.75,
+    -2.32,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable.fbx",
+   "name": "Table1",
+   "pos": [
+    2.75,
+    1.1,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table1_ChairBack",
+   "pos": [
+    2.75,
+    1.72,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table1_ChairFront",
+   "pos": [
+    2.75,
+    0.48,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable.fbx",
+   "name": "Table2",
+   "pos": [
+    -3.4,
+    -2.75,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table2_ChairBack",
+   "pos": [
+    -3.4,
+    -2.13,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreChair.fbx",
+   "name": "Table2_ChairFront",
+   "pos": [
+    -3.4,
+    -3.37,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable4.fbx",
+   "name": "Booth0_Table",
+   "pos": [
+    4.72,
+    1.95,
+    0.0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth0_BenchBack",
+   "pos": [
+    4.9785,
+    2.77,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth0_BenchFront",
+   "pos": [
+    4.9785,
+    1.13,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable4.fbx",
+   "name": "Booth1_Table",
+   "pos": [
+    4.72,
+    -0.45,
+    0.0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth1_BenchBack",
+   "pos": [
+    4.9785,
+    0.37,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth1_BenchFront",
+   "pos": [
+    4.9785,
+    -1.27,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTable4.fbx",
+   "name": "Booth2_Table",
+   "pos": [
+    4.72,
+    -2.65,
+    0.0
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth2_BenchBack",
+   "pos": [
+    4.9785,
+    -1.83,
+    0.0
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreBoothBench.fbx",
+   "name": "Booth2_BenchFront",
+   "pos": [
+    4.9785,
+    -3.47,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Table0_Napkin",
+   "pos": [
+    2.49,
+    -1.44,
+    0.75
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Table0_Straw",
+   "pos": [
+    2.58,
+    -1.44,
+    0.75
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Table1_Napkin",
+   "pos": [
+    3.01,
+    0.84,
+    0.75
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Table1_Straw",
+   "pos": [
+    2.92,
+    0.84,
+    0.75
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Table2_Napkin",
+   "pos": [
+    -3.66,
+    -2.49,
+    0.75
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Table2_Straw",
+   "pos": [
+    -3.57,
+    -2.49,
+    0.75
+   ],
+   "rotZ": 0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Booth0_Table_Napkin",
+   "pos": [
+    4.46,
+    1.52,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Booth0_Table_Straw",
+   "pos": [
+    4.46,
+    1.61,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Booth1_Table_Napkin",
+   "pos": [
+    4.46,
+    -0.88,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Booth1_Table_Straw",
+   "pos": [
+    4.46,
+    -0.79,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreNapkinDispenser.fbx",
+   "name": "Booth2_Table_Napkin",
+   "pos": [
+    4.46,
+    -3.08,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreStrawHolder.fbx",
+   "name": "Booth2_Table_Straw",
+   "pos": [
+    4.46,
+    -2.99,
+    0.75
+   ],
+   "rotZ": 90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreHighChair.fbx",
+   "name": "HighChair0",
+   "pos": [
+    -1.9,
+    -3.1,
+    0.0
+   ],
+   "rotZ": 34.38,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreHighChair.fbx",
+   "name": "HighChair1",
+   "pos": [
+    -2.5,
+    -3.25,
+    0.0
+   ],
+   "rotZ": 51.57,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StorePlant.fbx",
+   "name": "Plant",
+   "pos": [
+    -5.5,
+    -3.3,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreWetFloorSign.fbx",
+   "name": "WetFloorSign",
+   "pos": [
+    0.35,
+    -2.35,
+    0.0
+   ],
+   "rotZ": 28.65,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreTrashStation.fbx",
+   "name": "TrashStation",
+   "pos": [
+    2.75,
+    3.913,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreExtinguisherSign.fbx",
+   "name": "ExtinguisherSign",
+   "pos": [
+    1.68,
+    4.19,
+    0.99
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Store/StoreExtinguisher.fbx",
+   "name": "Extinguisher",
+   "pos": [
+    1.68,
+    4.028,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Food/FoodTray.fbx",
+   "name": "Tray0",
+   "pos": [
+    2.75,
+    -1.8,
+    0.75
+   ],
+   "rotZ": 183,
+   "scale": 1
+  },
+  {
+   "model": "Models/Food/FoodBulgogiBurger.fbx",
+   "name": "Tray0_Burger",
+   "pos": [
+    2.8288,
+    -1.7758,
+    0.7565
+   ],
+   "rotZ": 191,
+   "scale": 1
+  },
+  {
+   "model": "Models/Food/FoodFries.fbx",
+   "name": "Tray0_Fries",
+   "pos": [
+    2.6528,
+    -1.8552,
+    0.7565
+   ],
+   "rotZ": 171,
+   "scale": 1
+  },
+  {
+   "model": "Models/Food/FoodDrinkCup_Cola.fbx",
+   "name": "Tray0_Cup",
+   "pos": [
+    2.6212,
+    -1.7316,
+    0.7565
+   ],
+   "rotZ": 213,
+   "scale": 1
+  },
+  {
+   "model": "Models/Characters/NpcStaff.fbx",
+   "name": "Staff",
+   "pos": [
+    -3.6782,
+    2.5228,
+    0.01
+   ],
+   "rotZ": 118.65,
+   "scale": 1,
+   "clip": "SitPhone"
+  },
+  {
+   "model": "Models/Characters/NpcStudentWoman.fbx",
+   "name": "Seat_NpcStudentWoman",
+   "pos": [
+    2.7427,
+    -2.1666,
+    0.0463
+   ],
+   "rotZ": 180,
+   "scale": 1,
+   "clip": "SitIdle"
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "Sidewalk0",
+   "pos": [
+    -12,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "Curb0",
+   "pos": [
+    -12,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "Road0",
+   "pos": [
+    -12,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFar0",
+   "pos": [
+    -12,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFar0",
+   "pos": [
+    -12,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "Sidewalk1",
+   "pos": [
+    0,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "Curb1",
+   "pos": [
+    0,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "Road1",
+   "pos": [
+    0,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFar1",
+   "pos": [
+    0,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFar1",
+   "pos": [
+    0,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "Sidewalk2",
+   "pos": [
+    12,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "Curb2",
+   "pos": [
+    12,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "Road2",
+   "pos": [
+    12,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFar2",
+   "pos": [
+    12,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFar2",
+   "pos": [
+    12,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "ShopRow0",
+   "pos": [
+    -15.2,
+    -20.25,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "ShopRow1",
+   "pos": [
+    0.0,
+    -20.25,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "ShopRow2",
+   "pos": [
+    15.2,
+    -20.25,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "Backdrop0",
+   "pos": [
+    -6,
+    -85,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetLight.fbx",
+   "name": "StreetLight0",
+   "pos": [
+    4.6,
+    -7.45,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkW1",
+   "pos": [
+    -24,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbW1",
+   "pos": [
+    -24,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "RoadW1",
+   "pos": [
+    -24,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFarW1",
+   "pos": [
+    -24,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFarW1",
+   "pos": [
+    -24,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkW2",
+   "pos": [
+    -36,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbW2",
+   "pos": [
+    -36,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "RoadW2",
+   "pos": [
+    -36,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFarW2",
+   "pos": [
+    -36,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFarW2",
+   "pos": [
+    -36,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkE1",
+   "pos": [
+    24,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbE1",
+   "pos": [
+    24,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "RoadE1",
+   "pos": [
+    24,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFarE1",
+   "pos": [
+    24,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFarE1",
+   "pos": [
+    24,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkE2",
+   "pos": [
+    36,
+    -5.8,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbE2",
+   "pos": [
+    36,
+    -7.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoad.fbx",
+   "name": "RoadE2",
+   "pos": [
+    36,
+    -11.98,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetCurb.fbx",
+   "name": "CurbFarE2",
+   "pos": [
+    36,
+    -15.98,
+    -0.14
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSidewalk.fbx",
+   "name": "SidewalkFarE2",
+   "pos": [
+    36,
+    -18.16,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "NeighborSalon",
+   "pos": [
+    -15.27,
+    -3.8,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingVilla.fbx",
+   "name": "NeighborVilla",
+   "pos": [
+    -32.32,
+    -3.8,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "NeighborRealEstate",
+   "pos": [
+    15.52,
+    -3.8,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "NeighborShopRow",
+   "pos": [
+    29.02,
+    -3.8,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingMarketGate.fbx",
+   "name": "MarketGate",
+   "pos": [
+    -23.62,
+    -4.15,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "MarketAlley0",
+   "pos": [
+    -23.62,
+    -0.8,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_Parking",
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Street/StreetRoadAlley.fbx",
+   "name": "MarketAlley1",
+   "pos": [
+    -23.62,
+    5.2,
+    0
+   ],
+   "rotZ": 90,
+   "scale": 1,
+   "hide": [
+    "StreetRoadAlley_Parking",
+    "StreetRoadAlley_TextSlow"
+   ]
+  },
+  {
+   "model": "Models/Buildings/BuildingShopRow.fbx",
+   "name": "MarketAlleyEnd",
+   "pos": [
+    -23.62,
+    8.2,
+    0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingSalon.fbx",
+   "name": "FarSalon",
+   "pos": [
+    -28.45,
+    -20.25,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingRealEstate.fbx",
+   "name": "FarRealEstate",
+   "pos": [
+    28.7,
+    -20.25,
+    0.0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "Backdrop1",
+   "pos": [
+    -30,
+    72,
+    0
+   ],
+   "rotZ": 4,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "Backdrop2",
+   "pos": [
+    22,
+    86,
+    0
+   ],
+   "rotZ": -6,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "Backdrop3",
+   "pos": [
+    48,
+    -96,
+    0
+   ],
+   "rotZ": 186,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "UtilityPole0",
+   "pos": [
+    13.6,
+    -7.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "Wires0",
+   "pos": [
+    13.6,
+    -7.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "UtilityPole1",
+   "pos": [
+    -11.4,
+    -7.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetWires.fbx",
+   "name": "Wires1",
+   "pos": [
+    -11.4,
+    -7.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetUtilityPole.fbx",
+   "name": "UtilityPole2",
+   "pos": [
+    -36.4,
+    -7.6,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetSignPole.fbx",
+   "name": "SignPole",
+   "pos": [
+    -4.3,
+    -7.4,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetTrashCan.fbx",
+   "name": "TrashCan",
+   "pos": [
+    -8.4,
+    -7.35,
+    0
+   ],
+   "rotZ": 180,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/Bicycle.fbx",
+   "name": "Bicycle",
+   "pos": [
+    -5.2,
+    -5.0,
+    0
+   ],
+   "rotZ": 81.82,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/DeliveryScooter.fbx",
+   "name": "DeliveryScooter",
+   "pos": [
+    4.35,
+    -5.45,
+    0
+   ],
+   "rotZ": -18,
+   "scale": 1,
+   "parts": {
+    "DeliveryScooter_Stand": {
+     "rotX": -70.0
+    }
+   }
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "Drain0",
+   "pos": [
+    -2.0,
+    -8.15,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Street/StreetDrain.fbx",
+   "name": "Drain1",
+   "pos": [
+    19.0,
+    -8.15,
+    -0.14
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CityBus.fbx",
+   "name": "Bus",
+   "pos": [
+    -6.0,
+    -9.6,
+    -0.14
+   ],
+   "rotZ": -90,
+   "scale": 1
+  },
+  {
+   "model": "Models/Vehicles/CarSedan.fbx",
+   "name": "ParkedCar",
+   "pos": [
+    11.5,
+    -9.1,
+    -0.14
+   ],
+   "rotZ": -90,
+   "scale": 1
+  }
+ ],
+ "lights": [
+  {
+   "type": "Directional",
+   "name": "OvercastSun",
+   "pos": [
+    -7,
+    -15,
+    16
+   ],
+   "dir": [
+    0.303,
+    0.505,
+    -0.808
+   ],
+   "color": [
+    0.941,
+    0.925,
+    0.894
+   ],
+   "intensity": 1.2,
+   "shadows": true
+  },
+  {
+   "type": "Point",
+   "name": "Light_A",
+   "pos": [
+    1.0,
+    2.2,
+    2.7
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 2.4,
+   "range": 7.5,
+   "shadows": true
+  },
+  {
+   "type": "Point",
+   "name": "Light_B",
+   "pos": [
+    3.6,
+    -1.0,
+    2.7
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 2.4,
+   "range": 7.5,
+   "shadows": true
+  },
+  {
+   "type": "Point",
+   "name": "Light_C",
+   "pos": [
+    -0.6,
+    -1.6,
+    2.7
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 2.2,
+   "range": 7.0,
+   "shadows": true
+  },
+  {
+   "type": "Point",
+   "name": "Light_Kitchen",
+   "pos": [
+    -4.4,
+    1.0,
+    2.5
+   ],
+   "color": [
+    1.0,
+    0.93,
+    0.84
+   ],
+   "intensity": 2.6,
+   "range": 6.0,
+   "shadows": true
+  },
+  {
+   "type": "Point",
+   "name": "Light_Kiosk",
+   "pos": [
+    -0.6,
+    2.6,
+    2.8
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 1.6,
+   "range": 5.0,
+   "shadows": false
+  },
+  {
+   "type": "Point",
+   "name": "Light_Counter",
+   "pos": [
+    -1.9,
+    1.2,
+    2.8
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 1.6,
+   "range": 5.0,
+   "shadows": false
+  },
+  {
+   "type": "Point",
+   "name": "Light_Entrance",
+   "pos": [
+    1.3,
+    -2.6,
+    2.8
+   ],
+   "color": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "intensity": 1.4,
+   "range": 5.0,
+   "shadows": false
+  },
+  {
+   "type": "Spot",
+   "name": "Light_PickupHeat",
+   "pos": [
+    -2.92,
+    -0.85,
+    1.78
+   ],
+   "dir": [
+    0,
+    0,
+    -1
+   ],
+   "color": [
+    1.0,
+    0.72,
+    0.46
+   ],
+   "intensity": 2.5,
+   "range": 3.0,
+   "spotAngle": 75
+  },
+  {
+   "type": "Point",
+   "name": "CanopyWarm",
+   "pos": [
+    1.0,
+    -5.0,
+    2.6
+   ],
+   "color": [
+    1.0,
+    0.851,
+    0.659
+   ],
+   "intensity": 2.2,
+   "range": 5.0
+  }
+ ],
+ "ambient": {
+  "mode": "Trilight/Gradient",
+  "sky": [
+   0.875,
+   0.902,
+   0.918
+  ],
+  "ground": [
+   0.435,
+   0.42,
+   0.392
+  ],
+  "intensity": 0.75
+ },
+ "fog": {
+  "mode": "Linear",
+  "color": [
+   0.761,
+   0.776,
+   0.784
+  ],
+  "start": 34,
+  "end": 110
+ },
+ "camera": {
+  "pos": [
+   -2.4,
+   -7.3,
+   1.55
+  ],
+  "lookAt": [
+   0.55,
+   -3.96,
+   3.77
+  ],
+  "fovVertical": 60,
+  "intro": {
+   "lookAt1": "StorefrontFacade_Socket_SignLook (3.2초)",
+   "lookAt2": "StorefrontFacade_Socket_DoorLook (1.8초)"
+  },
+  "pullWalkTo": [
+   1.78,
+   -5.15,
+   0
+  ],
+  "enterWalkTo": [
+   1.52,
+   -3.4,
+   0
+  ]
+ },
+ "interact": {
+  "door": [
+   1.807,
+   -3.89,
+   1.1
+  ],
+  "radius": 2.1
+ }
+}

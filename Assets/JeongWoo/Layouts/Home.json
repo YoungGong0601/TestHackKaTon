@@ -1,0 +1,404 @@
+{
+ "scene": "Home",
+ "notes": "Blender 좌표 (Z-up, m). HomeEntry 좌표계: Blender = (-x3, z3, y3), Unity = (x3, y3, -z3) (프로토타입 three 좌표). 현관문은 -Y (Unity +Z). rotZ = Blender Z 회전(deg). rotXYZ = 기울어진 소품의 전체 Blender XYZ 오일러(deg) — rotZ 만 쓰면 지팡이/우산 기울기가 빠지고 약 봉투가 신발장 위에 서 버리므로 rotXYZ 를 쓰거나 socket(HomeEntry/HomeDoorFrame 소켓 이름)에 원점을 그대로 맞출 것. HomeDoor: 원점 = 경첩 축, 열기 = 로컬 Z 를 0 → openRotZ(+86°, 복도 쪽). 조명 color = sRGB, 모든 조명 그림자 켬 (OvercastSun 은 그림자가 있어야 닫힌 현관에 새지 않음). DoorDaylight 는 문이 열릴 때 openIntensity 까지 올린다. 하늘: 흐린 아침 회청색 (RGB 0.70,0.75,0.82 근처) 스카이박스/배경. 거울 문(HomeEntry_CabDoor2)용 Box Projection Reflection Probe 를 reflectionProbe 범위로 둘 것.",
+ "items": [
+  {
+   "model": "Models/Home/HomeEntry.fbx",
+   "name": "HomeEntry",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Home/HomeDoorFrame.fbx",
+   "name": "HomeDoorFrame",
+   "pos": [
+    0.0,
+    -2.41,
+    -0.13
+   ],
+   "rotZ": 0.0,
+   "scale": 1,
+   "socket": "HomeEntry_Socket_DoorFrame"
+  },
+  {
+   "model": "Models/Home/HomeDoor.fbx",
+   "name": "HomeDoor",
+   "pos": [
+    0.46,
+    -2.475,
+    -0.13
+   ],
+   "rotZ": 0.0,
+   "scale": 1,
+   "socket": "HomeDoorFrame_Socket_DoorHinge",
+   "openRotZ": 85.9
+  },
+  {
+   "model": "Models/Home/HomeShoes.fbx",
+   "name": "HomeShoes",
+   "pos": [
+    -0.18,
+    -1.28,
+    -0.13
+   ],
+   "rotZ": 9.17,
+   "scale": 1,
+   "socket": "HomeEntry_Socket_Shoes"
+  },
+  {
+   "model": "Models/Home/HomeCane.fbx",
+   "name": "HomeCane",
+   "pos": [
+    -0.78,
+    -1.73,
+    -0.1285
+   ],
+   "rotZ": 0.0,
+   "scale": 1,
+   "rotXYZ": [
+    -0.0,
+    -6.59,
+    0.0
+   ],
+   "socket": "HomeEntry_Socket_Cane"
+  },
+  {
+   "model": "Models/Home/HomeUmbrella.fbx",
+   "name": "HomeUmbrella",
+   "pos": [
+    -0.85,
+    -2.15,
+    -0.11
+   ],
+   "rotZ": 0.0,
+   "scale": 1,
+   "rotXYZ": [
+    2.86,
+    -3.44,
+    0.0
+   ],
+   "socket": "HomeEntry_Socket_UmbrellaBlack"
+  },
+  {
+   "model": "Models/Home/HomeUmbrellaRed.fbx",
+   "name": "HomeUmbrellaRed",
+   "pos": [
+    -0.81,
+    -2.11,
+    -0.11
+   ],
+   "rotZ": -180.0,
+   "scale": 1,
+   "rotXYZ": [
+    3.44,
+    -2.86,
+    -180.0
+   ],
+   "socket": "HomeEntry_Socket_UmbrellaRed"
+  },
+  {
+   "model": "Models/Home/HomeMedicineBag.fbx",
+   "name": "HomeMedicineBag",
+   "pos": [
+    0.755,
+    -1.46,
+    0.9745
+   ],
+   "rotZ": -83.12,
+   "scale": 1,
+   "rotXYZ": [
+    -90.0,
+    -0.0,
+    -83.12
+   ],
+   "socket": "HomeEntry_Socket_MedicineBag"
+  },
+  {
+   "model": "Models/LayoutHome/HomeCorridor.fbx",
+   "name": "HomeCorridor",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rotZ": 0.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_0",
+   "pos": [
+    -6.0,
+    -98.0,
+    -13.63
+   ],
+   "rotZ": 180.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_1",
+   "pos": [
+    44.0,
+    -112.0,
+    -13.63
+   ],
+   "rotZ": -174.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_2",
+   "pos": [
+    -54.0,
+    -106.0,
+    -13.63
+   ],
+   "rotZ": 174.0,
+   "scale": 1
+  },
+  {
+   "model": "Models/Buildings/BuildingBackdrop.fbx",
+   "name": "BuildingBackdrop_3",
+   "pos": [
+    14.0,
+    -165.0,
+    -13.63
+   ],
+   "rotZ": 180.0,
+   "scale": 1
+  }
+ ],
+ "lights": [
+  {
+   "name": "EntrySensorLight",
+   "type": "Spot",
+   "pos": [
+    0,
+    -1.25,
+    2.2
+   ],
+   "color": [
+    1.0,
+    0.769,
+    0.529
+   ],
+   "intensity": 2.4,
+   "range": 5.0,
+   "shadows": true,
+   "dir": [
+    0.0,
+    0.05,
+    -0.999
+   ],
+   "spotAngle": 150,
+   "flicker": "intensity *= 1 + sin(t*9.1)*.015 + sin(t*23.7)*.012 (가끔 -0.25), HomeEntry_LightGlow 발광도 같이"
+  },
+  {
+   "name": "LivingFill",
+   "type": "Point",
+   "pos": [
+    0,
+    0.3,
+    2.05
+   ],
+   "color": [
+    1.0,
+    0.722,
+    0.471
+   ],
+   "intensity": 0.9,
+   "range": 5.5,
+   "shadows": true
+  },
+  {
+   "name": "LivingBack",
+   "type": "Point",
+   "pos": [
+    -0.2,
+    1.9,
+    1.9
+   ],
+   "color": [
+    1.0,
+    0.69,
+    0.447
+   ],
+   "intensity": 0.6,
+   "range": 4.0,
+   "shadows": true
+  },
+  {
+   "name": "WindowCool",
+   "type": "Point",
+   "pos": [
+    -0.68,
+    -1.75,
+    1.78
+   ],
+   "color": [
+    0.663,
+    0.769,
+    0.878
+   ],
+   "intensity": 0.9,
+   "range": 3.2,
+   "shadows": true
+  },
+  {
+   "name": "CorridorLamp",
+   "type": "Point",
+   "pos": [
+    0,
+    -3.2,
+    2.2
+   ],
+   "color": [
+    0.949,
+    0.945,
+    0.925
+   ],
+   "intensity": 1.2,
+   "range": 4.5,
+   "shadows": true
+  },
+  {
+   "name": "OvercastSun",
+   "type": "Directional",
+   "pos": [
+    0,
+    -6,
+    12
+   ],
+   "color": [
+    0.863,
+    0.89,
+    0.933
+   ],
+   "intensity": 0.8,
+   "range": 0,
+   "shadows": true,
+   "dir": [
+    0.3,
+    -0.45,
+    -0.841
+   ]
+  },
+  {
+   "name": "CorridorSkyFill",
+   "type": "Spot",
+   "pos": [
+    0,
+    -4.9,
+    2.0
+   ],
+   "color": [
+    0.812,
+    0.863,
+    0.918
+   ],
+   "intensity": 1.0,
+   "range": 6.0,
+   "shadows": true,
+   "dir": [
+    0.0,
+    0.952,
+    -0.305
+   ],
+   "spotAngle": 120,
+   "note": "난간 쪽 열린 하늘에서 복도로 드는 흐린 날 빛 (그림자 켜야 닫힌 문 안으로 새지 않음)"
+  },
+  {
+   "name": "DoorDaylight",
+   "type": "Spot",
+   "pos": [
+    0,
+    -2.85,
+    1.4
+   ],
+   "color": [
+    0.769,
+    0.839,
+    0.918
+   ],
+   "intensity": 0.0,
+   "range": 7.0,
+   "shadows": true,
+   "dir": [
+    0.0,
+    0.968,
+    -0.251
+   ],
+   "spotAngle": 86,
+   "openIntensity": 2.6,
+   "note": "문이 열릴 때 0 → 2.6 (프로토타입 In 0→26)"
+  }
+ ],
+ "ambient": {
+  "sky": [
+   0.557,
+   0.518,
+   0.463
+  ],
+  "ground": [
+   0.173,
+   0.133,
+   0.094
+  ],
+  "intensity": 0.34
+ },
+ "fog": {
+  "mode": "Linear",
+  "color": [
+   0.72,
+   0.76,
+   0.82
+  ],
+  "start": 25,
+  "end": 320,
+  "note": "흐린 아침 먼 동 흐리게"
+ },
+ "reflectionProbe": {
+  "pos": [
+   0,
+   -0.4,
+   1.1
+  ],
+  "size": [
+   1.96,
+   5.25,
+   2.45
+  ],
+  "boxProjection": true
+ },
+ "camera": {
+  "pos": [
+   0,
+   1.15,
+   1.55
+  ],
+  "lookAt": [
+   0,
+   -2.35,
+   1.375
+  ],
+  "fovVertical": 66,
+  "afterShoes": {
+   "pos": [
+    0,
+    -1.2,
+    1.42
+   ],
+   "lookAt": [
+    -0.1,
+    -2.35,
+    1.1
+   ]
+  }
+ }
+}
