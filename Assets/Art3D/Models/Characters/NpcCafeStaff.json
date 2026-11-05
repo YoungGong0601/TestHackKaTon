@@ -1,0 +1,76 @@
+{
+ "asset": "NpcCafeStaff",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcCafeStaff_Body/T_NpcCafeStaff_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcCafeStaff_Body/T_NpcCafeStaff_Body_Normal.png",
+    "MS": "Textures/NpcCafeStaff_Body/T_NpcCafeStaff_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcCafeStaff_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcCafeStaff_Head/T_NpcCafeStaff_Head_BaseColor.jpg",
+    "Normal": "Textures/NpcCafeStaff_Head/T_NpcCafeStaff_Head_Normal.png",
+    "MS": "Textures/NpcCafeStaff_Head/T_NpcCafeStaff_Head_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcCafeStaff_Head"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcCafeStaff_Phone/T_NpcCafeStaff_Phone_BaseColor.jpg",
+    "Normal": "Textures/NpcCafeStaff_Phone/T_NpcCafeStaff_Phone_Normal.png",
+    "MS": "Textures/NpcCafeStaff_Phone/T_NpcCafeStaff_Phone_MS.png",
+    "Emission": "Textures/NpcCafeStaff_Phone/T_NpcCafeStaff_Phone_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.6,
+   "name": "M_NpcCafeStaff_Phone"
+  }
+ ],
+ "notes": {
+  "replaces": "없음 (새 인물). 2회차 카페 '숲길 커피' 직원, PH_NPC look 10 자리",
+  "look": "20대: 모자 없음, 앞머리 있는 갈색 머리, 짙은 초록 폴로(왼가슴 잎 로고, 오른가슴 카페 명찰), 진한 갈색 허리 앞치마(잎과 '숲길 커피' 로고, 주머니, 펜), 짙은 회색 바지, 짙은 갈색 구두. 머리 꼭대기 1.71m.",
+  "rig": "Quaternius CharacterArmature 62본 유지 (Foot.L/R·PT 는 Root 자식). Generic 리그로 쓸 것 (Humanoid 는 발 계층 때문에 불가).",
+  "clips": "Idle, Idle_Neutral, Walk, Run, Wave, Interact (원본) + SitPhone(120f 루프, 좌판 0.65m), SitPointScreen(80f: 앉은 채 폰은 오른손에 두고 왼손 검지로 정면 키오스크를 가리킴 — 0/80 프레임 = SitPhone 0프레임), Phone(80f 루프), Impatient(80f 루프: 팔짱+발끝 까딱+한숨), PointScreen(80f: 선 자세 오른손 검지 가리킴, 0/80 프레임은 Idle), LookBack(80f: 오른쪽 어깨 너머 돌아봄 후 복귀). 24fps.",
+  "objects": "NpcCafeStaff_Body(몸·폴로(칼라·플라켓·단추·소매 립 밴드·밑단)·앞치마·명찰), NpcCafeStaff_Head(머리), NpcCafeStaff_Phone(오른손 폰, Phone/SitPhone/SitPointScreen 때만 켤 것)",
+  "sockets": "NpcCafeStaff_Socket_Head(Head 본, 시선/자막 기준), _HandR/_HandL(손바닥 중심, 소품 부착), _Socket_Seat(SitPhone 때 의자 좌판 윗면 중심이 올 위치, 아마추어 기준)",
+  "dynamic": "없음",
+  "clips_dropped": "원본 24 클립 중 버림: Death, Gun_Shoot, HitRecieve, HitRecieve_2, Idle_Gun, Idle_Gun_Pointing, Idle_Gun_Shoot, Idle_Sword, Kick_Left, Kick_Right, Punch_Left, Punch_Right, Roll, Run_Back, Run_Left, Run_Right, Run_Shoot, Sword_Slash",
+  "phone": "Phone/SitPhone 은 한 손 파지(손가락이 폰 왼쪽 모서리를 감쌈), 화면이 눈을 향함. 다른 클립에서는 NpcCafeStaff_Phone 을 끌 것."
+ }
+}
