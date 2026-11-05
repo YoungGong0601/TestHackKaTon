@@ -1,6 +1,5 @@
-// 1-0~1-3a 골목과 정류장. 현관에서 나와 정류장까지 걷기, 안내, 친절한 행인, 112번 버스, 쉬운 마싱, 버스카드 찍기, 암전 컷으로 버거집 앞까지.
+// 1-0~1-3a 골목과 정류장. 현관에서 나와 정류장까지 걷기, 안내, 112번 버스, 버스카드 찍기, 빈자리에 앉아 버거집 앞까지(BusRide).
 // 배치: stopZone = StopZone (들어오면 안내와 버스가 시작된다)
-// 배치: passer = Student (StreetNpc), askPasser = Student 의 AskUse (label 말 걸기)
 // 배치: bus = Bus2 (BusMover, 번호 판 112), busStart, busStop = 기존 앵커
 // 배치: boardUse = BoardUse (label 버스 타기), stepBottom, stepTop = 버스 앞문 계단 앵커
 // 배치: busInside = Anchor_BusInside, terminal = PH_BusTerminal 의 PayPoint, terminalLook = 단말기 안내문 높이
@@ -11,8 +10,6 @@ using UnityEngine;
 public class R1StopDirector : MonoBehaviour
 {
     [SerializeField] Collider stopZone;
-    [SerializeField] StreetNpc passer;
-    [SerializeField] Interactable askPasser;
     [SerializeField] BusMover bus;
     [SerializeField] Transform busStart;
     [SerializeField] Transform busStop;
@@ -23,7 +20,7 @@ public class R1StopDirector : MonoBehaviour
     [SerializeField] Transform terminalLook;
     [SerializeField] PayPoint terminal;
 
-    bool asking, boarding, paid;
+    bool boarding, paid;
 
     static PlayerController Player => PlayerController.I;
 
@@ -35,7 +32,6 @@ public class R1StopDirector : MonoBehaviour
 
     void OnEnable()
     {
-        askPasser.onUse.AddListener(OnAsk);
         boardUse.onUse.AddListener(OnBoard);
         terminal.Approved += OnPaid;
         terminal.Empty += OnEmpty;
@@ -43,7 +39,6 @@ public class R1StopDirector : MonoBehaviour
 
     void OnDisable()
     {
-        askPasser.onUse.RemoveListener(OnAsk);
         boardUse.onUse.RemoveListener(OnBoard);
         terminal.Approved -= OnPaid;
         terminal.Empty -= OnEmpty;
@@ -57,7 +52,7 @@ public class R1StopDirector : MonoBehaviour
         AudioManager.I.Play("door_close_metal", null, 0.6f);
         yield return Round.Open();
         while (!stopZone.bounds.Contains(Player.transform.position)) yield return null;
-        yield return Hud.I.Say(null, "112번 버스를 타세요.", "bus_take");
+        Hud.I.SideNote("{y:112번} 버스를 탄다");
         yield return new WaitForSeconds(Bal.G("R1_BusArriveSec", 6f));
         yield return Arrive();
         boardUse.active = true;
@@ -84,25 +79,12 @@ public class R1StopDirector : MonoBehaviour
         AudioManager.I.Play("bus_arrive", stop + new Vector3(-6f, 1f, 0f), 1f);
     }
 
-    void OnAsk()
-    {
-        if (!asking) StartCoroutine(Ask());
-    }
-
-    IEnumerator Ask()
-    {
-        asking = true;
-        passer.Face(Player.transform.position);
-        passer.Nod();
-        yield return Hud.I.Say(null, "112번 타시면 돼요. 곧 와요.", "pass_3", -1f, passer.HeadPos);
-        asking = false;
-    }
-
     void OnBoard()
     {
         if (boarding) return;
         boarding = true;
         boardUse.active = false;
+        Hud.I.SideNote(null);
         StartCoroutine(Board());
     }
 
@@ -112,7 +94,7 @@ public class R1StopDirector : MonoBehaviour
         Hud.I.ClearSubs();
         StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, Bal.G("Cine_BlendSec", 1f)));
         yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 2.2f)), 2.5f);
-        yield return Mash.Climb(stepBottom, stepTop);
+        yield return Steps.Climb(stepBottom, stepTop);
         yield return Hud.I.Fade(1f, 0.2f);
         Vector3 d = terminalLook.position - busInside.position;
         Player.Teleport(busInside.position, Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg);
@@ -125,27 +107,23 @@ public class R1StopDirector : MonoBehaviour
         Player.Freeze(false);
     }
 
-    void OnEmpty() => Hud.I.Say(null, "3 버스카드", null, 1.5f);
+    void OnEmpty() => Hud.I.Say(null, $"{ItemKeys.Of(ItemId.Card)} 버스카드", null, 1.5f);
 
     void OnPaid()
     {
         if (paid) return;
         paid = true;
+        terminal.GetComponent<Interactable>().active = false;
         StartCoroutine(Leave());
     }
 
+    // 찍은 뒤 안내문을 볼 틈을 두고, 암전 없이 자리로 간다
     IEnumerator Leave()
     {
-        Player.Freeze(true);
-        Player.HoldStill = false;
         HandRig.I.Equip(ItemId.None);
         Hud.I.CardName = "카드";
-        yield return new WaitForSeconds(Bal.G("R1_AfterTapSec", 0.7f));
-        AudioManager.I.Play("bus_door_close", null, 0.8f);
-        AudioManager.I.Play("bus_leave", null, 0.9f);   // N13
-        yield return Hud.I.Fade(1f, 0.35f);             // 1-3a 짧은 암전 컷
-        yield return new WaitForSeconds(Bal.G("R1_RideSec", 1.6f));
-        AudioManager.I.Play("bus_door_open", null, 0.8f);
+        yield return new WaitForSeconds(Bal.G("Bus_NoticeLookSec", 2f));
+        yield return BusRide.Run(this);
         TrafficMover.BusBusy = false;
         GameState.I.CompleteChapter();
     }

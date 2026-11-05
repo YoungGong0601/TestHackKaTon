@@ -33,11 +33,16 @@ public class R2CafeDirector : MonoBehaviour
     [SerializeField] Transform doorOut;
     [SerializeField] List<NpcMover> line = new List<NpcMover>();
     [SerializeField] List<Transform> aside = new List<Transform>();
+    // 배치: askRookie = 신입 NPC의 Interactable (label 말 걸기), rookiePos = 신입 머리 높이
+    [SerializeField] Interactable askRookie;
+    [SerializeField] Transform rookiePos;
+
+    const string NoteText = "김 대리 아이스\n아메리카노 샷 추가\n\n신입 뽀샤티";
 
     static readonly List<int> NoReady = new List<int>();
 
     Phase phase;
-    bool talking, inside;
+    bool talking, inside, asked, askingRookie;
     float doorAgain;
 
     void OnEnable()
@@ -45,6 +50,7 @@ public class R2CafeDirector : MonoBehaviour
         talkStaff.onUse.AddListener(OnTalk);
         orderKiosk.onUse.AddListener(OnOrder);
         takeCup.onUse.AddListener(OnTake);
+        if (askRookie) askRookie.onUse.AddListener(OnRookie);
         kiosk.StaffCalled += OnStaffCalled;
     }
 
@@ -53,6 +59,7 @@ public class R2CafeDirector : MonoBehaviour
         talkStaff.onUse.RemoveListener(OnTalk);
         orderKiosk.onUse.RemoveListener(OnOrder);
         takeCup.onUse.RemoveListener(OnTake);
+        if (askRookie) askRookie.onUse.RemoveListener(OnRookie);
         kiosk.StaffCalled -= OnStaffCalled;
     }
 
@@ -64,7 +71,7 @@ public class R2CafeDirector : MonoBehaviour
         GameState.I.Order.number = Mine;
         AudioManager.I.Ambience(("amb_city_morning", 0.5f));
         kiosk.Nunchi.Configure(new NunchiRule { onLeave = pack.Leave });   // N10: 한숨만. 다 차면 Pack이 비켜난다
-        Note.Set("김 대리 아이스 아메리카노 샷 추가\n이 과장 아이스 카페라떼 얼음 적게", Bal.G("R2_NoteSoft", 0.25f));
+        Note.Set(NoteText, Bal.G("R2_NoteSoft", 0f), 1);
         yield return Round.Open();
         Note.Peek();
         SetPhase(Phase.Order);
@@ -75,6 +82,7 @@ public class R2CafeDirector : MonoBehaviour
     {
         var p = PlayerController.I;
         if (!p) return;
+        orderKiosk.active = phase == Phase.Order && !queue.Serving;
         Vector3 d = p.transform.position - doorSpot.position;
         d.y = 0f;
         if (d.magnitude < Bal.G("R2_DoorOpenDist", 2.4f) && Time.time >= doorAgain)
@@ -107,17 +115,34 @@ public class R2CafeDirector : MonoBehaviour
     {
         talking = true;
         talkStaff.active = false;
-        if (phase == Phase.Kiosk) pack.Hint();
-        yield return Hud.I.Say(null, "아, 그거 여기 누르시면 돼요.", "staff_cafe", -1f, staffPos.position);
+        yield return Hud.I.Say(null, "키오스크를 이용해 주세요.", null, -1f, staffPos.position);
         talking = false;
         SetPhase(phase);
+    }
+
+    // ---- 신입에게 묻기. 물으면 쪽지에 답이 붙는다 ----
+
+    static string Me => GameState.I.Profile.speakerKey;
+
+    void OnRookie() { if (!askingRookie) StartCoroutine(AskRookie()); }
+
+    IEnumerator AskRookie()
+    {
+        askingRookie = true;
+        yield return Hud.I.Say(null, "저기, 뽀샤티가 뭐야?", Me + "_ashot1");
+        yield return Hud.I.Say(null, "아이스티에 샷 추가요.", "rookie_ashot", -1f, rookiePos ? rookiePos.position : (Vector3?)null);
+        yield return Hud.I.Say(null, "아이스티에... 커피를 넣는다고?", Me + "_ashot2");
+        asked = true;
+        Hud.I.SideNote(null);
+        Note.Set(NoteText + "\n아이스티 + 샷", Bal.G("R2_NoteSoft", 0f), 1);
+        askingRookie = false;
     }
 
     // ---- 2-2~2-6 ----
 
     void OnOrder()
     {
-        if (phase == Phase.Order) StartCoroutine(RunKiosk());
+        if (phase == Phase.Order && !queue.Serving) StartCoroutine(RunKiosk());
     }
 
     IEnumerator RunKiosk()
@@ -197,16 +222,7 @@ public class R2CafeDirector : MonoBehaviour
     {
         if (!n) yield break;
         float walk = Bal.G("Queue_WalkSpeed", 1.25f);
-        Vector3 at = kiosk.transform.position;
-        yield return n.WalkTo(stand.position, walk);
-        n.Face(kioskLook.position);
-        float gap = Bal.G("R2_ServeTapSec", 0.4f);
-        yield return new WaitForSeconds(gap);
-        AudioManager.I.Play("kiosk_tap", at, 0.6f);
-        yield return new WaitForSeconds(gap);
-        AudioManager.I.Play("card_insert", at, 0.8f);
-        yield return new WaitForSeconds(gap);
-        AudioManager.I.Play("kiosk_ok", at, 0.8f);
+        yield return queue.UseKiosk(n);
         n.GoVia(aside, doorIn.position, walk, () =>
         {
             queue.OpenDoor(2.2f);
@@ -219,7 +235,7 @@ public class R2CafeDirector : MonoBehaviour
     IEnumerator Calls()
     {
         SetPhase(Phase.Wait);
-        queue.ShuffleForward();
+        queue.ServeWhenClear(aside);
         yield return new WaitForSeconds(Bal.G("R2_CallFirstSec", 6f));
         shelf.SetActive(true);
         AudioManager.I.Play("tray_put", pickupPos.position, 0.5f);
@@ -253,6 +269,15 @@ public class R2CafeDirector : MonoBehaviour
         AudioManager.I.Play("tray_put", null, 0.8f);
         shelf.SetActive(false);
         yield return new WaitForSeconds(0.8f);
+        if (!pack.Correct)
+        {
+            // 쪽지와 다른 음료. 처음부터 다시 주문한다
+            yield return Hud.I.Say(null, "이거 아닌데요", "rookie_wrong", -1f, rookiePos ? rookiePos.position : (Vector3?)null);
+            if (!asked) Hud.I.SideNote("신입에게 묻기");
+            PlayerController.I.Freeze(false);
+            SetPhase(Phase.Order);
+            yield break;
+        }
         GameState.I.CompleteChapter();
     }
 }

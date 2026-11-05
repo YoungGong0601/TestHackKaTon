@@ -22,6 +22,10 @@ public sealed class ComboDef
 
 public static class KioskData
 {
+    /// <summary>1회차에 고르는 말. 4회차 뒷사람이 같은 말을 한다.</summary>
+    public static readonly string[] CashLines = { "여기 현금 안 돼요.", "여기선 현금을 쓰실 수 없어요." };
+    public static string CashVo(string who, int i) => who + "_cash_" + (i == 1 ? "b" : "a");
+
     public static readonly string[] Tabs = { "SIGNATURE", "PREMIUM", "CLASSIC", "SIDE", "BEVERAGE", "DESSERT" };
 
     static MenuItem B(string id, string name, string mean, int price, int kcal, string tag, string desc) => new MenuItem(id, name, mean, price, kcal, "burger", tag, desc);

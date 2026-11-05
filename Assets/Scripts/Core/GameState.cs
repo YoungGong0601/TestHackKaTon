@@ -16,6 +16,8 @@ public class GameState : MonoBehaviour
     public CharacterProfile Profile { get; private set; }
     public OrderData Order { get; private set; } = new();
     public RunStats Stats { get; private set; } = new();
+    /// <summary>1회차 어르신에게 고른 말. 재도전과 처음 복귀에도 유지, 건너뛰면 0.</summary>
+    public int CashLine { get; set; }
 
     bool loading;
     Coroutine finish;

@@ -1,4 +1,5 @@
-// 4회차 주문 흐름: 프로토타입 화면 전환, 버튼 처리, 장바구니. 시트의 팝업, 현금 결제 실패를 얹었다. 카드 경로와 성공 경로는 없다.
+// 4회차 주문 흐름: 프로토타입 화면 전환, 버튼 처리, 장바구니, 팝업. 지폐는 틈에서 튕기고 4회차에는 카드가 없어 결제되지 않는다.
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,10 +30,11 @@ public sealed class KioskFlow
     // 시트 4-8. 앞 둘은 x로 다음 팝업, 마지막은 x면 처음 화면, 아주 작은 "건너뛰기"면 결제 창(T22)
     static readonly KioskInfo[] Pops =
     {
-        new KioskInfo { title = "코드 등록", lines = new[] { "할인 코드를 등록하시겠습니까?", "앱에서 코드를 확인해 주세요" }, mean = "코드 넣으라는 말" },
-        new KioskInfo { title = "앱 가입", lines = new[] { "앱에 가입하고 혜택을 받으세요", "휴대폰 인증이 필요합니다" }, mean = "앱 가입하라는 말" },
-        new KioskInfo { title = "포인트 적립", lines = new[] { "포인트를 적립하시겠습니까?", "적립 번호를 입력해 주세요" }, mean = "포인트 쌓으라는 말", skip = true },
+        new KioskInfo { kind = "code", title = "코드 등록", lines = new string[0], mean = "코드 넣으라는 말", yes = "등록", no = "다음에", terms = "1인 1회 사용" },
+        new KioskInfo { kind = "app", title = "앱 가입", lines = new string[0], mean = "앱 가입하라는 말", yes = "가입", no = "다음에", terms = "앱 회원 전용" },
+        new KioskInfo { kind = "point", title = "포인트 적립", lines = new string[0], mean = "포인트 쌓으라는 말", skip = true, yes = "적립", terms = "세트 메뉴만 적립" },
     };
+
 
     public readonly KioskState K = new KioskState();
     readonly R4ProtoPack ctl;
@@ -49,8 +51,17 @@ public sealed class KioskFlow
 
     public void Redraw() => view.Redraw();
 
-    /// <summary>시간 제한이 도는 화면. 임시 T23: 결제 창에 들어가면 멈춘다</summary>
-    public bool Timed => K.screen != "idle" && K.screen != "pay" && K.screen != "card";
+    /// <summary>다음 손님이 쓰는 화면. 플레이어 주문 상태는 다음 차례에 ResetAll이 지운다.</summary>
+    public void ShowCustomer(string id)
+    {
+        K.cart.Clear();
+        K.info = null; K.toast = null; K.ad = false; K.cardMsg = null;
+        K.screen = id;
+        Redraw();
+    }
+
+    /// <summary>무입력 시간이 도는 화면.</summary>
+    public bool Timed => K.screen != "idle";
 
     void Go(string s, bool silent = false)
     {
@@ -80,6 +91,7 @@ public sealed class KioskFlow
 
     public void ResetAll()
     {
+        K.run++;
         K.cart.Clear();
         K.draft = null; K.place = null; K.phone = ""; K.memberErr = false; K.memberErrs = 0; K.toast = null; K.ad = false; K.info = null;
         K.cardMsg = null; K.tab = "SIGNATURE"; K.classicSeen = false; pop = -1;

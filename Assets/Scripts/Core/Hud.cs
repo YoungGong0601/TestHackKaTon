@@ -66,7 +66,7 @@ public class Hud : MonoBehaviour
         I = this;
     }
 
-    static string Mark(string s) => MarkRegex.Replace(s, m => $"<color={Marks[m.Groups[1].Value[0]]}>{m.Groups[2].Value}</color>");
+    public static string Mark(string s) => MarkRegex.Replace(s, m => $"<color={Marks[m.Groups[1].Value[0]]}>{m.Groups[2].Value}</color>");
 
     static string Name(string speaker)
     {
@@ -161,7 +161,7 @@ public class Hud : MonoBehaviour
         if (cross != null) cross.enabled = false;
     }
 
-    // 현재 인물의 소지품과 든 물건을 표시한다. 키는 ItemId 값과 같다
+    // 현재 인물의 소지품과 든 물건을 표시한다. 번호는 ItemKeys가 정한다
     public void Items()
     {
         var profile = GameState.I != null ? GameState.I.Profile : null;
@@ -169,39 +169,21 @@ public class Hud : MonoBehaviour
         int n = 0;
         if (profile != null && profile.items != null && hands != null && hands.ItemsEnabled)
         {
-            if (Note.Available && n < itemSlots.Length)
+            foreach (var id in ItemKeys.Slots())
             {
-                var slot = itemSlots[n++];
-                slot.gameObject.SetActive(true);
-                slot.text = $"<color={(Note.Opened ? ItemOn : ItemOff)}><b>1</b> 쪽지</color>";
-            }
-            foreach (var id in profile.items)
-            {
-                // 지갑 속 물건은 칸에 나오지 않는다
-                if (id == ItemId.Memo || id == ItemId.Cash || (id == ItemId.Card && profile.Has(ItemId.Wallet))) continue;
                 if (n >= itemSlots.Length) break;
                 var slot = itemSlots[n++];
                 slot.gameObject.SetActive(true);
-                if (id == hint && hands.Held != id) { slot.text = $"<size=130%><color={ItemOn}><b>{(int)KeyOf(id)} {ItemName(id)}</b></color></size>"; continue; }
-                slot.text = $"<color={(hands.Held == id || (id == ItemId.Wallet && hands.walletOut) ? ItemOn : ItemOff)}><b>{(id == ItemId.Wallet ? 3 : (int)id)}</b> {ItemName(id)}</color>";
+                bool on = id == ItemId.Memo ? Note.Opened : hands.Held == id || (id == ItemId.Wallet && hands.walletOut);
+                slot.text = $"<color={(on ? ItemOn : ItemOff)}><b>{n}</b> {ItemName(id)}</color>";
             }
         }
         for (; n < itemSlots.Length; n++) itemSlots[n].gameObject.SetActive(false);
     }
 
-    ItemId hint;
-
-    /// <summary>다음에 쓸 소지품 칸을 크게 강조한다. None이면 끈다.</summary>
-    public void Hint(ItemId id)
-    {
-        hint = id;
-        Items();
-    }
-
-    static int KeyOf(ItemId id) => id == ItemId.Lens ? 2 : 3;
-
     string ItemName(ItemId id) => id switch
     {
+        ItemId.Memo => "쪽지",
         ItemId.Lens => "돋보기",
         ItemId.Card => CardName,
         ItemId.Wallet => "지갑",

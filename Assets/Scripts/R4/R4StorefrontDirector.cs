@@ -1,4 +1,4 @@
-// 4-0~4-2: 지갑 속 쪽지를 돋보기로 읽어야 걷는다. 문은 E로 밀고, 스티커를 돋보기로 읽으면 R 당기기가 생긴다.
+// 4-0~4-2: 손에 든 쪽지는 맨눈으로 읽히고 잠깐 뒤 걷는다. 문은 E로 밀고, 스티커를 돋보기로 읽으면 R 당기기가 생긴다.
 // R4_Storefront 씬 Director 오브젝트에 부착. 문 물리는 StorefrontDirector를 복사했다.
 // 배치: doorHandle = Anchor_DoorHandle, doorPivot = PH_Door_Glass 안 DoorPivot
 // 배치: doorBlock = Door_Block, pullStand = Anchor_PullStand, insideLook = Anchor_InsideLook, insidePoint = Anchor_InsidePoint
@@ -23,7 +23,7 @@ public class R4StorefrontDirector : MonoBehaviour
     [SerializeField] Readable sticker;
 
     int tries;
-    bool opened, noteRead, pushing, leaving, muttering, busGo;
+    bool noteRead, pushing, leaving, muttering, busGo;
     float busV = 0.5f;
     Transform signLook, doorLook, bus;
     NpcMover eater;
@@ -67,11 +67,6 @@ public class R4StorefrontDirector : MonoBehaviour
         pullDoor.onUse.RemoveListener(OnPull);
         IntroEnd();
         if (PlayerController.I) PlayerController.I.HoldStill = false;
-        if (Wallet.I)
-        {
-            Wallet.I.NoteRead -= OnNoteRead;
-            Wallet.I.NoteMissed -= Mutter;
-        }
     }
 
     IEnumerator Start()
@@ -87,12 +82,9 @@ public class R4StorefrontDirector : MonoBehaviour
         yield return Round.Open();
         yield return Intro();
         yield return LookUp();
-        Wallet.I.NoteRead += OnNoteRead;
-        Wallet.I.NoteMissed += Mutter;
-        Wallet.I.SetOpen(true);   // 임시 T19
-        opened = true;
-        Hud.I.Hint(ItemId.Lens);
+        Note.Hold();
         Mutter();
+        OnNoteRead();
     }
 
     // 간판을 천천히 올려다보고 문으로 시선을 내린다. 입력 없음
@@ -162,10 +154,12 @@ public class R4StorefrontDirector : MonoBehaviour
         var hands = HandRig.I;
         player.Freeze(true);
         hands.SetPointer(true);
+        hands.SetPose("Pose_Open");
         hands.ShowWatch(Bal.I("R4_IntroWatchHour", 10));
         yield return new WaitForSeconds(Bal.G("R4_IntroHandSec", 2.5f));
         hands.HideWatch();
         hands.SetPointer(false);
+        hands.SetPose("Pose_Default");
 
         float sec = Mathf.Max(Bal.G("R4_IntroLiftSec", 2.5f), 0.01f);
         StartCoroutine(player.TurnTo(player.Yaw, 0f, sec));
@@ -187,8 +181,8 @@ public class R4StorefrontDirector : MonoBehaviour
         var player = PlayerController.I;
         player.Freeze(true);
         HandRig.I.SetEnabled(false);
-        yield return player.LookAt(signLook.position, Bal.G("Door_SignLookSec", 3.2f));
-        yield return new WaitForSeconds(Bal.G("Door_SignHoldSec", 1.1f));
+        yield return player.LookAt(signLook.position, Bal.G("R4_SignLookSec", 1.2f));
+        yield return new WaitForSeconds(Bal.G("R4_SignHoldSec", 2f));
         yield return player.LookAt(doorLook.position, 1.8f);
         HandRig.I.SetEnabled(true);
         player.Freeze(false);
@@ -198,17 +192,15 @@ public class R4StorefrontDirector : MonoBehaviour
     {
         if (noteRead) return;
         noteRead = true;
-        Hud.I.Hint(ItemId.None);
         AudioManager.I.Play("paper_rustle", null, 0.5f);
         StartCoroutine(StartWalking());
     }
 
-    // 쪽지를 볼 틈을 준 뒤 지갑을 닫고 걷기 시작한다
+    // 쪽지를 볼 틈을 준 뒤 내리고 걷기 시작한다
     IEnumerator StartWalking()
     {
         yield return new WaitForSeconds(Bal.G("R4_NoteHoldSec", 2f));
-        Wallet.I.SetOpen(false);
-        HandRig.I.Equip(ItemId.None);   // 돋보기를 내린다. 4-1은 못 보고 미는 장면이다
+        Note.Close();
         PlayerController.I.HoldStill = false;
         pushDoor.active = true;
     }
@@ -223,7 +215,7 @@ public class R4StorefrontDirector : MonoBehaviour
     {
         muttering = true;
         AudioManager.I.Play("paper_rustle", null, 0.4f);
-        yield return Hud.I.Say(null, "지갑에 뭐라 썼더라...", Me + "_wallet");
+        yield return Hud.I.Say(null, "쪽지에 뭐라 썼더라...", Me + "_note");
         muttering = false;
     }
 
@@ -333,12 +325,6 @@ public class R4StorefrontDirector : MonoBehaviour
 
     void Update()
     {
-        // 쪽지를 읽기 전 걸으려 하면 멈춘 이유를 낸다
-        var kb = Keyboard.current;
-        if (opened && !noteRead && kb != null
-            && (kb.wKey.wasPressedThisFrame || kb.aKey.wasPressedThisFrame || kb.sKey.wasPressedThisFrame || kb.dKey.wasPressedThisFrame))
-            Mutter();
-
         // onRead는 조준 시작 때 한 번만 오므로 지금 보이는지를 본다. 임시 T20
         if (noteRead && !leaving && !pullDoor.active && sticker && sticker.Seen)
         {

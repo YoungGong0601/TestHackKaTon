@@ -9,6 +9,8 @@ public class Readable : MonoBehaviour
 {
     public GameObject blurred;
     public GameObject sharp;
+    public bool wide;      // 넓은 판. 한 줄이 읽히게 돋보기 배율을 낮춘다
+    public bool postBlur;  // 글이 SignBlur 레이어에 있어 후처리가 번지게 한다. 판독 판정만 쓰고 층은 옮기지 않는다
     public UnityEvent onRead = new();
 
     [SerializeField] Collider area;
@@ -72,6 +74,11 @@ public class Readable : MonoBehaviour
         bool plain = Plain;
         if (plainNow == plain) return;
         plainNow = plain;
+        if (postBlur)
+        {
+            if (blurred != null) blurred.SetActive(false);
+            return;
+        }
         if (sharp != null)
         {
             sharp.SetActive(true);

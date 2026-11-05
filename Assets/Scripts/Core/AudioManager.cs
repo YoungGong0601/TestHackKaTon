@@ -81,10 +81,29 @@ public class AudioManager : MonoBehaviour
         src.maxDistance = 80f;
     }
 
-    public void Play(string key, Vector3? pos = null, float vol = 1f, float rate = 1f, bool clear = false)
+    /// <summary>sec 안에서 끊는다. 끝 부분은 짧게 줄여 낸다. 파일은 그대로 쓴다.</summary>
+    public void PlayShort(string key, float sec, Vector3? pos = null, float vol = 1f)
+    {
+        var src = Play(key, pos, vol);
+        if (src != null) StartCoroutine(CutOff(src, src.clip, sec));
+    }
+
+    System.Collections.IEnumerator CutOff(AudioSource src, AudioClip clip, float sec)
+    {
+        float fade = Mathf.Min(0.08f, sec * 0.5f), from = src.volume;
+        yield return new WaitForSecondsRealtime(sec - fade);
+        for (float t = 0f; t < fade && src.clip == clip; t += Time.unscaledDeltaTime)
+        {
+            src.volume = from * (1f - t / fade);
+            yield return null;
+        }
+        if (src.clip == clip) src.Stop();
+    }
+
+    public AudioSource Play(string key, Vector3? pos = null, float vol = 1f, float rate = 1f, bool clear = false)
     {
         var list = Variants(key);
-        if (list.Length == 0 || sfx.Length == 0) return;
+        if (list.Length == 0 || sfx.Length == 0) return null;
         AudioSource src = null;
         foreach (var s in sfx) if (!s.isPlaying) { src = s; break; }
         if (src == null) { src = sfx[nextSfx]; nextSfx = (nextSfx + 1) % sfx.Length; }
@@ -94,6 +113,7 @@ public class AudioManager : MonoBehaviour
         src.volume = vol * Master;
         src.pitch = rate;
         src.Play();
+        return src;
     }
 
     // 가까이 지나는 사람의 걸음. moved를 acc에 쌓다가 보폭마다 한 번 낸다

@@ -104,7 +104,7 @@ public class EndingHomeDirector : MonoBehaviour
         walkHeld = true;
         var t = player.transform;
         Vector3 dir = (t.forward * f + t.right * s).normalized;
-        walking = StartCoroutine(player.WalkTo(t.position + dir * 0.5f, Bal.G("End_WalkSpeed", 0.35f)));
+        walking = StartCoroutine(player.WalkTo(t.position + dir * 0.5f, Bal.G("End_CorridorSpeed", 0.7f)));
         if (Time.time >= nextStrain) Strain(Bal.G("End_StrainEverySec", 4.5f));
     }
 
@@ -188,8 +188,7 @@ public class EndingHomeDirector : MonoBehaviour
         StartCoroutine(Tilt(Bal.G("End_LeanRoll", 4f), sec));
         yield return Reach(left, wallPalm, sec);
         sound.Play("step_tile", wallPalm.position, 0.35f, 1.3f);
-        left.shake = 0.4f;
-        breathe = Bal.G("End_LeanBreath", 0.012f);
+        breathe = Bal.G("End_LeanBreath", 0.004f);
         yield return new WaitForSeconds(0.6f);
         float len = sound.Vo("gp_strain4", null, Bal.G("End_StrainVol", 0.8f), clear: true);
         yield return new WaitForSeconds(len + Bal.G("End_LeanHoldSec", 1.2f));
@@ -298,6 +297,12 @@ public class EndingHomeDirector : MonoBehaviour
 
     void Place(Hold h)
     {
+        // 벽에 닿은 뒤로는 앵커에 고정한다. 떨림과 시선 흔들림을 받지 않는다
+        if (h.target != null && h.onFloor >= 1f && h == left)
+        {
+            h.hand.SetPositionAndRotation(h.target.position, h.target.rotation);
+            return;
+        }
         var eye = player.Eye.transform;
         float t = Time.time, j = (Debuff.Tremble + h.shake) * Bal.G("End_HandTremble", 0.003f);
         Vector3 at = eye.TransformPoint(h.pos);

@@ -1,7 +1,9 @@
 // 자체 제작 화면 후처리. URP 기본 Vignette, Film Grain, Depth Of Field 대신 쓴다.
 // 눈치 값은 PostState로 받고, 수치는 전부 ConfigTable Post_ 키에서 쓰는 순간에 읽는다.
 // 배치: PC_Renderer, Mobile_Renderer의 Renderer Features에 등록, shader = Assets/Graybox/Post/KioskPost.shader
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
@@ -10,15 +12,17 @@ using UnityEngine.Rendering.Universal;
 public class KioskPostFeature : ScriptableRendererFeature
 {
     [SerializeField] Shader shader;
+    [SerializeField] Shader signMaskShader;   // Assets/Graybox/Post/SignMask.shader, 표지 번짐 자리
 
-    Material material;
+    Material material, signMask;
     KioskPostPass pass;
 
     public override void Create()
     {
         if (shader == null) return;
         material = CoreUtils.CreateEngineMaterial(shader);
-        pass = new KioskPostPass(material) { renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing };
+        if (signMaskShader != null) signMask = CoreUtils.CreateEngineMaterial(signMaskShader);
+        pass = new KioskPostPass(material, signMask) { renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing };
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -27,10 +31,15 @@ public class KioskPostFeature : ScriptableRendererFeature
         ref var cam = ref renderingData.cameraData;
         // 화면을 그리는 본 카메라만. 키오스크 RT 카메라는 Post Processing이 꺼져 있다
         if (cam.cameraType != CameraType.Game || cam.renderType != CameraRenderType.Base || !cam.postProcessEnabled) return;
+        pass.ConfigureInput(ScriptableRenderPassInput.Depth);
         renderer.EnqueuePass(pass);
     }
 
-    protected override void Dispose(bool disposing) => CoreUtils.Destroy(material);
+    protected override void Dispose(bool disposing)
+    {
+        CoreUtils.Destroy(material);
+        CoreUtils.Destroy(signMask);
+    }
 }
 
 class KioskPostPass : ScriptableRenderPass
@@ -44,6 +53,7 @@ class KioskPostPass : ScriptableRenderPass
     static readonly int Sat = Shader.PropertyToID("_Sat");
     static readonly int Grain = Shader.PropertyToID("_Grain");
     static readonly int Ca = Shader.PropertyToID("_Ca");
+    static readonly int GrainSub = Shader.PropertyToID("_GrainSub");
     static readonly int Tint = Shader.PropertyToID("_Tint");
     static readonly int ShadowColor = Shader.PropertyToID("_ShadowColor");
     static readonly int Depth = Shader.PropertyToID("_Depth");
@@ -61,12 +71,17 @@ class KioskPostPass : ScriptableRenderPass
     static readonly int BlurEdge = Shader.PropertyToID("_BlurEdge");
     static readonly int BlurStart = Shader.PropertyToID("_BlurStart");
     static readonly int LensHole = Shader.PropertyToID("_LensHole");
+    static readonly int NoteRect = Shader.PropertyToID("_NoteRect");
     static readonly int LensTex = Shader.PropertyToID("_LensTex");
     static readonly int LensRim = Shader.PropertyToID("_LensRim");
     static readonly int LensShade = Shader.PropertyToID("_LensShade");
     static readonly int NearTex = Shader.PropertyToID("_NearTex");
     static readonly int MidTex = Shader.PropertyToID("_MidTex");
     static readonly int FarTex = Shader.PropertyToID("_FarTex");
+    static readonly int SignMaskTex = Shader.PropertyToID("_SignMask");
+    static readonly int SignNear = Shader.PropertyToID("_SignNear");
+    static readonly int SignWideTex = Shader.PropertyToID("_SignWide");
+    static readonly int SignBlur = Shader.PropertyToID("_SignBlur");
     static readonly int BlitTexture = Shader.PropertyToID("_BlitTexture");
     static readonly int BlitScaleBias = Shader.PropertyToID("_BlitScaleBias");
     static readonly int SmudgeSoft = Shader.PropertyToID("_SmudgeSoft");
@@ -82,21 +97,33 @@ class KioskPostPass : ScriptableRenderPass
 
     static string[] StageKeys(string k) => new[] { k + "Calm", k + "Heart", k + "Tremble", k + "Ring", k + "Max" };
 
-    readonly Material material;
+    static readonly List<ShaderTagId> SignTags = new()
+    {
+        new ShaderTagId("UniversalForward"), new ShaderTagId("UniversalForwardOnly"), new ShaderTagId("SRPDefaultUnlit"),
+    };
+
+    readonly Material material, signMask;
     float level;
     int levelFrame = -1;
+    bool signOn;
 
     class CompositeData
     {
-        public TextureHandle source, near, mid, far;
+        public TextureHandle source, near, mid, far, sign, wide;
         public Material material;
         public int shaderPass;
         public readonly MaterialPropertyBlock props = new();
     }
 
-    public KioskPostPass(Material material)
+    class SignData
+    {
+        public RendererListHandle list;
+    }
+
+    public KioskPostPass(Material material, Material signMask)
     {
         this.material = material;
+        this.signMask = signMask;
         requiresIntermediateTexture = true;
     }
 
@@ -147,9 +174,10 @@ class KioskPostPass : ScriptableRenderPass
         material.SetFloat(PostTime, Time.unscaledTime);
         material.SetFloat(Aspect, aspect);
 
-        material.SetFloat(Dim, Mathf.Lerp(Bal.G("Post_Dim", 0.92f), Bal.G("Post_DimMax", 0.8f), s));
+        material.SetFloat(Dim, Mathf.Lerp(Bal.G("Post_Dim", 0.92f), Bal.G("Post_DimMax", 0.8f), s) * Bal.G("Post_Bright", 1.12f));
         material.SetFloat(Sat, Mathf.Lerp(Bal.G("Post_Sat", 0.74f), Bal.G("Post_SatMax", 0.45f), s));
         material.SetFloat(Grain, Bal.G("Post_Grain", 0.07f) + s * Bal.G("Post_GrainAdd", 0.04f));
+        material.SetFloat(GrainSub, Bal.G("Post_GrainSub", 0.3f));   // 자막이 놓이는 화면 아래쪽 입자
         material.SetFloat(Ca, Bal.G("Post_Ca", 0.0012f) + s * Bal.G("Post_CaAdd", 0.003f));
         material.SetVector(Tint, new Vector4(Bal.G("Post_TintR", 1f), Bal.G("Post_TintG", 0.98f), Bal.G("Post_TintB", 0.95f), 1f));
         material.SetVector(ShadowColor, new Vector4(Bal.G("Post_ShadowR", 0.1f), Bal.G("Post_ShadowG", 0.07f), Bal.G("Post_ShadowB", 0.05f), 1f));
@@ -176,6 +204,7 @@ class KioskPostPass : ScriptableRenderPass
 
         Vector3 lens = PostState.Lens;
         material.SetVector(LensHole, new Vector4(lens.x, lens.y, lens.z, 0f));
+        material.SetVector(NoteRect, PostState.NoteRect);
         material.SetFloat(LensRim, Bal.G("Post_LensRim", 0.5f));
         material.SetFloat(LensShade, Bal.G("Post_LensShade", 0.7f));
         material.SetTexture(LensTex, PostState.LensTexture != null ? PostState.LensTexture : Texture2D.blackTexture);
@@ -185,7 +214,13 @@ class KioskPostPass : ScriptableRenderPass
         Shader.SetGlobalFloat(SmudgeContrast, Bal.G("Post_SmudgeContrast", 0.55f));
         Shader.SetGlobalFloat(SmudgeDrift, Bal.G("Post_SmudgeDrift", 0.05f));
 
-        return center > 0.001f || edge > 0.001f;
+        // 표지 레이어 번짐. 키 하나와 프로필 배율. 돋보기 카메라는 후처리가 없어 또렷하다
+        float sign = Bal.G("Post_SignBlur", 1f) * Bal.Age("PostSignBlurMul", 0f, 0f, 0.8f, 1f);
+        material.SetFloat(SignBlur, sign);
+        if (signMask != null) signMask.SetFloat(SignNear, Bal.G("Post_SignNear", 4f));
+        signOn = sign > 0.001f && signMask != null && LayerMask.NameToLayer("SignBlur") >= 0;
+
+        return center > 0.001f || edge > 0.001f || signOn;
     }
 
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -203,7 +238,7 @@ class KioskPostPass : ScriptableRenderPass
 
         bool blur = Fill((float)desc.width / Mathf.Max(desc.height, 1));
 
-        TextureHandle near = TextureHandle.nullHandle, mid = TextureHandle.nullHandle, far = TextureHandle.nullHandle;
+        TextureHandle near = TextureHandle.nullHandle, mid = TextureHandle.nullHandle, far = TextureHandle.nullHandle, wide = TextureHandle.nullHandle;
         if (blur)
         {
             near = Level(renderGraph, desc, 2, "KioskPost Near");
@@ -218,7 +253,21 @@ class KioskPostPass : ScriptableRenderPass
             Step(renderGraph, d8, d16, Down, "KioskPost Down 16");
             Step(renderGraph, d16, u8, Up, "KioskPost Up 8");
             Step(renderGraph, u8, far, Up, "KioskPost Up 4");
+            if (signOn)
+            {
+                // 가까이 선 표지용 더 넓은 번짐. 거리는 마스크 G가 정한다
+                TextureHandle d32 = Level(renderGraph, desc, 32, "KioskPost D32");
+                TextureHandle d64 = Level(renderGraph, desc, 64, "KioskPost D64");
+                TextureHandle u32 = Level(renderGraph, desc, 32, "KioskPost U32");
+                wide = Level(renderGraph, desc, 16, "KioskPost Wide");
+                Step(renderGraph, d16, d32, Down, "KioskPost Down 32");
+                Step(renderGraph, d32, d64, Down, "KioskPost Down 64");
+                Step(renderGraph, d64, u32, Up, "KioskPost Up 32");
+                Step(renderGraph, u32, wide, Up, "KioskPost Up 16");
+            }
         }
+
+        TextureHandle sign = signOn ? SignMaskPass(renderGraph, frameData, desc) : TextureHandle.nullHandle;
 
         desc.name = "KioskPost Color";
         TextureHandle target = renderGraph.CreateTexture(desc);
@@ -229,6 +278,8 @@ class KioskPostPass : ScriptableRenderPass
             data.near = near;
             data.mid = mid;
             data.far = far;
+            data.sign = sign;
+            data.wide = wide;
             data.material = material;
             data.shaderPass = blur ? Blur : Plain;
             builder.UseTexture(source);
@@ -238,6 +289,8 @@ class KioskPostPass : ScriptableRenderPass
                 builder.UseTexture(mid);
                 builder.UseTexture(far);
             }
+            if (sign.IsValid()) builder.UseTexture(sign);
+            if (wide.IsValid()) builder.UseTexture(wide);
             builder.SetRenderAttachment(target, 0, AccessFlags.WriteAll);
             builder.SetRenderFunc(static (CompositeData d, RasterGraphContext ctx) =>
             {
@@ -249,12 +302,47 @@ class KioskPostPass : ScriptableRenderPass
                     d.props.SetTexture(NearTex, d.near);
                     d.props.SetTexture(MidTex, d.mid);
                     d.props.SetTexture(FarTex, d.far);
+                    if (d.sign.IsValid()) d.props.SetTexture(SignMaskTex, d.sign);
+                    else d.props.SetTexture(SignMaskTex, Texture2D.blackTexture);
+                    d.props.SetTexture(SignWideTex, d.wide.IsValid() ? d.wide : d.far);
                 }
                 ctx.cmd.DrawProcedural(Matrix4x4.identity, d.material, d.shaderPass, MeshTopology.Triangles, 3, 1, d.props);
             });
         }
 
         resources.cameraColor = target;
+    }
+
+    // 표지 레이어가 보이는 자리를 낮은 해상도로 그린다. 한 번 더 줄여 경계를 부드럽게 한다
+    TextureHandle SignMaskPass(RenderGraph graph, ContextContainer frameData, TextureDesc desc)
+    {
+        var rendering = frameData.Get<UniversalRenderingData>();
+        var camera = frameData.Get<UniversalCameraData>();
+        var light = frameData.Get<UniversalLightData>();
+        var resources = frameData.Get<UniversalResourceData>();
+
+        desc.format = GraphicsFormat.R8G8B8A8_UNorm;
+        desc.clearBuffer = true;
+        desc.clearColor = Color.black;
+        TextureHandle mask = Level(graph, desc, 2, "KioskPost SignMask");
+        desc.clearBuffer = false;
+        TextureHandle soft = Level(graph, desc, 4, "KioskPost SignSoft");
+
+        using (var builder = graph.AddRasterRenderPass<SignData>("KioskPost SignMask", out var data))
+        {
+            var draw = RenderingUtils.CreateDrawingSettings(SignTags, rendering, camera, light, SortingCriteria.None);
+            draw.overrideMaterial = signMask;
+            draw.overrideMaterialPassIndex = 0;
+            var filter = new FilteringSettings(RenderQueueRange.all, 1 << LayerMask.NameToLayer("SignBlur"));
+            var param = new RendererListParams(rendering.cullResults, draw, filter);
+            data.list = graph.CreateRendererList(param);
+            builder.UseRendererList(data.list);
+            if (resources.cameraDepthTexture.IsValid()) builder.UseTexture(resources.cameraDepthTexture);
+            builder.SetRenderAttachment(mask, 0, AccessFlags.Write);
+            builder.SetRenderFunc(static (SignData d, RasterGraphContext ctx) => ctx.cmd.DrawRendererList(d.list));
+        }
+        Step(graph, mask, soft, Down, "KioskPost SignSoft");
+        return soft;
     }
 
     static TextureHandle Level(RenderGraph graph, TextureDesc desc, int div, string name)

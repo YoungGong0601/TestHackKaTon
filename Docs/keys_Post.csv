@@ -63,3 +63,10 @@ Post_LensRim,돋보기 테두리 어둡기,Float,0.5,0~1,손 모델의 원과 �
 Post_LensShade,돋보기 안에서 쉐도우가 빠지는 정도,Float,0.7,0~1,1이면 원 안에 쉐도우 없음. 어두운 가장자리도 렌즈로 읽게
 Lens_Radius,돋보기 유리 반지름,Float,0.06,m,Hand_Lens Rim 모델과 같게
 Lens_Zoom,돋보기 확대,Float,1.45,배,키오스크와 월드 글 공용
+Post_SignBlur,표지 레이어 번짐 세기,Float,1,0~1,1 이면 가장 먼 번짐
+PostSignBlurMul,표지 번짐 프로필 배율,Float,1,배,인물 키 Age20 0 Age40 0 Age60 0.8 Age80 1
+Post_Bright,화면 밝기 배율,Float,1.12,배,Post_Dim에 곱한다
+Light_SunMul,씬 태양 세기 배율,Float,1,배,밤 제외
+Light_AmbientMul,씬 앰비언트 배율,Float,1,배,밤 제외
+Post_GrainSub,자막 자리 입자 비율,Float,0.3,배,화면 아래쪽만 약하게
+Post_SignNear,표지 넓은 번짐을 다 쓰는 거리,Float,4,m,이 거리 안은 맨눈으로 못 읽음

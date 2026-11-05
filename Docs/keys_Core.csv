@@ -20,7 +20,7 @@ Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
 Age20_KioskBlur,키오스크 글씨 번짐,Float,0,px,ROUND_PLAN 7절
 Age40_KioskBlur,키오스크 글씨 번짐,Float,3,px,ROUND_PLAN 7절
 Age60_KioskBlur,키오스크 글씨 번짐,Float,7,px,ROUND_PLAN 7절
-Age80_KioskBlur,키오스크 글씨 번짐,Float,12,px,ROUND_PLAN 7절
+Age80_KioskBlur,키오스크 글씨 번짐,Float,44,px,큰 글자까지 맨눈으로 못 읽음
 Age20_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0,배,ROUND_PLAN 7절
 Age40_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.4,배,ROUND_PLAN 7절
 Age60_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.8,배,ROUND_PLAN 7절
@@ -131,3 +131,15 @@ Age60_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, 
 Age80_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
 Cine_BlendSec,컷 시작 때 시점이 옮겨 가는 시간,Float,1,sec,순간이동 느낌 방지
 Mash_LookPitch,계단 오를 때 시선 각도,Float,6,deg,문 쪽을 봄
+Age20_ClimbSec,버스 계단 자동 오르기 시간,Float,1.1,s,연타 제거
+Age40_ClimbSec,버스 계단 자동 오르기 시간,Float,1.2,s,연타 제거
+Age60_ClimbSec,버스 계단 자동 오르기 시간,Float,1.8,s,연타 제거
+Age80_ClimbSec,버스 계단 자동 오르기 시간,Float,3.2,s,노인은 느린 자동 이동
+Steps_LookPitch,계단 오를 때 시선 각도,Float,6,deg,문 쪽을 봄
+Steps_DescendSec,계단 내려가는 시간,Float,1.4,s,자동
+Age80_LookScale,4회차 마우스 시점 감도 배율,Float,0.5,배,노인은 천천히 둘러봄
+Note_HandX,손에 든 쪽지 가로 자리,Float,-0.09,m,왼손 자리
+Note_HandY,손에 든 쪽지 세로 자리,Float,-0.06,m,왼손 자리
+Note_HandZ,손에 든 쪽지 거리,Float,0.34,m,왼손 자리
+Lens_BoardZoom,넓은 판을 볼 때 돋보기 배율,Float,1.15,배,한 줄이 읽힘
+Hand_CaneY,빈손 지팡이 높이,Float,-0.13,m,손잡이와 몸통 일부가 화면 아래에 보임

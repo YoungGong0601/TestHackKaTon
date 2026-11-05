@@ -158,6 +158,7 @@ public class R1StoreDirector : MonoBehaviour
     IEnumerator Pickup()
     {
         SetPhase(Phase.Pickup);
+        queue.ServeWhenClear();
         CookWalk();
         yield return new WaitForSeconds(Bal.G("R1_PickupWaitSec", 5f));
         ShowBoard(Number);

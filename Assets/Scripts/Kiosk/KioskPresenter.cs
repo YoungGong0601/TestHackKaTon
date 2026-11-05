@@ -59,6 +59,8 @@ public sealed class KioskPresenter
             case "cart": Cart(s); break;
             case "upsell": if (K.draft != null) Put(s, ComboPicture(K.draft.item), "Art"); break;
             case "pay": s.Text("total", "총 결제 금액 " + Won(K.Total)); break;
+            case "paying": s.Fill("bar", K.payProgress); break;
+            case "done": s.Text("number", GameState.I.Order.number.ToString()); break;
             case "card":
                 s.Show("msg_box", K.cardMsg != null);
                 s.Text("msg", K.cardMsg ?? "");

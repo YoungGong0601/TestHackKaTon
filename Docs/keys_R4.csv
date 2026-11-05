@@ -42,3 +42,13 @@ Door_SeatBodyDeg,손님 몸통 회전,Float,35,deg,연출
 Door_SeatHeadDeg,손님 고개 회전,Float,70,deg,연출
 R4_TrayHandY,쟁반 높이,Float,1.05,m,손 높이
 R4_TrayReach,쟁반이 몸 앞으로 나온 거리,Float,0.32,m,손 앞
+R4_PickupWaitSec,결제 뒤 호출까지,Float,6,s,4회차 수령
+R4_SignLookSec,도착 때 간판으로 시선 옮기는 시간,Float,1.2,sec,
+R4_SignHoldSec,도착 때 간판 보는 시간,Float,2,sec,조작 잠금
+R4_WrongBusStopSec,다른 번호 버스 정차 시간,Float,3.2,sec,타기 표시 없음
+R4_MissHoldSec,떠나는 버스를 보는 시간,Float,3,sec,
+R4_EndWalkStuckSec,걷기 컷 멈춤 판정,Float,1.5,sec,안전장치
+R4_SkyExposureEnd,정류장 마지막 하늘 밝기,Float,0.75,배,어둡게 내리지 않는다
+R4_NoticeLookSec,버스 안 안내문을 보는 시간,Float,2,sec,입력 없음
+R4_BoardCutDist,자동 승차 때 암전으로 옮기는 거리,Float,5,m,
+R4_SentStepDist,돌아선 뒤 키오스크 앞을 벗어나는 추가 거리,Float,0.6,m,뒷사람이 쓸 자리를 비움

@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 
 // ROUND_PLAN 6절의 정적 입구. 화면 쪽 참조는 RoundUi(HUD)에 있다
 
-// 계단 마싱. 임시 T05: 좌클릭 또는 E 연타, 횟수만 다름, 멈춰도 내려가지 않음
-public static class Mash
+// 버스 계단. 입력 없이 자동으로 오르내린다. 인물마다 시간만 다르다
+public static class Steps
 {
     public static IEnumerator Climb(Transform bottom, Transform top)
     {
@@ -20,28 +20,22 @@ public static class Mash
         up.y = 0f;
         float yaw = up.sqrMagnitude > 1e-3f ? Mathf.Atan2(up.x, up.z) * Mathf.Rad2Deg : top.eulerAngles.y;
         pc.BlendCamera();
-        pc.Teleport(bottom.position, pc.Yaw);
-        pc.StartCoroutine(pc.TurnTo(yaw, Bal.G("Mash_LookPitch", 6f), Bal.G("Cine_BlendSec", 1f)));
+        pc.MoveTo(bottom.position);   // Teleport는 시선 높이를 0으로 돌려 시점이 튄다
+        pc.StartCoroutine(pc.TurnTo(yaw, Bal.G("Steps_LookPitch", 6f), Bal.G("Cine_BlendSec", 1f)));
 
-        int total = Mathf.Max(1, Mathf.RoundToInt(Bal.Age("MashCount", 10f, 10f, 10f, 40f))), done = 0;
-        float shown = 0f;
-        if (RoundUi.I != null) RoundUi.I.Mash(true, 0, total);
-        while (done < total)
+        float sec = Mathf.Max(Bal.Age("ClimbSec", 1.1f, 1.2f, 1.8f, 3.2f), 0.01f), step = 0f;
+        for (float t = 0f; t < sec; t += Time.deltaTime)
         {
-            var mouse = Mouse.current;
-            var kb = Keyboard.current;
-            if ((mouse != null && mouse.leftButton.wasPressedThisFrame) || (kb != null && kb.eKey.wasPressedThisFrame))
+            pc.MoveTo(Vector3.Lerp(bottom.position, top.position, Mathf.SmoothStep(0f, 1f, t / sec)));
+            step += Time.deltaTime;
+            if (step > sec / 3f)
             {
-                done++;
+                step = 0f;
                 AudioManager.I.Play("step_concrete", null, 0.5f, UnityEngine.Random.Range(0.92f, 1.04f), true);
-                if (RoundUi.I != null) RoundUi.I.Mash(true, done, total);
             }
-            shown = Mathf.MoveTowards(shown, (float)done / total, Time.deltaTime * 4f);
-            pc.MoveTo(Vector3.Lerp(bottom.position, top.position, shown));
             yield return null;
         }
         pc.MoveTo(top.position);
-        if (RoundUi.I != null) RoundUi.I.Mash(false, 0, 0);
         pc.SetMode(mode);
         pc.Freeze(frozen);
     }
@@ -51,7 +45,7 @@ public static class Mash
         var pc = PlayerController.I;
         bool frozen = pc.Frozen;
         pc.Freeze(true);
-        float sec = Mathf.Max(Bal.G("Mash_DescendSec", 1.4f), 0.01f), step = 0f;
+        float sec = Mathf.Max(Bal.G("Steps_DescendSec", 1.4f), 0.01f), step = 0f;
         for (float t = 0f; t < sec; t += Time.deltaTime)
         {
             pc.MoveTo(Vector3.Lerp(top.position, bottom.position, t / sec));

@@ -5,7 +5,7 @@ public abstract class KioskPack : MonoBehaviour
 {
     public KioskController Ctl { get; internal set; }
     public abstract string FirstScreen { get; }
-    public virtual bool Timed => false;         // 시간 초과를 세는 화면에서 true. 프로필 kioskTimeout이 켜져야 돈다
+    public virtual bool Timed => false;         // 무입력 시간을 세는 화면에서 true
     public virtual bool ShowMeaning => true;    // false면 뜻 풀이를 아예 안 그린다
     public virtual bool CanGiveUp => true;      // 눈치 버튼 허용
     public abstract void OnPress(string id);    // 터치 판정 뒤 확정된 버튼
@@ -13,4 +13,6 @@ public abstract class KioskPack : MonoBehaviour
     public virtual void OnTimeout() { }         // 시간 초과
     public virtual void OnTick(float dt) { }
     public virtual bool Hit(Collider col) => false;   // 화면 밖 본체 클릭을 Pack이 받으면 true
+    public virtual string[] CustomerScreens => new[] { FirstScreen };   // 다음 손님이 차례로 넘기는 화면
+    public virtual void ShowCustomer(string id) => GetComponent<KioskScreens>().Show(id);
 }

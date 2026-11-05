@@ -1,14 +1,11 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-// 쪽지. 모든 회차의 목표 표시를 대신한다. 1 키로 열고 닫는다. 보는 동안 시간은 흐르고 걸을 수 있다
+// 쪽지. 모든 회차의 목표 표시를 대신한다. ItemKeys 번호로 손에 들고 내린다. 보는 동안 시간은 흐르고 걸을 수 있다
 // 내용 찾는 순서: Note.Set, entries의 씬 이름, entries의 프로필 id
-// Memo를 가진 인물(4회차)은 지갑 속 쪽지를 쓰니 여기서는 열리지 않는다
-// 배치: Assets/Graybox/PH/NotePanel.prefab, Systems 프리팹의 자식. 켜고 끄기는 group.alpha로 한다
-// 배치: group = 루트 CanvasGroup, text = Paper 자식 Text
+// 배치: Assets/Graybox/PH/NotePanel.prefab, Systems 프리팹의 자식. 내용만 들고 있고 보이는 종이는 HandRig의 Hand_Note다
 public class Note : MonoBehaviour
 {
     [Serializable]
@@ -17,16 +14,16 @@ public class Note : MonoBehaviour
         public string key;   // 씬 이름 또는 프로필 id
         [TextArea] public string text;
         [Range(0f, 1f)] public float soft;   // 0 또렷, 클수록 번진다
+        public int kind;                     // 0 구겨진 쪽지, 1 포스트잇
     }
 
     public static Note I { get; private set; }
 
-    [SerializeField] CanvasGroup group;
-    [SerializeField] TMP_Text text;
     [SerializeField] Entry[] entries = new Entry[0];
 
     string setText;
     float setSoft, closeAt;
+    int setKind;
     bool open;
 
     /// <summary>지금 인물이 1 키로 볼 쪽지가 있을 때.</summary>
@@ -35,18 +32,19 @@ public class Note : MonoBehaviour
         get
         {
             var p = GameState.I != null ? GameState.I.Profile : null;
-            return I != null && p != null && !p.Has(ItemId.Memo) && I.Find(p, out _, out _);
+            return I != null && p != null && I.Find(p, out _, out _, out _);
         }
     }
 
     public static bool Opened => I != null && I.open;
 
     /// <summary>이 씬의 쪽지 내용을 정한다. 다음 씬에서 풀린다. soft 0 또렷, 클수록 번진다.</summary>
-    public static void Set(string text, float soft = 0f)
+    public static void Set(string text, float soft = 0f, int kind = 0)
     {
         if (I == null) return;
         I.setText = text;
         I.setSoft = soft;
+        I.setKind = kind;
         if (I.open) I.Show(true);
     }
 
@@ -63,11 +61,16 @@ public class Note : MonoBehaviour
         if (I != null) I.Show(false);
     }
 
+    /// <summary>접힐 때까지 든다.</summary>
+    public static void Hold()
+    {
+        if (I != null && Available) I.Show(true);
+    }
+
     void Awake()
     {
         if (I != null && I != this) return;
         I = this;
-        group.alpha = 0f;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -83,13 +86,13 @@ public class Note : MonoBehaviour
         if (mode != LoadSceneMode.Single) return;
         setText = null;
         Show(false);
-        group.alpha = 0f;
     }
 
-    bool Find(CharacterProfile profile, out string body, out float soft)
+    bool Find(CharacterProfile profile, out string body, out float soft, out int kind)
     {
         body = setText;
         soft = setSoft;
+        kind = setKind;
         if (!string.IsNullOrEmpty(body)) return true;
         string scene = SceneManager.GetActiveScene().name;
         Entry hit = null;
@@ -101,33 +104,37 @@ public class Note : MonoBehaviour
         if (hit == null) return false;
         body = hit.text;
         soft = hit.soft;
+        kind = hit.kind;
         return !string.IsNullOrEmpty(body);
     }
 
     void Show(bool on)
     {
         closeAt = 0f;
-        if (on && Find(GameState.I.Profile, out var body, out var soft))
-        {
-            text.text = body;
-            text.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, soft);
-        }
+        string body = null;
+        float soft = 0f;
+        int kind = 0;
+        on = on && Find(GameState.I.Profile, out body, out soft, out kind);
+        if (on && Wallet.I != null) Wallet.I.SetOpen(false);   // 쪽지와 지갑은 한 번에 하나만 든다
+        if (HandRig.I != null) HandRig.I.SetPaper(on, body, soft, kind);
         if (open == on) return;
         open = on;
-        if (AudioManager.I != null) AudioManager.I.Play(on ? "paper_rustle_1" : "paper_rustle_2", null, 0.4f);
+        if (AudioManager.I != null)
+        {
+            if (on) AudioManager.I.Play("paper_rustle_1", null, 0.4f);
+            else AudioManager.I.PlayShort("paper_rustle_2", Bal.G("Note_PutSec", 0.3f), null, 0.4f);
+        }
         if (Hud.I != null) Hud.I.Items();
     }
 
     void Update()
     {
-        float dt = Time.unscaledDeltaTime;
-        group.alpha = Mathf.MoveTowards(group.alpha, open ? 1f : 0f, dt / 0.15f);
         if (closeAt > 0f && Time.unscaledTime >= closeAt) Show(false);
 
         var kb = Keyboard.current;
         var pc = PlayerController.I;
-        if (kb == null || pc == null || kb.ctrlKey.isPressed || !kb.digit1Key.wasPressedThisFrame) return;
-        if (pc.CurrentMode == PlayerController.Mode.Locked || pc.CurrentMode == PlayerController.Mode.Hidden || !Available) return;
+        if (kb == null || pc == null || kb.ctrlKey.isPressed) return;
+        if (pc.CurrentMode == PlayerController.Mode.Locked || pc.CurrentMode == PlayerController.Mode.Hidden || !ItemKeys.Pressed(kb, ItemId.Memo)) return;
         Show(!open);
     }
 }

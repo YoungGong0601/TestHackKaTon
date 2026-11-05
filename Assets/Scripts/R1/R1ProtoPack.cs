@@ -1,6 +1,6 @@
 // 1-7, 1-8 쉬운 키오스크. 4회차와 같은 가게, 같은 화면(Screen_ 프로토타입)이고 난이도만 다르다.
 // 팝업, 광고, 시간 제한, 회원 입력, 구성 고르기 없이 시작, 장소, 메뉴, 장바구니, 결제 수단, 카드, 완료로 간다.
-// 메뉴 첫 칸이 쪽지의 불고기 버거 세트이고 나머지는 품절이다. 결제는 PH_Kiosk_R4 의 IC 틈 PayPoint, 포스터는 처음부터 걷혀 있다.
+// 쪽지의 신메뉴(KioskPick)만 살 수 있고 첫 칸 불고기 버거 세트를 포함한 나머지는 품절이다. 결제는 PH_Kiosk_R4 의 IC 틈 PayPoint, 포스터는 처음부터 걷혀 있다.
 // 부착: PH_Kiosk_R4 인스턴스의 KioskCanvas (KioskScreens와 같은 오브젝트, R4ProtoPack은 뺀다)
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +9,6 @@ using static KioskData;
 
 public class R1ProtoPack : KioskPack
 {
-    const string SetName = "불고기 버거 세트";
-    const string SetItem = "bulgogi";   // 장바구니 합계와 뜻 자리만 빌린다
 
     static readonly Dictionary<string, (string vo, string text)> Voice = new Dictionary<string, (string, string)>
     {
@@ -35,11 +33,20 @@ public class R1ProtoPack : KioskPack
     bool paid, pulled, canTear;
     float progress;
 
-    static int SetPrice => Bal.I("R1_SetPrice", 8900);
 
     public override string FirstScreen => "idle";
     public override bool CanGiveUp => false;
+    public override bool Timed => !paid && K.screen != "idle";
     public override bool ShowMeaning => false;   // 1회차는 쉽다. 돋보기도 뜻 풀이도 없다
+    public override string[] CustomerScreens => new[] { "idle", "place", "menu" };
+
+    public override void ShowCustomer(string id)
+    {
+        K.cart.Clear();
+        K.toast = null;
+        K.screen = id;
+        Draw();
+    }
 
     void Awake()
     {
@@ -89,26 +96,47 @@ public class R1ProtoPack : KioskPack
         view.Redraw();
         var s = scr.Current;
         if (!s) return;
-        if (K.screen == "menu" && K.tab == Tabs[0] && s.cells.Length > 0)
-        {
-            var c = s.cells[0];
-            c.Bind("item_set");
-            c.Text("name", SetName);
-            c.Text("mean", "");
-            c.Text("price", Won(SetPrice));
-            c.Text("desc", "신메뉴");
-            c.Text("tag", "NEW");
-            c.Show("tag_box", true);
-            view.Put(c, Picture(SetItem));
-        }
+        if (K.screen == "menu") MenuTags(s);
         else if (K.screen == "cart" && K.cart.Count > 0 && s.cells.Length > 0)
         {
             var c = s.cells[0];
-            c.Text("name", SetName);
+            c.Text("name", KioskPick.SetName);
             c.Text("mean", "");
         }
         else if (K.screen == "paying") s.Fill("bar", progress);
         else if (K.screen == "done") s.Text("number", GameState.I.Order.number.ToString());
+    }
+
+    // NEW는 뽑힌 신메뉴 하나에만 붙는다. 첫 탭 첫 칸은 불고기 버거 세트 자리다
+    void MenuTags(KioskScreen s)
+    {
+        var list = KioskData.Menu[K.tab];
+        for (int i = 0; i < s.cells.Length && i < list.Length; i++)
+        {
+            var c = s.cells[i];
+            var it = list[i];
+            if (it.id == KioskPick.Id)
+            {
+                c.Bind("item_set");
+                c.Text("name", KioskPick.SetName);
+                c.Text("price", Won(KioskPick.SetPrice));
+                c.Text("desc", "신메뉴");
+                c.Text("tag", "NEW");
+                c.Show("tag_box", true);
+            }
+            else if (it.tag == "NEW") c.Show("tag_box", false);
+            c.Text("mean", "");
+        }
+        if (K.tab != Tabs[0] || s.cells.Length == 0) return;
+        var first = s.cells[0];
+        var bulgogi = ById("bulgogi");
+        first.Bind("item_bulgogi");
+        first.Text("name", "불고기 버거 세트");
+        first.Text("price", Won(bulgogi.price + Combo("combo").add));
+        first.Text("desc", bulgogi.desc);
+        first.Text("kcal", $"{bulgogi.kcal}kcal");
+        first.Show("tag_box", false);
+        view.Put(first, Picture("bulgogi"));
     }
 
     void Toast(string text, float sec = 2f)
@@ -140,9 +168,9 @@ public class R1ProtoPack : KioskPack
                 Go("menu");
                 return;
             case "item_set":
-                GameState.I.Order.item = SetName;
+                GameState.I.Order.item = KioskPick.SetName;
                 K.cart.Clear();
-                K.cart.Add(new CartLine { item = SetItem, price = SetPrice });
+                K.cart.Add(new CartLine { item = KioskPick.Id, price = KioskPick.SetPrice });
                 Ctl.Sfx("kiosk_ok", 0.5f);
                 Go("cart");
                 return;
@@ -221,7 +249,17 @@ public class R1ProtoPack : KioskPack
         return true;
     }
 
-    void OnEmpty() => Toast(K.screen == "card" ? "3 카드" : "카드 전용");
+    // 처음 화면으로. 장바구니를 비운다
+    public override void OnTimeout()
+    {
+        Ctl.Say("kiosk", "처음 화면으로 돌아갑니다.", "k_home");
+        Ctl.Sfx("kiosk_error", 0.3f);
+        K.cart.Clear();
+        K.place = null; K.toast = null; K.cardMsg = null; K.tab = Tabs[0];
+        Go("idle");
+    }
+
+    void OnEmpty() => Toast(K.screen == "card" ? $"{ItemKeys.Of(ItemId.Card)} 카드" : "카드 전용");
 
     void OnPaid()
     {
@@ -254,14 +292,24 @@ public class R1ProtoPack : KioskPack
         Ctl.Sfx("kiosk_ok", 0.8f);
         pulled = false;
         Go("cardout");
-        float until = Time.time + Bal.G("Kiosk_CardOutWait", 6f);
-        while (!pulled && Time.time < until) yield return null;
+        // 뺄 때까지 멈춘다. 재촉만 한다
+        float beep = Time.time + Bal.G("Kiosk_CardOutBeepSec", 3f);
+        while (!pulled)
+        {
+            if (Time.time >= beep)
+            {
+                beep = Time.time + Bal.G("Kiosk_CardOutBeepSec", 3f);
+                Ctl.Sfx("kiosk_error", 0.3f);
+                Toast("카드 제거");
+            }
+            yield return null;
+        }
         if (hw) hw.CardAt("ic", Ctl.Out, KioskCard.Move.Out);
         Ctl.Sfx("card_insert", 0.5f, 1.25f);
         yield return new WaitForSeconds(Bal.G("Kiosk_CardOutDelay", 0.5f));
         Go("done");
         float print = Bal.G("Kiosk_ReceiptPrintSec", 3.1f);
-        if (hw) hw.Print($"{SetName}  {Won(SetPrice)}", Won(SetPrice), number, print);
+        if (hw) hw.Print($"{KioskPick.SetName}  {Won(KioskPick.SetPrice)}", Won(KioskPick.SetPrice), number, print);
         Ctl.Sfx("receipt_print", 0.9f);
         yield return new WaitForSeconds(print);
         if (hw) hw.ReceiptReady();

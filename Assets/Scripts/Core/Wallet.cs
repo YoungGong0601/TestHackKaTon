@@ -1,42 +1,27 @@
-using System;
 using UnityEngine;
 
 // 지갑. 왼손, 돋보기와 동시 사용. 임시 T04, T19. 부착: HandRoot (늘 켜져 있는 쪽)
-// 배치: note = Hand_Wallet 자식 Note (Readable)
-// 배치: cardPart, cashPart, notePart = Hand_Wallet 자식 클릭 자리. 화면에 투영해 Wallet_PartRadius로 판정한다(콜라이더 없음)
+// 배치: cardPart, cashPart = Hand_Wallet 자식 클릭 자리. 화면에 투영해 Wallet_PartRadius로 판정한다(콜라이더 없음)
 public class Wallet : MonoBehaviour
 {
     public static Wallet I { get; private set; }
 
-    [SerializeField] Readable note;
     [SerializeField] Transform cardPart;
     [SerializeField] Transform cashPart;
-    [SerializeField] Transform notePart;
 
     public bool Open { get; private set; }
 
-    public event Action NoteRead;     // 쪽지 Readable을 돋보기로 처음 읽을 때
-    public event Action NoteMissed;   // 돋보기 없이 쪽지를 눌렀을 때. 대사는 Director가 낸다
-
-    bool noteDone, ownCursor;
+    bool ownCursor;
     PlayerController.Mode before;
     bool frozenBefore, pointerBefore;
 
     /// <summary>지갑 위 클릭이라 키오스크가 받으면 안 될 때.</summary>
-    public bool Over => Open && (Hit(cardPart) || Hit(cashPart) || Hit(notePart));
+    public bool Over => Open && (Hit(cardPart) || Hit(cashPart));
 
     void Awake()
     {
         if (I != null && I != this) return;
         I = this;
-        if (note != null) note.onRead.AddListener(OnNoteSeen);
-    }
-
-    void OnNoteSeen()
-    {
-        if (noteDone || HandRig.I.Held != ItemId.Lens) return;
-        noteDone = true;
-        NoteRead?.Invoke();
     }
 
     public void SetOpen(bool on)
@@ -44,6 +29,7 @@ public class Wallet : MonoBehaviour
         if (Open == on) return;
         var hands = HandRig.I;
         var pc = PlayerController.I;
+        if (on) Note.Close();   // 쪽지와 지갑은 한 번에 하나만 든다
         Open = on;
         hands.walletOut = on;
         if (AudioManager.I != null) AudioManager.I.Play("pocket_rummage", null, 0.55f);
@@ -78,14 +64,13 @@ public class Wallet : MonoBehaviour
         ownCursor = false;
     }
 
-    public void ResetRun() => noteDone = false;
+    public void ResetRun() { }
 
     void ShowParts()
     {
         var p = GameState.I.Profile;
         if (cardPart != null) cardPart.gameObject.SetActive(p.Has(ItemId.Card));
         if (cashPart != null) cashPart.gameObject.SetActive(p.Has(ItemId.Cash));
-        if (notePart != null) notePart.gameObject.SetActive(p.Has(ItemId.Memo));
     }
 
     bool Hit(Transform part)
@@ -110,6 +95,5 @@ public class Wallet : MonoBehaviour
         if (!Open || !RoundUi.Clicked || PlayerController.I.CurrentMode != PlayerController.Mode.Cursor) return;
         if (Hit(cardPart)) Take(ItemId.Card);
         else if (Hit(cashPart)) Take(ItemId.Cash);
-        else if (Hit(notePart) && HandRig.I.Held != ItemId.Lens) NoteMissed?.Invoke();
     }
 }

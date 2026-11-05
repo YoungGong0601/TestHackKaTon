@@ -283,13 +283,13 @@ public class VideoRun : KioskBotFixture
         Mark("전광판 돋보기");
         rec.stride = 1;
         yield return Wait(0.7f);
-        yield return Key(UnityEngine.InputSystem.Key.Digit2);
+        yield return Key(UnityEngine.InputSystem.Key.Digit1 + ItemKeys.Of(ItemId.Lens) - 1);
         yield return Wait(0.9f);
         yield return P.LookAt(bis + Vector3.up * 0.1f + Vector3.forward * 0.2f, 0.9f);
         yield return Wait(0.8f);
         yield return P.LookAt(bis + Vector3.back * 0.2f, 0.9f);
         yield return Wait(0.4f);
-        yield return Key(UnityEngine.InputSystem.Key.Digit2);
+        yield return Key(UnityEngine.InputSystem.Key.Digit1 + ItemKeys.Of(ItemId.Lens) - 1);
         yield return Wait(0.3f);
         rec.stride = 0;
 
@@ -379,11 +379,11 @@ public class VideoRun : KioskBotFixture
 
         // 돋보기
         Mark("키오스크 돋보기");
-        yield return Key(UnityEngine.InputSystem.Key.Digit2);
+        yield return Key(UnityEngine.InputSystem.Key.Digit1 + ItemKeys.Of(ItemId.Lens) - 1);
         Vector3 item = ButtonWorld("item_bulgogi");
         yield return Aim(() => item, 0.7f);
         yield return Wait(1.1f);
-        yield return Key(UnityEngine.InputSystem.Key.Digit2);
+        yield return Key(UnityEngine.InputSystem.Key.Digit1 + ItemKeys.Of(ItemId.Lens) - 1);
         yield return Touch("item_bulgogi");
         yield return Touch("opt_combo");
         rec.stride = 0;
@@ -409,7 +409,7 @@ public class VideoRun : KioskBotFixture
         // 카드 틈
         Mark("카드");
         rec.stride = 1;
-        yield return Key(UnityEngine.InputSystem.Key.Digit3);
+        yield return Key(UnityEngine.InputSystem.Key.Digit1 + ItemKeys.Of(ItemId.Card) - 1);
         yield return Wait(0.3f);
         yield return Key(UnityEngine.InputSystem.Key.W);
         yield return Wait(0.8f);

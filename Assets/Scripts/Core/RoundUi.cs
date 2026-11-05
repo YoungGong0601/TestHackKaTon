@@ -1,12 +1,10 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
-// HUD 위 회차 공통 화면 요소. 정적 입구(Round, Mash, Choice, Ending)가 이것을 쓴다. 부착: HUD 루트
+// HUD 위 회차 공통 화면 요소. 정적 입구(Round, Choice, Ending)가 이것을 쓴다. 부착: HUD 루트
 // 배치: lidTop, lidBottom = Lid_Top, Lid_Bottom (검정 Image, 가로 전체, 눈치와 HUD 글자 위, Fade 아래)
 // 배치: sideNote = SideNote (왼쪽 위 작은 글자)
-// 배치: mashGroup = Mash (아래 중앙 CanvasGroup, 처음 alpha 0), mashFill = 자식 Fill Image(왼쪽 피벗, 코드가 anchorMax x 조절), mashCount = 자식 Count 글자
 // 배치: choiceGroup = Choice (화면 중앙 아래 CanvasGroup, 처음 alpha 0), choiceRows = 자식 Row_0..3 RectTransform, choiceLabels = 각 Row의 글자
 // 배치: giveUp = GiveUp (오른쪽 아래 버튼, 처음 꺼짐), giveUpLabel = 자식 글자
 // 배치: endGroup = End (전체 화면 검정 CanvasGroup, 맨 위, 처음 꺼짐), endStat, endSource, endTitle = 자식 글자
@@ -17,9 +15,6 @@ public class RoundUi : MonoBehaviour
     [SerializeField] RectTransform lidTop;
     [SerializeField] RectTransform lidBottom;
     [SerializeField] TMP_Text sideNote;
-    [SerializeField] CanvasGroup mashGroup;
-    [SerializeField] Image mashFill;
-    [SerializeField] TMP_Text mashCount;
     [SerializeField] CanvasGroup choiceGroup;
     [SerializeField] RectTransform[] choiceRows = new RectTransform[0];
     [SerializeField] TMP_Text[] choiceLabels = new TMP_Text[0];
@@ -29,6 +24,7 @@ public class RoundUi : MonoBehaviour
     [SerializeField] TMP_Text endStat;
     [SerializeField] TMP_Text endSource;
     [SerializeField] TMP_Text endTitle;
+    [SerializeField] GameObject endStatImage, endTitleImage;   // 서울알림체 글자 그림. TMP는 투명으로 남아 문구 기록만 맡는다
 
     public int ChoiceSlots => choiceRows.Length;
     public bool ChoiceOpen { get; private set; }
@@ -45,7 +41,7 @@ public class RoundUi : MonoBehaviour
 
     public void SideNote(string text)
     {
-        if (sideNote != null) sideNote.text = text ?? "";
+        if (sideNote != null) sideNote.text = Hud.Mark(text ?? "");
     }
 
     // 0 뜸, 1 감음. 아래위 눈꺼풀이 가운데서 만난다
@@ -60,18 +56,6 @@ public class RoundUi : MonoBehaviour
         lidTop.offsetMin = lidTop.offsetMax = lidBottom.offsetMin = lidBottom.offsetMax = Vector2.zero;
         lidTop.gameObject.SetActive(k > 0f);
         lidBottom.gameObject.SetActive(k > 0f);
-    }
-
-    public void Mash(bool on, int done, int total)
-    {
-        if (mashGroup != null) mashGroup.alpha = on ? 1f : 0f;
-        if (!on) return;
-        if (mashCount != null) mashCount.text = $"{done} / {total}";
-        if (mashFill != null)
-        {
-            var r = mashFill.rectTransform;
-            r.anchorMax = new Vector2(total > 0 ? (float)done / total : 0f, r.anchorMax.y);
-        }
     }
 
     public void GiveUp(string label)
@@ -118,16 +102,21 @@ public class RoundUi : MonoBehaviour
         if (endStat != null) endStat.text = "";
         if (endSource != null) endSource.text = "";
         if (endTitle != null) endTitle.text = "";
+        if (endStatImage != null) endStatImage.SetActive(false);
+        if (endTitleImage != null) endTitleImage.SetActive(false);
     }
 
     public void EndStat(string stat, string source)
     {
+        if (endStatImage != null) endStatImage.SetActive(true);
         if (endStat != null) endStat.text = stat;
         if (endSource != null) endSource.text = source;
     }
 
     public void EndTitle(string title)
     {
+        if (endStatImage != null) endStatImage.SetActive(false);
+        if (endTitleImage != null) endTitleImage.SetActive(true);
         if (endStat != null) endStat.text = "";
         if (endSource != null) endSource.text = "";
         if (endTitle != null) endTitle.text = title;

@@ -96,3 +96,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KioskPostFeature
   m_Active: 1
   shader: {fileID: 4800000, guid: d139cfa776b094e47a40cdb80be3d2c1, type: 3}
+  signMaskShader: {fileID: 4800000, guid: bbc900e8be9b6324bb6d35ec0624b623, type: 3}

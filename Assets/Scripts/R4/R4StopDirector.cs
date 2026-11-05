@@ -1,22 +1,19 @@
-// 4-11~4-21과 E-1: 버스 3대를 보내는 동안 정류장이 저문다. 세 번째 버스도 현금을 받지 않아 탑승 성공은 없다.
+// 4-11~4-21과 E-1: 첫 버스는 눈앞에서 떠나 놓친다. 다음 112번은 자동으로 타서 기사에게 묻고, 현금을 안 받아 내린다. 버스가 떠나고 걸어서 돌아간다.
 // R4_Stop 씬 Director 오브젝트에 부착.
-// 배치: bisLook = PH_BIS 의 BisLook, notice = PH_Notice_Cashless (Readable)
+// 배치: bisLook = PH_BIS 의 BisLook
 // 배치: passer = 행인 (StreetNpc), askPasser = 그 자식 AskUse (label 말 걸기), passerExit = NpcExit
-// 배치: buses = BusMover 3개, busStart, busStop, busEnd = BusStart, BusStop, BusEnd
-// 배치: boardUse = BoardUse (label 오르기), stepBottom, stepTop = 버스 앞문 계단 아래와 위
-// 배치: inside = Anchor_BusInside, askDriver = Driver 의 AskUse (label 묻기), driverPos = Driver 머리
-// 배치: terminalPay = PH_BusTerminal 의 PayPoint, terminalNotice = PH_BusTerminal 안내문 Readable
+// 배치: buses = BusMover, 첫째는 놓치는 버스, 마지막은 112번. busStart, busStop, busEnd = BusStart, BusStop, BusEnd
+// 배치: boardUse = BoardUse (쓰지 않고 꺼 둔다), stepBottom, stepTop = 버스 앞문 계단 아래와 위
+// 배치: inside = Anchor_BusInside, driverPos = Driver, noticeLook = PH_BusTerminal 의 Notice_Cashless
 // 배치: sun = Directional Light, fill = Fill Light, lamps = 가로등 빛, walker = 뒷모습 인물 (NpcMover), walkTo = 걸어가는 곳
+// 이름으로 찾는다: Anchor_WalkStart = 걷기 컷 시작 자리. 없으면 플레이어 자리
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class R4StopDirector : MonoBehaviour
 {
     [SerializeField] Transform bisLook;
-    [SerializeField] Readable notice;
     [SerializeField] StreetNpc passer;
     [SerializeField] Interactable askPasser;
     [SerializeField] Transform passerExit;
@@ -28,10 +25,8 @@ public class R4StopDirector : MonoBehaviour
     [SerializeField] Transform stepBottom;
     [SerializeField] Transform stepTop;
     [SerializeField] Transform inside;
-    [SerializeField] Interactable askDriver;
     [SerializeField] Transform driverPos;
-    [SerializeField] PayPoint terminalPay;
-    [SerializeField] Readable terminalNotice;
+    [SerializeField] Transform noticeLook;
     [SerializeField] Light sun;
     [SerializeField] GameObject[] lamps;
     [SerializeField] NpcMover walker;
@@ -47,12 +42,10 @@ public class R4StopDirector : MonoBehaviour
     [SerializeField] Color[] ambientMul = { Color.white, new Color(1f, 0.8f, 0.7f), new Color(0.7f, 0.5f, 0.55f), new Color(0.35f, 0.35f, 0.5f) };
     [SerializeField] Color[] skyTint = { new Color(0.8f, 0.8f, 0.8f), new Color(0.85f, 0.52f, 0.36f), new Color(0.45f, 0.25f, 0.3f), new Color(0.09f, 0.09f, 0.18f) };
 
-    bool tracking, boardPressed, askPressed, toofarSaid, noticeSaid, asked, noticeRead, driverBusy, muttering;
+    bool tracking, toofarSaid;
     int stage;
     Material sky;
     Color ambSky, ambEquator, ambGround;
-    Interactable terminalUse;
-    TMP_Text[] terminalTexts;
 
     static string Me => GameState.I.Profile.speakerKey;
     static Hud Ui => Hud.I;
@@ -62,13 +55,9 @@ public class R4StopDirector : MonoBehaviour
     void Awake()
     {
         boardUse.active = false;
-        askDriver.active = false;
         foreach (var bus in buses) bus.gameObject.SetActive(false);
         foreach (var lamp in lamps) lamp.SetActive(false);
         if (walker) walker.gameObject.SetActive(false);
-        terminalUse = terminalPay.GetComponent<Interactable>();
-        terminalUse.active = false;
-        terminalTexts = terminalNotice.sharp ? terminalNotice.sharp.GetComponentsInChildren<TMP_Text>(true) : new TMP_Text[0];
         ambSky = RenderSettings.ambientSkyColor;
         ambEquator = RenderSettings.ambientEquatorColor;
         ambGround = RenderSettings.ambientGroundColor;
@@ -78,33 +67,21 @@ public class R4StopDirector : MonoBehaviour
 
     void OnEnable()
     {
-        boardUse.onUse.AddListener(OnBoard);
-        askDriver.onUse.AddListener(OnAsk);
         askPasser.onUse.AddListener(OnPasser);
-        terminalPay.CashRejected += OnTerminalCash;
-        terminalPay.Empty += OnTerminalEmpty;
     }
 
     void OnDisable()
     {
-        boardUse.onUse.RemoveListener(OnBoard);
-        askDriver.onUse.RemoveListener(OnAsk);
         askPasser.onUse.RemoveListener(OnPasser);
-        terminalPay.CashRejected -= OnTerminalCash;
-        terminalPay.Empty -= OnTerminalEmpty;
-        if (Wallet.I) Wallet.I.NoteMissed -= OnNoteMissed;
     }
 
     IEnumerator Start()
     {
         Sound.Ambience(("amb_city_morning", 0.62f));
         yield return Round.Open();
-        Wallet.I.NoteMissed += OnNoteMissed;
         yield return new WaitForSeconds(Bal.G("R4_Bus1ArriveSec", 8f));   // 임시 T25
         yield return Script();
     }
-
-    void OnNoteMissed() => Ui.Say(null, "지갑에 뭐라 썼더라...", Me + "_wallet");
 
     void Update()
     {
@@ -114,13 +91,6 @@ public class R4StopDirector : MonoBehaviour
             toofarSaid = true;
             Ui.Say(null, "안 보이네... 몇 번이 온다는 거야.", Me + "_toofar");
         }
-        // 4-13: 찾아 읽은 사람만 미리 안다
-        if (!noticeSaid && notice && notice.Seen)
-        {
-            noticeSaid = true;
-            Ui.Say(null, "현금 없는 버스 운행 안내", Me + "_notice", 2.4f);
-        }
-        if (asked && !noticeRead && terminalNotice.Seen) noticeRead = true;
     }
 
     static bool Lensing => HandRig.I.Held == ItemId.Lens;
@@ -163,161 +133,95 @@ public class R4StopDirector : MonoBehaviour
 
     // ---- 버스 ----
 
-    void OnBoard() => boardPressed = true;
-    void OnAsk() => askPressed = true;
 
     IEnumerator Script()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            BusMover bus = buses[Mathf.Min(i, buses.Length - 1)];
-            yield return Arrive(bus);
-
-            // 임시 T26: 타지 않으면 문 연 채 기다린다
-            boardPressed = false;
-            boardUse.active = true;
-            yield return Until(() => boardPressed);
-            boardUse.active = false;
-            Player.Freeze(true);
-            Ui.ClearSubs();
-            StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, Bal.G("Cine_BlendSec", 1f)));
-            yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 1.15f)), 6f);
-            yield return Mash.Climb(stepBottom, stepTop);
-            if (i == 2) break;   // 4-19: 세 번째는 묻지 않아도 고개가 들리며 단말기가 보인다
-            yield return Enter();
-
-            string number = i == 0 ? "117번이요." : "172번이요.";
-            yield return Ui.Say(null, number, i == 0 ? "drv_117" : "drv_172", 1.8f, driverPos.position);
-            if (i == 0) yield return Ui.Say(null, "아이고, 아니구먼.", Me + "_notthis", 1.8f);
-            yield return GetOff(bus);
-
-            Coroutine leaving = StartCoroutine(Leave(bus));
-            yield return Watch.Look(Bal.I(i == 0 ? "R4_WatchHour1" : "R4_WatchHour2", i == 0 ? 2 : 4));
-            if (i == 0) yield return Ui.Say(null, "벌써 이렇게 됐구먼.", Me + "_watch", 2f);
-            Player.Freeze(false);
-            StartCoroutine(Fall(i + 1, Bal.G("R4_NextBusSec", 6f) + Bal.G("R4_DuskExtraSec", 6f)));
-            yield return leaving;
-            yield return new WaitForSeconds(Bal.G("R4_NextBusSec", 6f));
-        }
-        yield return Third();
-    }
-
-    // 묻기 전까지 버스 안에 머문다
-    IEnumerator Enter()
-    {
-        Player.Teleport(inside.position, inside.eulerAngles.y);
-        yield return Player.LookAt(Player.EyePos + inside.forward, 0.01f);
-        askPressed = false;
-        askDriver.active = true;
-        Player.Freeze(false);
-        yield return Until(() => askPressed);
-        askDriver.active = false;
-        Player.Freeze(true);
-        yield return Player.LookAt(driverPos.position, Bal.G("Cine_BlendSec", 1f));
-    }
-
-    // 임시 T27: 재촉은 문구 없이 소리와 먼저 닫히기 시작하는 문
-    IEnumerator GetOff(BusMover bus)
-    {
-        Sound.Play("tsk", driverPos.position, 0.8f);
+        // 놓침은 이 한 번뿐이다. 문이 닫히는 순간 외친다
+        BusMover first = buses[0];
+        yield return Arrive(first);
+        yield return new WaitForSeconds(Bal.G("R4_WrongBusStopSec", 3.2f));
+        Coroutine leaving = StartCoroutine(Leave(first));
         Sound.Play("bus_door_close", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
-        Player.Teleport(stepTop.position, stepTop.eulerAngles.y);
-        yield return Mash.Descend(stepTop, stepBottom);
-        bus.Doors(false);
+        Player.Freeze(true);
+        yield return Ui.Say(null, "아 이보시게 잠시만요!", Me + "_wait_bus", 2f);
+        yield return Watch.Look(Bal.I("R4_WatchHour1", 2));
+        yield return Ui.Say(null, "벌써 이렇게 됐구먼.", Me + "_watch", 2f);
+        Player.Freeze(false);
+        StartCoroutine(Fall(1, Bal.G("R4_NextBusSec", 6f) + Bal.G("R4_DuskExtraSec", 6f)));
+        yield return leaving;
+        yield return new WaitForSeconds(Bal.G("R4_NextBusSec", 6f));
+        yield return Ride(buses[buses.Length - 1]);
     }
 
-    IEnumerator Third()
+    // 4-19~4-21: 입력 없이 오르고, 묻고, 내린다
+    IEnumerator Ride(BusMover bus)
     {
-        BusMover bus = buses[Mathf.Min(2, buses.Length - 1)];
+        StartCoroutine(Fall(2, Bal.G("R4_DuskExtraSec", 6f)));
+        yield return Arrive(bus);
+        Player.Freeze(true);
+        Ui.ClearSubs();
+        if (Vector3.Distance(Player.transform.position, stepBottom.position) > Bal.G("R4_BoardCutDist", 5f))
+        {
+            yield return Ui.Fade(1f, 0.25f);
+            Player.Teleport(stepBottom.position, stepBottom.eulerAngles.y);
+            yield return Ui.Fade(0f, 0.25f);
+        }
+        StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, Bal.G("Cine_BlendSec", 1f)));
+        yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 1.15f)), 3f);
+        yield return Steps.Climb(stepBottom, stepTop);
 
-        // 4-19 입력 없이 고개가 들리며 단말기가 보인다
         Player.Teleport(inside.position, inside.eulerAngles.y);
         Player.Freeze(true);
-        yield return Player.LookAt(Player.EyePos + inside.forward, 0.01f);
-        yield return Player.LookAt(terminalPay.transform.position, Bal.G("R4_TerminalLookSec", 1.2f));
-        yield return Ui.Say(null, "112번이요.", "drv_112", 1.8f, driverPos.position);
-
-        // 4-20 습관처럼 지갑을 열지만 현금뿐이다
-        Wallet.I.SetOpen(true);
-        yield return new WaitForSeconds(Bal.G("R4_WalletHabitSec", 2f));
-        Wallet.I.SetOpen(false);
-        Player.Freeze(true);
-
-        // 4-20a
-        yield return Ui.Say(null, "현금은 어디에 넣어요?", Me + "_wherecash", 2f);
-        asked = true;
-        terminalUse.active = true;
-        foreach (var x in terminalTexts) x.alpha = 0f;     // 4-21에서 초점이 맞으며 드러난다
+        yield return Player.LookAt(noticeLook.position, 0.01f);
+        // 안내를 보는 동안 시점은 플레이어가 움직인다. 걷기만 막는다
+        Player.HoldStill = true;
         Player.Freeze(false);
-        StartCoroutine(Repeat());     // 돋보기를 쓸 때까지 같은 말
-        yield return Until(() => noticeRead);
-        Player.Freeze(true);
-        terminalUse.active = false;
-        Ui.ClearSubs();
-        yield return Reveal();
-        yield return Ui.Say(null, "현금 없는 버스 운행 안내. 이 버스는 현금을 받지 않습니다.", Me + "_notice2", 3f);
-
-        // 4-21a 선택지는 하나뿐이다
-        yield return Choice.Ask(new[] { "현금밖에 없는데요" }, _ => { });
+        yield return Ui.Say(null, "현금은 어디에 넣어요?", Me + "_wherecash", 2f);
+        yield return new WaitForSeconds(Bal.G("R4_NoticeLookSec", 2f));
         yield return Ui.Say(null, "현금밖에 없는데요.", Me + "_onlycash", 1.8f);
         yield return Ui.Say(null, "저희는 카드밖에 받지 않습니다.", "drv_cardonly", 2f, driverPos.position);
+        Player.Freeze(true);
+        Player.HoldStill = false;
 
-        // 4-21b
         Player.Teleport(stepTop.position, stepTop.eulerAngles.y);
-        yield return Mash.Descend(stepTop, stepBottom);
+        yield return Steps.Descend(stepTop, stepBottom);
         Sound.Play("bus_door_close", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
         Coroutine leaving = StartCoroutine(Leave(bus));
-        HandRig.I.Equip(ItemId.Cash);     // 지폐를 쥔 손
-        yield return new WaitForSeconds(Bal.G("R4_CashHoldSec", 2f));
-        yield return leaving;
-        HandRig.I.Equip(ItemId.None);
+        yield return new WaitForSeconds(Bal.G("R4_MissHoldSec", 3f));
         yield return Watch.Look(Bal.I("R4_WatchHour3", 6));
+        yield return leaving;
         foreach (var lamp in lamps) lamp.SetActive(true);
         yield return Fall(3, Bal.G("R4_LastDuskSec", 2f));
+        yield return WalkHome();
+    }
 
-        // 임시 T28: E-1
+    // 임시 T28: E-1. 인물이 어딘가 걸려 서면 기다리지 않고 넘어간다
+    IEnumerator WalkHome()
+    {
         HandRig.I.SetEnabled(false);
-        walker.Place(Player.transform.position);
+        GameObject start = GameObject.Find("Anchor_WalkStart");
+        walker.Place(start ? start.transform.position : Player.transform.position);
         walker.Show();
-        yield return Cine.BackShot(walker, walkTo.position, Bal.G("R4_EndWalkSec", 8f));
+        Ui.Say(null, "하... 걸어가야겠구만.", Me + "_walk_home");
+        bool done = false;
+        StartCoroutine(BackShot(() => done = true));
+        Vector3 last = walker.transform.position;
+        float still = 0f, limit = Bal.G("R4_EndWalkStuckSec", 1.5f);
+        while (!done && still < limit)
+        {
+            yield return null;
+            Vector3 now = walker.transform.position;
+            still = (now - last).sqrMagnitude < 1e-7f ? still + Time.deltaTime : 0f;
+            last = now;
+        }
+        if (!done) Player.SetMode(PlayerController.Mode.Fps);
         GameState.I.CompleteChapter();
     }
 
-    IEnumerator Repeat()
+    IEnumerator BackShot(Action end)
     {
-        while (!noticeRead)
-        {
-            if (!driverBusy) yield return DriverLine();
-            float until = Time.time + Bal.G("R4_DriverRepeatSec", 6f);
-            while (!noticeRead && Time.time < until) yield return null;
-        }
-    }
-
-    IEnumerator DriverLine()
-    {
-        driverBusy = true;
-        yield return Ui.Say(null, "거기 써 있잖아요.", "drv_there", 1.8f, driverPos.position);
-        driverBusy = false;
-    }
-
-    void OnTerminalCash(int count) => OnTerminalEmpty();
-
-    void OnTerminalEmpty()
-    {
-        if (!asked || noticeRead || driverBusy) return;
-        StartCoroutine(DriverLine());
-    }
-
-    // 4-21: 초점이 서서히 맞으며 글씨가 드러난다
-    IEnumerator Reveal()
-    {
-        float sec = Bal.G("R4_RevealSec", 1.6f);
-        for (float t = 0f; t < 1f; t += Time.deltaTime / sec)
-        {
-            foreach (var x in terminalTexts) x.alpha = t;
-            yield return null;
-        }
-        foreach (var x in terminalTexts) x.alpha = 1f;
+        yield return Cine.BackShot(walker, walkTo.position, Bal.G("R4_EndWalkSec", 8f));
+        end();
     }
 
     IEnumerator Arrive(BusMover bus)
@@ -386,6 +290,8 @@ public class R4StopDirector : MonoBehaviour
         RenderSettings.ambientEquatorColor = ambEquator * mul;
         RenderSettings.ambientGroundColor = ambGround * mul;
         if (sky && sky.HasProperty("_Tint")) sky.SetColor("_Tint", Color.Lerp(skyTint[a], skyTint[b], t));
+        if (sky && sky.HasProperty("_SkyTint")) sky.SetColor("_SkyTint", Color.Lerp(skyTint[a], skyTint[b], t));
+        if (sky && sky.HasProperty("_Exposure")) sky.SetFloat("_Exposure", Mathf.Lerp(1.1f, Bal.G("R4_SkyExposureEnd", 0.75f), s / 3f));
     }
 
     // ---- 도움 ----

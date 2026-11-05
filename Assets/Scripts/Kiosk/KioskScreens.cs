@@ -15,6 +15,8 @@ public class KioskScreens : MonoBehaviour
     [SerializeField] KioskFields info;
     [SerializeField] KioskButton infoClose;
     [SerializeField] KioskButton infoSkip;
+    [SerializeField] KioskButton infoX;
+    [SerializeField] KioskButton infoNo;
     [SerializeField] KioskFields timer;
 
     public KioskScreen Current { get; private set; }
@@ -54,7 +56,12 @@ public class KioskScreens : MonoBehaviour
         info.Text("line1", i.lines.Length > 1 ? i.lines[1] : "");
         info.Text("mean", KioskData.Mean(i.mean));
         info.Show("qr", i.qr);
+        foreach (var k in new[] { "app", "code", "point" }) info.Show("v_" + k, i.kind == k);
+        info.Text("yes", i.yes);
+        info.Text("no", i.no ?? "");
+        info.Text("terms", i.terms ?? "");
         if (infoSkip) infoSkip.gameObject.SetActive(i.skip);
+        if (infoNo) infoNo.gameObject.SetActive(i.no != null && !i.skip);
     }
 
     public void SetTimer(int sec, bool show)
@@ -63,7 +70,7 @@ public class KioskScreens : MonoBehaviour
         timer.gameObject.SetActive(show);
         if (!show) return;
         timer.Text("sec", sec.ToString());
-        timer.Show("low", sec <= Bal.I("Kiosk_TimerLow", 10));
+        timer.Show("low", sec <= Bal.I("Kiosk_TimerLow", 5));
     }
 
     /// <summary>지금 누를 수 있는 버튼. 안내 창이 떠 있으면 그 창 버튼만.</summary>
@@ -73,6 +80,8 @@ public class KioskScreens : MonoBehaviour
         if (info && info.gameObject.activeInHierarchy)
         {
             if (infoClose) list.Add(infoClose);
+            if (infoNo && infoNo.gameObject.activeInHierarchy) list.Add(infoNo);
+            if (infoX) list.Add(infoX);
             if (infoSkip && infoSkip.gameObject.activeInHierarchy) list.Add(infoSkip);
             return list;
         }

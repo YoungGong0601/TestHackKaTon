@@ -31,10 +31,11 @@ public class KioskCard : MonoBehaviour
         if (!on || !visual) return;
         t += Time.deltaTime;
         float d;
-        if (move == Move.In) d = Mathf.Lerp(0.075f, 0.025f, Mathf.Clamp01(t / 0.35f));
+        float depth = Bal.G("Kiosk_CardDepth", -0.02f);   // 틈 앞면 기준 카드 중심 자리. 음수면 틈 안쪽
+        if (move == Move.In) d = Mathf.Lerp(0.075f, depth, Mathf.Clamp01(t / 0.35f));
         else if (move == Move.Out)
         {
-            d = 0.025f + Mathf.Clamp01(t / 0.42f) * 0.11f;
+            d = Mathf.Lerp(depth, 0.135f, Mathf.Clamp01(t / 0.42f));
             if (t > 0.42f) Hide();
         }
         else

@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     Vector3 blendPos;
     Quaternion blendRot;
     float blendT = -1f, blendSec, blendFov, blendFovTo = -1f;
+    float limitYaw, limitHalf = -1f, limitDown, limitUp;
 
     void Awake()
     {
@@ -78,6 +79,17 @@ public class PlayerController : MonoBehaviour
         blendSec = Mathf.Max(Bal.G("Cine_BlendSec", 1f), 0.01f);
         blendT = 0f;
     }
+
+    /// <summary>앉은 자리처럼 고개 돌리는 범위를 묶는다. 각도는 도. FreeLook으로 푼다.</summary>
+    public void LimitLook(float centerYaw, float halfYaw, float down, float up)
+    {
+        limitYaw = centerYaw;
+        limitHalf = halfYaw;
+        limitDown = down;
+        limitUp = up;
+    }
+
+    public void FreeLook() => limitHalf = -1f;
 
     public void SetCursor01(Vector2 v) => cursor01 = cursorWant = v;
 
@@ -169,9 +181,14 @@ public class PlayerController : MonoBehaviour
         else if (CurrentMode == Mode.Fps && !Frozen && mouse != null)
         {
             Vector2 d = mouse.delta.ReadValue();
-            float sens = Bal.G("Player_MouseSens", 0.0019f) * Mathf.Rad2Deg;
+            float sens = Bal.G("Player_MouseSens", 0.0019f) * Mathf.Rad2Deg * Bal.Age("LookScale", 1f, 1f, 1f, 0.5f);
             Yaw += d.x * sens;
             Pitch = Mathf.Clamp(Pitch + d.y * sens, Bal.G("Player_PitchDown", -1.1f) * Mathf.Rad2Deg, Bal.G("Player_PitchUp", 1.05f) * Mathf.Rad2Deg);
+            if (limitHalf >= 0f)
+            {
+                Yaw = limitYaw + Mathf.Clamp(Mathf.DeltaAngle(limitYaw, Yaw), -limitHalf, limitHalf);
+                Pitch = Mathf.Clamp(Pitch, limitDown, limitUp);
+            }
         }
         transform.rotation = Quaternion.Euler(0f, Yaw, 0f);
     }

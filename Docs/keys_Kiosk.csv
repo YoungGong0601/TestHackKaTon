@@ -1,6 +1,6 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
 Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
-Kiosk_TimerLow,남은 시간 강조 시작,Int,10,sec,막판 압박
+Kiosk_TimerLow,남은 시간 강조 시작,Int,5,sec,막판 압박
 Kiosk_WrongTouch,오터치 눈치 상승,Float,4,gauge,SPEC 오터치 +4
 Kiosk_WrongSlot,틀린 틈 눈치 상승,Float,6,gauge,SPEC 잘못된 카드 슬롯 +6
 Kiosk_ErrorVolume,거부 소리 볼륨,Float,0.3,ratio,오터치에는 안 나고 카드 거부 등 진짜 거부에만 작게
@@ -51,3 +51,10 @@ Kiosk_BlurBase,화면 기본 번짐 반지름,Float,12,px,캔버스 1080 x 1920 
 Kiosk_PosterAngle,포스터 들춤 각도,Float,146.1,deg,뒤의 틈이 보임
 Kiosk_PosterSpeed,포스터 들춤 속도,Float,4,per sec,연출
 Kiosk_TouchEdgeFrac,터치 흔들림이 나는 버튼 가장자리 폭,Float,0.25,ratio,가운데는 항상 눌림
+Kiosk_IdleSec,무입력 안내까지,Float,20,s,키오스크 공통
+Kiosk_IdleCountSec,무입력 카운트다운,Float,10,s,키오스크 공통
+Kiosk_FlashSec,터치 표시 시간,Float,0.2,s,잔상 없음
+Kiosk_CardOutBeepSec,카드 제거 재촉 간격,Float,3,s,자동 진행 없음
+Kiosk_IcFirstBounce,첫 삽입 방향 튕김,Int,1,count,4회차 카드 경로
+Kiosk_CustomerUseSec,다음 손님이 메뉴 화면을 쓰는 시간,Float,4,sec,이용 중으로 보임
+Kiosk_CardDepth,틈에 꽂힌 카드 중심 자리,Float,-0.02,m,음수면 틈 안쪽. 끝만 보임

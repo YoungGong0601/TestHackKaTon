@@ -37,6 +37,7 @@ public class QueueManager : MonoBehaviour
 
     float nextArrive;
     float doorA, doorWant, doorUntil;
+    bool serving;
     Quaternion doorBase;
 
     /// <summary>키오스크 조작 중에만 줄이 늘어난다.</summary>
@@ -194,6 +195,78 @@ public class QueueManager : MonoBehaviour
             if (n.TryGetComponent(out NpcPose pose)) pose.pose = "Tap";
         });
         CloseUp();
+    }
+
+    // ---- 다음 손님: 플레이어가 키오스크 앞 구역을 벗어난 뒤에만 출발한다 ----
+
+    /// <summary>손님이 기계를 쓰는 중. 플레이어는 이때 키오스크를 쓰지 못한다.</summary>
+    public bool Serving { get; private set; }
+
+    bool PlayerNear(float dist)
+    {
+        var p = PlayerController.I;
+        if (!p) return false;
+        Vector3 d = p.transform.position - stand.position;
+        d.y = 0f;
+        return d.magnitude < dist;
+    }
+
+    /// <summary>줄 맨 앞 손님부터 차례로 키오스크를 쓰고 나간다. 이미 돌고 있으면 그대로 둔다.</summary>
+    public void ServeWhenClear(IEnumerable<Transform> via = null)
+    {
+        if (!serving) StartCoroutine(ServeLoop(via));
+    }
+
+    IEnumerator ServeLoop(IEnumerable<Transform> via)
+    {
+        serving = true;
+        while (queue.Count > 0)
+        {
+            while (PlayerNear(Bal.G("Queue_ClearDist", 1.1f))) yield return null;
+            NpcMover n = queue[0];
+            queue.RemoveAt(0);
+            CloseUp();
+            yield return UseKiosk(n);
+            Leave(n, via);
+            yield return new WaitForSeconds(Bal.G("Queue_NextGapSec", 1f));
+        }
+        if (kiosk && kiosk.Pack) kiosk.Pack.ShowCustomer(kiosk.Pack.FirstScreen);
+        serving = false;
+    }
+
+    /// <summary>손님이 키오스크 앞으로 가서 실제 화면을 넘기며 쓴다. 자리에 플레이어가 있으면 비킬 때까지 멈춘다.</summary>
+    public IEnumerator UseKiosk(NpcMover n)
+    {
+        float block = Bal.G("Queue_StandBlockDist", 0.7f);
+        n.Go(stand.position, WalkSpeed);
+        while (n.Walking)
+        {
+            if (PlayerNear(block))
+            {
+                n.Stop();
+                while (PlayerNear(block)) yield return null;
+                n.Go(stand.position, WalkSpeed);
+            }
+            yield return null;
+        }
+        n.Face(kioskLook.position);
+        n.TryGetComponent(out NpcPose pose);
+        if (pose) pose.pose = "Tap";
+        Serving = true;
+        yield return kiosk.CustomerUse();
+        Serving = false;
+        if (pose) pose.pose = "Idle";
+    }
+
+    void Leave(NpcMover n, IEnumerable<Transform> via)
+    {
+        System.Action outside = () =>
+        {
+            OpenDoor(2.2f);
+            n.Go(doorOut.position, WalkSpeed, () => Done(n));
+        };
+        if (via != null) n.GoVia(via, doorIn.position, WalkSpeed, outside);
+        else n.Go(doorIn.position, WalkSpeed, outside);
     }
 
     /// <summary>문을 이 각도로 열린 채 넘겨받는다. 곧 닫힌다.</summary>

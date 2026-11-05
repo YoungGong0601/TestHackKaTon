@@ -87,7 +87,7 @@ Age80_CursorLagSec,커서 지연,Float,0.2,s,ROUND_PLAN 7절
 Age80_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_EyeHeight,눈높이,Float,1.56,m,ROUND_PLAN 7절
-Age80_KioskBlur,키오스크 글씨 번짐,Float,12,px,ROUND_PLAN 7절
+Age80_KioskBlur,키오스크 글씨 번짐,Float,44,px,큰 글자까지 맨눈으로 못 읽음
 Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
 Age80_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_KioskTimeoutSec,4회차 시간 초과,Float,40,s,ROUND_PLAN 7절
@@ -223,7 +223,7 @@ Kiosk_ReceiptWidth,영수증 종이 폭,Float,0.074,m,HTML 값
 Kiosk_SizeUpPrice,사이즈 UP 추가금,Int,800,won,업셀 함정
 Kiosk_SlideSec,대기 광고 넘김 간격,Float,3.6,sec,대기 화면
 Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
-Kiosk_TimerLow,남은 시간 강조 시작,Int,10,sec,막판 압박
+Kiosk_TimerLow,남은 시간 강조 시작,Int,5,sec,막판 압박
 Kiosk_ToastSec,키오스크 알림 시간,Float,1.8,s,ROUND_PLAN 7절
 Kiosk_TouchEdgeFrac,터치 흔들림이 나는 버튼 가장자리 폭,Float,0.25,ratio,가운데는 항상 눌림
 Kiosk_TouchFailChance,터치가 안 먹을 확률,Float,0.07,ratio,마른 손가락. 프로필 kioskTouchFail일 때만
@@ -400,7 +400,7 @@ R2_CallVolume,호출 음성 음량,Float,0.3,ratio,2-7 작고 웅얼거린다
 R2_DoneShowSec,주문 완료 화면 표시,Float,2.5,s,T14 번호를 읽을 시간
 R2_DoorOpenDist,카페 자동문이 열리는 거리,Float,2.4,m,2-1 다가가면 열림
 R2_DoorOpenSec,카페 자동문 열림 유지,Float,2.5,s,2-1
-R2_NoteSoft,2회차 쪽지 번짐,Float,0.25,ratio,약간 흐리지만 읽힌다
+R2_NoteSoft,2회차 쪽지 번짐,Float,0,ratio,쪽지는 돋보기 없이 읽는다
 R2_ServeTapSec,앞사람 키오스크 터치 간격,Float,0.4,s,눈치 실패 뒤 앞사람들이 금방 결제
 R3_SmsLimitSec,문자 번호 제한 시간,Float,30,s,3-8
 R3_VoiceListenSec,음성 상담 듣는 시간,Float,1.5,s,3-5
@@ -501,3 +501,62 @@ Tremble_StillSec,멈춤으로 보는 시간,Float,0.12,sec,시작 판정
 Tremble_Tau,손떨림 줄어드는 시간,Float,0.8,sec,exp(-t/tau)
 Wallet_PartRadius,지갑 클릭 자리 반지름,Float,0.07,화면 높이,ROUND_PLAN 7절
 Watch_LookSec,손목시계 보는 시간,Float,2,s,ROUND_PLAN 7절
+Age20_ClimbSec,버스 계단 자동 오르기 시간,Float,1.1,s,연타 제거
+Age40_ClimbSec,버스 계단 자동 오르기 시간,Float,1.2,s,연타 제거
+Age60_ClimbSec,버스 계단 자동 오르기 시간,Float,1.8,s,연타 제거
+Age80_ClimbSec,버스 계단 자동 오르기 시간,Float,3.2,s,노인은 느린 자동 이동
+Steps_LookPitch,계단 오를 때 시선 각도,Float,6,deg,문 쪽을 봄
+Steps_DescendSec,계단 내려가는 시간,Float,1.4,s,자동
+Age80_LookScale,4회차 마우스 시점 감도 배율,Float,0.5,배,노인은 천천히 둘러봄
+Note_HandX,손에 든 쪽지 가로 자리,Float,-0.09,m,왼손 자리
+Note_HandY,손에 든 쪽지 세로 자리,Float,-0.06,m,왼손 자리
+Note_HandZ,손에 든 쪽지 거리,Float,0.34,m,왼손 자리
+Lens_BoardZoom,넓은 판을 볼 때 돋보기 배율,Float,1.15,배,한 줄이 읽힘
+Hand_CaneY,빈손 지팡이 높이,Float,-0.13,m,손잡이와 몸통 일부가 화면 아래에 보임
+End_CorridorSpeed,복도 걸음 속도,Float,0.7,m/s,문까지 약 8초
+Kiosk_IdleSec,무입력 안내까지,Float,20,s,키오스크 공통
+Kiosk_IdleCountSec,무입력 카운트다운,Float,10,s,키오스크 공통
+Kiosk_FlashSec,터치 표시 시간,Float,0.2,s,잔상 없음
+Kiosk_CardOutBeepSec,카드 제거 재촉 간격,Float,3,s,자동 진행 없음
+Kiosk_IcFirstBounce,첫 삽입 방향 튕김,Int,1,count,4회차 카드 경로
+Kiosk_CustomerUseSec,다음 손님이 메뉴 화면을 쓰는 시간,Float,4,sec,이용 중으로 보임
+Kiosk_CardDepth,틈에 꽂힌 카드 중심 자리,Float,-0.02,m,음수면 틈 안쪽. 끝만 보임
+Post_SignBlur,표지 레이어 번짐 세기,Float,1,0~1,1 이면 가장 먼 번짐
+PostSignBlurMul,표지 번짐 프로필 배율,Float,1,배,인물 키 Age20 0 Age40 0 Age60 0.8 Age80 1
+Post_Bright,화면 밝기 배율,Float,1.12,배,Post_Dim에 곱한다
+Light_SunMul,씬 태양 세기 배율,Float,1,배,밤 제외
+Light_AmbientMul,씬 앰비언트 배율,Float,1,배,밤 제외
+Post_GrainSub,자막 자리 입자 비율,Float,0.3,배,화면 아래쪽만 약하게
+Post_SignNear,표지 넓은 번짐을 다 쓰는 거리,Float,4,m,이 거리 안은 맨눈으로 못 읽음
+Bus_NoticeLookSec,카드 찍은 뒤 안내문을 보는 시간,Float,2,sec,시점 조작 가능
+Bus_RideSec,버스 안 전체 길이,Float,12,sec,10~15초 사이
+Bus_RideEngineVol,버스 안 엔진음,Float,0.7,vol,
+Bus_RideShake,버스 진동 세기,Float,0.6,per sec,약하게
+Bus_RideSpeed,창밖 흐르는 최고 속도,Float,8,m/s,
+Bus_RideAccel,창밖 가속,Float,2,m/s2,
+Bus_RideYawDeg,앉은 뒤 좌우 시선 범위,Float,100,deg,
+Bus_RidePitchDown,앉은 뒤 아래 시선 한계,Float,-25,deg,
+Bus_RidePitchUp,앉은 뒤 위 시선 한계,Float,20,deg,
+Bus_AnnounceLeadSec,끝나기 몇 초 전 안내방송,Float,4,sec,
+Bus_SeatTurnSec,좌석 쪽으로 도는 시간,Float,0.5,sec,
+Bus_SeatWalkMaxSec,좌석까지 걷기 최대 시간,Float,4,sec,걸려도 넘어간다
+Bus_SitSec,앉는 시간,Float,0.9,sec,
+Bus_SitEye,앉은 눈 높이,Float,1.3,m,바닥 기준
+Bus_DriverArmUpper,기사 위팔 드는 각,Float,40,deg,운전대 쪽
+Bus_DriverArmLower,기사 아래팔 드는 각,Float,32,deg,운전대 쪽
+R1_ElderMutterSec,어르신 혼잣말 간격,Float,2.5,sec,줄 서서 기다리는 동안
+Note_PutSec,쪽지 넣는 소리 길이,Float,0.3,sec,끝에서 짧게 줄인다
+R2_ShotPrice,샷 추가 금액,Int,500,won,합계 표시
+R4_PickupWaitSec,결제 뒤 호출까지,Float,6,s,4회차 수령
+R4_SignLookSec,도착 때 간판으로 시선 옮기는 시간,Float,1.2,sec,
+R4_SignHoldSec,도착 때 간판 보는 시간,Float,2,sec,조작 잠금
+R4_WrongBusStopSec,다른 번호 버스 정차 시간,Float,3.2,sec,타기 표시 없음
+R4_MissHoldSec,떠나는 버스를 보는 시간,Float,3,sec,
+R4_EndWalkStuckSec,걷기 컷 멈춤 판정,Float,1.5,sec,안전장치
+R4_SkyExposureEnd,정류장 마지막 하늘 밝기,Float,0.75,배,어둡게 내리지 않는다
+R4_NoticeLookSec,버스 안 안내문을 보는 시간,Float,2,sec,입력 없음
+R4_BoardCutDist,자동 승차 때 암전으로 옮기는 거리,Float,5,m,
+R4_SentStepDist,돌아선 뒤 키오스크 앞을 벗어나는 추가 거리,Float,0.6,m,뒷사람이 쓸 자리를 비움
+Queue_ClearDist,다음 손님이 출발하는 플레이어 이탈 거리,Float,1.1,m,키오스크 앞 구역
+Queue_StandBlockDist,자리에 플레이어가 있으면 손님이 멈추는 거리,Float,0.7,m,플레이어를 뚫지 않음
+Queue_NextGapSec,손님이 떠난 뒤 다음 손님까지,Float,1,sec,이어받기 간격

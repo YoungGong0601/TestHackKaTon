@@ -5,7 +5,6 @@
 // idle      : start
 // menu      : list(세 줄), big(큰 글씨), hero(광고), next, item_0~8 | 키 list(목록 묶음), count, total
 // pop_code  : x   (backdrop menu, 팝업 넷 모두)
-// pop_robot : check, x | 키 check_on
 // pop_app   : x
 // pop_point : x, skip
 // pay       : 키 total, card_on(깜빡이는 "카드 전용")
@@ -26,7 +25,7 @@ public class R4BurgerPack : KioskPack
     KioskScreens scr;
     PayPoint pay;
     string now = "idle";
-    bool listOpen, big, robot, whatSaid, moneySaid, done;
+    bool listOpen, big, whatSaid, moneySaid, done;
     float blinkT;
 
     KioskScreens Scr => scr ? scr : scr = GetComponent<KioskScreens>();
@@ -63,7 +62,6 @@ public class R4BurgerPack : KioskPack
     {
         cart.Clear();
         listOpen = false;
-        robot = false;
         SetBig(false);
     }
 
@@ -94,8 +92,6 @@ public class R4BurgerPack : KioskPack
         }
         var payScreen = Scr.Get("pay");
         if (payScreen) payScreen.Text("total", Won(total));
-        var rb = Scr.Get("pop_robot");
-        if (rb) rb.Show("check_on", robot);
     }
 
     static string Won(int n) => n.ToString("N0", System.Globalization.CultureInfo.InvariantCulture) + "원";
@@ -138,11 +134,6 @@ public class R4BurgerPack : KioskPack
                 }
                 Popup("pop_code");
                 return;
-            case "check":
-                robot = true;
-                Ctl.Sfx("kiosk_ok", 0.5f);
-                Draw();
-                return;
             case "x":
                 Close();
                 return;
@@ -171,17 +162,7 @@ public class R4BurgerPack : KioskPack
     {
         switch (now)
         {
-            case "pop_code": Popup("pop_robot"); return;
-            case "pop_robot":
-                if (!robot)
-                {
-                    Ctl.Sfx("kiosk_error", 0.3f);
-                    Ctl.Toast("로봇 인증");
-                    return;
-                }
-                robot = false;
-                Popup("pop_app");
-                return;
+            case "pop_code": Popup("pop_app"); return;
             case "pop_app": Popup("pop_point"); return;
             case "pop_point":
                 Ctl.Sfx("kiosk_error", 0.3f);
