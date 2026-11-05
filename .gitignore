@@ -12,9 +12,16 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
-# Blender 원본, 백업, 모델링 작업 폴더. 저장소에 올리지 않는다
+# Blender: 파이썬 스크립트가 원본이다. .blend 는 스크립트를 돌릴 때마다 다시 저장되는 산출물이라 올리지 않는다
 *.blend*
-ArtSource/
+__pycache__/
+*.pyc
+.DS_Store
+ArtSource/*
+!ArtSource/PH_인계.md
+!ArtSource/Blender/
+ArtSource/Blender/*
+!ArtSource/Blender/scripts/
 
 # MemoryCaptures can get excessive in size.
 /[Mm]emoryCaptures/
