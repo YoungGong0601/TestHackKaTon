@@ -1,0 +1,25 @@
+{
+ "asset": "PH_CafeTable__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_CafeTable__Body/T_PH_CafeTable__Body_BaseColor.jpg",
+    "Normal": "Textures/PH_CafeTable__Body/T_PH_CafeTable__Body_Normal.png",
+    "MS": "Textures/PH_CafeTable__Body/T_PH_CafeTable__Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_CafeTable__Body"
+  }
+ ],
+ "notes": "카페 둥근 탁자. 원점 바닥 중앙, 상판 윗면 y 0.735, 상판 지름 0.64, 기둥 지름 0.06, 받침 지름 0.4. 원형이라 앞뒤 구분이 없다."
+}
