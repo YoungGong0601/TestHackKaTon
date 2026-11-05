@@ -681,9 +681,10 @@ def signbox(M, P, frame_m, face_m, item, c, w, h, depth=0.22, lit=True):
 def shutter(M, P, shut_m, x0, x1, y, z_top, z_down, box_h=0.38):
     """롤 셔터: 셔터 박스 + 가이드 레일 + (내려온 만큼) 셔터 판 + 하부 바."""
     w = x1 - x0
-    M.box(P["galv"], ((x0 + x1) / 2, y + 0.12, z_top + box_h / 2), (w + 0.1, 0.34, box_h), 0.01)
+    # 벽 구멍 윗면과 같은 높이면 지글거린다. 밑면을 4mm 내린다
+    M.box(P["galv"], ((x0 + x1) / 2, y + 0.12, z_top + box_h / 2 - 0.002), (w + 0.1, 0.34, box_h + 0.004), 0.01)
     M.box(P["galv"], ((x0 + x1) / 2, y - 0.045, z_top + box_h - 0.02), (w + 0.12, 0.03, 0.04), 0.004)
-    for x in (x0 - 0.03, x1 + 0.03):
+    for x in (x0 - 0.028, x1 + 0.028):      # 안쪽 면이 벽 구멍 옆면보다 2mm 앞에 오게
         M.box(P["galv"], (x, y + 0.06, z_top / 2), (0.06, 0.1, z_top), 0.004)
         M.box(P["steel"], (x, y + 0.015, z_top / 2), (0.075, 0.012, z_top), 0.002)
     if z_down < z_top - 0.05:
@@ -991,7 +992,7 @@ def vsign(M, P, frame_m, face_m, item, x, z0, proj=0.62, h=5.2, th=0.2, gap=0.12
     M.quad(face_m, (x - th / 2 - 0.004, yc, z0 + h / 2), (0, -1, 0), (0, 0, 1), proj, h, item=item)
     for z in (z0 + 0.4, z0 + h - 0.4):
         M.box(P["steel"], (x, -gap / 2 - 0.01, z), (0.06, gap + 0.04, 0.06), 0.004)
-        M.box(P["steel"], (x, -0.006, z), (0.14, 0.012, 0.14), 0.002)
+        M.box(P["steel"], (x, -0.007, z), (0.14, 0.014, 0.14), 0.002)    # 때 덮개(12mm)보다 앞
 
 
 def address_plate(M, P, m, item, x, z, y=0.0, w=0.45, h=0.15, normal=(0, -1, 0)):

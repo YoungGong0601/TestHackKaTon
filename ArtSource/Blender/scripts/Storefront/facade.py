@@ -164,7 +164,7 @@ def neighbor(x0, x1, sign, backdrop):
     out.append(quad(A + "_NBack", x1 - x0, 2.8, ((x0 + x1) / 2, 0.75, 1.4), img(backdrop, emission=0.35)))
     out.append(quad(A + "_NCeil", x1 - x0, 0.75, ((x0 + x1) / 2, 0.375, 3.1), interior, face="-Z"))
     for x, f in ((x0, "+X"), (x1, "-X")):
-        q = quad(A + "_NSide", 0.75, 3.1, (x, 0.375, 1.55), interior, face=f)
+        q = quad(A + "_NSide", 0.5, 3.1, (x, 0.5, 1.55), interior, face=f)   # 화강석 기둥(깊이 0.25) 뒤부터
         out.append(q)
     # 간판 (상자 + 면)
     out.append(box2((x0 - 0.05, -0.2, 3.25), (x1 + 0.05, -0.02, 4.1), alud, 0.006, 2))
@@ -209,7 +209,7 @@ parts = [("Crown", [(-30, -48), (-34, -82), (-14, -62), (0, -90), (14, -62), (34
          ("Patty", [(-60, -6), (60, -6), (60, 10), (-60, 10)]),
          ("Bun", [(x, y) for x, y in sf.rrect_pts(-58, 12, 58, 34, 8)])]
 for k, pts in parts:
-    o = sf.poly_extrude(A + "_Logo" + k, lp(pts), 0.05)
+    o = sf.poly_extrude(A + "_Logo" + k, lp(pts), 0.052 if k == "Crown" else 0.05)   # 왕관이 빵과 겹치는 띠에서 앞선다
     sf.mat_by_normal(o, logo_c[k], ret)
     o.location.y = SYF
     S.append(o)
