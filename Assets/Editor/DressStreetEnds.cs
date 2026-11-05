@@ -71,18 +71,19 @@ public static class DressStreetEnds
     // 친구가 Close_Street 에 먼저 세운 자리는 비운다. 겹치면 면이 지글거리고 건물이 서로를 뚫는다
     static void Clear(Transform env, Transform root)
     {
-        var taken = env.Find("Close_Street").Cast<Transform>().Where(t => t.GetComponentInChildren<Renderer>()).Select(Box).ToArray();
+        var taken = env.Find("Close_Street").Cast<Transform>().Where(t => t.GetComponentInChildren<Renderer>()).ToArray();
         foreach (var t in root.Cast<Transform>().ToArray())
-        {
-            var b = Box(t);
-            if (taken.Any(o => Clash(o, b))) Object.DestroyImmediate(t.gameObject);
-        }
+            if (taken.Any(o => Clash(o, t))) Object.DestroyImmediate(t.gameObject);
     }
 
-    static bool Clash(Bounds a, Bounds b)
+    // 같은 자리의 같은 모델(도로 판은 납작해 높이로 못 가른다)과 서로 뚫는 건물만 친다. 전선은 경계 상자가 길어 쉽게 걸린다
+    static bool Clash(Transform a, Transform b)
     {
-        var d = Vector3.Min(a.max, b.max) - Vector3.Max(a.min, b.min);
-        return d.x > 0.5f && d.y > 0.05f && d.z > 0.5f;
+        Bounds p = Box(a), q = Box(b);
+        Mesh m = a.GetComponentInChildren<MeshFilter>().sharedMesh, n = b.GetComponentInChildren<MeshFilter>().sharedMesh;
+        if (m == n && (p.center - q.center).sqrMagnitude < 0.01f) return true;
+        var d = Vector3.Min(p.max, q.max) - Vector3.Max(p.min, q.min);
+        return Hull.ContainsKey(m.name) && Hull.ContainsKey(n.name) && d.x > 0.5f && d.z > 0.5f;
     }
 
     // Close_Street 는 프리팹이 풀린 복사본이라 FBX 를 다시 내보내면 재질 순서가 어긋난다. 모델 순서로 맞춘다
