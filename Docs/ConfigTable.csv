@@ -420,7 +420,6 @@ R4_IntroFogStart,시작 때 검은 안개 시작,Float,0.7,m,손 뒤만 가림
 R4_IntroHandSec,4회차 시작 두 손만 보이는 시간,Float,2.5,sec,노인 손 인지
 R4_IntroLiftSec,시선이 올라오며 배경이 걷히는 시간,Float,2.5,sec,연출
 R4_IntroPitch,시작 시선 각도,Float,-38,deg,손을 내려다봄
-R4_IntroWatchHour,시작 때 왼손 시계 바늘,Int,10,hour,낮
 R4_LastDuskSec,마지막 저무는 시간,Float,2,s,가로등 켜짐
 R4_LookAroundDeg,4-10b 둘러보는 각도,Float,75,deg,임시
 R4_LookAroundSec,4-10b 둘러보는 시간,Float,3,sec,임시 타이밍 미정
@@ -440,9 +439,6 @@ R4_TrayHandY,쟁반 높이,Float,1.05,m,손 높이
 R4_TrayReach,쟁반이 몸 앞으로 나온 거리,Float,0.32,m,손 앞
 R4_TraySec,쟁반 지나는 시간,Float,2.4,s,4-10a
 R4_WalletHabitSec,4-20 지갑을 여는 시간,Float,2,sec,임시
-R4_WatchHour1,첫 손목시계 바늘,Int,2,h,시트 값
-R4_WatchHour2,둘째 손목시계 바늘,Int,4,h,시트 값
-R4_WatchHour3,셋째 손목시계 바늘,Int,6,h,시트 값
 R4_WhatLineDelaySec,메뉴 안내 뒤 혼잣말까지,Float,2.6,sec,안내 음성과 겹치지 않게
 Round_BlinkCloseSec,눈 감기,Float,0.6,s,ROUND_PLAN 7절
 Round_BlinkOpenSec,눈 뜨기,Float,0.9,s,ROUND_PLAN 7절
@@ -500,7 +496,6 @@ Tremble_Peak,손떨림 시작 폭(인물과 눈치 값에 곱함),Float,0.7,배,
 Tremble_StillSec,멈춤으로 보는 시간,Float,0.12,sec,시작 판정
 Tremble_Tau,손떨림 줄어드는 시간,Float,0.8,sec,exp(-t/tau)
 Wallet_PartRadius,지갑 클릭 자리 반지름,Float,0.07,화면 높이,ROUND_PLAN 7절
-Watch_LookSec,손목시계 보는 시간,Float,2,s,ROUND_PLAN 7절
 Age20_ClimbSec,버스 계단 자동 오르기 시간,Float,1.1,s,연타 제거
 Age40_ClimbSec,버스 계단 자동 오르기 시간,Float,1.2,s,연타 제거
 Age60_ClimbSec,버스 계단 자동 오르기 시간,Float,1.8,s,연타 제거

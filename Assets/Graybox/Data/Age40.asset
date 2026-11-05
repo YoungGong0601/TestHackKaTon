@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Age40
   m_EditorClassIdentifier: KioskGame::CharacterProfile
   id: age40
-  displayName: 
+  displayName: "\uB098"
   keyPrefix: Age40_
   speakerKey: a40
   handLook: 1
   items: 0400000003000000
+  canRun: 0
   limp: 0
+  briefcase: 1
   visionBlur: 0
   kioskBlur: 1
   kioskNunchi: 1

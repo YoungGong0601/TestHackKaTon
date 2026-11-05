@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: ChapterFlow
   m_EditorClassIdentifier: KioskGame::ChapterFlow
   chapters:
-  - sceneName: R1_Home
-    profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
-    spawnId: r1_home
-  - sceneName: R1_Stop
-    profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
-    spawnId: r1_stop
   - sceneName: R1_Storefront
     profile: {fileID: 11400000, guid: 1f75b4308ff8a59468ba9f8c5ed662a7, type: 2}
     spawnId: r1_storefront
@@ -28,16 +22,16 @@ MonoBehaviour:
   - sceneName: R2_Cafe
     profile: {fileID: 11400000, guid: 102cb6147c402e441a7b0647ca5a99f7, type: 2}
     spawnId: r2_cafe
+  - sceneName: R1_Home
+    profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
+    spawnId: r1_home
+  - sceneName: R4_Stop
+    profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
+    spawnId: r4_stop
   - sceneName: R4_Storefront
     profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
     spawnId: r4_storefront
   - sceneName: R4_Store
     profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
     spawnId: r4_store
-  - sceneName: R4_Stop
-    profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
-    spawnId: r4_stop
-  - sceneName: Ending_Home
-    profile: {fileID: 11400000, guid: 3eaf402195da01945a48caca48c8f56d, type: 2}
-    spawnId: ending_home
   speakers: []

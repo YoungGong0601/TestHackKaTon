@@ -1,4 +1,5 @@
-// R2_Cafe 진행. 2-1 도심 길을 걸어 카페로, 2-2~2-6 키오스크, 2-7 호출, 2-8 커피 2잔 받기, 언제든 2-5 알바생.
+// R2_Cafe 진행. 2-1 도심 길을 걸어 카페로, 2-2~2-6 키오스크, 2-7 호출, 2-8 커피 2잔 받기.
+// 주문하기를 누르면 막히고 혼잣말이 나온다. 그때부터 알바생에게 말을 걸 수 있고, 물어봐야 결제로 넘어간다. 첫 대화에서 뽀샤티 뜻을 알고 쪽지에 붙는다.
 // 눈치가 다 차면 비켜나 줄 맨 뒤로 갔다가 차례가 오면 처음부터 다시 주문한다.
 // 배치: queue = 같은 오브젝트의 QueueManager, kiosk = PH_Kiosk, pack = Pack_R2
 // 배치: stand, kioskLook, staffPos, pickupPos = 씬 앵커
@@ -33,25 +34,22 @@ public class R2CafeDirector : MonoBehaviour
     [SerializeField] Transform doorOut;
     [SerializeField] List<NpcMover> line = new List<NpcMover>();
     [SerializeField] List<Transform> aside = new List<Transform>();
-    // 배치: askRookie = 신입 NPC의 Interactable (label 말 걸기), rookiePos = 신입 머리 높이
-    [SerializeField] Interactable askRookie;
-    [SerializeField] Transform rookiePos;
+    [SerializeField] GameObject receiptView;   // 배치: Receipt_View
 
     const string NoteText = "김 대리 아이스\n아메리카노 샷 추가\n\n신입 뽀샤티";
 
     static readonly List<int> NoReady = new List<int>();
 
     Phase phase;
-    bool talking, inside, asked, askingRookie;
-    float doorAgain;
+    bool talking, inside, asked, wondered, muttering;
 
     void OnEnable()
     {
         talkStaff.onUse.AddListener(OnTalk);
         orderKiosk.onUse.AddListener(OnOrder);
         takeCup.onUse.AddListener(OnTake);
-        if (askRookie) askRookie.onUse.AddListener(OnRookie);
         kiosk.StaffCalled += OnStaffCalled;
+        pack.Blocked += OnBlocked;
     }
 
     void OnDisable()
@@ -59,12 +57,19 @@ public class R2CafeDirector : MonoBehaviour
         talkStaff.onUse.RemoveListener(OnTalk);
         orderKiosk.onUse.RemoveListener(OnOrder);
         takeCup.onUse.RemoveListener(OnTake);
-        if (askRookie) askRookie.onUse.RemoveListener(OnRookie);
         kiosk.StaffCalled -= OnStaffCalled;
+        pack.Blocked -= OnBlocked;
+    }
+
+    // 손은 씬을 건너가므로 붙인 물건은 같이 치운다
+    void OnDestroy()
+    {
+        if (receiptView) Destroy(receiptView);
     }
 
     IEnumerator Start()
     {
+        HandRig.I.SetReceiptView(receiptView.transform);
         SetPhase(Phase.Intro);
         shelf.SetActive(false);
         board.Show(NoReady, Prev);
@@ -85,12 +90,7 @@ public class R2CafeDirector : MonoBehaviour
         orderKiosk.active = phase == Phase.Order && !queue.Serving;
         Vector3 d = p.transform.position - doorSpot.position;
         d.y = 0f;
-        if (d.magnitude < Bal.G("R2_DoorOpenDist", 2.4f) && Time.time >= doorAgain)
-        {
-            float sec = Bal.G("R2_DoorOpenSec", 2.5f);
-            queue.OpenDoor(sec);
-            doorAgain = Time.time + sec;
-        }
+        if (d.magnitude < Bal.G("R2_DoorOpenDist", 2.4f)) queue.OpenDoor(Bal.G("R2_DoorOpenSec", 2.5f));
         bool nowInside = p.transform.position.z > doorSpot.position.z;
         if (nowInside == inside) return;
         inside = nowInside;
@@ -102,40 +102,50 @@ public class R2CafeDirector : MonoBehaviour
     {
         phase = p;
         orderKiosk.active = p == Phase.Order;
-        talkStaff.active = p != Phase.Kiosk && p != Phase.End && p != Phase.Intro && !talking;
+        talkStaff.active = wondered && p != Phase.Kiosk && p != Phase.End && p != Phase.Intro && !talking;
         takeCup.active = p == Phase.Wait || p == Phase.Called;
     }
 
     // ---- 2-5 ----
 
-    void OnTalk() { if (!talking) StartCoroutine(Talk()); }
-    void OnStaffCalled() { if (!talking) StartCoroutine(Talk()); }
+    static string Me => GameState.I.Profile.speakerKey;
+
+    void OnTalk() { if (wondered && !talking) StartCoroutine(Talk()); }
+    void OnStaffCalled() => OnTalk();
 
     IEnumerator Talk()
     {
         talking = true;
         talkStaff.active = false;
-        yield return Hud.I.Say(null, "키오스크를 이용해 주세요.", null, -1f, staffPos.position);
+        if (asked) yield return Hud.I.Say("staff", "키오스크를 이용해 주세요.", "staff_usekiosk", -1f, staffPos.position);
+        else
+        {
+            // 첫 두 줄은 옛 음성과 글자가 달라 자막만 나온다
+            yield return Hud.I.Say(Me, "저기, 뽀샤티가 뭐예요?", Me + "_ashot1");
+            yield return Hud.I.Say("staff", "아, 아이스티에 샷 추가요.", "staff_ashot", -1f, staffPos.position);
+            yield return Hud.I.Say(Me, "아이스티에... 커피를 넣는다고?", Me + "_ashot2");
+            asked = true;
+            pack.Unlocked = true;
+            Hud.I.SideNote(null);
+            Note.Set(NoteText + "\n아이스티 + 샷", Bal.G("R2_NoteSoft", 0f), 1);
+        }
         talking = false;
         SetPhase(phase);
     }
 
-    // ---- 신입에게 묻기. 물으면 쪽지에 답이 붙는다 ----
-
-    static string Me => GameState.I.Profile.speakerKey;
-
-    void OnRookie() { if (!askingRookie) StartCoroutine(AskRookie()); }
-
-    IEnumerator AskRookie()
+    void OnBlocked()
     {
-        askingRookie = true;
-        yield return Hud.I.Say(null, "저기, 뽀샤티가 뭐야?", Me + "_ashot1");
-        yield return Hud.I.Say(null, "아이스티에 샷 추가요.", "rookie_ashot", -1f, rookiePos ? rookiePos.position : (Vector3?)null);
-        yield return Hud.I.Say(null, "아이스티에... 커피를 넣는다고?", Me + "_ashot2");
-        asked = true;
-        Hud.I.SideNote(null);
-        Note.Set(NoteText + "\n아이스티 + 샷", Bal.G("R2_NoteSoft", 0f), 1);
-        askingRookie = false;
+        if (!muttering) StartCoroutine(Wonder());
+    }
+
+    // 주문하기가 막히면 혼잣말. 그때부터 알바생에게 말을 걸 수 있다
+    IEnumerator Wonder()
+    {
+        muttering = true;
+        wondered = true;
+        SetPhase(phase);
+        yield return Hud.I.Say(Me, "누구 물어볼 사람 없나?", Me + "_whoask");
+        muttering = false;
     }
 
     // ---- 2-2~2-6 ----
@@ -176,7 +186,7 @@ public class R2CafeDirector : MonoBehaviour
         Vector3 head = queue.QueuePos - Vector3.up * 1.5f;
         Vector3 back = head - stand.position;
         back.y = 0f;
-        return head + back.normalized * (i * Bal.G("Queue_Spacing", 0.82f));
+        return head + back.normalized * (i * queue.Spacing);
     }
 
     IEnumerator Requeue()
@@ -235,8 +245,15 @@ public class R2CafeDirector : MonoBehaviour
     IEnumerator Calls()
     {
         SetPhase(Phase.Wait);
+        HandRig.I.FillReceipt(Mine, GameState.I.Order.item);
+        HandRig.I.GiveReceipt();
         queue.ServeWhenClear(aside);
-        yield return new WaitForSeconds(Bal.G("R2_CallFirstSec", 6f));
+        yield return StoreFlow.Kitchen(pickupPos.position, Bal.G("R2_OrderWaitSec", 15f), () =>
+        {
+            float other = Bal.G("R2_CallVolume", 0.3f);
+            AudioManager.I.Play("pager_call", pickupPos.position, other);
+            Hud.I.Say("crew", "...번 고객...", "staff_call5", -1f, pickupPos.position, other);
+        });
         shelf.SetActive(true);
         AudioManager.I.Play("tray_put", pickupPos.position, 0.5f);
         SetPhase(Phase.Called);
@@ -245,7 +262,7 @@ public class R2CafeDirector : MonoBehaviour
         {
             board.Show(NoReady, Mine);
             AudioManager.I.Play("pager_call", pickupPos.position, vol);
-            Hud.I.Say(null, "...번 고객...", "staff_call5", -1f, pickupPos.position, vol);
+            Hud.I.Say("crew", "...번 고객...", "staff_call5", -1f, pickupPos.position, vol);
             yield return new WaitForSeconds(Bal.G("R2_CallShowSec", 3f));
             if (phase != Phase.Called) break;
             board.Show(NoReady, Prev);
@@ -259,25 +276,17 @@ public class R2CafeDirector : MonoBehaviour
     {
         if (phase == Phase.Called) { StartCoroutine(Take()); return; }
         AudioManager.I.Play("kiosk_error", pickupPos.position, 0.6f);
-        Hud.I.Say(null, "아직입니다", "staff_wait", -1f, pickupPos.position);
+        Hud.I.Say("staff", "아직입니다", "staff_wait", -1f, pickupPos.position);
     }
 
     IEnumerator Take()
     {
         SetPhase(Phase.End);
+        HandRig.I.TakeReceipt();
         PlayerController.I.Freeze(true);
         AudioManager.I.Play("tray_put", null, 0.8f);
         shelf.SetActive(false);
         yield return new WaitForSeconds(0.8f);
-        if (!pack.Correct)
-        {
-            // 쪽지와 다른 음료. 처음부터 다시 주문한다
-            yield return Hud.I.Say(null, "이거 아닌데요", "rookie_wrong", -1f, rookiePos ? rookiePos.position : (Vector3?)null);
-            if (!asked) Hud.I.SideNote("신입에게 묻기");
-            PlayerController.I.Freeze(false);
-            SetPhase(Phase.Order);
-            yield break;
-        }
         GameState.I.CompleteChapter();
     }
 }

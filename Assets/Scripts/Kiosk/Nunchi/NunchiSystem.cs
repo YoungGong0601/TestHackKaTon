@@ -1,10 +1,11 @@
-// 눈치: 게이지 증감, 한숨과 재촉 스케줄, 실수 직후 혼잣말, 그만두기 버튼, 단계 효과.
+// 눈치: 게이지 증감, 답답함 점수로 나오는 뒷사람 반응, 실수 직후 혼잣말, 그만두기 버튼, 단계 효과.
 // 수치는 전부 Bal에서 사용 시점에 읽는다. 인물 정보는 GameState.I.Profile만 본다.
 // 배치: queue = Store 씬 Director의 QueueManager (뒤 사람 소리가 나는 곳)
 // 배치: heartbeat = 자식 AudioSource Nunchi_Heartbeat (loop, playOnAwake 끔, 볼륨 0, clip heartbeat)
 // 배치: tinnitus = 자식 AudioSource Nunchi_Tinnitus (loop, playOnAwake 끔, 볼륨 0, clip tinnitus)
 // 배치: crowd = 자식 AudioSource Nunchi_Crowd (loop, playOnAwake 끔, 볼륨 0, clip crowd_murmur_tense)
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NunchiSystem : MonoBehaviour
@@ -18,6 +19,7 @@ public class NunchiSystem : MonoBehaviour
     public bool LookingBack;
     public Func<bool> CanBlow;
     public Func<int> QueueCount;
+    public Func<string> ScreenId;
 
     NunchiRule rule;
     float hurryMul = 1f, sighMul = 1f;
@@ -43,8 +45,12 @@ public class NunchiSystem : MonoBehaviour
     string Speaker => GameState.I.Profile.speakerKey;
     Vector3? QueuePos => queue != null ? queue.QueuePos : (Vector3?)null;
 
-    float nextHurry, nextSigh, hurryWait, sayUntil, mutterWant, mutterReady;
-    int hurryIdx;
+    float hurryWait, sayUntil, mutterWant, mutterReady;
+    // 답답함 점수. 실수와 한 화면에 머문 시간으로 오르고, 처음 보는 화면으로 넘어가면 내린다
+    float sighScore, sighElapsed, sighReady, sameScreenSec, missAt;
+    string lastScreen;
+    readonly HashSet<string> seenScreens = new HashSet<string>();
+    string lastBack;
     float heartTarget, ringTarget, crowdTarget;
 
     // ---- 진입과 종료 ----
@@ -55,9 +61,10 @@ public class NunchiSystem : MonoBehaviour
         if (!GameState.I.Profile.kioskNunchi) return;
         gauge = rule != null ? rule.start : 0f; RateMul = 1f; Cooldown = 0f; LookingBack = false;
         hurryMul = 1f; sighMul = 1f; asking = false;
-        hurryWait = 0f; hurryIdx = 0; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
-        nextHurry = Range("Nunchi_HurryFirstMin", 16f, "Nunchi_HurryFirstMax", 26f);
-        nextSigh = Range("Nunchi_SighFirstMin", 4f, "Nunchi_SighFirstMax", 8f);
+        hurryWait = 0f; lastBack = null; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
+        sighScore = 0f; sighElapsed = 0f; sighReady = 0f; sameScreenSec = 0f; missAt = -1f;
+        lastScreen = null;
+        seenScreens.Clear();
         Running = true;
     }
 
@@ -80,6 +87,14 @@ public class NunchiSystem : MonoBehaviour
     {
         PostState.Nunchi = 0f;
         PostState.HeartTime = -1f;
+    }
+
+    /// <summary>오터치, 잘못된 버튼, 튕김. 한 번의 실수에 여러 곳이 불러도 한 번만 친다.</summary>
+    public void Miss()
+    {
+        if (!Running || Time.time - missAt < 0.3f) return;
+        missAt = Time.time;
+        sighScore += Bal.G("Nunchi_SighMissScore", 6f);
     }
 
     // ---- 게이지 ----
@@ -115,7 +130,7 @@ public class NunchiSystem : MonoBehaviour
         mutterWant = 0f;
         mutterReady = Time.time + Bal.G("Nunchi_MutterCooldown", 9f);
         int i = UnityEngine.Random.Range(0, NunchiLines.Mutter.GetLength(0));
-        Say(null, NunchiLines.Mutter[i, 1], Speaker + "_" + NunchiLines.Mutter[i, 0], null, Bal.G("Nunchi_MutterVolume", 0.9f));
+        Say(Speaker, NunchiLines.Mutter[i, 1], Speaker + "_" + NunchiLines.Mutter[i, 0], null, Bal.G("Nunchi_MutterVolume", 0.9f));
     }
 
     /// <summary>다른 말과 겹치지 않게 시간을 기록하며 자막을 띄운다. pos가 있으면 음성은 그 자리에서 난다.</summary>
@@ -128,7 +143,7 @@ public class NunchiSystem : MonoBehaviour
     void Murmur(string text, float sec)
     {
         if (Time.time <= sayUntil) return;
-        Hud.I.Say(null, text, null, sec);
+        Hud.I.Say("back", text, null, sec);
         sayUntil = Time.time + sec;
     }
 
@@ -156,14 +171,13 @@ public class NunchiSystem : MonoBehaviour
         Hud.I.Nunchi(gauge, true);
         ApplyStage();
 
-        // 한숨, 혀 차는 소리, 발끝
-        nextSigh -= dt;
-        if (nextSigh <= 0f)
+        // 뒷사람 반응. 첫 시간에는 아무 반응이 없다
+        TickSighScore(dt);
+        float limit = Bal.G("Nunchi_SighScore", 20f);
+        if (sighElapsed >= Bal.G("Nunchi_SighMinSec", 30f) && sighScore >= limit && Time.time >= sighReady)
         {
-            nextSigh = Range("Nunchi_SighMin", 5f, "Nunchi_SighMax", 10f) * (1f - gauge / (Max * 2f));
-            // 1회차에 들은 그 소리를 끝까지 쓴다
-            AudioManager.I.Play("sigh_m_1", QueuePos, Bal.G("Nunchi_SighVolume", 0.8f) * sighMul, 1f, true);
-            if (!LookingBack) Murmur("(한숨 소리)", 1.3f);
+            sighReady = Time.time + Bal.G("Nunchi_SighGapSec", 12f) * hurryMul * (1f - gauge / (Max * 2f));
+            BackReact(limit);
         }
 
         // 실수 직후 혼잣말
@@ -173,20 +187,7 @@ public class NunchiSystem : MonoBehaviour
             else if (Time.time >= sayUntil) SayMutter();
         }
 
-        // 재촉
-        nextHurry -= dt;
-        if (nextHurry <= 0f)
-        {
-            nextHurry = Range("Nunchi_HurryMin", 25f, "Nunchi_HurryMax", 40f) * hurryMul;
-            var lines = BandLines();
-            if (lines != null && lines.Length > 0)
-            {
-                string text = lines[hurryIdx++ % lines.Length];
-                Say(null, text, VoFor(text), QueuePos, 1f, true);
-                PlayerController.I.AddShake(Bal.G("Nunchi_HurryShake", 0.12f));
-                if (!LookingBack) hurryWait = Bal.G("Nunchi_HurryIgnoreWindow", 7f);
-            }
-        }
+        // 재촉을 못 들은 척하면 눈치가 오른다
         if (hurryWait > 0f)
         {
             if (LookingBack) hurryWait = 0f;
@@ -213,11 +214,48 @@ public class NunchiSystem : MonoBehaviour
         }
     }
 
-    // 게이지 구간 대사. 임시 T07
-    string[] BandLines()
+    void TickSighScore(float dt)
     {
-        if (rule == null) return null;
-        return gauge < Bal.G("Nunchi_LowMax", 40f) ? rule.low : gauge < Bal.G("Nunchi_MidMax", 80f) ? rule.mid : rule.high;
+        sighElapsed += dt;
+        string screen = ScreenId != null ? ScreenId() : null;
+        if (screen != lastScreen)
+        {
+            lastScreen = screen;
+            sameScreenSec = 0f;
+            if (screen != null && seenScreens.Add(screen) && seenScreens.Count > 1)
+                sighScore = Mathf.Max(0f, sighScore - Bal.G("Nunchi_SighStepDown", 8f));
+        }
+        sameScreenSec += dt;
+        if (sameScreenSec > Bal.G("Nunchi_SighStallFreeSec", 10f)) sighScore += Bal.G("Nunchi_SighStallRate", 1f) * dt;
+    }
+
+    // 점수가 높을수록 센 칸에서 고른다. 같은 줄은 연속으로 나오지 않는다
+    void BackReact(float limit)
+    {
+        int tier = sighScore >= limit * Bal.G("Nunchi_BackHighMul", 2f) ? 2 : sighScore >= limit * Bal.G("Nunchi_BackMidMul", 1.5f) ? 1 : 0;
+        var pool = new List<string>(NunchiLines.Back[tier]);
+        if (!GameState.I.Profile.limp) pool.Remove(NunchiLines.ElderOnly);
+        if (pool.Count > 1) pool.Remove(lastBack);
+        string text = pool[UnityEngine.Random.Range(0, pool.Count)];
+        lastBack = text;
+
+        if (text == NunchiLines.Sigh)
+        {
+            // 1회차에 들은 그 소리를 끝까지 쓴다
+            AudioManager.I.Play("sigh_m_1", QueuePos, Bal.G("Nunchi_SighVolume", 0.8f) * sighMul, 1f, true);
+            if (!LookingBack) Murmur(text, 1.3f);
+            return;
+        }
+        if (text == NunchiLines.Crowd)
+        {
+            AudioManager.I.PlayShort("crowd_murmur_tense", 2f, QueuePos, Bal.G("Nunchi_CrowdVolume", 0.5f));
+            if (!LookingBack) Murmur(text, 1.3f);
+            return;
+        }
+        Say("back", text, VoFor(text), QueuePos, 1f, true);
+        if (tier == 0) return;
+        PlayerController.I.AddShake(Bal.G("Nunchi_HurryShake", 0.12f));
+        if (!LookingBack) hurryWait = Bal.G("Nunchi_HurryIgnoreWindow", 7f);
     }
 
     // 음성은 기존 파일이 있는 문구만
@@ -279,8 +317,4 @@ public class NunchiSystem : MonoBehaviour
         if (target <= 0f && src.volume <= 0f && src.isPlaying) src.Stop();
     }
 
-    static float Range(string minKey, float min, string maxKey, float max)
-    {
-        return UnityEngine.Random.Range(Bal.G(minKey, min), Bal.G(maxKey, max));
-    }
 }

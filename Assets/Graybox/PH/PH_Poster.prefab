@@ -130,7 +130,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bb8e3855bcedbd1408cc62f2585160c6, type: 2}
+  - {fileID: 2100000, guid: ac939a7c702194ef6a09d81f59724945, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -496,6 +496,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: KioskGame::Readable
   blurred: {fileID: 6129409556905379354}
   sharp: {fileID: 725815392347745509}
+  wide: 0
+  postBlur: 0
   onRead:
     m_PersistentCalls:
       m_Calls: []

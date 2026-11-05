@@ -1,14 +1,11 @@
-// 4-0~4-2: 손에 든 쪽지는 맨눈으로 읽히고 잠깐 뒤 걷는다. 문은 E로 밀고, 스티커를 돋보기로 읽으면 R 당기기가 생긴다.
+// 4-1~4-2: 내린 자리에서 버스가 떠나고 간판을 올려다본다. 문은 E로 밀고, 스티커를 돋보기로 읽으면 R 당기기가 생긴다.
 // R4_Storefront 씬 Director 오브젝트에 부착. 문 물리는 StorefrontDirector를 복사했다.
 // 배치: doorHandle = Anchor_DoorHandle, doorPivot = PH_Door_Glass 안 DoorPivot
 // 배치: doorBlock = Door_Block, pullStand = Anchor_PullStand, insideLook = Anchor_InsideLook, insidePoint = Anchor_InsidePoint
 // 배치: pushDoor = Interact_DoorPush (label 밀기, key E), pullDoor = Interact_DoorPull (label 당기기, key R)
 // 배치: sticker = Sticker_Pull (Readable)
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class R4StorefrontDirector : MonoBehaviour
 {
@@ -23,7 +20,7 @@ public class R4StorefrontDirector : MonoBehaviour
     [SerializeField] Readable sticker;
 
     int tries;
-    bool noteRead, pushing, leaving, muttering, busGo;
+    bool pushing, leaving, busGo;
     float busV = 0.5f;
     Transform signLook, doorLook, bus;
     NpcMover eater;
@@ -65,7 +62,6 @@ public class R4StorefrontDirector : MonoBehaviour
     {
         pushDoor.onUse.RemoveListener(OnPush);
         pullDoor.onUse.RemoveListener(OnPull);
-        IntroEnd();
         if (PlayerController.I) PlayerController.I.HoldStill = false;
     }
 
@@ -78,103 +74,13 @@ public class R4StorefrontDirector : MonoBehaviour
             AudioManager.I.Play("bus_leave", bus.position + Vector3.up, 0.7f);
             busGo = true;
         }
-        IntroBegin();
         yield return Round.Open();
-        yield return Intro();
         yield return LookUp();
-        Note.Hold();
-        Mutter();
-        OnNoteRead();
+        PlayerController.I.HoldStill = false;
+        pushDoor.active = true;
     }
 
     // 간판을 천천히 올려다보고 문으로 시선을 내린다. 입력 없음
-    // ---- 시작 연출: 검은 바탕에 두 손, 시선이 올라오며 배경이 걷힌다 ----
-    // 손은 눈앞 0.7m 안에 있으므로 검은 안개로 그 뒤만 가린다. 안개를 안 받는 글자는 잠시 끄고, 하늘은 색을 내린다
-
-    readonly List<Renderer> introHidden = new List<Renderer>();
-    Material introSky;
-    Color skyTint, fogColor;
-    float skyExposure, fogStart, fogEnd;
-    int eyeMask = -1;
-    bool fogOn;
-    FogMode fogMode;
-
-    void IntroBegin()
-    {
-        var player = PlayerController.I;
-        fogOn = RenderSettings.fog;
-        fogMode = RenderSettings.fogMode;
-        fogColor = RenderSettings.fogColor;
-        fogStart = RenderSettings.fogStartDistance;
-        fogEnd = RenderSettings.fogEndDistance;
-        RenderSettings.fog = true;
-        RenderSettings.fogMode = FogMode.Linear;
-        if (RenderSettings.skybox)
-        {
-            introSky = RenderSettings.skybox = new Material(RenderSettings.skybox);
-            if (introSky.HasProperty("_Tint")) skyTint = introSky.GetColor("_Tint");
-            if (introSky.HasProperty("_Exposure")) skyExposure = introSky.GetFloat("_Exposure");
-        }
-        foreach (var t in FindObjectsByType<TextMeshPro>(FindObjectsSortMode.None))
-        {
-            var r = t.GetComponent<Renderer>();
-            if (!r || !r.enabled) continue;
-            r.enabled = false;
-            introHidden.Add(r);
-        }
-        eyeMask = player.Eye.cullingMask;
-        player.Eye.cullingMask = eyeMask & ~LayerMask.GetMask("LensBlurred");
-        IntroShade(0f);
-        StartCoroutine(player.TurnTo(player.Yaw, Bal.G("R4_IntroPitch", -38f), 0.01f));
-    }
-
-    // 0 검정, 1 원래
-    void IntroShade(float k)
-    {
-        RenderSettings.fogColor = Color.Lerp(Color.black, fogColor, k);
-        RenderSettings.fogStartDistance = Mathf.Lerp(Bal.G("R4_IntroFogStart", 0.7f), fogStart, k);
-        RenderSettings.fogEndDistance = Mathf.Lerp(Bal.G("R4_IntroFogEnd", 1f), fogEnd, k);
-        if (!introSky) return;
-        if (introSky.HasProperty("_Tint")) introSky.SetColor("_Tint", Color.Lerp(Color.black, skyTint, k));
-        if (introSky.HasProperty("_Exposure")) introSky.SetFloat("_Exposure", skyExposure * k);
-    }
-
-    void IntroEnd()
-    {
-        if (eyeMask == -1) return;
-        foreach (var r in introHidden) if (r) r.enabled = true;
-        introHidden.Clear();
-        if (PlayerController.I) PlayerController.I.Eye.cullingMask = eyeMask;
-        eyeMask = -1;
-    }
-
-    IEnumerator Intro()
-    {
-        var player = PlayerController.I;
-        var hands = HandRig.I;
-        player.Freeze(true);
-        hands.SetPointer(true);
-        hands.SetPose("Pose_Open");
-        hands.ShowWatch(Bal.I("R4_IntroWatchHour", 10));
-        yield return new WaitForSeconds(Bal.G("R4_IntroHandSec", 2.5f));
-        hands.HideWatch();
-        hands.SetPointer(false);
-        hands.SetPose("Pose_Default");
-
-        float sec = Mathf.Max(Bal.G("R4_IntroLiftSec", 2.5f), 0.01f);
-        StartCoroutine(player.TurnTo(player.Yaw, 0f, sec));
-        for (float t = 0f; t < 1f; t += Time.deltaTime / sec)
-        {
-            IntroShade(t * t * t);
-            yield return null;
-        }
-        IntroShade(1f);
-        RenderSettings.fog = fogOn;
-        RenderSettings.fogMode = fogMode;
-        IntroEnd();
-        player.Freeze(false);
-    }
-
     IEnumerator LookUp()
     {
         if (!signLook || !doorLook) yield break;
@@ -186,37 +92,6 @@ public class R4StorefrontDirector : MonoBehaviour
         yield return player.LookAt(doorLook.position, 1.8f);
         HandRig.I.SetEnabled(true);
         player.Freeze(false);
-    }
-
-    void OnNoteRead()
-    {
-        if (noteRead) return;
-        noteRead = true;
-        AudioManager.I.Play("paper_rustle", null, 0.5f);
-        StartCoroutine(StartWalking());
-    }
-
-    // 쪽지를 볼 틈을 준 뒤 내리고 걷기 시작한다
-    IEnumerator StartWalking()
-    {
-        yield return new WaitForSeconds(Bal.G("R4_NoteHoldSec", 2f));
-        Note.Close();
-        PlayerController.I.HoldStill = false;
-        pushDoor.active = true;
-    }
-
-    void Mutter()
-    {
-        if (muttering) return;
-        StartCoroutine(MutterRun());
-    }
-
-    IEnumerator MutterRun()
-    {
-        muttering = true;
-        AudioManager.I.Play("paper_rustle", null, 0.4f);
-        yield return Hud.I.Say(null, "쪽지에 뭐라 썼더라...", Me + "_note");
-        muttering = false;
     }
 
     void OnPush()
@@ -232,12 +107,12 @@ public class R4StorefrontDirector : MonoBehaviour
         if (tries == 1)
         {
             yield return Shove(Bal.I("Door_Shove1Count", 2), Bal.G("Door_Shove1Power", 0.9f));
-            yield return Hud.I.Say(null, "어? 왜 안 열려.", Me + "_door1");
+            yield return Hud.I.Say(Me, "어? 왜 안 열려.", Me + "_door1");
         }
         else if (tries == 2)
         {
             yield return Shove(Bal.I("Door_Shove2Count", 3), Bal.G("Door_Shove2Power", 1.1f));
-            yield return Hud.I.Say(null, "잠겼나?", Me + "_door2");
+            yield return Hud.I.Say(Me, "잠겼나?", Me + "_door2");
         }
         else
         {
@@ -307,18 +182,18 @@ public class R4StorefrontDirector : MonoBehaviour
         player.Freeze(true);
         Wallet.I.SetOpen(false);
         HandRig.I.Equip(ItemId.None);
+        StartCoroutine(player.LookArc(Handle, Bal.G("Door_LookSec", 0.5f)));
         AudioManager.I.Play("door_handle", Handle, 0.8f);
-        Coroutine say = Hud.I.Say(null, "아, 당기는 거구먼.", Me + "_door3");
+        Coroutine say = Hud.I.Say(Me, "아, 당기는 거구먼.", Me + "_door3");
         Coroutine step = StartCoroutine(player.WalkTo(pullStand.position, Bal.F("DoorStepSpeed", 0.9f)));
         yield return new WaitForSeconds(0.45f);
-        AudioManager.I.Play("door_glass_open", Handle, 0.8f);
         AudioManager.I.Play("door_chime", Handle, 0.75f);
         doorHeld = true;
         doorHold = -Bal.G("Door_OpenAngle", 1.45f);
         yield return say;
         StopCoroutine(step);
         doorBlock.enabled = false;
-        yield return StoreFlow.Race(this, player.LookAt(insideLook.position, 0.7f), 0.8f);
+        StartCoroutine(player.LookArc(insideLook.position, Bal.G("Door_LookInSec", 0.9f)));
         yield return StoreFlow.Race(this, player.WalkTo(insidePoint.position, Bal.F("MoveSpeed", 1.15f)), 3f);
         GameState.I.CompleteChapter();
     }
@@ -326,10 +201,10 @@ public class R4StorefrontDirector : MonoBehaviour
     void Update()
     {
         // onRead는 조준 시작 때 한 번만 오므로 지금 보이는지를 본다. 임시 T20
-        if (noteRead && !leaving && !pullDoor.active && sticker && sticker.Seen)
+        if (pushDoor.active && !leaving && !pullDoor.active && sticker && sticker.Seen)
         {
             pullDoor.active = true;
-            Hud.I.Say(null, "이건 또 뭐야.", Me + "_why3");
+            Hud.I.Say(Me, "이건 또 뭐야.", Me + "_why3");
         }
 
         float dt = Time.deltaTime;

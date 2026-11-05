@@ -9,8 +9,7 @@
 | R1_Stop, R4_Stop | Route_Board | 이미지 한 장(RouteMap.png), Sharp를 SignBlur 레이어로, Blurred 끔, wide |
 | R1_Stop, R4_Stop | Notice_Cashless(버스 안) | NoticeImage 쿼드를 SignBlur 레이어로, Blurred 끔 |
 | R4_Stop | BisFaceA, BisFaceB | Sharp를 SignBlur 레이어로, Blurred 끔 |
-| R4_Stop | 간판 영역 36개(옛 Sign_Blur 판) | M_SignZone(투명)으로 바꾸고 SignBlur 레이어. 뒤의 실제 간판이 번진다 |
-| R4_Storefront | 간판 영역 13개 | 같음 |
+| R4_Stop, R4_Storefront | 건물 간판 | 번지지 않는다. M_SignZone 간판 영역 49개(R4_Stop 36, R4_Storefront 13)를 2026-11-06에 지웠다 |
 | PH_Door_Glass | Sticker_Pull(당기세요) | Plate를 SignBlur 레이어로, Blurred 끔 |
 
 ## 아직 옛 방식인 것

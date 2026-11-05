@@ -100,6 +100,12 @@ public class AudioManager : MonoBehaviour
         if (src.clip == clip) src.Stop();
     }
 
+    // 제목 화면은 소리를 멈춰 둔다. 그 동안 효과음만 들리게 한다
+    public void SfxThroughPause(bool on)
+    {
+        foreach (var s in sfx) s.ignoreListenerPause = on;
+    }
+
     public AudioSource Play(string key, Vector3? pos = null, float vol = 1f, float rate = 1f, bool clear = false)
     {
         var list = Variants(key);

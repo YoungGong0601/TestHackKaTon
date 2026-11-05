@@ -17,12 +17,14 @@ using UnityEngine.UI;
 // 배치: nunchiGroup = Nunchi (왼쪽 세로 막대 CanvasGroup, 처음 alpha 0, 자식 글자 눈치)
 // 배치: nunchiFill = Nunchi 자식 Fill Image (anchorMin 0 0, 오프셋 0, 코드가 anchorMax y로 높이 조절)
 // 배치: fade = Fade (화면 전체 검정 Image)
-// 배치: titlePanel = Title (전체 화면 크림색, 글자 불고기 세트 하나 / 시작, 처음 꺼짐)
+// 배치: titlePanel = Title (전체 화면 크림색, 글자 불고기 버거 세트 하나 / 시작, 처음 꺼짐)
+// 배치: errorPage = ErrorPage (Title 위 가운데 창, CanvasGroup, 처음 꺼짐), errorClose = 그 자식 Close (오른쪽 위 x 자리), errorOk = 그 자식 Ok (오른쪽 아래, 누름은 x와 같다)
+// 배치: adWall = AdWall (ErrorPage 위 전체 화면, 자식 광고 창은 뜨는 순서대로 놓고 모두 꺼 둔다)
 // 배치: debugText = Debug (왼쪽 위 작은 글자, 처음 꺼짐)
 public class Hud : MonoBehaviour
 {
     public static Hud I { get; private set; }
-    public static bool SkipTitle;   // 시험용: ShowTitle을 건너뛴다
+    public static bool AutoTitle;   // 시험용: 시작과 x를 스스로 누른다
 
     [SerializeField] TMP_Text subs;
     [SerializeField] TMP_Text prompt;
@@ -33,6 +35,10 @@ public class Hud : MonoBehaviour
     [SerializeField] Image nunchiFill;
     [SerializeField] Image fade;
     [SerializeField] GameObject titlePanel;
+    [SerializeField] CanvasGroup errorPage;
+    [SerializeField] RectTransform errorClose;
+    [SerializeField] RectTransform errorOk;
+    [SerializeField] Transform adWall;
     [SerializeField] Text debugText;
 
     const string PlayerColor = "#f3d24b";
@@ -42,12 +48,17 @@ public class Hud : MonoBehaviour
 
     static readonly Dictionary<string, (string name, string color)> Speakers = new()
     {
-        { "yM", ("뒤 손님", "#e8584a") },
-        { "yF", ("뒤 손님", "#e8584a") },
+        { "yM", ("뒷사람", "#e8584a") },
+        { "yF", ("뒷사람", "#e8584a") },
+        { "back", ("뒷사람", "#e8584a") },
         { "ajm", ("아주머니", "#e8584a") },
         { "staff", ("알바생", "#7fd08a") },
+        { "crew", ("직원", "#7fd08a") },
         { "kiosk", ("키오스크", "#7cc6ee") },
         { "pass", ("행인", "#c9c1b4") },
+        { "elder", ("어르신", "#e0a458") },
+        { "drv", ("기사", "#c9c1b4") },
+        { "announce", ("안내 방송", "#7cc6ee") },
     };
     static readonly Dictionary<char, string> Marks = new() { { 'y', "#f3d24b" }, { 'r', "#e8584a" }, { 'g', "#7fd08a" }, { 'b', "#7cc6ee" } };
     static readonly Regex MarkRegex = new(@"\{([yrgb]):([^}]*)\}");
@@ -93,7 +104,8 @@ public class Hud : MonoBehaviour
     IEnumerator SayRoutine(string speaker, string text, string voKey, float hold, Vector3? pos, float vol, bool clear)
     {
         int token = ++subToken;
-        subs.text = Wrap(Mark(text));   // 임시 T08: 화자 이름 표시 안 함
+        if (pos.HasValue && PlayerController.I != null) PlayerController.I.Gaze(pos.Value);
+        subs.text = Wrap(Name(speaker) + Mark(text));
         float len = hold >= 0f ? hold : Mathf.Max(1.5f, text.Length * 0.1f);
         if (!string.IsNullOrEmpty(voKey))
         {
@@ -174,9 +186,16 @@ public class Hud : MonoBehaviour
                 if (n >= itemSlots.Length) break;
                 var slot = itemSlots[n++];
                 slot.gameObject.SetActive(true);
-                bool on = id == ItemId.Memo ? Note.Opened : hands.Held == id || (id == ItemId.Wallet && hands.walletOut);
+                bool on = id == ItemId.Memo ? Note.Opened : id == ItemId.Receipt ? hands.ReceiptOn : hands.Held == id || (id == ItemId.Wallet && hands.walletOut);
                 slot.text = $"<color={(on ? ItemOn : ItemOff)}><b>{n}</b> {ItemName(id)}</color>";
             }
+        }
+        // 오른쪽 정렬 줄이라 영수증이 붙어도 앞 칸이 밀리지 않게 끝 칸을 투명 글자로 잡아 둔다
+        if (n > 0 && n < itemSlots.Length && !hands.HasReceipt)
+        {
+            var slot = itemSlots[n++];
+            slot.gameObject.SetActive(true);
+            slot.text = $"<alpha=#00><b>{n}</b> {ItemName(ItemId.Receipt)}";
         }
         for (; n < itemSlots.Length; n++) itemSlots[n].gameObject.SetActive(false);
     }
@@ -187,6 +206,7 @@ public class Hud : MonoBehaviour
         ItemId.Lens => "돋보기",
         ItemId.Card => CardName,
         ItemId.Wallet => "지갑",
+        ItemId.Receipt => "영수증",
         _ => "",
     };
 
@@ -226,7 +246,7 @@ public class Hud : MonoBehaviour
     // 시간을 멈추고 클릭을 기다린다. 끝나면 기록 시작. GameState가 0번 챕터 진입 때 부른다
     public Coroutine ShowTitle()
     {
-        if (SkipTitle || titleOpen || titlePanel == null) return null;
+        if (titleOpen || titlePanel == null) return null;
         return StartCoroutine(TitleRoutine());
     }
 
@@ -234,17 +254,102 @@ public class Hud : MonoBehaviour
     {
         titleOpen = true;
         titlePanel.SetActive(true);
+        float speed = Time.timeScale;
         Time.timeScale = 0f;
         AudioListener.pause = true;
         if (PlayerController.I != null) PlayerController.I.SetMode(PlayerController.Mode.Locked);
         yield return null;
-        while (!Clicked()) yield return null;
+        while (!AutoTitle && !Clicked()) yield return null;
+        if (errorPage != null) yield return ErrorRoutine(speed);
         titlePanel.SetActive(false);
-        Time.timeScale = 1f;
+        Time.timeScale = speed;
         AudioListener.pause = false;
         titleOpen = false;
         if (PlayerController.I != null) PlayerController.I.SetMode(PlayerController.Mode.Fps);
         if (GameState.I != null) GameState.I.Stats.startTime = Time.time;
+    }
+
+    // 시작을 누르면 오류음, 잠시 뒤 시작 화면 위에 오류 창. x를 누르면 광고 창이 화면을 덮었다가 닫히며 게임이 드러난다. 씬은 이미 불러온 상태다
+    IEnumerator ErrorRoutine(float speed)
+    {
+        if (AudioManager.I != null)
+        {
+            AudioManager.I.SfxThroughPause(true);
+            AudioManager.I.Play("kiosk_error", null, 0.8f, 1f, true);
+        }
+        yield return new WaitForSecondsRealtime(Bal.G("Title_ErrorDelaySec", 1f));
+        errorPage.gameObject.SetActive(true);
+        StartCoroutine(Pop(errorPage.transform));
+        yield return null;
+        while (!AutoTitle && !CloseClicked()) yield return null;
+
+        adWall.gameObject.SetActive(true);
+        int count = Mathf.Min(Bal.I("Title_AdCount", 20), adWall.childCount);
+        const float Faster = 0.82f;   // 다음 창까지의 간격이 이만큼씩 줄어든다
+        float gap = Bal.G("Title_AdSec", 2f) * (1f - Faster) / (1f - Mathf.Pow(Faster, count));
+        for (int i = 0; i < count; i++)
+        {
+            adWall.GetChild(i).gameObject.SetActive(true);
+            StartCoroutine(Pop(adWall.GetChild(i)));
+            if (AudioManager.I != null) AudioManager.I.Play("kiosk_popup", null, 0.5f, Random.Range(0.95f, 1.15f), true);
+            yield return new WaitForSecondsRealtime(gap);
+            gap *= Faster;
+        }
+        yield return new WaitForSecondsRealtime(Bal.G("Title_AdHoldSec", 0.4f));
+
+        // 창 뒤에서 게임을 돌려 두고 나중에 뜬 창부터 닫는다
+        errorPage.gameObject.SetActive(false);
+        titlePanel.SetActive(false);
+        fadeToken++;
+        SetFade(0f);
+        Time.timeScale = speed;
+        AudioListener.pause = false;
+        if (AudioManager.I != null) AudioManager.I.SfxThroughPause(false);
+        float step = Bal.G("Title_AdCloseSec", 0.7f) / count;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            StartCoroutine(Unpop(adWall.GetChild(i)));
+            if (AudioManager.I != null && i % 2 == 0) AudioManager.I.Play("kiosk_tap", null, 0.35f, 1.3f, true);
+            yield return new WaitForSecondsRealtime(step);
+        }
+        yield return new WaitForSecondsRealtime(Bal.G("Title_PopSec", 0.25f));
+        adWall.gameObject.SetActive(false);
+    }
+
+    // 창이 튕기며 뜬다. 0.8에서 1.08을 넘었다가 1로
+    IEnumerator Pop(Transform window)
+    {
+        float sec = Mathf.Max(Bal.G("Title_PopSec", 0.25f), 0.01f);
+        for (float t = 0f; t < sec; t += Time.unscaledDeltaTime)
+        {
+            float k = t / sec;
+            window.localScale = Vector3.one * (k < 0.6f ? Mathf.Lerp(0.8f, 1.08f, k / 0.6f) : Mathf.Lerp(1.08f, 1f, (k - 0.6f) / 0.4f));
+            yield return null;
+        }
+        window.localScale = Vector3.one;
+    }
+
+    // 뜰 때의 튕김을 뒤집어 살짝 부풀었다가 작아지며 사라진다
+    IEnumerator Unpop(Transform window)
+    {
+        float sec = Mathf.Max(Bal.G("Title_PopSec", 0.25f), 0.01f);
+        for (float t = 0f; t < sec; t += Time.unscaledDeltaTime)
+        {
+            float k = t / sec;
+            window.localScale = Vector3.one * (k < 0.4f ? Mathf.Lerp(1f, 1.08f, k / 0.4f) : Mathf.Lerp(1.08f, 0.3f, (k - 0.4f) / 0.6f));
+            yield return null;
+        }
+        window.gameObject.SetActive(false);
+        window.localScale = Vector3.one;
+    }
+
+    bool CloseClicked()
+    {
+        var mouse = Mouse.current;
+        if (mouse == null || !mouse.leftButton.wasPressedThisFrame) return false;
+        var at = mouse.position.ReadValue();
+        return RectTransformUtility.RectangleContainsScreenPoint(errorClose, at, null)
+            || (errorOk != null && RectTransformUtility.RectangleContainsScreenPoint(errorOk, at, null));
     }
 
     static bool Clicked()

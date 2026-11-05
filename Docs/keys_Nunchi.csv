@@ -36,3 +36,13 @@ Nunchi_CrowdAt,뒤 사람 웅성임 시작 게이지,Float,40,point,심장 소�
 Nunchi_CrowdVolMin,웅성임 시작 볼륨,Float,0.3,ratio,원본이 작아 높게 둠
 Nunchi_CrowdVolAdd,게이지 끝까지 더해지는 볼륨,Float,0.6,ratio,폭발 직전 가장 큼
 Nunchi_SorryHoldSec,사과 뒤 게이지 멈춤,Float,2,sec,체감
+Nunchi_SighMinSec,조작 시작 뒤 한숨이 없는 시간,Float,30,sec,시작 직후 한숨은 와닿지 않음
+Nunchi_SighScore,한숨이 나오는 답답함 점수,Float,20,score,잘 조작 중이면 넘지 않음
+Nunchi_SighGapSec,한숨 뒤 다음 한숨까지,Float,12,sec,눈치 높을수록 짧아짐
+Nunchi_SighMissScore,실수 한 번의 점수,Float,6,score,오터치 잘못된 버튼 튕김
+Nunchi_SighStallFreeSec,한 화면에서 점수가 안 오르는 시간,Float,10,sec,읽을 시간
+Nunchi_SighStallRate,그 뒤 초당 점수,Float,1,score/s,다음 단계로 못 넘어간 시간
+Nunchi_SighStepDown,처음 보는 화면으로 넘어갈 때 줄어드는 점수,Float,8,score,진행하면 풀림
+Nunchi_BackMidMul,뒷사람 반응 중간 단계 점수 배수,Float,1.5,x,기준 점수의 배수
+Nunchi_BackHighMul,뒷사람 재촉 단계 점수 배수,Float,2,x,기준 점수의 배수
+Nunchi_CrowdVolume,웅성거림 음량,Float,0.5,ratio,짧게 들림

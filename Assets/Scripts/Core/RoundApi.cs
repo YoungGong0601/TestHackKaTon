@@ -62,22 +62,6 @@ public static class Steps
     }
 }
 
-// 손목시계. 입력 잠금, 왼손 시계 들기, 바늘 표시, Watch_LookSec 뒤 내림
-public static class Watch
-{
-    public static IEnumerator Look(int hour)
-    {
-        var pc = PlayerController.I;
-        bool frozen = pc.Frozen;
-        pc.Freeze(true);
-        HandRig.I.ShowWatch(hour);
-        yield return new WaitForSeconds(Bal.G("Watch_LookSec", 2f));
-        HandRig.I.HideWatch();
-        yield return new WaitForSeconds(0.3f);
-        pc.Freeze(frozen);
-    }
-}
-
 // 대화 선택지. HUD 버튼, 커서 모드로 바꾸고 고른 뒤 이전 모드로
 public static class Choice
 {
@@ -149,7 +133,7 @@ public static class Ending
     // 임시 T32: 사용자 지시 문구(시트 문구를 대신함)
     public const string Stat = "80~84세 노인 중 키오스크로 주문할 수 있는 사람은 2.3%입니다.";
     public const string Source = "출처: 2023년도 노인실태조사(보건복지부, 한국보건사회연구원),\n김세진, 「노인의 여가 및 정보화 현황」, 보건복지포럼 2024년 11월호";
-    public const string Title = "불고기버거 세트 하나";
+    public const string Title = "불고기 버거 세트 하나";
 
     public static IEnumerator Play()
     {
@@ -165,10 +149,11 @@ public static class Ending
         if (ui != null)
         {
             ui.End(true);
+            // 한 화면에 위 제목, 가운데 통계, 아래 카피, 맨 아래 출처
             ui.EndStat(Stat, Source);
-            yield return new WaitForSeconds(Bal.G("End_StatSec", 5f));
             ui.EndTitle(Title);
-            yield return new WaitForSeconds(Bal.G("End_TitleMinSec", 1.5f));
+            yield return ui.EndReveal();
+            yield return new WaitForSeconds(Bal.G("End_StatSec", 5f));
             while (!RoundUi.Clicked) yield return null;
             ui.End(false);
         }
