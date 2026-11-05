@@ -1,7 +1,7 @@
 """Street 그룹 공용 도우미: 형상(베벨 파츠·텍스트·튜브), 절차 머티리얼(마모·때·녹), 데칼, 마무리(굽기·내보내기·미리보기·검증)."""
 import bpy, bmesh, math, os, sys, json, random, subprocess
 from mathutils import Vector, Matrix, Euler
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,7 +14,7 @@ CAT = "Street"
 def ensure_tex():
     """Pillow 텍스처가 없으면 _textures.py 를 돌린다."""
     if not os.path.exists(os.path.join(TEX, ".done")):
-        subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), "-I",
+        subprocess.run([k3d.PY, "-I",
                         os.path.join(HERE, "_textures.py"), TEX], check=True)
 
 
@@ -573,7 +573,7 @@ def ensure_ground_tex():
     """점자블록·노랑 도료·맨홀 텍스처 (_tex_ground.py)."""
     ensure_tex()
     if not os.path.exists(os.path.join(TEX, ".ground_done")):
-        subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), "-I",
+        subprocess.run([k3d.PY, "-I",
                         os.path.join(HERE, "_tex_ground.py"), TEX], check=True)
 
 

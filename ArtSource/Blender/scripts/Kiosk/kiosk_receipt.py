@@ -12,7 +12,7 @@ import storelib as S  # noqa: E402
 N = "KioskReceipt"
 TEX = os.path.join(k3d.ART, "Textures", N, f"T_{N}_Paper.png")
 if not os.path.exists(TEX):
-    subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), os.path.join(HERE, "kiosk_tex.py"), k3d.REPO, k3d.CACHE, "receipt"], check=True)
+    subprocess.run([k3d.PY, os.path.join(HERE, "kiosk_tex.py"), k3d.REPO, k3d.CACHE, "receipt"], check=True)
 
 k3d.reset()
 W, LR, R, A0 = 0.08, 0.25, 0.034, 1.45   # 폭, 길이, 처음 말림 반지름/각도 (프로토 printReceipt 곡선)

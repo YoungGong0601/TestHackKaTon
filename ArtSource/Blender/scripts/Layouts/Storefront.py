@@ -4,7 +4,7 @@
 매장 안과 매장 앞 거리는 Layouts/Store.json 을 그대로 읽어 같은 자리에 둔다 (씬이 넘어갈 때 이어지게). 먼저 Store.py 를 실행해 둘 것.
 보도는 4.18 m 다 (프로토타입 5.8 m). 경계석 앞면 y=-7.98, 도로 중심 y=-11.98 (z=-0.14)."""
 import bpy, sys, os, json, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d
 from mathutils import Vector, Matrix
 

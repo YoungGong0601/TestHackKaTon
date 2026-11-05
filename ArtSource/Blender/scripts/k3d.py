@@ -13,7 +13,8 @@
 
 실행:  blender -b --factory-startup --python <asset>.py
 검증:  blender -b --factory-startup --python k3d.py -- validate <...>/Models/Store/Kiosk.fbx [기대높이m]
-환경변수: K3D_ROOT(출력 루트, 기본 저장소) · K3D_CACHE(다운로드 캐시) · K3D_BAKE_SLOTS(동시 베이크 수, 기본 6)
+새 컴퓨터: 처음 한 번 blender -b --factory-startup --python setup.py (Pillow 가 있는 파이썬을 K3D_CACHE/venv 에 만든다)
+환경변수: K3D_ROOT(출력 루트, 기본 저장소) · K3D_CACHE(캐시, 기본 ArtSource/_cache) · K3D_BAKE_SLOTS(동시 베이크 수, 기본 6)
 
 규칙
 - 머티리얼 이름: M_<이름>. 접두사 M_Glass(투명) · M_Dyn(게임이 런타임에 텍스처를 넣는 화면, UV 0-1) · M_Tile(타일링 텍스처, 월드 UV)
@@ -22,7 +23,12 @@
 - Unity 머티리얼은 FBX 옆 <에셋>.json 을 Assets/Editor/Art3DTools.cs 가 읽어 URP Lit 으로 만든다.
   색은 linear 로 저장한다 (Blender 값 그대로). MS 텍스처 = R 금속, G AO, A 스무스니스.
 """
-import bpy, bmesh, os, sys, json, math, shutil, urllib.request, tempfile, time, fcntl
+import bpy, bmesh, os, sys, json, math, shutil, urllib.request, time
+try:
+    import fcntl
+except ImportError:  # Windows
+    fcntl = None
+    import msvcrt
 import numpy as np
 from mathutils import Vector
 
@@ -32,7 +38,8 @@ ART = os.path.join(REPO, "Assets", "Art3D")
 SRC = os.path.join(REPO, "ArtSource")
 KEEP = ("M_Glass", "M_Dyn", "M_Tile")
 UA = {"User-Agent": "kiosk-hackathon-asset-pipeline"}
-CACHE = os.environ.get("K3D_CACHE") or os.path.join(tempfile.gettempdir(), "k3d_cache")
+CACHE = os.environ.get("K3D_CACHE") or os.path.join(SRC, "_cache")
+PY = os.path.join(CACHE, "venv", "Scripts", "python.exe") if os.name == "nt" else os.path.join(CACHE, "venv", "bin", "python")  # Pillow 가 있는 파이썬
 BAKE_SLOTS = int(os.environ.get("K3D_BAKE_SLOTS", "6"))  # 동시에 GPU 베이크하는 Blender 프로세스 수 상한
 
 
@@ -41,9 +48,12 @@ def _bake_slot():
     os.makedirs(d, exist_ok=True)
     while True:
         for i in range(BAKE_SLOTS):
-            f = open(os.path.join(d, f"slot{i}"), "w")
+            f = open(os.path.join(d, f"slot{i}"), "a")  # "w" 는 Windows 에서 잠긴 파일을 비우다 실패한다
             try:
-                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                if fcntl:
+                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                else:
+                    msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
                 return f
             except OSError:
                 f.close()
@@ -270,8 +280,16 @@ def _cycles(samples):
     sc.render.engine = 'CYCLES'
     try:
         pr = bpy.context.preferences.addons['cycles'].preferences
-        pr.compute_device_type = 'METAL'
-        pr.get_devices()
+        for kind in ('METAL', 'OPTIX', 'CUDA', 'HIP', 'ONEAPI'):
+            try:
+                pr.compute_device_type = kind
+            except TypeError:  # 이 운영체제에 없는 종류
+                continue
+            pr.get_devices()
+            if any(d.type == kind for d in pr.devices):
+                break
+        else:
+            raise RuntimeError("GPU 없음")
         for d in pr.devices:
             d.use = True
         sc.cycles.device = 'GPU'
@@ -560,7 +578,7 @@ def polyhaven(asset_id, res="2k", kind="textures"):
         req = urllib.request.Request(f"https://api.polyhaven.com/files/{asset_id}", headers=UA)
         with urllib.request.urlopen(req, timeout=60) as r:
             open(meta, "wb").write(r.read())
-    files = json.load(open(meta))
+    files = json.load(open(meta, encoding="utf-8"))
 
     def get(url, rel):
         p = os.path.join(d, rel)
@@ -795,7 +813,7 @@ def export(asset, category, objs, rigged=False, anim=False, notes=None):
     info = {"asset": asset, "category": category, "rigged": rigged, "materials": list(mats.values())}
     if notes:
         info["notes"] = notes
-    json.dump(info, open(os.path.join(mdir, asset + ".json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(info, open(os.path.join(mdir, asset + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     bdir = os.path.join(SRC, "Blender", category)
     os.makedirs(bdir, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(bdir, asset + ".blend"), copy=True, compress=True)
@@ -905,7 +923,7 @@ def validate(fbx, expect_h=None):
     reset()
     bpy.ops.import_scene.fbx(filepath=fbx)
     js_path = os.path.splitext(fbx)[0] + ".json"
-    js = json.load(open(js_path)) if os.path.exists(js_path) else None
+    js = json.load(open(js_path, encoding="utf-8")) if os.path.exists(js_path) else None
     rep = {"fbx": fbx, "json": bool(js), "objects": [], "problems": []}
     used = set()
     tris = 0

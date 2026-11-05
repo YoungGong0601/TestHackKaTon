@@ -2,12 +2,12 @@
 import bpy, bmesh, math, os, sys, subprocess
 from mathutils import Vector, Matrix, Euler
 
-SCRIPTS = '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts'
+SCRIPTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 sys.path.insert(0, SCRIPTS)
 import k3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PY = '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache/venv/bin/python'
+PY = k3d.PY
 OUT2D = os.path.join(k3d.CACHE, "home2d")
 CAT = "Home"
 

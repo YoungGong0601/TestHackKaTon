@@ -16,7 +16,7 @@ def make_textures():
     """Pillow 텍스처(번호판·스티커·배달통 등)를 캐시에 만든다. VEH_TEX_DONE=1 이면 건너뜀 (병렬 실행 시 먼저 한 번 만든다)."""
     if os.environ.get("VEH_TEX_DONE"):
         return
-    py = os.path.abspath(os.path.join(HERE, "..", "..", "..", "_cache", "venv", "bin", "python"))
+    py = k3d.PY
     subprocess.run([py, os.path.join(HERE, "_tex.py"), TEX], check=True)
 
 

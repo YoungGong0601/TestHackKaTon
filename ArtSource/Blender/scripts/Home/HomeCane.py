@@ -1,6 +1,7 @@
 # 할아버지 나무 지팡이 (갈고리 손잡이, 고무 발굽, 손목 끈). 원점 = 고무 끝 바닥, 갈고리는 -X 쪽.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy
 
 k3d.reset()

@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.join(HERE, ".."))
 import k3d  # noqa: E402
 
 TEX = os.path.join(k3d.CACHE, "store_tex")          # Pillow 로 그린 원본 이미지 (캐시)
-VENV_PY = os.path.join(k3d.CACHE, "venv", "bin", "python")
+VENV_PY = k3d.PY
 
 # 레이아웃 상수 (프로토타입 pe)
 X0, X1, Z0, FRONT, H = -6.0, 5.5, -4.2, 3.8, 3.1

@@ -15,7 +15,7 @@ import k3d
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))          # ArtSource
 GLB = os.path.join(ROOT, "_ref", "models")
 DECAL = os.path.join(ROOT, "_cache", "npca")
-VENV_PY = os.path.join(ROOT, "_cache", "venv", "bin", "python")
+VENV_PY = k3d.PY
 KEEP_CLIPS = ("Idle", "Walk", "Run", "Sitting", "Clapping")
 FPS = 24
 

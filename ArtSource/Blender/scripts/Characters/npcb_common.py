@@ -24,7 +24,7 @@ SEAT = 0.65   # SitPhone 의자 좌판 높이(m)
 def decals():
     """Pillow 데칼이 없으면 만든다."""
     if not os.path.exists(os.path.join(DEC, "mouth.png")):
-        py = os.path.join(ARTSRC, "_cache", "venv", "bin", "python")
+        py = k3d.PY
         subprocess.check_call([py, os.path.join(HERE, "npcb_decals.py"), DEC])
     return DEC
 

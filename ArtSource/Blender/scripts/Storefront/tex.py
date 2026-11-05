@@ -7,8 +7,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
 
 ROOT = os.environ.get("K3D_ROOT") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 TEX = os.path.join(ROOT, "Assets", "Art3D", "Textures")
-REF = "/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_ref/img/"
-FC = "/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache/fonts/"
+REF = os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_ref", "img") + os.sep
+FC = os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_cache", "fonts") + os.sep
 UF = os.path.expanduser("~/Library/Fonts/")
 F = {"han": FC + "BlackHanSans-Regular.ttf", "pen": FC + "NanumPenScript-Regular.ttf", "do": FC + "DoHyeon-Regular.ttf",
      "black": UF + "Pretendard-Black.otf", "xb": UF + "Pretendard-ExtraBold.otf", "bold": UF + "Pretendard-Bold.otf",

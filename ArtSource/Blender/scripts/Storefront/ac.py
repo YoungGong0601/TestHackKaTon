@@ -1,7 +1,8 @@
 # 에어컨 실외기 StorefrontAC: 벽걸이 앵글 거치대 + 실외기 + 테이프 감은 배관·배수 호스·벽 슬리브.
 # 원점 = 거치대 바닥, X 가운데, Y=0 이 벽면(뒤). 정면 = -Y. 팬은 자식 StorefrontAC_Fan (원점 = 팬 축).
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Storefront')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sf
 from sf import k3d, box2, box, cyl, quad
 import bpy

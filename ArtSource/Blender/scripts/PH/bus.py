@@ -57,7 +57,7 @@ def drop_hinge(bm, isl, c):
         bmesh.ops.delete(bm, geom=isl, context='VERTS')
 
 
-subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), "-I", os.path.join(HERE, "bus_tex.py"), TDIR], check=True)
+subprocess.run([k3d.PY, "-I", os.path.join(HERE, "bus_tex.py"), TDIR], check=True)
 ph.load("Vehicles", "CityBus")
 O = bpy.data.objects
 

@@ -3,12 +3,12 @@ import os, sys, math, subprocess
 import bpy, bmesh
 from mathutils import Vector, Matrix
 
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VENV = '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache/venv/bin/python'
-FONT = '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache/fonts/'
+VENV = k3d.PY
+FONT = os.path.join(k3d.CACHE, "fonts") + os.sep
 TEXDIR = os.path.join(k3d.ART, "Textures")
 
 # 유리문 힌지 축·클로저 슈 (door.py·facade.py 공용). 문짝 제작 좌표: 힌지 쪽 문틀 면 x=0, 문 두께 중심 y=0.

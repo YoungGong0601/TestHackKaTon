@@ -1,7 +1,8 @@
 # 할아버지 낡은 가죽 단화 한 켤레 (벨크로 효도화). 오른쪽 한 짝을 만들어 굽고, 거울 복제로 왼쪽.
 # 정면(-Y) = 앞코(문 쪽), 원점 = 두 짝 바닥 중앙.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 from mathutils import Vector
 

@@ -1,6 +1,7 @@
 # 약 봉투 (새봄 약국) — 부풀어 오른 종이 봉투 + 접힌 윗단 + 스테이플
 import sys, math, random
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 from mathutils import Vector
 

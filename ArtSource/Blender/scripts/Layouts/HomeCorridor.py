@@ -2,7 +2,8 @@
 # 좌표 = HomeEntry 좌표계 그대로 (Blender = (-x3, z3, y3)). 레이아웃에서 (0,0,0), 회전 없이 둔다.
 # 현관 벽 바깥면 y=-2.47, 복도 바닥 = 현관 타일 높이 z=-0.13, 폭 1.5m, x -7.5..7.5. 지면(z=-13.63, 5층 아래)도 포함.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Home"))
 import hk, k3d, bpy, bmesh
 
 k3d.reset()

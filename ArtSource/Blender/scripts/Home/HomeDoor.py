@@ -2,7 +2,8 @@
 # -Y = 복도(바깥) 면: 도어락 키패드 / +Y = 집 안쪽 면: 레버, 도어락 실내기, 체인, 도어클로저, 전단지 자석.
 # Z 축 + 회전 = 바깥(복도)으로 열림.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 from mathutils import Vector
 

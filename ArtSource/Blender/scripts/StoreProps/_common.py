@@ -1,11 +1,11 @@
 # StoreProps 공용 도우미: 메시 생성, 절차 머티리얼(마모/때/지문), 라벨(Pillow) 연결
 import sys, os, math, subprocess
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d, bpy, bmesh
 from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PY = os.path.join(k3d.CACHE, "venv", "bin", "python")
+PY = k3d.PY
 
 
 # ------------------------------------------------------------ 메시

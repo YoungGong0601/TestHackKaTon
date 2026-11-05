@@ -14,7 +14,7 @@ TAU = math.tau
 
 def textures(asset):
     """_tex.py(Pillow) 로 이 에셋 PNG 를 다시 만든다. 반환: (텍스처 폴더, 데칼 배치표)."""
-    py = os.path.join(k3d.CACHE, "venv", "bin", "python")
+    py = k3d.PY
     subprocess.run([py, "-I", os.path.join(HERE, "_tex.py"), asset, k3d.ART, k3d.CACHE], check=True)
     lay = os.path.join(k3d.CACHE, "busstop", asset + ".json")
     return os.path.join(k3d.ART, "Textures", asset), (json.load(open(lay)) if os.path.exists(lay) else {})

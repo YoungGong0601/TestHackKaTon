@@ -4,7 +4,7 @@
 # 차도 35.2..43.2 (노면 z=-0.14, 버스 차로 y=37 은 +X 진행), 건너편 보도 43.2..47.38.
 # 먼저 StreetGround.py 를 실행해 둘 것 (Models/LayoutStreet/StreetGround.fbx).
 import sys, os, math, json
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import bpy, k3d
 from mathutils import Vector, Matrix
 

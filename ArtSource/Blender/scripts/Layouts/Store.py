@@ -2,7 +2,7 @@
 결과: Assets/Art3D/Layouts/Store.json (블렌더 좌표), ArtSource/Previews/Scene_Store_<n>.png
 좌표: 프로토타입(three, Y-up) (x, y, z) -> 블렌더 (x, -z, y). three yaw a -> 블렌더 rotZ a. 에셋 정면 = -Y."""
 import bpy, sys, os, json, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d
 from mathutils import Vector, Matrix
 

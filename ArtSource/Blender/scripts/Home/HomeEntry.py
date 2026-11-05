@@ -2,7 +2,7 @@
 # 원점 = 거실 마루 바닥(three 원점). 현관 타일은 한 단 아래(z=-0.13), 현관문은 -Y 쪽 (Unity +Z = 정면).
 # 벽/바닥/천장 = M_Tile_* (월드 UV), 가구/소품 = 굽기, 인쇄물 = M_HomeEntry_Prints (굽지 않음).
 import sys, math, os, subprocess, random
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 from mathutils import Vector
 

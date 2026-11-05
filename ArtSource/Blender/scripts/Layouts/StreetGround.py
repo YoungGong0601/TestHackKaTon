@@ -2,7 +2,7 @@
 # 좌표 = Street 레이아웃 좌표 그대로 (Blender = (x3, -z3, y3)): 레이아웃에서 (0,0,0), 회전 없이 둔다.
 # 재질은 도로와 같은 M_Tile_Street_Asphalt (기존 T_Tile_Street_Asphalt_* 텍스처를 그대로 씀, 새 텍스처 없음).
 import sys, os
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import bpy, k3d
 
 k3d.reset()

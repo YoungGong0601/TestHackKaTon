@@ -1,6 +1,6 @@
 # 음식 그룹 공통 도구: 인쇄 텍스처 생성, 셰이더 노드 빌더, 메시 생성기, 소켓
 import sys, os, math, random, subprocess
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import bpy, bmesh, k3d
 from mathutils import Vector, Matrix, noise as mnoise
 
@@ -11,7 +11,7 @@ TEX = os.path.join(CACHE, "food_tex")
 
 def textures():
     """Pillow 인쇄 텍스처(_tex.py)를 다시 만든다."""
-    subprocess.run([os.path.join(CACHE, "venv", "bin", "python"), os.path.join(HERE, "_tex.py")],
+    subprocess.run([k3d.PY, os.path.join(HERE, "_tex.py")],
                    check=True, env=dict(os.environ, K3D_CACHE=CACHE))
 
 

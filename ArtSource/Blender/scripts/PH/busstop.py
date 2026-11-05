@@ -136,7 +136,7 @@ def sign_head():
     p = os.path.join(k3d.ART, "Textures", "PH_BusStopSign", "T_PH_BusStopSign_Head.png")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     with tempfile.TemporaryDirectory() as t:
-        subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), "-I", "-c", src, "BusStopSign", t, k3d.CACHE],
+        subprocess.run([k3d.PY, "-I", "-c", src, "BusStopSign", t, k3d.CACHE],
                        check=True)
         shutil.copyfile(os.path.join(t, "Textures", "BusStopSign", "T_BusStopSign_Head.png"), p)
     return p

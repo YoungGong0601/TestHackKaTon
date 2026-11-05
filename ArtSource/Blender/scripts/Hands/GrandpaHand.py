@@ -4,7 +4,7 @@
 원점 = 손목 관절 (1인칭 리그 예외). 손가락 -Y, 손등 +Z. R 엄지 +X, L 엄지 -X.
 """
 import sys, os, json, math, subprocess, urllib.request
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import bpy, bmesh
 import numpy as np
 from mathutils import Vector, Matrix, Quaternion
@@ -16,7 +16,7 @@ FAST = os.environ.get('K3D_FAST') == '1'
 A = f'GrandpaHand_{SIDE}'
 MIR = 1 if SIDE == 'R' else -1
 HERE = os.path.dirname(os.path.abspath(__file__))
-PY = '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache/venv/bin/python'
+PY = k3d.PY
 WORK = os.path.join(k3d.CACHE, 'hands_work', SIDE + ('_fast' if FAST else ''))
 MH = os.path.join(k3d.CACHE, 'makehuman_dl')  # MakeHuman base.obj · default.mhskel · default_weights.mhw (CC0)
 MH_URL = 'https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/'

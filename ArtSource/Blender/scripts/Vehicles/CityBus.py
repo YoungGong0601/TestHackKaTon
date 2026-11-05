@@ -5,14 +5,14 @@ CB_FAST=1 이면 굽기/내보내기 없이 형태 미리보기만 한다.
 """
 import bpy, bmesh, math, os, sys, subprocess
 from mathutils import Vector, Matrix
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import k3d
 
 FAST = os.environ.get("CB_FAST") == "1"
 A = "CityBus"
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEXPY = os.path.join(HERE, "CityBus_tex.py")
-VENV = os.path.abspath(os.path.join(HERE, "..", "..", "..", "_cache", "venv", "bin", "python"))
+VENV = k3d.PY
 TDIR = os.path.join(k3d.ART, "Textures", A)
 
 # ---------------------------------------------------------------- 치수 (m)

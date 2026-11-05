@@ -1,7 +1,8 @@
 # 현관 철제 문틀 + 화강석 문턱 + 경첩(틀 쪽) + 스트라이크 + 고무 개스킷 + 도어클로저 브래킷
 # 원점 = 문틀 바닥 중앙(현관 바닥 높이), -Y = 복도(바깥), +Y = 집 안쪽. 벽 두께 0.12 중앙에 놓인다.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 
 k3d.reset()

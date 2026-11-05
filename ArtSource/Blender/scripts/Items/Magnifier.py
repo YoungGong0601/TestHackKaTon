@@ -1,6 +1,7 @@
 # 돋보기 (손잡이형 독서용 확대경) — 황동 테 + 양볼록 유리 렌즈 + 고정 블록/나사 + 황동 페룰 + 호두나무 손잡이
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Items')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _ik as ik, k3d, bpy, bmesh
 from mathutils import Vector
 

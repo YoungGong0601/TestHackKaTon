@@ -1,6 +1,7 @@
 # 시장은행 체크카드 (ISO ID-1 85.60x53.98x0.76mm, 모서리 R3.18) — 앞/뒤 고해상도 인쇄면 + IC칩 인레이 + 흰 코어 옆면
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Items')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _ik as ik, k3d, bpy, bmesh
 from mathutils import Vector
 

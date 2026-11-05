@@ -3,8 +3,8 @@
 # HomeEntry 가 이 좌표계로 만들어져 회전 없이 (0,0,0) 에 두고, 현관문은 -Y (Unity +Z) 쪽이다.
 # 먼저 HomeCorridor.py 를 실행해 둘 것 (Models/LayoutHome/HomeCorridor.fbx).
 import sys, os, math, json
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts')
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Home"))
 import bpy, k3d, hk
 from mathutils import Vector, Matrix
 

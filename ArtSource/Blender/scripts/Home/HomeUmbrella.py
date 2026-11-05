@@ -1,6 +1,7 @@
 # 검은 장우산 (접혀서 끈으로 묶임). 원점 = 꼭지(땅에 닿는 끝) 바닥, 손잡이 갈고리는 +X 쪽.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Home')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hk, k3d, bpy, bmesh
 from mathutils import Vector
 

@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 HOME = os.path.expanduser("~")
-FONTS = os.path.join(os.environ.get("K3D_CACHE", "/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache"), "fonts")
+FONTS = os.path.join(os.environ.get("K3D_CACHE", os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_cache")), "fonts")
 PEN = os.path.join(FONTS, "NanumPenScript-Regular.ttf")
 SQ = {w: os.path.join(HOME, "Library/Fonts", f"NanumSquare{w}.ttf") for w in ("L", "R", "B", "EB")}
 MONO = "/System/Library/Fonts/Menlo.ttc"

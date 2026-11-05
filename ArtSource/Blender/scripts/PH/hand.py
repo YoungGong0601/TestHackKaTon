@@ -72,7 +72,7 @@ def memo():
     src = bpy.data.objects["Memo_Sheet"]
     png = os.path.join(k3d.ART, "Textures", n, f"T_{n}_Paper.png")
     os.makedirs(os.path.dirname(png), exist_ok=True)
-    subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), "-c", BLANK_MEMO,
+    subprocess.run([k3d.PY, "-c", BLANK_MEMO,
                     os.path.join(k3d.SRC, "Blender", "scripts", "Items"), png], check=True)
     m = bpy.data.materials["M_Dyn_Memo_Paper"]
     m.name = f"M_{n}_Paper"

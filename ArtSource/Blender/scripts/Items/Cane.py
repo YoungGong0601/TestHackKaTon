@@ -1,6 +1,7 @@
 # 할아버지 지팡이 — 갈색 알루미늄 높이조절 지팡이 (오프셋 손잡이 + 고무 그립, 조절 구멍·푸시버튼, 잠금 링, 손목끈, 고무 팁)
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Items')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _ik as ik, k3d, bpy, bmesh
 from mathutils import Vector
 

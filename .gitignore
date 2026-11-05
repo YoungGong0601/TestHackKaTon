@@ -22,6 +22,9 @@ ArtSource/*
 !ArtSource/Blender/
 ArtSource/Blender/*
 !ArtSource/Blender/scripts/
+!ArtSource/_cache/
+ArtSource/_cache/*
+!ArtSource/_cache/fonts/
 
 # MemoryCaptures can get excessive in size.
 /[Mm]emoryCaptures/

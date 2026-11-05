@@ -17,7 +17,7 @@ import ph, k3d
 import _vlib as V
 
 A = "PH_BusInterior"
-PY = os.path.join(k3d.SRC, "_cache", "venv", "bin", "python")
+PY = k3d.PY
 TEX = os.path.join(k3d.ART, "Textures")
 B = ph.at_unity
 

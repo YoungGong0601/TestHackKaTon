@@ -4,7 +4,7 @@ import sys, os, math, random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-FONTS = os.path.join(os.environ.get("K3D_CACHE", "/tmp"), "fonts")
+FONTS = os.path.join(os.environ.get("K3D_CACHE", os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_cache")), "fonts")
 SD = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 SD_I = {"r": 0, "m": 2, "sb": 4, "b": 6, "eb": 14, "h": 16}
 MYEONG = "/System/Library/Fonts/Supplemental/AppleMyungjo.ttf"
@@ -12,7 +12,7 @@ NSQ = os.path.expanduser("~/Library/Fonts/NanumSquareEB.ttf")
 _AV = "/System/Library/AssetsV2/com_apple_MobileAsset_Font7/"
 XING = _AV + "aa99d0b2bad7f797f38b49d46cde28fd4b58876e.asset/AssetData/Xingkai.ttc"      # 行楷 TC (index 1)
 GUNG = _AV + "f879347736afb6e4e0880bcede9df92492c0f040.asset/AssetData/Gungseouche.ttf"  # 궁서체
-BP = os.path.join(os.environ.get("K3D_CACHE", "/tmp"), "ph_backplates")                 # Poly Haven(CC0) 배경 사진
+BP = os.path.join(os.environ.get("K3D_CACHE", os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_cache")), "ph_backplates")                 # Poly Haven(CC0) 배경 사진
 
 
 def F(kind, size):

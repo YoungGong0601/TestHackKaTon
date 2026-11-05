@@ -4,7 +4,7 @@ import os, random, math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-CACHE = os.environ.get("K3D_CACHE") or "/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/_cache"
+CACHE = os.environ.get("K3D_CACHE") or os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")), "_cache")
 OUT = os.path.join(CACHE, "food_tex")
 os.makedirs(OUT, exist_ok=True)
 PH = os.path.join(CACHE, "ph_index")

@@ -1,6 +1,7 @@
 # 손주가 써 준 메모 (수첩에서 찢은 한 장, 4등분 접었다 편 자국) — 앞면 M_Dyn_Memo_Paper (손글씨 placeholder)
 import sys, math, random
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Items')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _ik as ik, k3d, bpy, bmesh
 from mathutils import Vector
 

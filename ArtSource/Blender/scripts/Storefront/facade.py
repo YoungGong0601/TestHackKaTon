@@ -2,7 +2,7 @@
 # + 위층(2~4층) 타일 외벽·창·학원/치과/당구장 간판 + 양옆 떡집/약국. 프로토타입 좌표 그대로 (x = 프로토타입 x,
 # y = -(z - FRONT), 원점 = 매장 x=0 유리선 바닥). 정면(거리) = -Y.
 import sys, math, os
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Storefront')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sf
 from sf import k3d, box2, box, cyl, quad
 import bpy

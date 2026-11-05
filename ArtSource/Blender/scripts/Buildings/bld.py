@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import k3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VPY = os.path.join(k3d.CACHE, "venv", "bin", "python")
+VPY = k3d.PY
 TILE_M = {}          # 타일 머티리얼 이름 -> 타일 크기(m)
 rnd = random.Random(7)
 

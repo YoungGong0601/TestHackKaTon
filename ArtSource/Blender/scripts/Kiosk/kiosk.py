@@ -18,7 +18,7 @@ TEXD = os.path.join(k3d.ART, "Textures", "Kiosk")
 SRC = os.path.join(k3d.CACHE, "kiosk_src")
 need = [os.path.join(TEXD, f) for f in ("T_Kiosk_Panel.png", "T_Kiosk_Paper_BaseColor.jpg", "T_Kiosk_Screen_Off.png")]
 if not all(map(os.path.exists, need + [os.path.join(SRC, "src_smudge.png")])):
-    subprocess.run([os.path.join(k3d.CACHE, "venv", "bin", "python"), os.path.join(HERE, "kiosk_tex.py"), k3d.REPO, k3d.CACHE], check=True)
+    subprocess.run([k3d.PY, os.path.join(HERE, "kiosk_tex.py"), k3d.REPO, k3d.CACHE], check=True)
 ATL = json.load(open(os.path.join(SRC, "paper_atlas.json")))
 
 k3d.reset()

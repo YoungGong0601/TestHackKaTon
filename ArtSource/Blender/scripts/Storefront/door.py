@@ -2,7 +2,8 @@
 # 원점 = 힌지 축(경첩 너클 중심) 바닥 (거리에서 볼 때 왼쪽), 문짝은 +X 로 0.93m, 정면(거리) = -Y.
 # 제작은 '문틀 면 x=0, 문 두께 중심 y=0' 좌표로 하고, 마지막에 축이 원점에 오도록 통째로 옮긴다.
 import sys, math
-sys.path.insert(0, '/Users/jeongwoo/Documents/Github/TestHackKaTon/ArtSource/Blender/scripts/Storefront')
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sf
 from sf import k3d, box2, cyl, quad
 import bpy
