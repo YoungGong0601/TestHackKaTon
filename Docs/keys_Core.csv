@@ -1,0 +1,17 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Elder_MoveSpeed,노인 걸음 속도,Float,1.15,m/s,답답할 만큼 느린 걸음
+Elder_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,뒷걸음은 더 느리게
+Elder_EyeHeight,눈높이,Float,1.56,m,구부정한 노인 눈높이
+Elder_StepStride,걸음 소리 간격,Float,0.62,m,보폭이 좁은 걸음
+Elder_BobRate,고개 흔들림 속도,Float,5.1,rad/m,걸음과 맞는 흔들림 주기
+Elder_BobHeight,고개 위아래 폭,Float,0.042,m,비대칭 걸음 높이
+Elder_LimpRoll,다리 절기 기울기,Float,0.016,rad,왼다리 불편함 표현
+Elder_LimpSway,다리 절기 좌우 폭,Float,0.018,m,왼다리 불편함 표현
+Player_MouseSens,마우스 감도,Float,0.0019,rad/px,시점 회전 감도
+Player_PitchUp,위 시선 한계,Float,1.05,rad,고개 드는 한계
+Player_PitchDown,아래 시선 한계,Float,-1.1,rad,고개 숙이는 한계
+Hand_TrembleScale,손 떨림이 포인터에 주는 폭,Float,0.012,화면 비율,키오스크 포인터 떨림
+Audio_Master,전체 음량,Float,0.9,배,전체 소리 크기
+Elder_CaneEverySteps,지팡이 소리 주기,Float,2,걸음,절뚝이는 박자
+Elder_BreathEverySteps,숨소리 주기,Float,19,걸음,가끔 숨이 찬다
+Chapter_FadeInSec,Director 없는 챕터의 암전 풀림,Float,1,s,PlainChapter 기본

@@ -1,0 +1,54 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Elder_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,문 앞 머뭇거림
+Elder_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,떠밀리는 느낌
+Elder_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,쫓겨나는 느낌
+Bus_LeaveAccel,내려 준 버스 가속,Float,1.7,m/s2,떠나는 버스
+Bus_LeaveMaxSpeed,내려 준 버스 최고 속도,Float,9,m/s,떠나는 버스
+Door_Kick,유리문 밀기 한 번의 충격,Float,0.55,rad/s,덜컥거리는 정도
+Door_Shake,유리문 밀기 화면 흔들림,Float,0.5,scale,덜컥거리는 정도
+Door_SpringK,유리문 스프링 강성,Float,620,per s2,빠르게 튕겨 돌아옴
+Door_SpringD,유리문 스프링 감쇠,Float,24,per s,빠르게 튕겨 돌아옴
+Door_OpenAngle,당겨서 열린 각도,Float,1.45,rad,크게 열림
+Door_StoreOpenAngle,매장 안에서 손님이 드나들 때 각도,Float,1.15,rad,드나듦이 보임
+Door_SignLookSec,간판 올려다보는 시간,Float,3.2,sec,로고를 천천히 보임
+Door_SignHoldSec,간판 보고 머무는 시간,Float,1.1,sec,로고를 천천히 보임
+Queue_FirstArrive,첫 손님이 오기까지,Float,5,sec,줄이 곧 생김
+Queue_ArriveMin,다음 손님 최소 간격,Float,17,sec,줄이 시간 따라 늘어남
+Queue_ArriveMax,다음 손님 최대 간격,Float,25,sec,줄이 시간 따라 늘어남
+Queue_ArriveAfterBlowup,폭발 뒤 다음 손님까지,Float,2.5,sec,줄이 다시 금방 참
+Queue_Max,줄 최대 인원,Int,4,명,압박의 상한
+Queue_Spacing,줄 간격,Float,0.82,m,줄 모양
+Queue_WalkSpeed,줄 손님 걸음,Float,1.25,m/s,노인보다 빠름
+Queue_WaiterSpeed,대기 손님 걸음,Float,1.2,m/s,배경 움직임
+Queue_CookSpeed,주방 직원 걸음,Float,1.3,m/s,배경 움직임
+Queue_YoSpeed,끼어드는 사람 걸음,Float,2.3,m/s,밀고 들어옴
+Queue_YoLeaveSpeed,끼어든 사람이 물러나는 걸음,Float,1.5,m/s,할 일 끝낸 걸음
+Queue_YoTapSec,끼어든 사람 터치 시간,Float,4.2,sec,10초 만에 끝내는 대비
+Queue_YoCardSec,카드 뒤 영수증까지,Float,1,sec,10초 만에 끝내는 대비
+Queue_YoPrintSec,영수증 출력 뒤 뜯기까지,Float,1.3,sec,10초 만에 끝내는 대비
+Nunchi_BlowupWatch,끼어들기를 보는 동안 눈치 값,Float,62,gauge,눈앞은 맑고 민망함만 남음
+Pickup_ReadDelay,영수증 받고 혼잣말까지,Float,2.2,sec,픽업 호흡
+Pickup_CallMin,앞 번호 호출 최소 간격,Float,8,sec,기다림
+Pickup_CallMax,앞 번호 호출 최대 간격,Float,10,sec,기다림
+Pickup_LastMin,내 번호 호출 전 최소 대기,Float,7,sec,기다림
+Pickup_LastMax,내 번호 호출 전 최대 대기,Float,9,sec,기다림
+Pickup_RecallSec,안 받을 때 다시 부르는 간격,Float,13,sec,받을 때까지 재촉
+Door_Shove1Count,첫 밀기 횟수,Int,2,회,문이 안 열리는 당황
+Door_Shove1Power,첫 밀기 세기,Float,0.9,scale,문이 안 열리는 당황
+Door_Shove2Count,둘째 밀기 횟수,Int,3,회,더 세게
+Door_Shove2Power,둘째 밀기 세기,Float,1.1,scale,더 세게
+Door_Shove3Count,셋째 밀기 횟수,Int,5,회,민망할 만큼
+Door_Shove3Power,셋째 밀기 세기,Float,1.3,scale,민망할 만큼
+Store_FryerBeepMin,튀김기 소리 최소 간격,Float,18,s,주방 생활음
+Store_FryerBeepMax,튀김기 소리 최대 간격,Float,32,s,주방 생활음
+Store_PhoneNotifyMin,알바생 폰 알림 최소 간격,Float,24,s,폰만 보는 알바생
+Store_PhoneNotifyMax,알바생 폰 알림 최대 간격,Float,40,s,폰만 보는 알바생
+Pickup_TrayVolume,음식 놓는 소리 볼륨,Float,0.6,ratio,호출보다 작게
+Door_AmbientBlendSec,문 지나며 매장 앰비언트로 맞추는 시간,Float,1.6,sec,들어갈 때 밝기가 튀지 않음
+Queue_MoveWaitSec,영수증 받고 안 비키면 첫 재촉까지,Float,6,sec,뒤 손님이 잠시 참음
+Queue_MoveAgainSec,다음 재촉까지 간격,Float,7,sec,계속 안 비키면 또 재촉
+Queue_MoveClearDist,키오스크 앞을 비웠다고 보는 거리,Float,0.9,m,조금 물러나면 손님이 들어옴
+Npc_AvoidLook,손님이 앞을 살피는 거리,Float,1.2,m,미리 옆으로 돌아감
+Npc_AvoidGap,비켜 지나갈 때 옆 간격,Float,0.62,m,겹치지 않음
+Npc_MinGap,더 다가가지 않는 최소 거리,Float,0.5,m,겹치지 않음
+Npc_StuckSec,막혔을 때 도착으로 치는 시간,Float,2.5,sec,진행이 멈추지 않음

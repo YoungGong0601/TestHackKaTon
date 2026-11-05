@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb0bb1de68a6c9e41acf8acb69283274, type: 3}
+  m_Name: ChapterFlow
+  m_EditorClassIdentifier: KioskGame::ChapterFlow
+  chapters:
+  - sceneName: Home
+    profile: {fileID: 11400000, guid: 2c252035206998d47b586f0baa6cdfe6, type: 2}
+    spawnId: home
+    hasKiosk: 0
+  - sceneName: Street
+    profile: {fileID: 11400000, guid: 2c252035206998d47b586f0baa6cdfe6, type: 2}
+    spawnId: street
+    hasKiosk: 0
+  - sceneName: Bus
+    profile: {fileID: 11400000, guid: 2c252035206998d47b586f0baa6cdfe6, type: 2}
+    spawnId: bus
+    hasKiosk: 0
+  - sceneName: Storefront
+    profile: {fileID: 11400000, guid: 2c252035206998d47b586f0baa6cdfe6, type: 2}
+    spawnId: storefront
+    hasKiosk: 0
+  - sceneName: Store
+    profile: {fileID: 11400000, guid: 2c252035206998d47b586f0baa6cdfe6, type: 2}
+    spawnId: store
+    hasKiosk: 1
+  speakers: []

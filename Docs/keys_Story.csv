@@ -1,0 +1,54 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Home_FadeInSec,현관 시작 밝아짐,Float,1.4,sec,첫 장면 호흡
+Home_ShoeFadeOutSec,신발 신기 암전,Float,0.4,sec,짧은 암전
+Home_ShoeFadeInSec,신발 신은 뒤 밝아짐,Float,0.5,sec,짧은 암전
+Street_FadeInSec,골목 시작 밝아짐,Float,1.2,sec,장면 전환 호흡
+Street_LookBisDist,전광판을 봤다고 치는 거리,Float,8.5,m,멀리서는 대사 안 나옴
+Street_LookBisDot,전광판 시선 판정 내적,Float,0.9,dot,대략 바라보면 인정
+Street_LookBisMaxSec,전광판을 안 봐도 넘어가는 시간,Float,16,sec,막힘 방지
+Street_BisReadDist,돋보기 판독 인정 거리,Float,9.5,m,가까이 가서 읽게 함
+Street_ReadNagSec,돋보기 대사 반복 간격,Float,16,sec,막힌 사람에게 다시 알려 줌
+Street_AskGapSec,학생 뒤 직장인 등장까지,Float,1.6,sec,두 번 묻는 간격
+Street_StudentWalkSpeed,학생 걷는 속도,Float,1.3,m/s,할아버지보다 빠름
+Street_WorkerWalkSpeed,직장인 걷는 속도,Float,1.28,m/s,멈추지 않고 지나감
+Street_WorkerRetrySec,직장인을 놓친 뒤 재등장,Float,2.5,sec,다시 말 걸 기회
+Bus_ArriveSec,버스 도착 이동 시간,Float,11,sec,멀리서 천천히 옴
+Bus_ArriveEase,도착 감속 곡선 지수,Float,2.4,power,정류장 앞에서 감속
+Bus_LeaveSec,버스 출발 이동 시간,Float,13,sec,떠나는 뒷모습
+Bus_LeaveEase,출발 가속 곡선 지수,Float,2.2,power,처음엔 천천히
+Bus_FirstStopSec,첫 버스 정차 시간,Float,3.2,sec,타지 못하고 놓침
+Bus_SecondWaitSec,112번 등장 전 대기,Float,2.5,sec,기다리는 시간
+Bus_BoardDelaySec,문 열린 뒤 승차 가능까지,Float,0.8,sec,문 열림을 본 뒤 탐
+Bus_BoardMaxSec,승차 걸음 최대 시간,Float,2.6,sec,걷다 막혀도 넘어감
+Bus_RideFadeSec,승차 암전,Float,0.8,sec,장면 전환
+Bus_InsideFadeSec,버스 안 밝아짐,Float,1,sec,내부로 들어온 호흡
+Bus_RideDoorSec,내부가 보인 뒤 출발 소리까지,Float,1.6,sec,내부를 둘러볼 시간
+Bus_RideEngineSec,출발 소리 뒤 안내방송까지,Float,2.4,sec,내부를 둘러볼 시간
+Bus_AnnounceHoldSec,안내방송 최소 표시,Float,2.4,sec,자막 읽을 시간
+Bus_AfterAnnounceSec,안내방송 뒤 다음 장까지,Float,1.2,sec,암전 전 호흡
+Elder_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,나가는 느린 걸음
+Home_MemoScale,현관에서 읽는 메모 배율,Float,1.34,배,화면 대부분을 메모가 채움
+Traffic_FirstSec,첫 차 등장까지,Float,1,sec,HTML 값
+Traffic_FirstGapMin,차 첫 등장 순번 간격 최소,Float,2,sec,HTML 값, 처음부터 몰리지 않게
+Traffic_FirstGapMax,차 첫 등장 순번 간격 최대,Float,5,sec,HTML 값
+Traffic_ScooterFirstSec,오토바이 첫 등장까지,Float,5,sec,HTML 값
+Traffic_GapMin,지나간 뒤 다시 나오기까지 최소,Float,2,sec,HTML 값, 큰길 빈도
+Traffic_GapMax,지나간 뒤 다시 나오기까지 최대,Float,11,sec,HTML 값, 큰길 빈도
+Traffic_CarSpeedMin,차 속도 최소,Float,8.8,m/s,HTML 값
+Traffic_CarSpeedMax,차 속도 최대,Float,11,m/s,HTML 값
+Traffic_ScooterSpeed,오토바이 속도,Float,12,m/s,HTML 값
+Traffic_StartX,차가 나오는 x 거리,Float,125,m,화면 밖에서 시작
+Traffic_EndX,차가 사라지는 x 거리,Float,130,m,화면 밖에서 끝
+Traffic_HearDist,차 소리가 나는 플레이어 거리,Float,26,m,곁을 지날 때 한 번
+Traffic_HearMinZ,큰길 소리가 들리는 플레이어 z,Float,24,m,골목 안쪽은 조용함
+Traffic_SoundLead,차 소리를 앞쪽에 두는 거리,Float,14,m,지나가는 방향으로 소리가 먼저 감
+Traffic_CarVolume,차 지나가는 소리 볼륨,Float,0.55,ratio,HTML 값
+Traffic_ScooterVolume,오토바이 소리 볼륨,Float,0.5,ratio,HTML 값
+Traffic_BusRetrySec,버스 운행 중 차 등장 재시도,Float,3,sec,HTML 값, 버스 차선 비움
+Traffic_BusWaitMaxSec,버스가 차선 빌 때까지 기다리는 최대,Float,8,sec,HTML 값, 막힘 방지
+Traffic_LaneCheckX,버스 차선 검사 시작 x 거리,Float,110,m,HTML 값
+Traffic_LaneCheckPast,정류장 지나 검사하는 거리,Float,8,m,HTML 값
+Traffic_CrosswalkFirstSec,첫 횡단보도 신호음까지,Float,9,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkGapMin,횡단보도 신호음 간격 최소,Float,22,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkGapMax,횡단보도 신호음 간격 최대,Float,38,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkVolume,횡단보도 신호음 볼륨,Float,0.45,ratio,멀리서 들리는 배경

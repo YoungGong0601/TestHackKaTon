@@ -1,0 +1,276 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Audio_Master,전체 음량,Float,0.9,배,전체 소리 크기
+Bus_AfterAnnounceSec,안내방송 뒤 다음 장까지,Float,1.2,sec,암전 전 호흡
+Bus_AnnounceHoldSec,안내방송 최소 표시,Float,2.4,sec,자막 읽을 시간
+Bus_ArriveEase,도착 감속 곡선 지수,Float,2.4,power,정류장 앞에서 감속
+Bus_ArriveSec,버스 도착 이동 시간,Float,11,sec,멀리서 천천히 옴
+Bus_BoardDelaySec,문 열린 뒤 승차 가능까지,Float,0.8,sec,문 열림을 본 뒤 탐
+Bus_BoardMaxSec,승차 걸음 최대 시간,Float,2.6,sec,걷다 막혀도 넘어감
+Bus_FirstStopSec,첫 버스 정차 시간,Float,3.2,sec,타지 못하고 놓침
+Bus_InsideFadeSec,버스 안 밝아짐,Float,1,sec,내부로 들어온 호흡
+Bus_LeaveAccel,내려 준 버스 가속,Float,1.7,m/s2,떠나는 버스
+Bus_LeaveEase,출발 가속 곡선 지수,Float,2.2,power,처음엔 천천히
+Bus_LeaveMaxSpeed,내려 준 버스 최고 속도,Float,9,m/s,떠나는 버스
+Bus_LeaveSec,버스 출발 이동 시간,Float,13,sec,떠나는 뒷모습
+Bus_RideDoorSec,내부가 보인 뒤 출발 소리까지,Float,1.6,sec,내부를 둘러볼 시간
+Bus_RideEngineSec,출발 소리 뒤 안내방송까지,Float,2.4,sec,내부를 둘러볼 시간
+Bus_RideFadeSec,승차 암전,Float,0.8,sec,장면 전환
+Bus_SecondWaitSec,112번 등장 전 대기,Float,2.5,sec,기다리는 시간
+Chapter_FadeInSec,Director 없는 챕터의 암전 풀림,Float,1,s,PlainChapter 기본
+Door_AmbientBlendSec,문 지나며 매장 앰비언트로 맞추는 시간,Float,1.6,sec,들어갈 때 밝기가 튀지 않음
+Door_Kick,유리문 밀기 한 번의 충격,Float,0.55,rad/s,덜컥거리는 정도
+Door_OpenAngle,당겨서 열린 각도,Float,1.45,rad,크게 열림
+Door_Shake,유리문 밀기 화면 흔들림,Float,0.5,scale,덜컥거리는 정도
+Door_Shove1Count,첫 밀기 횟수,Int,2,회,문이 안 열리는 당황
+Door_Shove1Power,첫 밀기 세기,Float,0.9,scale,문이 안 열리는 당황
+Door_Shove2Count,둘째 밀기 횟수,Int,3,회,더 세게
+Door_Shove2Power,둘째 밀기 세기,Float,1.1,scale,더 세게
+Door_Shove3Count,셋째 밀기 횟수,Int,5,회,민망할 만큼
+Door_Shove3Power,셋째 밀기 세기,Float,1.3,scale,민망할 만큼
+Door_SignHoldSec,간판 보고 머무는 시간,Float,1.1,sec,로고를 천천히 보임
+Door_SignLookSec,간판 올려다보는 시간,Float,3.2,sec,로고를 천천히 보임
+Door_SpringD,유리문 스프링 감쇠,Float,24,per s,빠르게 튕겨 돌아옴
+Door_SpringK,유리문 스프링 강성,Float,620,per s2,빠르게 튕겨 돌아옴
+Door_StoreOpenAngle,매장 안에서 손님이 드나들 때 각도,Float,1.15,rad,드나듦이 보임
+Elder_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,뒷걸음은 더 느리게
+Elder_BobHeight,고개 위아래 폭,Float,0.042,m,비대칭 걸음 높이
+Elder_BobRate,고개 흔들림 속도,Float,5.1,rad/m,걸음과 맞는 흔들림 주기
+Elder_BreathEverySteps,숨소리 주기,Float,19,걸음,가끔 숨이 찬다
+Elder_CaneEverySteps,지팡이 소리 주기,Float,2,걸음,절뚝이는 박자
+Elder_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,문 앞 머뭇거림
+Elder_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,나가는 느린 걸음
+Elder_EyeHeight,눈높이,Float,1.56,m,구부정한 노인 눈높이
+Elder_KioskEye,키오스크 앞 눈높이,Float,1.47,m,인물별 값
+Elder_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,인물별 값
+Elder_LimpRoll,다리 절기 기울기,Float,0.016,rad,왼다리 불편함 표현
+Elder_LimpSway,다리 절기 좌우 폭,Float,0.018,m,왼다리 불편함 표현
+Elder_MoveSpeed,노인 걸음 속도,Float,1.15,m/s,답답할 만큼 느린 걸음
+Elder_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,떠밀리는 느낌
+Elder_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,쫓겨나는 느낌
+Elder_StepStride,걸음 소리 간격,Float,0.62,m,보폭이 좁은 걸음
+Hand_TrembleScale,손 떨림이 포인터에 주는 폭,Float,0.012,화면 비율,키오스크 포인터 떨림
+Home_FadeInSec,현관 시작 밝아짐,Float,1.4,sec,첫 장면 호흡
+Home_MemoScale,현관에서 읽는 메모 배율,Float,1.34,배,화면 대부분을 메모가 채움
+Home_ShoeFadeInSec,신발 신은 뒤 밝아짐,Float,0.5,sec,짧은 암전
+Home_ShoeFadeOutSec,신발 신기 암전,Float,0.4,sec,짧은 암전
+Kiosk_AdClassicDelay,CLASSIC 첫 진입 뒤 광고,Float,2.2,sec,찾던 탭에서 방해
+Kiosk_AdCloseGapMax,닫은 뒤 광고 간격 최대,Float,34,sec,닫으면 조금 더 쉼
+Kiosk_AdCloseGapMin,닫은 뒤 광고 간격 최소,Float,24,sec,닫으면 조금 더 쉼
+Kiosk_AdFirstMax,메뉴 진입 뒤 첫 광고 최대,Float,11,sec,광고가 메뉴를 가림
+Kiosk_AdFirstMin,메뉴 진입 뒤 첫 광고 최소,Float,7,sec,광고가 메뉴를 가림
+Kiosk_AdGapMax,광고 간격 최대,Float,30,sec,반복 방해
+Kiosk_AdGapMin,광고 간격 최소,Float,20,sec,반복 방해
+Kiosk_AdShowSec,광고 표시 시간,Float,12,sec,닫기 안 찾으면 오래 가림
+Kiosk_AimY,바라보는 높이,Float,1.372,m,화면 중심
+Kiosk_AimYDown,아래 볼 때 바라보는 높이,Float,0.74,m,틈이 있는 판
+Kiosk_BlowupAloneSec,줄 없을 때 폭발 대기,Float,3,sec,시험과 단독 실행용
+Kiosk_BlowupMaxSec,폭발 연출 최대 대기,Float,45,sec,연출 멈춤 방지
+Kiosk_BlowupTurnSec,폭발 때 뒤도는 시간,Float,0.7,sec,강제로 뒤돎
+Kiosk_BlurBase,화면 기본 번짐 반지름,Float,12,px,캔버스 1080 x 1920 기준 16점 번짐. 겨우 알아볼 듯 말 듯. 프로필 kioskBlur일 때만
+Kiosk_CardOutDelay,카드 뺀 뒤 완료 화면까지,Float,0.5,sec,연출 간격
+Kiosk_CardOutWait,카드 제거 자동 진행까지,Float,6,sec,카드를 안 빼도 막히지 않음
+Kiosk_DemoNumber,끼어든 사람의 주문번호,Int,273,number,주문번호 274 앞
+Kiosk_DemoStepSec,끼어든 사람의 화면 넘김 간격,Float,0.85,sec,10초 만에 끝내는 대비
+Kiosk_Dist,화면과의 거리,Float,0.76,m,시점 고정 자리
+Kiosk_DistDown,아래 볼 때 거리,Float,0.6,m,틈을 찾는 자세
+Kiosk_EdgeHigh,고개 듦 포인터 위치,Float,0.045,ratio,화면 위 끝
+Kiosk_EdgeHold,끝에 머무는 시간,Float,0.35,sec,실수 방지
+Kiosk_EdgeLow,고개 숙임 포인터 위치,Float,0.955,ratio,화면 아래 끝
+Kiosk_ErrorVolume,거부 소리 볼륨,Float,0.3,ratio,오터치에는 안 나고 카드 거부 등 진짜 거부에만 작게
+Kiosk_FinishDelay,영수증 뜯은 뒤 복귀까지,Float,0.9,sec,연출 간격
+Kiosk_Fov,키오스크 앞 화각,Float,60,deg,화면이 크게 보임
+Kiosk_LeaveDist,끝난 뒤 키오스크에서 떨어지는 거리,Float,1.1,m,복귀 자리
+Kiosk_LookPitch,마우스 따라 위아래로 도는 양,Float,0.08,rad,시점이 살짝 따라감
+Kiosk_LookYaw,마우스 따라 좌우로 도는 양,Float,0.11,rad,시점이 살짝 따라감
+Kiosk_PayStepSec,결제 단계당 시간,Float,0.5,sec,결제 대기 길이
+Kiosk_PaySteps,결제 진행 단계 수,Int,8,count,결제 대기 길이
+Kiosk_PosterAngle,포스터 들춤 각도,Float,146.1,deg,뒤의 틈이 보임
+Kiosk_PosterSpeed,포스터 들춤 속도,Float,4,per sec,연출
+Kiosk_ReceiptBendAngle,굽는 끝 각도,Float,1.45,rad,거의 수직으로 처짐
+Kiosk_ReceiptBendLen,틈에서 앞으로 굽는 구간 길이,Float,0.05,m,HTML 값
+Kiosk_ReceiptBendRadius,굽는 반지름,Float,0.034,m,HTML 값
+Kiosk_ReceiptLength,영수증 종이 길이,Float,0.25,m,HTML 값
+Kiosk_ReceiptPrintSec,영수증 출력 시간,Float,3.1,sec,출력 소리 길이
+Kiosk_ReceiptTearOut,뜯을 때 손님 쪽으로 오는 양,Float,0.42,m,HTML 값
+Kiosk_ReceiptTearRate,뜯는 연출 속도,Float,2.4,per sec,HTML 값
+Kiosk_ReceiptTearRise,뜯을 때 올라가는 양,Float,0.25,m,HTML 값
+Kiosk_ReceiptWidth,영수증 종이 폭,Float,0.074,m,HTML 값
+Kiosk_SizeUpPrice,사이즈 UP 추가금,Int,800,won,업셀 함정
+Kiosk_SlideSec,대기 광고 넘김 간격,Float,3.6,sec,대기 화면
+Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
+Kiosk_TimerLow,남은 시간 강조 시작,Int,15,sec,막판 압박
+Kiosk_TouchFailChance,터치가 안 먹을 확률,Float,0.07,ratio,마른 손가락. 프로필 kioskTouchFail일 때만
+Kiosk_TouchRange,터치 레이 길이,Float,3,m,키오스크 앞에서 충분한 길이
+Kiosk_WrongMutterChance,실수 뒤 혼잣말 확률,Float,0.7,ratio,혼잣말은 실수 직후에만 나옴. 연속은 Nunchi_MutterCooldown이 막음
+Kiosk_WrongSlot,틀린 틈 눈치 상승,Float,6,gauge,SPEC 잘못된 카드 슬롯 +6
+Kiosk_WrongTouch,오터치 눈치 상승,Float,4,gauge,SPEC 오터치 +4
+Lens_Radius,돋보기 유리 반지름,Float,0.06,m,Hand_Lens Rim 모델과 같게
+Lens_Zoom,돋보기 확대,Float,1.45,배,키오스크와 월드 글 공용
+Npc_AvoidGap,비켜 지나갈 때 옆 간격,Float,0.62,m,겹치지 않음
+Npc_AvoidLook,손님이 앞을 살피는 거리,Float,1.2,m,미리 옆으로 돌아감
+Npc_MinGap,더 다가가지 않는 최소 거리,Float,0.5,m,겹치지 않음
+Npc_StuckSec,막혔을 때 도착으로 치는 시간,Float,2.5,sec,진행이 멈추지 않음
+Nunchi_AudioFade,심장과 이명 페이드 시간,Float,1,sec,HTML 값
+Nunchi_BlowupWatch,끼어들기를 보는 동안 눈치 값,Float,62,gauge,눈앞은 맑고 민망함만 남음
+Nunchi_BlurStep2At,글자 번짐 2단계,Float,92,gauge,폭발 직전
+Nunchi_CrowdAt,뒤 사람 웅성임 시작 게이지,Float,40,point,심장 소리와 같은 단계
+Nunchi_CrowdVolAdd,게이지 끝까지 더해지는 볼륨,Float,0.6,ratio,폭발 직전 가장 큼
+Nunchi_CrowdVolMin,웅성임 시작 볼륨,Float,0.3,ratio,원본이 작아 높게 둠
+Nunchi_DefaultQueue,줄 인원을 못 받을 때 기본값,Int,3,명,시험과 단독 실행용
+Nunchi_HeartAt,심장 소리와 비네트 시작,Float,40,gauge,1단계
+Nunchi_HeartVolAdd,심장 소리 추가,Float,0.5,ratio,HTML 값
+Nunchi_HeartVolMin,심장 소리 최소,Float,0.35,ratio,HTML 값
+Nunchi_HurryFirstMax,첫 재촉 최대,Float,26,sec,입장 직후 여유
+Nunchi_HurryFirstMin,첫 재촉 최소,Float,16,sec,입장 직후 여유
+Nunchi_HurryIgnoreWindow,재촉 뒤 돌아볼 여유,Float,7,sec,재촉 무시 판정 시간
+Nunchi_HurryIgnored,재촉 뒤 안 돌아보면 추가,Float,8,gauge,재촉 무시 벌칙
+Nunchi_HurryMax,재촉 간격 최대,Float,40,sec,SPEC 25초에서 40초
+Nunchi_HurryMin,재촉 간격 최소,Float,25,sec,SPEC 25초에서 40초
+Nunchi_HurryShake,재촉 때 화면 흔들림,Float,0.12,amount,움찔하는 느낌
+Nunchi_Max,폭발 값,Float,100,gauge,게이지 끝
+Nunchi_MutterCooldown,혼잣말 쿨타임,Float,9,sec,실수가 이어져도 연속으로 말하지 않음
+Nunchi_MutterVolume,혼잣말 볼륨,Float,0.9,ratio,HTML 값
+Nunchi_MutterWait,다른 말이 끝나길 기다리는 한도,Float,3,sec,넘으면 그 혼잣말은 버림
+Nunchi_PerQueue,줄 1명당 초당 추가,Float,0.2,per sec,줄이 길수록 빨라짐
+Nunchi_PerSecond,기본 초당 상승,Float,0.6,per sec,가만 있어도 쌓이는 압박
+Nunchi_ResumeHurry,폭발 뒤 첫 재촉,Float,20,sec,HTML 값
+Nunchi_ResumeRateMul,폭발 뒤 상승률 배수,Float,0.7,ratio,회차마다 누적
+Nunchi_ResumeValue,폭발 뒤 게이지,Float,45,gauge,SPEC
+Nunchi_RingAt,이명 시야 좁아짐 글자 번짐 시작,Float,80,gauge,3단계
+Nunchi_RingVolume,이명 볼륨,Float,0.22,ratio,HTML 값
+Nunchi_ScreenBlurPerStep,키오스크 글자 번짐 단계당 반지름 추가,Float,5,px,눈치가 오르면 더 안 보이게
+Nunchi_SighFirstMax,첫 한숨 최대,Float,8,sec,소리 압박 시작
+Nunchi_SighFirstMin,첫 한숨 최소,Float,4,sec,소리 압박 시작
+Nunchi_SighMax,한숨 간격 최대,Float,10,sec,눈치 높을수록 짧아짐
+Nunchi_SighMin,한숨 간격 최소,Float,5,sec,눈치 높을수록 짧아짐
+Nunchi_SighVolume,한숨 볼륨,Float,0.8,ratio,뒤쪽 소리 크기
+Nunchi_Sorry,사과 감소량,Float,12,gauge,뒤돌아 사과의 보상
+Nunchi_SorryCooldown,사과 쿨타임,Float,8,sec,그동안 시간은 흐름
+Nunchi_TrembleAt,손 떨림 시작,Float,60,gauge,2단계
+Pickup_CallMax,앞 번호 호출 최대 간격,Float,10,sec,기다림
+Pickup_CallMin,앞 번호 호출 최소 간격,Float,8,sec,기다림
+Pickup_LastMax,내 번호 호출 전 최대 대기,Float,9,sec,기다림
+Pickup_LastMin,내 번호 호출 전 최소 대기,Float,7,sec,기다림
+Pickup_ReadDelay,영수증 받고 혼잣말까지,Float,2.2,sec,픽업 호흡
+Pickup_RecallSec,안 받을 때 다시 부르는 간격,Float,13,sec,받을 때까지 재촉
+Pickup_TrayVolume,음식 놓는 소리 볼륨,Float,0.6,ratio,호출보다 작게
+Player_MouseSens,마우스 감도,Float,0.0019,rad/px,시점 회전 감도
+Player_PitchDown,아래 시선 한계,Float,-1.1,rad,고개 숙이는 한계
+Player_PitchUp,위 시선 한계,Float,1.05,rad,고개 드는 한계
+Post_BlurCenterCalm,가운데 번짐 평온,Float,0.1,0~1,프로필 visionBlur 인물만
+Post_BlurCenterHeart,가운데 번짐 심장 단계,Float,0.14,0~1,0 또렷 1 최대
+Post_BlurCenterMax,가운데 번짐 최대,Float,0.45,0~1,0 또렷 1 최대
+Post_BlurCenterRing,가운데 번짐 이명 단계,Float,0.3,0~1,0 또렷 1 최대
+Post_BlurCenterTremble,가운데 번짐 떨림 단계,Float,0.2,0~1,0 또렷 1 최대
+Post_BlurEdgeCalm,가장자리 번짐 평온,Float,0.55,0~1,프로필 visionBlur 인물만
+Post_BlurEdgeHeart,가장자리 번짐 심장 단계,Float,0.65,0~1,0 또렷 1 최대
+Post_BlurEdgeMax,가장자리 번짐 최대,Float,1.0,0~1,0 또렷 1 최대
+Post_BlurEdgeRing,가장자리 번짐 이명 단계,Float,0.9,0~1,0 또렷 1 최대
+Post_BlurEdgeTremble,가장자리 번짐 떨림 단계,Float,0.78,0~1,0 또렷 1 최대
+Post_BlurSpread,번짐 피라미드 표본 간격,Float,1.4,배,크면 더 넓게 번지고 거칠어짐
+Post_BlurStart,가장자리 번짐이 시작되는 위치,Float,0.35,0~1,0 가운데 1 가장자리
+Post_Ca,평소 색수차,Float,0.0012,uv,HTML 값
+Post_CaAdd,눈치 최대 때 색수차 추가,Float,0.003,uv,가장자리 색 어긋남
+Post_Dim,평소 화면 밝기,Float,0.92,배,감마 값 기준. 낮을수록 어둡다
+Post_DimMax,눈치 최대 때 밝기,Float,0.8,배,눈치가 오를수록 어두워짐
+Post_Grain,평소 필름 그레인,Float,0.07,세기,HTML 값
+Post_GrainAdd,눈치 최대 때 그레인 추가,Float,0.04,세기,초조할수록 거칠게
+Post_HeartDecay,박동 잦아드는 속도,Float,9,1/s,크면 짧게 뛴다
+Post_HeartDepth,박동 때 쉐도우 수축 폭,Float,0.07,화면 반높이,심장 단계부터 눈치와 함께 커짐
+Post_HeartDub,두 번째 박 간격,Float,0.34,초,heartbeat.mp3 실측
+Post_HeartDubAmount,두 번째 박 세기,Float,0.6,배,쿵쿵
+Post_HeartOffset,박동 시작 위치,Float,0.05,초,heartbeat.mp3 첫 박 위치
+Post_HeartPeriod,심장 박동 주기,Float,0.826,초,heartbeat.mp3 실측 박동 간격
+Post_LensRim,돋보기 테두리 어둡기,Float,0.5,0~1,손 모델의 원과 구분
+Post_LensShade,돋보기 안에서 쉐도우가 빠지는 정도,Float,0.7,0~1,1이면 원 안에 쉐도우 없음. 어두운 가장자리도 렌즈로 읽게
+Post_LevelDamp,눈치 값을 따라가는 속도,Float,3,1/s,갑자기 튀지 않게
+Post_Sat,평소 채도,Float,0.74,배,HTML 값. 낮을수록 탈색
+Post_SatMax,눈치 최대 때 채도,Float,0.45,배,눈치가 오를수록 빛이 빠짐
+Post_ShadowAspect,쉐도우 거리장 가로세로 비,Float,1.3,배,크면 좌우가 위아래보다 빨리 먹어 들어온다
+Post_ShadowB,테두리 쉐도우 색 파랑,Float,0.05,감마,순검정이 아닌 어두운 갈색
+Post_ShadowBottom,아래쪽 추가 두께,Float,0.12,화면 반높이,아래쪽이 더 무겁게
+Post_ShadowCoreCalm,좁은 반영 세기 평온,Float,0.08,0~1,안쪽 겹
+Post_ShadowCoreHeart,좁은 반영 세기 심장 단계,Float,0.38,0~1,안쪽 겹
+Post_ShadowCoreMax,좁은 반영 세기 최대,Float,0.9,0~1,안쪽 겹
+Post_ShadowCoreRing,좁은 반영 세기 이명 단계,Float,0.8,0~1,안쪽 겹
+Post_ShadowCoreTremble,좁은 반영 세기 떨림 단계,Float,0.7,0~1,안쪽 겹
+Post_ShadowCorner,둥근 사각형 모서리 반지름,Float,0.6,화면 반높이,클수록 모서리가 무겁다
+Post_ShadowDepthCalm,쉐도우 두께 평온,Float,0.02,화면 반높이,1이면 화면 가운데까지
+Post_ShadowDepthHeart,쉐도우 두께 심장 단계,Float,0.16,화면 반높이,Nunchi_HeartAt 때 값
+Post_ShadowDepthMax,쉐도우 두께 최대,Float,0.44,화면 반높이,Nunchi_Max 때 값
+Post_ShadowDepthRing,쉐도우 두께 이명 단계,Float,0.36,화면 반높이,Nunchi_RingAt 때 값
+Post_ShadowDepthTremble,쉐도우 두께 떨림 단계,Float,0.28,화면 반높이,Nunchi_TrembleAt 때 값
+Post_ShadowG,테두리 쉐도우 색 초록,Float,0.07,감마,순검정이 아닌 어두운 갈색
+Post_ShadowR,테두리 쉐도우 색 빨강,Float,0.1,감마,순검정이 아닌 어두운 갈색
+Post_ShadowSoftCore,좁은 반영 폭,Float,0.14,화면 반높이,안쪽 겹 번짐 폭
+Post_ShadowSoftWide,넓은 반영 폭,Float,0.3,화면 반높이,바깥 겹 번짐 폭
+Post_ShadowWideCalm,넓은 반영 세기 평온,Float,0.16,0~1,바깥 겹
+Post_ShadowWideHeart,넓은 반영 세기 심장 단계,Float,0.42,0~1,바깥 겹
+Post_ShadowWideMax,넓은 반영 세기 최대,Float,0.8,0~1,바깥 겹
+Post_ShadowWideRing,넓은 반영 세기 이명 단계,Float,0.72,0~1,바깥 겹
+Post_ShadowWideTremble,넓은 반영 세기 떨림 단계,Float,0.65,0~1,바깥 겹
+Post_SmudgeContrast,번진 글 줄 얼룩 대비,Float,0.55,0~1,0이면 민줄
+Post_SmudgeDrift,번진 글 줄 흐르는 속도,Float,0.05,1/s,초점이 안 맞는 느낌
+Post_SmudgeSoft,번진 글 줄 가장자리,Float,0.5,줄 높이,Readable 번진 쪽
+Post_TintB,화면 색조 파랑,Float,0.95,배,살짝 따뜻하게
+Post_TintG,화면 색조 초록,Float,0.98,배,살짝 따뜻하게
+Post_TintR,화면 색조 빨강,Float,1,배,살짝 따뜻하게
+Post_WatchNunchi,폭발 장면에서 시야가 쓰는 눈치 값,Float,50,gauge,지켜보는 장면은 보여야 함
+Post_WobbleAmp,경계 일렁임 크기,Float,0.16,화면 반높이,저주파 노이즈 진폭
+Post_WobbleFreq,경계 일렁임 촘촘함,Float,2.2,주기,낮을수록 크게 일렁인다
+Post_WobbleSpeed,경계 일렁임 속도,Float,0.22,1/s,천천히
+Queue_ArriveAfterBlowup,폭발 뒤 다음 손님까지,Float,2.5,sec,줄이 다시 금방 참
+Queue_ArriveMax,다음 손님 최대 간격,Float,25,sec,줄이 시간 따라 늘어남
+Queue_ArriveMin,다음 손님 최소 간격,Float,17,sec,줄이 시간 따라 늘어남
+Queue_CookSpeed,주방 직원 걸음,Float,1.3,m/s,배경 움직임
+Queue_FirstArrive,첫 손님이 오기까지,Float,5,sec,줄이 곧 생김
+Queue_Max,줄 최대 인원,Int,4,명,압박의 상한
+Queue_MoveAgainSec,다음 재촉까지 간격,Float,7,sec,계속 안 비키면 또 재촉
+Queue_MoveClearDist,키오스크 앞을 비웠다고 보는 거리,Float,0.9,m,조금 물러나면 손님이 들어옴
+Queue_MoveWaitSec,영수증 받고 안 비키면 첫 재촉까지,Float,6,sec,뒤 손님이 잠시 참음
+Queue_Spacing,줄 간격,Float,0.82,m,줄 모양
+Queue_WaiterSpeed,대기 손님 걸음,Float,1.2,m/s,배경 움직임
+Queue_WalkSpeed,줄 손님 걸음,Float,1.25,m/s,노인보다 빠름
+Queue_YoCardSec,카드 뒤 영수증까지,Float,1,sec,10초 만에 끝내는 대비
+Queue_YoLeaveSpeed,끼어든 사람이 물러나는 걸음,Float,1.5,m/s,할 일 끝낸 걸음
+Queue_YoPrintSec,영수증 출력 뒤 뜯기까지,Float,1.3,sec,10초 만에 끝내는 대비
+Queue_YoSpeed,끼어드는 사람 걸음,Float,2.3,m/s,밀고 들어옴
+Queue_YoTapSec,끼어든 사람 터치 시간,Float,4.2,sec,10초 만에 끝내는 대비
+Store_FryerBeepMax,튀김기 소리 최대 간격,Float,32,s,주방 생활음
+Store_FryerBeepMin,튀김기 소리 최소 간격,Float,18,s,주방 생활음
+Store_PhoneNotifyMax,알바생 폰 알림 최대 간격,Float,40,s,폰만 보는 알바생
+Store_PhoneNotifyMin,알바생 폰 알림 최소 간격,Float,24,s,폰만 보는 알바생
+Street_AskGapSec,학생 뒤 직장인 등장까지,Float,1.6,sec,두 번 묻는 간격
+Street_BisReadDist,돋보기 판독 인정 거리,Float,9.5,m,가까이 가서 읽게 함
+Street_FadeInSec,골목 시작 밝아짐,Float,1.2,sec,장면 전환 호흡
+Street_LookBisDist,전광판을 봤다고 치는 거리,Float,8.5,m,멀리서는 대사 안 나옴
+Street_LookBisDot,전광판 시선 판정 내적,Float,0.9,dot,대략 바라보면 인정
+Street_LookBisMaxSec,전광판을 안 봐도 넘어가는 시간,Float,16,sec,막힘 방지
+Street_ReadNagSec,돋보기 대사 반복 간격,Float,16,sec,막힌 사람에게 다시 알려 줌
+Street_StudentWalkSpeed,학생 걷는 속도,Float,1.3,m/s,할아버지보다 빠름
+Street_WorkerRetrySec,직장인을 놓친 뒤 재등장,Float,2.5,sec,다시 말 걸 기회
+Street_WorkerWalkSpeed,직장인 걷는 속도,Float,1.28,m/s,멈추지 않고 지나감
+Traffic_BusRetrySec,버스 운행 중 차 등장 재시도,Float,3,sec,HTML 값
+Traffic_BusWaitMaxSec,버스가 차선 빌 때까지 기다리는 최대,Float,8,sec,HTML 값
+Traffic_CarSpeedMax,차 속도 최대,Float,11,m/s,HTML 값
+Traffic_CarSpeedMin,차 속도 최소,Float,8.8,m/s,HTML 값
+Traffic_CarVolume,차 지나가는 소리 볼륨,Float,0.55,ratio,HTML 값
+Traffic_CrosswalkFirstSec,첫 횡단보도 신호음까지,Float,9,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkGapMax,횡단보도 신호음 간격 최대,Float,38,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkGapMin,횡단보도 신호음 간격 최소,Float,22,sec,HTML판에 없어 새로 정함
+Traffic_CrosswalkVolume,횡단보도 신호음 볼륨,Float,0.45,ratio,멀리서 들리는 배경
+Traffic_EndX,차가 사라지는 x 거리,Float,130,m,화면 밖에서 끝
+Traffic_FirstGapMax,차 첫 등장 순번 간격 최대,Float,5,sec,HTML 값
+Traffic_FirstGapMin,차 첫 등장 순번 간격 최소,Float,2,sec,HTML 값
+Traffic_FirstSec,첫 차 등장까지,Float,1,sec,HTML 값
+Traffic_GapMax,지나간 뒤 다시 나오기까지 최대,Float,11,sec,HTML 값
+Traffic_GapMin,지나간 뒤 다시 나오기까지 최소,Float,2,sec,HTML 값
+Traffic_HearDist,차 소리가 나는 플레이어 거리,Float,26,m,곁을 지날 때 한 번
+Traffic_HearMinZ,큰길 소리가 들리는 플레이어 z,Float,24,m,골목 안쪽은 조용함
+Traffic_LaneCheckPast,정류장 지나 검사하는 거리,Float,8,m,HTML 값
+Traffic_LaneCheckX,버스 차선 검사 시작 x 거리,Float,110,m,HTML 값
+Traffic_ScooterFirstSec,오토바이 첫 등장까지,Float,5,sec,HTML 값
+Traffic_ScooterSpeed,오토바이 속도,Float,12,m/s,HTML 값
+Traffic_ScooterVolume,오토바이 소리 볼륨,Float,0.5,ratio,HTML 값
+Traffic_SoundLead,차 소리를 앞쪽에 두는 거리,Float,14,m,지나가는 방향으로 소리가 먼저 감
+Traffic_StartX,차가 나오는 x 거리,Float,125,m,화면 밖에서 시작

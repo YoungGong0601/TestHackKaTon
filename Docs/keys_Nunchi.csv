@@ -1,0 +1,37 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Nunchi_PerSecond,기본 초당 상승,Float,0.6,per sec,가만 있어도 쌓이는 압박
+Nunchi_PerQueue,줄 1명당 초당 추가,Float,0.2,per sec,줄이 길수록 빨라짐
+Nunchi_DefaultQueue,줄 인원을 못 받을 때 기본값,Int,3,명,시험과 단독 실행용
+Nunchi_Sorry,사과 감소량,Float,12,gauge,뒤돌아 사과의 보상
+Nunchi_SorryCooldown,사과 쿨타임,Float,8,sec,그동안 시간은 흐름
+Nunchi_HurryIgnored,재촉 뒤 안 돌아보면 추가,Float,8,gauge,재촉 무시 벌칙
+Nunchi_HurryIgnoreWindow,재촉 뒤 돌아볼 여유,Float,7,sec,재촉 무시 판정 시간
+Nunchi_HurryFirstMin,첫 재촉 최소,Float,16,sec,입장 직후 여유
+Nunchi_HurryFirstMax,첫 재촉 최대,Float,26,sec,입장 직후 여유
+Nunchi_HurryMin,재촉 간격 최소,Float,25,sec,SPEC 25초에서 40초
+Nunchi_HurryMax,재촉 간격 최대,Float,40,sec,SPEC 25초에서 40초
+Nunchi_HurryShake,재촉 때 화면 흔들림,Float,0.12,amount,움찔하는 느낌
+Nunchi_SighFirstMin,첫 한숨 최소,Float,4,sec,소리 압박 시작
+Nunchi_SighFirstMax,첫 한숨 최대,Float,8,sec,소리 압박 시작
+Nunchi_SighMin,한숨 간격 최소,Float,5,sec,눈치 높을수록 짧아짐
+Nunchi_SighMax,한숨 간격 최대,Float,10,sec,눈치 높을수록 짧아짐
+Nunchi_SighVolume,한숨 볼륨,Float,0.8,ratio,뒤쪽 소리 크기
+Nunchi_MutterCooldown,혼잣말 쿨타임,Float,9,sec,실수가 이어져도 연속으로 말하지 않음
+Nunchi_MutterWait,다른 말이 끝나길 기다리는 한도,Float,3,sec,넘으면 그 혼잣말은 버림
+Nunchi_HeartAt,심장 소리와 비네트 시작,Float,40,gauge,1단계
+Nunchi_TrembleAt,손 떨림 시작,Float,60,gauge,2단계
+Nunchi_RingAt,이명 시야 좁아짐 글자 번짐 시작,Float,80,gauge,3단계
+Nunchi_BlurStep2At,글자 번짐 2단계,Float,92,gauge,폭발 직전
+Nunchi_Max,폭발 값,Float,100,gauge,게이지 끝
+Nunchi_HeartVolMin,심장 소리 최소,Float,0.35,ratio,HTML 값
+Nunchi_HeartVolAdd,심장 소리 추가,Float,0.5,ratio,HTML 값
+Nunchi_RingVolume,이명 볼륨,Float,0.22,ratio,HTML 값
+Nunchi_ResumeValue,폭발 뒤 게이지,Float,45,gauge,SPEC
+Nunchi_ResumeRateMul,폭발 뒤 상승률 배수,Float,0.7,ratio,회차마다 누적
+Nunchi_ResumeHurry,폭발 뒤 첫 재촉,Float,20,sec,HTML 값
+Nunchi_AudioFade,심장과 이명 페이드 시간,Float,1,sec,HTML 값
+Nunchi_MutterVolume,혼잣말 볼륨,Float,0.9,ratio,HTML 값
+Nunchi_ScreenBlurPerStep,키오스크 글자 번짐 단계당 반지름 추가,Float,5,px,눈치가 오르면 더 안 보이게
+Nunchi_CrowdAt,뒤 사람 웅성임 시작 게이지,Float,40,point,심장 소리와 같은 단계
+Nunchi_CrowdVolMin,웅성임 시작 볼륨,Float,0.3,ratio,원본이 작아 높게 둠
+Nunchi_CrowdVolAdd,게이지 끝까지 더해지는 볼륨,Float,0.6,ratio,폭발 직전 가장 큼

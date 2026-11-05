@@ -1,0 +1,55 @@
+﻿key,화자,대사,음성
+gp_go,gp,"자, 나가볼까.",ko-KR-InJoonNeural
+gp_memo,gp,"불고기 버거 세트... 사이다로. 그래, 그거.",ko-KR-InJoonNeural
+gp_toofar,gp,안 보이네... 몇 번이 온다는 거야.,ko-KR-InJoonNeural
+gp_ask1,gp,"저기, 학생. 이거 몇 번 버스가...",ko-KR-InJoonNeural
+gp_ask2,gp,"저기요, 말 좀 물읍시다.",ko-KR-InJoonNeural
+gp_ask3,gp,허허... 다들 바쁘구먼.,ko-KR-InJoonNeural
+gp_bus_missed,gp,"어어, 잠깐만... 아이고, 가버렸네.",ko-KR-InJoonNeural
+gp_door1,gp,어? 왜 안 열려.,ko-KR-InJoonNeural
+gp_door2,gp,잠겼나?,ko-KR-InJoonNeural
+gp_door3,gp,"아, 당기는 거구먼.",ko-KR-InJoonNeural
+gp_whereorder,gp,주문은... 어디다 하는 거지.,ko-KR-InJoonNeural
+gp_why1,gp,왜 안 되지?,ko-KR-InJoonNeural
+gp_why2,gp,이게 왜 안 돼.,ko-KR-InJoonNeural
+gp_why3,gp,이건 또 뭐야.,ko-KR-InJoonNeural
+gp_what1,gp,이게 무슨 말이야.,ko-KR-InJoonNeural
+gp_read1,gp,글씨가 왜 이렇게 작아.,ko-KR-InJoonNeural
+gp_sorry1,gp,"아이고, 죄송합니다.",ko-KR-InJoonNeural
+gp_sorry2,gp,"미안합니다, 금방 해요.",ko-KR-InJoonNeural
+gp_sorry3,gp,죄송합니다... 먼저 하세요.,ko-KR-InJoonNeural
+gp_staff1,gp,"저기요, 학생. 이거 좀...",ko-KR-InJoonNeural
+gp_staff2,gp,저기요...,ko-KR-InJoonNeural
+gp_card1,gp,카드를 어디다 넣으라는 거야.,ko-KR-InJoonNeural
+gp_done,gp,됐다... 됐어.,ko-KR-InJoonNeural
+gp_end,gp,이거 하나 사기가 이렇게 힘들어서야.,ko-KR-InJoonNeural
+y_hurry1,yM,"저기요, 빨리 좀 해요.",ko-KR-HyunsuMultilingualNeural
+y_hurry2,yM,"아, 진짜.",ko-KR-HyunsuMultilingualNeural
+y_hurry3,yF,뭐 하시는 거야...,ko-KR-SunHiNeural
+y_hurry4,ajm,뒤에 사람 기다려요.,ko-KR-SunHiNeural
+y_hurry5,yM,"어르신, 그거 아니에요.",ko-KR-HyunsuMultilingualNeural
+y_hurry6,yF,왜 저렇게 오래 걸려.,ko-KR-SunHiNeural
+y_hurry7,yM,"아, 늦었는데.",ko-KR-HyunsuMultilingualNeural
+y_takeover,yM,"비켜보세요, 제가 먼저 할게요.",ko-KR-HyunsuMultilingualNeural
+pass_1,pass,"아, 저도 잘 모르겠어요.",ko-KR-HyunsuMultilingualNeural
+pass_2,pass,저 바빠서요.,ko-KR-HyunsuMultilingualNeural
+staff_1,staff,주문은 키오스크에서 해주세요.,ko-KR-HyunsuMultilingualNeural
+staff_2,staff,네?,ko-KR-HyunsuMultilingualNeural
+staff_3,staff,거기 화면 누르시면 돼요.,ko-KR-HyunsuMultilingualNeural
+staff_call,staff,이백칠십사번 고객님.,ko-KR-HyunsuMultilingualNeural
+staff_call2,staff,"이백칠십사번 고객님, 주문하신 메뉴 나왔습니다.",ko-KR-HyunsuMultilingualNeural
+k_touch,kiosk,화면을 터치하여 주문을 시작해 주세요.,ko-KR-SunHiNeural
+k_place,kiosk,"드시고 가시나요, 가져가시나요?",ko-KR-SunHiNeural
+k_member,kiosk,멤버십 적립을 원하시면 휴대폰 번호를 입력해 주세요.,ko-KR-SunHiNeural
+k_menu,kiosk,원하시는 메뉴를 선택해 주세요.,ko-KR-SunHiNeural
+k_combo,kiosk,콤보로 업그레이드 하시겠습니까?,ko-KR-SunHiNeural
+k_pay,kiosk,결제 수단을 선택해 주세요.,ko-KR-SunHiNeural
+k_card,kiosk,카드를 투입구에 삽입해 주세요.,ko-KR-SunHiNeural
+k_cardhold,kiosk,결제가 완료될 때까지 카드를 빼지 마세요.,ko-KR-SunHiNeural
+k_cardout,kiosk,카드를 제거해 주세요.,ko-KR-SunHiNeural
+k_receipt,kiosk,영수증을 받아 가세요.,ko-KR-SunHiNeural
+k_timeout,kiosk,시간이 초과되어 처음 화면으로 돌아갑니다.,ko-KR-SunHiNeural
+bus_ann,busann,"이번 정류장은, 시장 입구입니다.",ko-KR-SunHiNeural
+y_move1,yM,할아버지 뭐 해요.,ko-KR-HyunsuMultilingualNeural
+y_move2,yM,비키세요.,ko-KR-HyunsuMultilingualNeural
+staff_call3,staff,"이백칠십사번 고객님, 메뉴 가져가세요.",ko-KR-HyunsuMultilingualNeural

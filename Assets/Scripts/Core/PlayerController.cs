@@ -1,0 +1,233 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+// 1인칭 이동. 느린 걸음, 고개 흔들림, 다리 절기(프로필 limp), 연출용 시선과 걷기
+// 위치 기준은 발. Y는 Teleport 높이에 고정(중력 없음, HTML판과 같음)
+// 배치: body = Player의 CharacterController (radius 0.28, height 1.7, center 0 0.85 0)
+// 배치: eye = Player 자식 Camera (AudioListener 포함, FOV 66, near 0.03)
+// 배치: handRoot = Eye 자식 HandRoot (로컬 원점, HandRig 부착)
+[DefaultExecutionOrder(-50)]
+public class PlayerController : MonoBehaviour
+{
+    public enum Mode { Fps, Cursor, Locked, Hidden }   // Locked 커서 보임(제목, 결과), Hidden 시점 고정 연출
+
+    public static PlayerController I { get; private set; }
+
+    [SerializeField] CharacterController body;
+    [SerializeField] Camera eye;
+    [SerializeField] Transform handRoot;
+
+    public Camera Eye => eye;
+    public Transform HandRoot => handRoot;
+    public Mode CurrentMode { get; private set; } = Mode.Fps;
+    public bool Frozen { get; private set; } = true;
+    public string Ground { get; set; } = "concrete";
+    public float Yaw { get; private set; }      // 도, Unity 기준
+    public float Pitch { get; private set; }    // 도, 위가 +
+    public bool HoldStill { get; set; }         // 시선은 돌되 걷지 않음(메모 읽기)
+    public float EyeHeight => Bal.F("EyeHeight", 1.56f);
+    public Vector3 EyePos => transform.position + Vector3.up * EyeHeight;
+    public Vector2 Cursor01 => cursor01;        // 뷰포트 좌표, 왼쪽 아래가 (0,0)
+
+    class Turn { public float t, sec, y0, y1, p0, p1; }
+    class Walk { public Vector3 target; public float speed, stuck; }
+
+    Turn turn;
+    Walk walk;
+    Vector2 cursor01 = new(0.5f, 0.5f);
+    float groundY, moving, stepAcc, bob, shake;
+    int stepsTaken;
+
+    void Awake()
+    {
+        if (I != null && I != this) return;
+        I = this;
+        groundY = transform.position.y;
+        Yaw = transform.eulerAngles.y;
+    }
+
+    void Start() => SetMode(CurrentMode);
+
+    public void SetMode(Mode m)
+    {
+        CurrentMode = m;
+        Cursor.lockState = m == Mode.Fps || m == Mode.Hidden ? CursorLockMode.Locked : m == Mode.Cursor ? CursorLockMode.Confined : CursorLockMode.None;
+        Cursor.visible = m == Mode.Locked;
+        if (m == Mode.Cursor) cursor01 = new Vector2(0.5f, 0.5f);
+        if (Hud.I != null) Hud.I.Cross(m == Mode.Fps);
+    }
+
+    public void Freeze(bool on) => Frozen = on;
+
+    public void SetCursor01(Vector2 v) => cursor01 = v;
+
+    public void AddShake(float a) => shake = Mathf.Min(1f, shake + a);
+
+    // yaw는 도, Unity 기준. HTML판 라디안 yaw는 -yaw * Mathf.Rad2Deg
+    public void Teleport(Vector3 pos, float yaw)
+    {
+        turn = null;
+        walk = null;
+        moving = 0f;
+        groundY = pos.y;
+        Yaw = yaw;
+        Pitch = 0f;
+        if (body != null) body.enabled = false;
+        transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, yaw, 0f));
+        Physics.SyncTransforms();
+        if (body != null) body.enabled = true;
+    }
+
+    public IEnumerator LookAt(Vector3 world, float sec = 1f)
+    {
+        Vector3 d = world - EyePos;
+        float yaw = Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg;
+        float pitch = Mathf.Atan2(d.y, new Vector2(d.x, d.z).magnitude) * Mathf.Rad2Deg;
+        return TurnTo(yaw, pitch, sec);
+    }
+
+    public IEnumerator TurnTo(float yaw, float pitch, float sec = 1f)
+    {
+        var w = new Turn { sec = sec, y0 = Yaw, y1 = Yaw + Mathf.DeltaAngle(Yaw, yaw), p0 = Pitch, p1 = pitch };
+        turn = w;
+        while (turn == w) yield return null;
+    }
+
+    // speed 생략하면 현재 인물의 걸음 속도
+    public IEnumerator WalkTo(Vector3 world, float speed = -1f)
+    {
+        var w = new Walk { target = world, speed = speed > 0f ? speed : Bal.F("MoveSpeed", 1.15f) };
+        walk = w;
+        while (walk == w) yield return null;
+    }
+
+    void Update()
+    {
+        float dt = Mathf.Min(Time.deltaTime, 0.05f);
+        var mouse = Mouse.current;
+        Look(dt, mouse);
+        Move(dt);
+        ApplyCamera(dt);
+
+        if (CurrentMode == Mode.Cursor)
+        {
+            if (mouse != null && mouse.delta.ReadValue().sqrMagnitude > 0f)
+            {
+                Vector2 p = mouse.position.ReadValue();
+                cursor01 = new Vector2(Mathf.Clamp01(p.x / Screen.width), Mathf.Clamp01(p.y / Screen.height));
+            }
+        }
+        else if (CurrentMode == Mode.Fps && !Frozen && walk == null && turn == null)
+            Interactable.Tick(eye.transform.position, eye.transform.forward);
+        else
+            Interactable.Clear();
+    }
+
+    void Look(float dt, Mouse mouse)
+    {
+        if (turn != null)
+        {
+            var w = turn;
+            w.t = Mathf.Min(1f, w.t + dt / Mathf.Max(w.sec, 1e-3f));
+            float e = w.t * w.t * (3f - 2f * w.t);
+            Yaw = Mathf.Lerp(w.y0, w.y1, e);
+            Pitch = Mathf.Lerp(w.p0, w.p1, e);
+            if (w.t >= 1f) turn = null;
+        }
+        else if (CurrentMode == Mode.Fps && !Frozen && mouse != null)
+        {
+            Vector2 d = mouse.delta.ReadValue();
+            float sens = Bal.G("Player_MouseSens", 0.0019f) * Mathf.Rad2Deg;
+            Yaw += d.x * sens;
+            Pitch = Mathf.Clamp(Pitch + d.y * sens, Bal.G("Player_PitchDown", -1.1f) * Mathf.Rad2Deg, Bal.G("Player_PitchUp", 1.05f) * Mathf.Rad2Deg);
+        }
+        transform.rotation = Quaternion.Euler(0f, Yaw, 0f);
+    }
+
+    void Move(float dt)
+    {
+        float speed = Bal.F("MoveSpeed", 1.15f);
+        Vector3 dir = Vector3.zero;
+        float want = 0f;
+        if (walk != null)
+        {
+            Vector3 d = walk.target - transform.position;
+            d.y = 0f;
+            float dist = d.magnitude;
+            if (dist < 0.06f) walk = null;
+            else { dir = d / dist; want = walk.speed; }
+        }
+        else if (!Frozen && !HoldStill && CurrentMode == Mode.Fps && Keyboard.current != null)
+        {
+            var kb = Keyboard.current;
+            int f = (kb.wKey.isPressed || kb.upArrowKey.isPressed ? 1 : 0) - (kb.sKey.isPressed || kb.downArrowKey.isPressed ? 1 : 0);
+            int s = (kb.dKey.isPressed || kb.rightArrowKey.isPressed ? 1 : 0) - (kb.aKey.isPressed || kb.leftArrowKey.isPressed ? 1 : 0);
+            if (f != 0 || s != 0)
+            {
+                dir = (transform.forward * f + transform.right * s).normalized;
+                want = speed * (f < 0 ? Bal.F("BackSpeedMul", 0.7f) : 1f);
+            }
+        }
+
+        moving = Damp(moving, want, 8f, dt);
+        if (moving > 0.02f)
+        {
+            Vector3 before = transform.position;
+            Vector3 motion = dir * (moving * dt);
+            if (body != null && body.enabled) body.Move(motion); else transform.position += motion;
+            Vector3 p = transform.position;
+            if (p.y != groundY) { p.y = groundY; transform.position = p; }
+
+            // 연출 걷기가 벽에 막혀 끝나지 않는 일을 막는다
+            if (walk != null)
+            {
+                bool blocked = (transform.position - before).magnitude < motion.magnitude * 0.2f;
+                walk.stuck = blocked ? walk.stuck + dt : 0f;
+                if (walk.stuck > 1.5f) walk = null;
+            }
+
+            stepAcc += moving * dt;
+            if (stepAcc > Bal.F("StepStride", 0.62f)) { stepAcc = 0f; Step(); }
+        }
+        bob += moving * dt * Bal.F("BobRate", 5.1f);
+    }
+
+    void ApplyCamera(float dt)
+    {
+        float t = Time.time;
+        var profile = GameState.I != null ? GameState.I.Profile : null;
+        float limp = profile != null && profile.limp ? 1f : 0f;
+        float s = Mathf.Sin(bob), c = Mathf.Cos(bob * 0.5f);
+        float amp = Mathf.Clamp01(moving / Mathf.Max(Bal.F("MoveSpeed", 1.15f), 0.01f));
+
+        // 왼다리가 불편한 걸음: 위아래가 좌우 비대칭
+        float h = Bal.F("BobHeight", 0.042f);
+        float by = (Mathf.Abs(s) * h - h * 0.476f) * amp + Mathf.Sin(t * 1.3f) * 0.0035f;
+        float roll = c * Bal.F("LimpRoll", 0.016f) * amp * limp + Mathf.Sin(t * 0.7f) * 0.0022f;
+        float sway = c * Bal.F("LimpSway", 0.018f) * amp * limp;
+
+        shake = Damp(shake, 0f, 5f, dt);
+        float sh = shake;
+        eye.transform.localPosition = new Vector3(
+            sway + Random.Range(-1f, 1f) * sh * 0.012f,
+            EyeHeight + by + Random.Range(-1f, 1f) * sh * 0.012f,
+            0f);
+        float pitch = Pitch + (Random.Range(-1f, 1f) * sh * 0.006f + Mathf.Sin(t * 0.9f) * 0.0016f) * Mathf.Rad2Deg;
+        eye.transform.localRotation = Quaternion.Euler(-pitch, 0f, roll * Mathf.Rad2Deg);
+    }
+
+    void Step()
+    {
+        stepsTaken++;
+        var audio = AudioManager.I;
+        if (audio == null) return;
+        audio.Play(Ground == "tile" ? "step_tile" : "step_concrete", null, 0.42f, Random.Range(0.92f, 1.04f));
+        var profile = GameState.I != null ? GameState.I.Profile : null;
+        if (profile == null || !profile.limp) return;
+        if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("CaneEverySteps", 2f))) == 0) audio.Play("cane_tap", null, 0.26f, Random.Range(0.95f, 1.05f));
+        if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("BreathEverySteps", 19f))) == 0) audio.Play("breath_old", null, 0.32f);
+    }
+
+    static float Damp(float a, float b, float k, float dt) => Mathf.Lerp(a, b, 1f - Mathf.Exp(-k * dt));
+}

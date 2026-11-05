@@ -1,0 +1,54 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
+Kiosk_TimerLow,남은 시간 강조 시작,Int,15,sec,막판 압박
+Kiosk_WrongTouch,오터치 눈치 상승,Float,4,gauge,SPEC 오터치 +4
+Kiosk_WrongSlot,틀린 틈 눈치 상승,Float,6,gauge,SPEC 잘못된 카드 슬롯 +6
+Kiosk_ErrorVolume,거부 소리 볼륨,Float,0.3,ratio,오터치에는 안 나고 카드 거부 등 진짜 거부에만 작게
+Kiosk_WrongMutterChance,실수 뒤 혼잣말 확률,Float,0.7,ratio,혼잣말은 실수 직후에만 나옴. 연속은 Nunchi_MutterCooldown이 막음
+Kiosk_TouchFailChance,터치가 안 먹을 확률,Float,0.07,ratio,마른 손가락. 프로필 kioskTouchFail일 때만
+Kiosk_SizeUpPrice,사이즈 UP 추가금,Int,800,won,업셀 함정
+Kiosk_AdFirstMin,메뉴 진입 뒤 첫 광고 최소,Float,7,sec,광고가 메뉴를 가림
+Kiosk_AdFirstMax,메뉴 진입 뒤 첫 광고 최대,Float,11,sec,광고가 메뉴를 가림
+Kiosk_AdClassicDelay,CLASSIC 첫 진입 뒤 광고,Float,2.2,sec,찾던 탭에서 방해
+Kiosk_AdShowSec,광고 표시 시간,Float,12,sec,닫기 안 찾으면 오래 가림
+Kiosk_AdGapMin,광고 간격 최소,Float,20,sec,반복 방해
+Kiosk_AdGapMax,광고 간격 최대,Float,30,sec,반복 방해
+Kiosk_AdCloseGapMin,닫은 뒤 광고 간격 최소,Float,24,sec,닫으면 조금 더 쉼
+Kiosk_AdCloseGapMax,닫은 뒤 광고 간격 최대,Float,34,sec,닫으면 조금 더 쉼
+Kiosk_PaySteps,결제 진행 단계 수,Int,8,count,결제 대기 길이
+Kiosk_PayStepSec,결제 단계당 시간,Float,0.5,sec,결제 대기 길이
+Kiosk_CardOutWait,카드 제거 자동 진행까지,Float,6,sec,카드를 안 빼도 막히지 않음
+Kiosk_CardOutDelay,카드 뺀 뒤 완료 화면까지,Float,0.5,sec,연출 간격
+Kiosk_ReceiptPrintSec,영수증 출력 시간,Float,3.1,sec,출력 소리 길이
+Kiosk_ReceiptWidth,영수증 종이 폭,Float,0.074,m,HTML 값
+Kiosk_ReceiptLength,영수증 종이 길이,Float,0.25,m,HTML 값
+Kiosk_ReceiptBendLen,틈에서 앞으로 굽는 구간 길이,Float,0.05,m,HTML 값
+Kiosk_ReceiptBendAngle,굽는 끝 각도,Float,1.45,rad,거의 수직으로 처짐
+Kiosk_ReceiptBendRadius,굽는 반지름,Float,0.034,m,HTML 값
+Kiosk_ReceiptTearRate,뜯는 연출 속도,Float,2.4,per sec,HTML 값
+Kiosk_ReceiptTearRise,뜯을 때 올라가는 양,Float,0.25,m,HTML 값
+Kiosk_ReceiptTearOut,뜯을 때 손님 쪽으로 오는 양,Float,0.42,m,HTML 값
+Kiosk_FinishDelay,영수증 뜯은 뒤 복귀까지,Float,0.9,sec,연출 간격
+Kiosk_LeaveDist,끝난 뒤 키오스크에서 떨어지는 거리,Float,1.1,m,복귀 자리
+Kiosk_SlideSec,대기 광고 넘김 간격,Float,3.6,sec,대기 화면
+Kiosk_DemoStepSec,끼어든 사람의 화면 넘김 간격,Float,0.85,sec,10초 만에 끝내는 대비
+Kiosk_DemoNumber,끼어든 사람의 주문번호,Int,273,number,주문번호 274 앞
+Kiosk_BlowupTurnSec,폭발 때 뒤도는 시간,Float,0.7,sec,강제로 뒤돎
+Kiosk_BlowupMaxSec,폭발 연출 최대 대기,Float,45,sec,연출 멈춤 방지
+Kiosk_BlowupAloneSec,줄 없을 때 폭발 대기,Float,3,sec,시험과 단독 실행용
+Kiosk_Fov,키오스크 앞 화각,Float,60,deg,화면이 크게 보임
+Elder_KioskEye,키오스크 앞 눈높이,Float,1.47,m,인물별 값
+Elder_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,인물별 값
+Kiosk_Dist,화면과의 거리,Float,0.76,m,시점 고정 자리
+Kiosk_DistDown,아래 볼 때 거리,Float,0.6,m,틈을 찾는 자세
+Kiosk_AimY,바라보는 높이,Float,1.372,m,화면 중심
+Kiosk_AimYDown,아래 볼 때 바라보는 높이,Float,0.74,m,틈이 있는 판
+Kiosk_LookYaw,마우스 따라 좌우로 도는 양,Float,0.11,rad,시점이 살짝 따라감
+Kiosk_LookPitch,마우스 따라 위아래로 도는 양,Float,0.08,rad,시점이 살짝 따라감
+Kiosk_EdgeLow,고개 숙임 포인터 위치,Float,0.955,ratio,화면 아래 끝
+Kiosk_EdgeHigh,고개 듦 포인터 위치,Float,0.045,ratio,화면 위 끝
+Kiosk_EdgeHold,끝에 머무는 시간,Float,0.35,sec,실수 방지
+Kiosk_TouchRange,터치 레이 길이,Float,3,m,키오스크 앞에서 충분한 길이
+Kiosk_BlurBase,화면 기본 번짐 반지름,Float,12,px,캔버스 1080 x 1920 기준 16점 번짐. 겨우 알아볼 듯 말 듯. 프로필 kioskBlur일 때만
+Kiosk_PosterAngle,포스터 들춤 각도,Float,146.1,deg,뒤의 틈이 보임
+Kiosk_PosterSpeed,포스터 들춤 속도,Float,4,per sec,연출
