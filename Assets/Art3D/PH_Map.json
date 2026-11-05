@@ -81,6 +81,11 @@
    "model": "Models/PH/PH_Bus__DoorB.fbx"
   },
   {
+   "prefab": "PH_BusInterior",
+   "target": "Visual",
+   "model": "Models/PH/PH_BusInterior.fbx"
+  },
+  {
    "prefab": "PH_Rail",
    "target": "Visual",
    "model": "Models/PH/PH_Rail.fbx"

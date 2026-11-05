@@ -1,0 +1,209 @@
+{
+ "asset": "PH_BusInterior",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_BusInterior/T_PH_BusInterior_BaseColor.jpg",
+    "Normal": "Textures/PH_BusInterior/T_PH_BusInterior_Normal.png",
+    "MS": "Textures/PH_BusInterior/T_PH_BusInterior_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_BusInterior"
+  },
+  {
+   "baseColor": [
+    0.02,
+    0.1,
+    0.33,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "name": "M_PH_BusInterior_Outer"
+  },
+  {
+   "baseColor": [
+    0.022,
+    0.022,
+    0.024,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "name": "M_PH_BusInterior_Dark"
+  },
+  {
+   "baseColor": [
+    0.05,
+    0.052,
+    0.056,
+    1.0
+   ],
+   "metallic": 0.6,
+   "smoothness": 0.58,
+   "name": "M_PH_BusInterior_Frame"
+  },
+  {
+   "baseColor": [
+    0.6,
+    0.03,
+    0.02,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "name": "M_PH_BusInterior_Red"
+  },
+  {
+   "baseColor": [
+    0.72,
+    0.47,
+    0.02,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "name": "M_PH_BusInterior_Pole"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.9,
+    0.9,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "emission": [
+    1.0,
+    1.0,
+    0.95
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_PH_BusInterior_Light"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_BusInterior_Props/T_PH_BusInterior_Props_BaseColor.jpg",
+    "Normal": "Textures/PH_BusInterior_Props/T_PH_BusInterior_Props_Normal.png",
+    "MS": "Textures/PH_BusInterior_Props/T_PH_BusInterior_Props_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_BusInterior_Props"
+  },
+  {
+   "baseColor": [
+    0.55,
+    0.56,
+    0.58,
+    1.0
+   ],
+   "metallic": 1.0,
+   "smoothness": 0.65,
+   "name": "M_PH_BusInterior_Steel"
+  },
+  {
+   "baseColor": [
+    0.68,
+    0.68,
+    0.66,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "name": "M_PH_BusInterior_Ring"
+  },
+  {
+   "baseColor": [
+    0.02,
+    0.2,
+    0.08,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "emission": [
+    0.015,
+    0.14,
+    0.05
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_PH_BusInterior_Screen"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.3
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_PH_BusInterior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/PH_Bus/T_PH_Bus_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_PH_Bus_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/PH_BusInterior/T_PH_BusInterior_StopLed.png",
+    "Emission": "Textures/PH_BusInterior/T_PH_BusInterior_StopLed.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 2.5,
+   "name": "M_PH_BusInterior_Led"
+  }
+ ],
+ "notes": {
+  "origin": "프리팹 원점. 실내 바닥 윗면 y 0.32, 메시 아래 끝 y 0.22, 천장 밑 y 2.65.",
+  "inside": "의자·봉·운전석은 회색 메시와 Col_ 콜라이더 자리 그대로. 판은 두께 있는 상자라 단면으로 충분하고 유리만 양면.",
+  "outside": "창 가로대와 앞유리 차양 끝단이 눈높이 y 1.88 이라 Bus 씬 바닥 평면의 지평선을 가린다."
+ }
+}
