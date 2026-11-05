@@ -110,11 +110,11 @@ static class JWKiosk
             Picture(root.transform, "Btn_hero/Img", "burger_bulgogi.png");
             Picture(root.transform, "Ad/Btn_ad/Img", "burger_double.png");
         });
-        Edit("upsell", root => Picture(root.transform, "Art", "fries.jpg"));
+        Edit("upsell", root => Picture(root.transform, "Art", "fries.png"));
         Edit("cart", root =>
         {
             Picture(root.transform, "Btn_promo/Art", "burger_double.png");
-            Picture(root.transform, "Btn_rec0/Art", "fries.jpg");
+            Picture(root.transform, "Btn_rec0/Art", "fries.png");
             Picture(root.transform, "Btn_rec1/Art", "nuggets.png");
             Picture(root.transform, "Btn_rec2/Art", "cola.png");
             Picture(root.transform, "Btn_rec3/Art", "softcone.png");
