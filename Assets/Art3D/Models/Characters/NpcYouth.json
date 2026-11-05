@@ -1,0 +1,75 @@
+{
+ "asset": "NpcYouth",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcYouth_Body/T_NpcYouth_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcYouth_Body/T_NpcYouth_Body_Normal.png",
+    "MS": "Textures/NpcYouth_Body/T_NpcYouth_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcYouth_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcYouth_Head/T_NpcYouth_Head_BaseColor.jpg",
+    "Normal": "Textures/NpcYouth_Head/T_NpcYouth_Head_Normal.png",
+    "MS": "Textures/NpcYouth_Head/T_NpcYouth_Head_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcYouth_Head"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcYouth_Phone/T_NpcYouth_Phone_BaseColor.jpg",
+    "Normal": "Textures/NpcYouth_Phone/T_NpcYouth_Phone_Normal.png",
+    "MS": "Textures/NpcYouth_Phone/T_NpcYouth_Phone_MS.png",
+    "Emission": "Textures/NpcYouth_Phone/T_NpcYouth_Phone_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.6,
+   "name": "M_NpcYouth_Phone"
+  }
+ ],
+ "notes": {
+  "replaces": "npc_youth1 (프로토타입 줄 선 '뒤 손님' yM: y_hurry1/2/5/7 재촉, y_takeover '비켜보세요, 제가 먼저 할게요.')",
+  "look": "20대 남: 카키 후드티(가슴 'ordinary days' 크림 프린트, 후드 끈+금속 팁), 검정 나일론 반바지(옆선 흰 두 줄), 흰 양말, 오프화이트 운동화, 흰 무선이어폰. 키 1.72m.",
+  "rig": "Quaternius CharacterArmature 62본 유지 (Foot.L/R·PT 는 Root 자식). Generic 리그로 쓸 것.",
+  "clips": "Idle, Idle_Neutral, Walk, Run, Wave, Interact (원본) + SitPhone(120f 루프, 좌판 0.65m), Phone(80f 루프, 한 손 파지·화면이 눈을 향함), Impatient(80f 루프: 팔짱+발끝 까딱+한숨 — 재촉 대사와 함께), PointScreen(80f: 오른손 검지로 키오스크 화면 가리킴 '어르신, 그거 아니에요.', 0/80 프레임은 Idle), LookBack(80f: 오른쪽 어깨 너머 돌아봄 후 복귀). 24fps.",
+  "clips_dropped": "원본 24 클립 중 버림: Death, Gun_Shoot, HitRecieve, HitRecieve_2, Idle_Gun, Idle_Gun_Pointing, Idle_Gun_Shoot, Idle_Sword, Kick_Left, Kick_Right, Punch_Left, Punch_Right, Roll, Run_Back, Run_Left, Run_Right, Run_Shoot, Sword_Slash",
+  "objects": "NpcYouth_Body(몸·후드티·끈·반바지·신발), NpcYouth_Head(머리·이어폰), NpcYouth_Phone(오른손 폰, Phone/SitPhone 때만 켤 것)",
+  "sockets": "NpcYouth_Socket_Head(Head 본, 시선/자막 기준), _HandR/_HandL(손바닥 중심), _Socket_Seat(SitPhone 때 의자 좌판 윗면 중심, 아마추어 기준)",
+  "dynamic": "없음"
+ }
+}

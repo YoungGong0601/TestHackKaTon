@@ -1,0 +1,320 @@
+fileFormatVersion: 2
+guid: 8266b63c50d9342f8b50ab7f69706916
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Glass_Storefront
+    second: {fileID: 2100000, guid: 6ecfa2984ffee4c2ab2a9b7e75df7877, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_BackdropPharmacy
+    second: {fileID: 2100000, guid: d38c92f87714e4e9ab1bf93a6dda5f11, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_BackdropRiceCake
+    second: {fileID: 2100000, guid: 5e503bf91fb794c639b144ce451b18d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_BannerRent
+    second: {fileID: 2100000, guid: ad457e14c17e247798d5116414632800, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_DoorMatPrint
+    second: {fileID: 2100000, guid: a76706398c1614a3e9c719fe2ae5e56a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Downlight
+    second: {fileID: 2100000, guid: 33ac688e2ad9a404a8e54e8453f1c3b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Frame
+    second: {fileID: 2100000, guid: 86919c104b5ce4488b11dafbe1557de8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Interior
+    second: {fileID: 2100000, guid: 39ffdb821d2d941678fc85a7f254c0a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_LetterFace
+    second: {fileID: 2100000, guid: 31e4b496f275148349b24c4e0b6e3ca1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_LogoBun
+    second: {fileID: 2100000, guid: c8a5be775efdb4b8596ef32f4fc9f19f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_LogoCrown
+    second: {fileID: 2100000, guid: 739d229b408f74192a237140e86da56c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_LogoPatty
+    second: {fileID: 2100000, guid: fcc682dc4307a44518ddad07bc6e4cfd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_LogoSeed
+    second: {fileID: 2100000, guid: 444b2444a39b04b5ebf5ccdd9cf37202, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_NoteHelpWanted
+    second: {fileID: 2100000, guid: b774a2564ecc84b6ca776b27c783fc23, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_PaperBack
+    second: {fileID: 2100000, guid: 0c6eb64d8a2544af5b1a3a8bafe9ccd3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_PosterBulgogi
+    second: {fileID: 2100000, guid: 6dfb1c861db684bb8ac47be5ca4f68ee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_PosterFries
+    second: {fileID: 2100000, guid: 69ff609e6d9b3465b95c7cd07e7b9c6a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_PosterKiosk
+    second: {fileID: 2100000, guid: 9fe5aec8a0ec54e808b2e9662390dfd4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_PosterNew
+    second: {fileID: 2100000, guid: f5aea589d30bc4601b6a9844eb5d04fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_ProjSign
+    second: {fileID: 2100000, guid: 67bc3d02a38f74ebaafb44d5573106db, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_RoomBlinds
+    second: {fileID: 2100000, guid: 1867bfd4b8bae454da4a6b91f0667357, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_RoomClass
+    second: {fileID: 2100000, guid: 7703dc9f78f514cbd9f6272517de17b1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_RoomCurtain
+    second: {fileID: 2100000, guid: f916aa603f1944ceea54fd546f7f3425, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_RoomEmpty
+    second: {fileID: 2100000, guid: 1a4129134a0e04fb8857def4f10936d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Sign
+    second: {fileID: 2100000, guid: 040f9c0d3ae754ab9aa1ccd865aff87f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_SignAcademy
+    second: {fileID: 2100000, guid: 3263cb101969b46e89d986165eddf073, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_SignBilliards
+    second: {fileID: 2100000, guid: ddcf2267b1b0f417e968074d6cd53570, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_SignDental
+    second: {fileID: 2100000, guid: e5e66de293f5f4b9ea5d0fae450eefb4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_SignPharmacy
+    second: {fileID: 2100000, guid: 7caa3df4b74e6466cb7a45413faa8952, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_SignRiceCake
+    second: {fileID: 2100000, guid: 7f3c5d8b4d3024c2ba2ee9270dbb67d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_StickerCCTV
+    second: {fileID: 2100000, guid: 15cc1bd44955f44829e8a1c4f1253e33, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_StickerCardOnly
+    second: {fileID: 2100000, guid: 976d99cc82e3a464b94c45268ae889b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_StickerCoupon
+    second: {fileID: 2100000, guid: 4e67bd69fbf0348e482612e4bff56195, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Streaks
+    second: {fileID: 2100000, guid: ea1aa7370595147b19f946e9d9f7ab79, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_VinylAcademy
+    second: {fileID: 2100000, guid: 45ff5bc62d52c4444a9345ce953f0418, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_VinylBand
+    second: {fileID: 2100000, guid: 0ba902901939444a19d38c3dd34098ca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_VinylBilliards
+    second: {fileID: 2100000, guid: c857e309d71e74f3785e46f9959c1b01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_VinylDental
+    second: {fileID: 2100000, guid: dfc5e54bda2104415967a3cf723a51c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_VinylHours
+    second: {fileID: 2100000, guid: 05a3e3e1691f5464a8103663cca69e83, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_StorefrontFacade_Windows
+    second: {fileID: 2100000, guid: 1aa24dcfe156c4c78b6ec181051b5183, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Tile_Storefront_FacadeTile
+    second: {fileID: 2100000, guid: 14bba3a74913947b0867fe97be3a25d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Tile_Storefront_Granite
+    second: {fileID: 2100000, guid: 108049b20ab594431b11f052a14d3de6, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 0
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

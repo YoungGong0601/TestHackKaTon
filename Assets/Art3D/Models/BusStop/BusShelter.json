@@ -1,0 +1,212 @@
+{
+ "asset": "BusShelter",
+ "category": "BusStop",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusShelter_Frame/T_BusShelter_Frame_BaseColor.jpg",
+    "Normal": "Textures/BusShelter_Frame/T_BusShelter_Frame_Normal.png",
+    "MS": "Textures/BusShelter_Frame/T_BusShelter_Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusShelter_Frame"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BusShelter_Bench/T_BusShelter_Bench_BaseColor.jpg",
+    "Normal": "Textures/BusShelter_Bench/T_BusShelter_Bench_Normal.png",
+    "MS": "Textures/BusShelter_Bench/T_BusShelter_Bench_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusShelter_Bench"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BusShelter_Bin/T_BusShelter_Bin_BaseColor.jpg",
+    "Normal": "Textures/BusShelter_Bin/T_BusShelter_Bin_Normal.png",
+    "MS": "Textures/BusShelter_Bin/T_BusShelter_Bin_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusShelter_Bin"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Decals.png"
+   },
+   "doubleSided": true,
+   "alphaClip": 0.5,
+   "name": "M_BusShelter_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Glass.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_BusShelter_Glass"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Decals.png"
+   },
+   "doubleSided": true,
+   "alphaClip": 0.5,
+   "name": "M_BusShelter_Leaves"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.88,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Roof.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_BusShelter_Roof"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_NameSign.png",
+    "Emission": "Textures/BusShelter/T_BusShelter_NameSign.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.35,
+   "name": "M_BusShelter_NameSign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_AdPoster.png",
+    "Emission": "Textures/BusShelter/T_BusShelter_AdPoster.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.9,
+   "name": "M_BusShelter_AdPoster"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_TactileDot_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_TactileDot_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_TactileDot_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_TactileDot"
+  }
+ ],
+ "notes": {
+  "pivot": "바닥 중앙. 정면(-Y→Unity +Z)이 차도. 오른쪽(+X) 끝 옆유리, 왼쪽(-X) 끝 양면 광고 라이트박스, 앞 연석 쪽 점형블록 띠.",
+  "parts": {
+   "BusShelter_Frame": "강재 기둥·외팔보·중도리·처마·물받이·선홈통·유리틀·라이트박스 함체·비상벨 (2048 굽기)",
+   "BusShelter_Bench": "나무 살 벤치 2.62 m, 앉는 높이 0.45 m, 눕기 방지 팔걸이 2개 (1024 굽기)",
+   "BusShelter_Bin": "2칸 쓰레기통 (일반/재활용) (1024 굽기)",
+   "BusShelter_Glass": "M_Glass_BusShelter_Glass 강화유리 (먼지·손자국·흙탕 = 텍스처 알파, 월드 UV 2.5 m)",
+   "BusShelter_Roof": "M_Glass_BusShelter_Roof 폴리카보네이트 (골 + 먼지, 월드 UV 2.5 m, 양면)",
+   "BusShelter_Signs": "이름판(앞뒤, 약발광 0.35) + 광고 포스터(양면, 발광 0.9)",
+   "BusShelter_Tactile": "M_Tile_Street_TactileDot 점형블록 (StreetSidewalk 와 같은 머티리얼, 월드 UV 0.6 m, 3 mm). 보도 모듈에 이미 같은 자리 점형 띠가 있으면 이 오브젝트를 끈다",
+   "BusShelter_Leaves": "지붕 위 은행잎 (양면 알파클립, 지붕 아래에서 비쳐 보임)"
+  },
+  "sockets": {
+   "BusShelter_Socket_Sit_0/1/2": "벤치 앉는 자리 (높이 0.45 m, 정면 -Y)",
+   "BusShelter_Socket_RouteMap": "BusStopRouteMap 원점을 여기에 (뒷유리 앞면, 오른쪽 칸 가운데)",
+   "BusShelter_Socket_LookTarget_Name": "이름판 중심 (높이 2.4 m)",
+   "BusShelter_Socket_LookTarget_Ad": "안쪽 버거대왕 광고 중심",
+   "BusShelter_Socket_Wait": "버스 기다리는 자리 (지붕 아래 앞쪽)",
+   "BusShelter_Socket_BIS": "BusStopBIS 추천 위치 (옆유리 쪽 보도, 표시부가 ±X 보행 방향을 봄)",
+   "BusShelter_Socket_Sign": "BusStopSign 추천 위치 (라이트박스 쪽 연석)",
+   "BusShelter_Socket_BusDoor": "버스 앞문이 서는 연석 지점"
+  },
+  "shadows": {
+   "BusShelter_Glass": "Cast Shadows Off (투명 유리가 꽉 찬 그림자를 만들지 않게)",
+   "BusShelter_Roof": "Cast Shadows On (폴리카보네이트 지붕 그늘 표현)",
+   "BusShelter_Decals": "Cast Shadows Off (유리 스티커)",
+   "BusShelter_Leaves": "Cast Shadows On"
+  },
+  "sidewalk": "승차대 아래 보도는 선형 유도 띠(경계석에서 2.6 m)를 빼거나 뒷유리 뒤(y > 1.4)로 돌린 변형이 필요. BusDoor 소켓을 연석에 맞추면 기본 보도 모듈의 유도 띠가 벤치 앞(y ≈ 0.2)을 가로지른다",
+  "collider": "기둥 4개 박스 0.1x0.1x2.63, 뒷유리 박스 6.6x0.06x2.1, 옆유리 0.06x1.9x2.1, 라이트박스 0.2x1.3x2.3, 벤치 박스 2.62x0.45x0.46, 쓰레기통 0.66x0.38x0.9, 지붕은 충돌 불필요"
+ }
+}

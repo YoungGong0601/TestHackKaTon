@@ -1,0 +1,39 @@
+{
+ "asset": "StreetNoParking",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetNoParking_Body/T_StreetNoParking_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetNoParking_Body/T_StreetNoParking_Body_Normal.png",
+    "MS": "Textures/StreetNoParking_Body/T_StreetNoParking_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetNoParking_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StreetNoParking/T_StreetNoParking_Face.png"
+   },
+   "name": "M_StreetNoParking_Face"
+  }
+ ],
+ "notes": "주차금지 입간판 1.64 m. 원점 = 바닥 중앙(타이어 밑면). 표지 정면 = -Y. 타이어 Ø0.6 m 안에 시멘트를 채운 한국 골목식. 표지(0.5x0.5 m) + 손글씨 '차 대지 마세요!!' 코팅지는 M_StreetNoParking_Face(굽지 않음). Socket_Sign: 시선 대상."
+}

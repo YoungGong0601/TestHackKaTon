@@ -1,0 +1,98 @@
+{
+ "asset": "BusStopBIS",
+ "category": "BusStop",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_BaseColor.jpg",
+    "Normal": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_Normal.png",
+    "MS": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusStopBIS_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BusStopBIS/T_BusStopBIS_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BusStopBIS_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/BusStopBIS/T_BusStopBIS_Display.png",
+    "Emission": "Textures/BusStopBIS/T_BusStopBIS_Display.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.6,
+   "dynamic": true,
+   "name": "M_Dyn_BusStopBIS_Display"
+  }
+ ],
+ "notes": {
+  "pivot": "기둥 바닥 중심. 정면(-Y→Unity +Z)과 뒷면 모두 표시부. 프로토타입처럼 도로와 직각으로 세우면 양쪽 보행자가 본다.",
+  "dynamic": [
+   {
+    "object": "BusStopBIS_Display",
+    "material": "M_Dyn_BusStopBIS_Display",
+    "size_m": [
+     1.5,
+     0.62
+    ],
+    "texture_px": [
+     2048,
+     846
+    ],
+    "uv": "면마다 UV 0..1, U→오른쪽 V→위 (각 면을 정면에서 볼 때). 앞뒤 2장이 같은 머티리얼",
+    "placeholder": "Textures/BusStopBIS/T_BusStopBIS_Display.png (버스 놓치기 전: 2413 곧 도착 / 112 6분 / 7 11분)",
+    "alt": "Textures/BusStopBIS/T_BusStopBIS_Display_After.png (놓친 뒤: 112 곧 도착 / 7 9분 / 2413 14분)",
+    "emission": "발광 1.6 (주황 LED 도트 224x92)",
+    "base_lens": [
+     {
+      "base": "Textures/BusStopBIS/T_BusStopBIS_Display_Base.png",
+      "lens": "Textures/BusStopBIS/T_BusStopBIS_Display.png"
+     },
+     {
+      "base": "Textures/BusStopBIS/T_BusStopBIS_Display_After_Base.png",
+      "lens": "Textures/BusStopBIS/T_BusStopBIS_Display_After.png"
+     }
+    ],
+    "readable": "base = 돋보기 밖(글자 대신 막대 + 흐림, 프로토타입 tBase), lens = 돋보기 안(선명, tLens). 머티리얼 기본 텍스처는 lens. 런타임에 base 를 깔고 돋보기 원 안만 lens 로 바꾼다"
+   }
+  ],
+  "sockets": {
+   "BusStopBIS_Socket_LookTarget": "앞 표시부 중심 (높이 2.71 m, 돋보기/시선 판정)",
+   "BusStopBIS_Socket_LookTarget_Back": "뒷 표시부 중심"
+  },
+  "collider": "기둥 원기둥 r0.06 h2.33 + 함체 박스 1.78x0.18x0.77 (중심 높이 2.72)"
+ }
+}

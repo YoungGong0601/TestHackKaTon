@@ -1,0 +1,179 @@
+{
+ "asset": "Kiosk",
+ "category": "Kiosk",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Kiosk_Body/T_Kiosk_Body_BaseColor.jpg",
+    "Normal": "Textures/Kiosk_Body/T_Kiosk_Body_Normal.png",
+    "MS": "Textures/Kiosk_Body/T_Kiosk_Body_MS.png",
+    "Emission": "Textures/Kiosk_Body/T_Kiosk_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_Kiosk_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Kiosk_Controls/T_Kiosk_Controls_BaseColor.jpg",
+    "Normal": "Textures/Kiosk_Controls/T_Kiosk_Controls_Normal.png",
+    "MS": "Textures/Kiosk_Controls/T_Kiosk_Controls_MS.png",
+    "Emission": "Textures/Kiosk_Controls/T_Kiosk_Controls_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_Kiosk_Controls"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.8
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Glass.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_Kiosk_Cover"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Paper_BaseColor.jpg",
+    "Normal": "Textures/Kiosk/T_Kiosk_Paper_Normal.jpg"
+   },
+   "name": "M_Kiosk_Paper"
+  },
+  {
+   "baseColor": [
+    0.86,
+    0.84,
+    0.74,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_Kiosk_Tape"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Header.png",
+    "Emission": "Textures/Kiosk/T_Kiosk_Header.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.9,
+   "name": "M_Kiosk_Header"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Panel.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_Kiosk_Panel"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Screen_Attract.png",
+    "Emission": "Textures/Kiosk/T_Kiosk_Screen_Attract.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.0,
+   "dynamic": true,
+   "name": "M_Dyn_Kiosk_Screen"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.85,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_TerminalLcd.png",
+    "Emission": "Textures/Kiosk/T_Kiosk_TerminalLcd.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.8,
+   "dynamic": true,
+   "name": "M_Dyn_Kiosk_TerminalLcd"
+  }
+ ],
+ "notes": "매장 주문 키오스크 (프로토 pe.KX). 높이 1.898m (간판 포함), 본체 0.60 x 0.11m, 받침판 0.66 x 0.46m. 정면 = Unity +Z. 원점 = 바닥 중앙. 런타임 화면 교체 시 _BaseMap 과 _EmissionMap 을 둘 다 바꿀 것 (M_Dyn 화면은 같은 이미지로 발광). Kiosk_Controls = 조작부 슬롯 모듈·단말기·NFC·호출 버튼·스피커 (따로 1024 굽기). 동적 면: Kiosk_Screen (M_Dyn_Kiosk_Screen, 0.42 x 0.7467m, 1080x1920px, UV 0-1 U=오른쪽 V=위, 유리보다 5mm 안쪽, 발광). Kiosk_Panel (M_Dyn_Kiosk_Panel, 하단 조작부 0.54 x 0.585m, 1890x2048px, UV 0-1 정방향; 돋보기 상태는 T_Kiosk_Panel_Lens.png 로 교체). Kiosk_TerminalLcd (M_Dyn_Kiosk_TerminalLcd, 단말기 LCD 0.07 x 0.04m, 512x292px, UV 0-1 정방향, 단말기와 같이 -0.24rad 기울어짐). Kiosk_Glass (M_Glass_Kiosk_Cover, 0.468 x 0.803m 투명 지문 유리, 화면 앞). Kiosk_Labels = 포스터·스티커·간판(M_Kiosk_Paper 아틀라스, M_Kiosk_Header 발광) + 테이프(M_Glass_Kiosk_Tape). 움직이는 부품: Kiosk_PayCover = IC 카드 투입구를 가린 '왕관페이 30% 할인' 종이 덮개 (유리 M_Glass_Kiosk_Cover 와 다름), 원점 = 오른쪽 세로 경첩(테이프), Unity 로컬 Y 회전 0 -> -146도(-2.55rad) 로 열림 (자유단이 손님 기준 오른쪽 앞으로 펼쳐짐, 프로토 openCover). Kiosk_PopWobbler = 'NEW 행사 중' 흔들이 POP, 원점 = 원판 중심 (프로토 nudge: 로컬 X/Z 로 +-0.1~0.2rad 흔들기). 소켓: CardSlot(진짜 IC 투입구, 덮개 뒤), ReceiptOut(영수증 출구, KioskReceipt 원점을 여기에), Barcode(쿠폰 스캐너 창), Member(가짜 멤버십 슬롯), Terminal(단말기 아래 가짜 투입구), Nfc(탭 패드), Call(직원 호출), Speaker(음성 안내 위치), ScreenCenter(화면 중심, 터치 판정), UserStand(손님이 서는 곳, 정면 0.5m). 슬롯 4개는 일부러 비슷하게 생김."
+}

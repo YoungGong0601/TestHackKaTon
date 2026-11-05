@@ -1,0 +1,46 @@
+{
+ "asset": "StorefrontAC",
+ "category": "Storefront",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StorefrontAC_Body/T_StorefrontAC_Body_BaseColor.jpg",
+    "Normal": "Textures/StorefrontAC_Body/T_StorefrontAC_Body_Normal.png",
+    "MS": "Textures/StorefrontAC_Body/T_StorefrontAC_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorefrontAC_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorefrontAC_Fan/T_StorefrontAC_Fan_BaseColor.jpg",
+    "Normal": "Textures/StorefrontAC_Fan/T_StorefrontAC_Fan_Normal.png",
+    "MS": "Textures/StorefrontAC_Fan/T_StorefrontAC_Fan_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorefrontAC_Fan"
+  }
+ ],
+ "notes": {
+  "pivot": "원점 = 앵글 거치대 바닥, X 가운데, Y=0 이 벽면(뒤). 벽에 붙일 때 원점을 벽면에 두면 된다. 높이 약 1.0m(실외기 0.6m + 거치대).",
+  "place": "배치는 StorefrontFacade_Socket_AC_1..3 이 기준이다 (소켓 위치·회전 그대로 붙이면 원점이 벽면에 맞는다).",
+  "fan": "StorefrontAC_Fan: 원점 = 팬 축. 축은 앞뒤(Blender Y, Unity Z) 방향, 그 축으로 돌리면 된다."
+ }
+}

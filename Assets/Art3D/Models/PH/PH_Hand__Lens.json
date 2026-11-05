@@ -1,0 +1,40 @@
+{
+ "asset": "PH_Hand__Lens",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Magnifier_Body/T_Magnifier_Body_BaseColor.jpg",
+    "Normal": "Textures/Magnifier_Body/T_Magnifier_Body_Normal.png",
+    "MS": "Textures/Magnifier_Body/T_Magnifier_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Magnifier_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/Magnifier/T_Magnifier_lens_smudge.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_Magnifier_Lens"
+  }
+ ],
+ "notes": "원점 = 렌즈 중심 (HandRig lens.position). 균일 스케일 1.206, 유리 반지름 0.06, 테 바깥 0.068. 손잡이만 축으로 0.706 배, 끝 y -0.2. 유리는 자식 메시 PH_Hand__Lens_Glass."
+}

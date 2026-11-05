@@ -1,0 +1,32 @@
+{
+ "asset": "FoodDrinkCup_Cider",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodDrinkCup_Cider_Mesh/T_FoodDrinkCup_Cider_Mesh_BaseColor.jpg",
+    "Normal": "Textures/FoodDrinkCup_Cider_Mesh/T_FoodDrinkCup_Cider_Mesh_Normal.png",
+    "MS": "Textures/FoodDrinkCup_Cider_Mesh/T_FoodDrinkCup_Cider_Mesh_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodDrinkCup_Cider_Mesh"
+  }
+ ],
+ "notes": {
+  "desc": "16oz 종이컵 + 뚜껑 + 빨대 (사이다). 컵 인쇄의 띠 색/글씨와 앞쪽 주문 스티커('주문 274 · 사이다(M)')로 음료를 구분. 뚜껑은 반투명 PP(안의 음료가 비침)에 음료 표시 버튼 3개(콜라/사이다/기타, 주문한 음료 버튼이 눌림). 정면 -Y(로고), 원점 바닥 중앙, 빨대 포함 높이 약 0.229m. FoodDrinkCup_Cola/Cider 는 메시 동일·텍스처만 다름.",
+  "sockets": {
+   "FoodDrinkCup_Cider_Socket_Grip": "손으로 쥐는 중심",
+   "FoodDrinkCup_Cider_Socket_StrawTip": "빨대 끝(마실 때 입 위치)",
+   "FoodDrinkCup_Cider_Socket_Label": "앞쪽 주문 스티커 (확대해 보기용 시선 타깃)"
+  }
+ }
+}

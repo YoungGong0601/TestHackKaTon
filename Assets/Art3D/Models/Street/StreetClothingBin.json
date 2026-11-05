@@ -1,0 +1,84 @@
+{
+ "asset": "StreetClothingBin",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetClothingBin_Body/T_StreetClothingBin_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetClothingBin_Body/T_StreetClothingBin_Body_Normal.png",
+    "MS": "Textures/StreetClothingBin_Body/T_StreetClothingBin_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetClothingBin_Body"
+  },
+  {
+   "baseColor": [
+    0.012,
+    0.012,
+    0.012,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "name": "M_StreetClothingBin_Inside"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StreetClothingBin/T_StreetClothingBin_Decals.png"
+   },
+   "name": "M_StreetClothingBin_Decals"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetClothingBin_Door/T_StreetClothingBin_Door_BaseColor.jpg",
+    "Normal": "Textures/StreetClothingBin_Door/T_StreetClothingBin_Door_Normal.png",
+    "MS": "Textures/StreetClothingBin_Door/T_StreetClothingBin_Door_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetClothingBin_Door"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetClothingBin_Hopper/T_StreetClothingBin_Hopper_BaseColor.jpg",
+    "Normal": "Textures/StreetClothingBin_Hopper/T_StreetClothingBin_Hopper_Normal.png",
+    "MS": "Textures/StreetClothingBin_Hopper/T_StreetClothingBin_Hopper_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetClothingBin_Hopper"
+  }
+ ],
+ "notes": "의류 수거함 1.0 x 0.72 x 1.70 m. 원점 = 바닥 중앙, 정면 -Y. 움직이는 부품: StreetClothingBin_Hopper(원점 = 아래 경첩, 로컬 X 축으로 앞으로 젖힘, 열림 약 -50°), StreetClothingBin_Door(원점 = 왼쪽 세로 경첩, 로컬 Z 축 회전, 열림 약 -100°). 호퍼 뒤 개구부는 검은 M_StreetClothingBin_Inside. Socket_Drop(옷을 넣는 위치), Socket_HopperGrip(손잡이). 라벨: 의류 수거함 / 헌옷·신발·가방 / 수거 품목 / 무단투기 금지 / 허가번호 (M_StreetClothingBin_Decals)."
+}

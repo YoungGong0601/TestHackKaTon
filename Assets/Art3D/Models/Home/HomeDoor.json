@@ -1,0 +1,39 @@
+{
+ "asset": "HomeDoor",
+ "category": "Home",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeDoor/T_HomeDoor_BaseColor.jpg",
+    "Normal": "Textures/HomeDoor/T_HomeDoor_Normal.png",
+    "MS": "Textures/HomeDoor/T_HomeDoor_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeDoor"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/HomeDoor/T_HomeDoor_door_flyers.png"
+   },
+   "name": "M_HomeDoor_Flyers"
+  }
+ ],
+ "notes": "현관 철제문 문짝 0.912x2.013x0.05m. 원점 = 경첩 축(바깥면 모서리) 바닥 높이, 문짝은 원점에서 -X 쪽으로 뻗음. -Y = 복도(바깥) 면(키패드), +Y = 집 안쪽 면(레버, 도어락, 체인, 도어클로저, 전단지). HomeEntry/HomeDoorFrame 좌표계 그대로 쓰면 회전 없이 맞음: HomeDoorFrame_Socket_DoorHinge 위치에 원점을 둔다. 로컬 Z(Blender)=Unity 로컬 Y 축 + 회전으로 복도 쪽(바깥)으로 열림 (프로토타입 K.rotation.y = doorT*1.5 에 해당, 부호는 Unity 축 변환 후 확인). 자식: HomeDoor_LeverIn / HomeDoor_LeverOut (원점=스핀들, 문 면 법선(Y) 축으로 눌림), HomeDoor_CloserArm (원점=클로저 스핀들, Z 축 회전), HomeDoor_CloserForearm (원점=팔꿈치, FBX 손자 계층 문제로 문짝 직속 자식). 문짝 아래는 문턱 위 0.022m 띄움(min_z=0.022 정상, 원점은 경첩 축 바닥). 전단지 자석 4장(24시 열쇠/중화 반점/치킨 배달/가스 점검-찢김) + 손글씨 메모는 M_HomeDoor_Flyers(2048 인쇄 텍스처, 굽지 않음). 소켓: Handle(안쪽 레버 잡는 점), HandleOut, LockButton(실내기 열림 버튼), Keypad, Peephole, Memo, LookTarget."
+}

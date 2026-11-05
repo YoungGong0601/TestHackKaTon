@@ -1,0 +1,31 @@
+{
+ "asset": "FoodTakeoutBag",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodTakeoutBag_Mesh/T_FoodTakeoutBag_Mesh_BaseColor.jpg",
+    "Normal": "Textures/FoodTakeoutBag_Mesh/T_FoodTakeoutBag_Mesh_Normal.png",
+    "MS": "Textures/FoodTakeoutBag_Mesh/T_FoodTakeoutBag_Mesh_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodTakeoutBag_Mesh"
+  }
+ ],
+ "notes": {
+  "desc": "크라프트 포장백 (불고기 버거 세트 포장 결과물). 0.26 x 0.15 x 0.30m + 손잡이(전체 높이 약 0.385m). 정면 -Y 에 로고, 옆면 분리배출 표시. 윗단 3cm 안쪽 접힘, 손잡이 2개(앞/뒤). 원점 바닥 중앙.",
+  "sockets": {
+   "FoodTakeoutBag_Socket_Grip": "손잡이 두 개를 함께 쥐는 점",
+   "FoodTakeoutBag_Socket_Contents": "봉투 안 바닥 (내용물 배치 기준)"
+  }
+ }
+}

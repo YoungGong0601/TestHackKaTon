@@ -1,0 +1,59 @@
+{
+ "asset": "PH_Fryer",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_Fryer/T_PH_Fryer_BaseColor.jpg",
+    "Normal": "Textures/PH_Fryer/T_PH_Fryer_Normal.png",
+    "MS": "Textures/PH_Fryer/T_PH_Fryer_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_Fryer"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "maps": {
+    "BaseColor": "Textures/StoreKitchen/T_StoreKitchen_kitchen_signs.png",
+    "Emission": "Textures/StoreKitchen/T_StoreKitchen_kitchen_signs.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.3,
+   "name": "M_StoreKitchen_Screens"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreKitchen/T_StoreKitchen_kitchen_signs.png"
+   },
+   "name": "M_StoreKitchen_Signs"
+  }
+ ]
+}

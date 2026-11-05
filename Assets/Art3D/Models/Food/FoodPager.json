@@ -1,0 +1,68 @@
+{
+ "asset": "FoodPager",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodPager_Body/T_FoodPager_Body_BaseColor.jpg",
+    "Normal": "Textures/FoodPager_Body/T_FoodPager_Body_Normal.png",
+    "MS": "Textures/FoodPager_Body/T_FoodPager_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodPager_Body"
+  },
+  {
+   "baseColor": [
+    0.85,
+    0.85,
+    0.85,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.78,
+   "emission": [
+    1.0,
+    0.0423,
+    0.016
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_FoodPager_Led"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "maps": {
+    "BaseColor": "Textures/FoodPager/T_FoodPager_pager_sticker.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_FoodPager_Number"
+  }
+ ],
+ "notes": {
+  "desc": "식당 진동벨(호출벨). 지름 0.097m(LED 포함), 높이 0.0243m, 원점 바닥 중앙, 정면 -Y. 진동은 게임에서 흔들기로 연출.",
+  "dynamic": {
+   "FoodPager_Number": "M_Dyn_FoodPager_Number — 윗면 원형 번호 스티커, 지름 0.050m, 텍스처 1024x1024 (기본값 '274'), UV 0-1 이 스티커 지름 정사각형(원 밖 모서리는 안 보임), U 오른쪽 V 뒤쪽(+Y) — 정면에서 똑바로 읽힘."
+  },
+  "led": "FoodPager_Led (M_FoodPager_Led): 옆면 LED 링, 기본 발광 빨강 x4 (호출 상태). 대기 상태는 emission 을 0 으로, 호출 시 깜박이기.",
+  "sockets": {
+   "FoodPager_Socket_Grip": "손으로 쥐는 중심",
+   "FoodPager_Socket_Number": "번호 스티커 (시선 타깃)",
+   "FoodPager_Socket_Led": "LED 빛/호출음(pager_call) 위치"
+  }
+ }
+}

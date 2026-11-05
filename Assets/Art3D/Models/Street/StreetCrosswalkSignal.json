@@ -1,0 +1,122 @@
+{
+ "asset": "StreetCrosswalkSignal",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal_Body/T_StreetCrosswalkSignal_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetCrosswalkSignal_Body/T_StreetCrosswalkSignal_Body_Normal.png",
+    "MS": "Textures/StreetCrosswalkSignal_Body/T_StreetCrosswalkSignal_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetCrosswalkSignal_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_Box.png"
+   },
+   "name": "M_StreetCrosswalkSignal_Box"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal_Button/T_StreetCrosswalkSignal_Button_BaseColor.jpg",
+    "Normal": "Textures/StreetCrosswalkSignal_Button/T_StreetCrosswalkSignal_Button_Normal.png",
+    "MS": "Textures/StreetCrosswalkSignal_Button/T_StreetCrosswalkSignal_Button_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetCrosswalkSignal_Button"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.75,
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_CountOff.png",
+    "Emission": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_CountOff.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "dynamic": true,
+   "name": "M_Dyn_StreetCrosswalkSignal_Count"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.75,
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_GreenOff.png",
+    "Emission": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_GreenOff.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "dynamic": true,
+   "name": "M_Dyn_StreetCrosswalkSignal_Green"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.75,
+   "maps": {
+    "BaseColor": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_RedOn.png",
+    "Emission": "Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_RedOn.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "dynamic": true,
+   "name": "M_Dyn_StreetCrosswalkSignal_Red"
+  }
+ ],
+ "notes": "보행 신호등 기둥 3.4 m. 원점 = 바닥 중앙. 신호등 헤드 정면 = -Y(Unity +Z): 차도·건너편을 향하게 놓는다. 음향신호기 버튼함은 반대쪽 +Y(Unity -Z) 면 1.1~1.37 m 에 있어, 보도에서 기다리는 사람(StreetSidewalkRamp_Socket_Wait 쪽)이 본다. 동적 면(M_Dyn, UV 0-1, U 오른쪽 V 위, 512px): StreetCrosswalkSignal_LampRed 0.30x0.30 m(z 3.14), StreetCrosswalkSignal_LampGreen 0.30x0.30 m(z 2.76), StreetCrosswalkSignal_Count 0.21x0.28 m(384x512, 잔여시간 숫자). 기본값: 빨강 켜짐, 초록·숫자 꺼짐. 교체용 텍스처: Textures/StreetCrosswalkSignal/T_StreetCrosswalkSignal_RedOn/RedOff/GreenOn/GreenOff/Count(15)/CountOff. Emission 3. StreetCrosswalkSignal_Button = 눌리는 버튼(+Y 면, 원점 = 버튼 뿌리 중심, 누르면 로컬 -Y 로 4 mm 이동). Socket_Button(누름 위치), Socket_Speaker(음향 '삑' 소리, crosswalk_beep), Socket_Head(시선 대상)."
+}

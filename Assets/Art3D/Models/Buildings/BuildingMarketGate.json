@@ -1,0 +1,61 @@
+{
+ "asset": "BuildingMarketGate",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BuildingMarketGate/T_BuildingMarketGate_BaseColor.jpg",
+    "Normal": "Textures/BuildingMarketGate/T_BuildingMarketGate_Normal.png",
+    "MS": "Textures/BuildingMarketGate/T_BuildingMarketGate_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BuildingMarketGate"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/BuildingMarketGate/T_BuildingMarketGate_Sign.jpg",
+    "Emission": "Textures/BuildingMarketGate/T_BuildingMarketGate_Sign.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.45,
+   "name": "M_BuildingMarketGate_Sign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BuildingMarketGate/T_BuildingMarketGate_Decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BuildingMarketGate_Decal"
+  }
+ ],
+ "notes": "전통시장 입구 게이트 '큰길시장'. 원점 = 두 기둥 사이 바닥 중앙, 정면 = Unity +Z (간판은 앞뒤 양면). 기둥 사각 강관 0.32m (x=±2.6, 높이 5.4m) + 콘크리트 받침·베이스 플레이트·앵커 볼트 4개, 간판 상자 6x1.1x0.34m (중심 높이 4.9m, 아래 통과 높이 4.35m), 간판 면 5.8x1.0m = M_BuildingMarketGate_Sign (발광 0.45, 정면·뒷면 같은 그림). 오른쪽 기둥 안쪽에 분전함·전선관, 기둥에 온누리상품권 스티커·광고물 부착 금지판·점포 임대 전단. 프로토타입 위치: 매장 외부 좌표 (-17.2, 0, 6), 간판이 +Z 를 본다. 정류장 '시장입구' 도착 랜드마크. 소켓: BuildingMarketGate_Socket_SignLook (간판 앞면 중심, 시선 타깃)."
+}

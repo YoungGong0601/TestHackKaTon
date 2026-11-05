@@ -1,0 +1,85 @@
+{
+ "asset": "StoreMenuBoard",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreMenuBoard_Frame/T_StoreMenuBoard_Frame_BaseColor.jpg",
+    "Normal": "Textures/StoreMenuBoard_Frame/T_StoreMenuBoard_Frame_Normal.png",
+    "MS": "Textures/StoreMenuBoard_Frame/T_StoreMenuBoard_Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreMenuBoard_Frame"
+  },
+  {
+   "baseColor": [
+    0.01,
+    0.01,
+    0.01,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.25,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.0,
+   "maps": {
+    "Emission": "Textures/StoreMenuBoard/T_StoreMenuBoard_menu_a.png"
+   },
+   "name": "M_StoreMenuBoard_PanelA"
+  },
+  {
+   "baseColor": [
+    0.01,
+    0.01,
+    0.01,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.25,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.0,
+   "maps": {
+    "Emission": "Textures/StoreMenuBoard/T_StoreMenuBoard_menu_b.png"
+   },
+   "name": "M_StoreMenuBoard_PanelB"
+  },
+  {
+   "baseColor": [
+    0.01,
+    0.01,
+    0.01,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.25,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.0,
+   "maps": {
+    "Emission": "Textures/StoreMenuBoard/T_StoreMenuBoard_menu_c.png"
+   },
+   "name": "M_StoreMenuBoard_PanelC"
+  }
+ ],
+ "notes": "카운터 위 라이트박스 메뉴판 3장 (각 인쇄면 1.25x0.72m, 프레임 1.32x0.80x0.09m, 간격 1.4m). 정면=-Y, 원점=프레임 하단 중앙. 매장 배치: Unity 위치 (2.575, 2.28, -1.98), Y회전 -90 (블렌더 매장좌표 (-2.575, 1.98, 2.28), Z회전 +90; 소핏 앞면 x=-2.62 에 등을 붙임). 왼쪽(픽업 쪽)부터 A 대표 메뉴 / B 버거(불고기 = K-BBQ 스모키 비프 포함) / C 사이드·음료·디저트. 인쇄면 머티리얼 M_StoreMenuBoard_PanelA/B/C = 2048x1180 발광 텍스처(정적, 굽지 않음, 발광 1.0, BaseColor 검정·smoothness 0.25 확산 필름). 유리 커버는 없음(천장등 반사로 메뉴가 안 읽혀서 뺌). 이름·가격은 프로토타입 키오스크 메뉴 데이터와 동일 (세트 = 단품 +2,000원)."
+}

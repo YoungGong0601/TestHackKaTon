@@ -1,0 +1,256 @@
+{
+ "asset": "StorePosters",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_Kiosk/T_StorePosters_Kiosk_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_Kiosk/T_StorePosters_Kiosk_Normal.png",
+    "MS": "Textures/StorePosters_Kiosk/T_StorePosters_Kiosk_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_Kiosk"
+  },
+  {
+   "baseColor": [
+    0.92,
+    0.94,
+    0.96,
+    0.1
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.94,
+   "transparent": true,
+   "name": "M_Glass_StorePosters_Cover"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_kiosk.png"
+   },
+   "name": "M_StorePosters_Kiosk_Print"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_New/T_StorePosters_New_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_New/T_StorePosters_New_Normal.png",
+    "MS": "Textures/StorePosters_New/T_StorePosters_New_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_New"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_new.png"
+   },
+   "name": "M_StorePosters_New_Print"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_Coupon/T_StorePosters_Coupon_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_Coupon/T_StorePosters_Coupon_Normal.png",
+    "MS": "Textures/StorePosters_Coupon/T_StorePosters_Coupon_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_StorePosters_Coupon"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_coupon.png"
+   },
+   "name": "M_StorePosters_Coupon_Print"
+  },
+  {
+   "baseColor": [
+    0.95,
+    0.92,
+    0.8,
+    0.38
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.75,
+   "transparent": true,
+   "name": "M_Glass_StorePosters_Tape"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_LogoPanel/T_StorePosters_LogoPanel_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_LogoPanel/T_StorePosters_LogoPanel_Normal.png",
+    "MS": "Textures/StorePosters_LogoPanel/T_StorePosters_LogoPanel_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_LogoPanel"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_logo_panel.png",
+    "Emission": "Textures/StorePosters/T_StorePosters_logo_panel.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.55,
+   "name": "M_StorePosters_LogoPanel_Print"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_RightFries/T_StorePosters_RightFries_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_RightFries/T_StorePosters_RightFries_Normal.png",
+    "MS": "Textures/StorePosters_RightFries/T_StorePosters_RightFries_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_RightFries"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_fries.png"
+   },
+   "name": "M_StorePosters_RightFries_Print"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_RightBulgogi/T_StorePosters_RightBulgogi_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_RightBulgogi/T_StorePosters_RightBulgogi_Normal.png",
+    "MS": "Textures/StorePosters_RightBulgogi/T_StorePosters_RightBulgogi_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_RightBulgogi"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_bulgogi.png"
+   },
+   "name": "M_StorePosters_RightBulgogi_Print"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePosters_RightDessert/T_StorePosters_RightDessert_BaseColor.jpg",
+    "Normal": "Textures/StorePosters_RightDessert/T_StorePosters_RightDessert_Normal.png",
+    "MS": "Textures/StorePosters_RightDessert/T_StorePosters_RightDessert_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePosters_RightDessert"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorePosters/T_StorePosters_poster_dessert.png"
+   },
+   "name": "M_StorePosters_RightDessert_Print"
+  }
+ ],
+ "notes": "매장 벽 포스터 묶음. 원점 = 매장 원점(프로토타입 (0,0,0) 바닥) — StoreShell 과 같은 위치/회전(Unity (0,0,0), 회전 0)에 두면 프로토타입 자리. 각 포스터는 FBX 최상위 오브젝트(StorePosters_*), 원점 = 벽에 닿는 뒷면 중앙(개별 이동 가능). 뒷벽(Unity z=-4.2, 정면 +Z): StorePosters_Kiosk '주문은 키오스크에서 / 빠르고 간편합니다' A1 알루미늄 스냅 프레임(0.64x0.89) 중심 (−0.75, 2.28), StorePosters_New 신메뉴 A1 (0.05, 2.28), StorePosters_LogoPanel 로고 라이트박스 1.5x0.9 (−3.05, 2.1, 발광 0.55) + 천장까지 전선 몰딩, StorePosters_Coupon 앱 쿠폰 종이 포스터 0.5x0.72 테이프 부착(모서리 들뜸) (−4.65, 1.95). 오른쪽 벽(Unity x=−5.5, 정면 +X): 검정 액자 0.54x0.74 + 유리, 높이 2.05, RightFries z=−1.95 / RightBulgogi z=0.45 / RightDessert z=2.65. 인쇄면 M_StorePosters_*_Print = 1200x1700 정적 이미지(굽지 않음), 커버 M_Glass_StorePosters_Cover(투명 0.1), 테이프 M_Glass_StorePosters_Tape. min_z 경고는 매장 원점 기준이라 정상(포스터는 벽 높이에 걸림)."
+}

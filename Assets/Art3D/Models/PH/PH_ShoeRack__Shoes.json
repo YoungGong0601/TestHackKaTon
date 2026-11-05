@@ -1,0 +1,25 @@
+{
+ "asset": "PH_ShoeRack__Shoes",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeShoes/T_HomeShoes_BaseColor.jpg",
+    "Normal": "Textures/HomeShoes/T_HomeShoes_Normal.png",
+    "MS": "Textures/HomeShoes/T_HomeShoes_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeShoes"
+  }
+ ],
+ "notes": "좌표는 프리팹 로컬 (x3, y3, -z3) 그대로. 앞코 +Z (문 쪽). 프로토타입 rotY 0.16 은 인스턴스에서 준다."
+}

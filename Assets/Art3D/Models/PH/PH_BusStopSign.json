@@ -1,0 +1,67 @@
+{
+ "asset": "PH_BusStopSign",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusStopSign_Body/T_BusStopSign_Body_BaseColor.jpg",
+    "Normal": "Textures/BusStopSign_Body/T_BusStopSign_Body_Normal.png",
+    "MS": "Textures/BusStopSign_Body/T_BusStopSign_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusStopSign_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "maps": {
+    "BaseColor": "Textures/PH_BusStopSign/T_PH_BusStopSign_Head.png"
+   },
+   "name": "M_PH_BusStopSign_Head"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/BusStopSign/T_BusStopSign_Routes.png"
+   },
+   "name": "M_PH_BusStopSign_Routes"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/BusStopSign/T_BusStopSign_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BusStopSign_Decals"
+  }
+ ]
+}

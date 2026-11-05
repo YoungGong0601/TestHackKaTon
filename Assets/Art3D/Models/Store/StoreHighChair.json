@@ -1,0 +1,25 @@
+{
+ "asset": "StoreHighChair",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreHighChair/T_StoreHighChair_BaseColor.jpg",
+    "Normal": "Textures/StoreHighChair/T_StoreHighChair_Normal.png",
+    "MS": "Textures/StoreHighChair/T_StoreHighChair_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreHighChair"
+  }
+ ],
+ "notes": "원목(너도밤나무, 래커) 유아용 하이체어. 좌판 윗면 0.75m, 등받이 윗끝 1.03m, 바닥 폭 0.45m(다리가 바닥으로 벌어짐). 팔걸이 + 앞 가드 + 가운데 기둥, 앞 발판(0.30m), 다리 가로대, 플라스틱 발굽. 좌판/가드 윗면에 음식 얼룩. 원점 = 바닥 중앙, 정면 -Y. 프로토타입 le() 위치: (-1.9, 0, 3.1) Y 회전 0.6rad, (-2.25, 0, 3.25) Y 회전 0.9rad. 소켓: _Socket_Sit(좌판 중앙)."
+}

@@ -1,0 +1,147 @@
+{
+ "asset": "PH_BusShelter",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusShelter_Frame/T_BusShelter_Frame_BaseColor.jpg",
+    "Normal": "Textures/BusShelter_Frame/T_BusShelter_Frame_Normal.png",
+    "MS": "Textures/BusShelter_Frame/T_BusShelter_Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusShelter_Frame"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Glass.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_BusShelter_Glass"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.88,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Roof.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_BusShelter_Roof"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_NameSign.png",
+    "Emission": "Textures/BusShelter/T_BusShelter_NameSign.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.35,
+   "name": "M_BusShelter_NameSign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_AdPoster.png",
+    "Emission": "Textures/BusShelter/T_BusShelter_AdPoster.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.9,
+   "name": "M_BusShelter_AdPoster"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Decals.png"
+   },
+   "doubleSided": true,
+   "alphaClip": 0.5,
+   "name": "M_BusShelter_Leaves"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BusShelter_Bench/T_BusShelter_Bench_BaseColor.jpg",
+    "Normal": "Textures/BusShelter_Bench/T_BusShelter_Bench_Normal.png",
+    "MS": "Textures/BusShelter_Bench/T_BusShelter_Bench_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusShelter_Bench"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Decals.png"
+   },
+   "doubleSided": true,
+   "alphaClip": 0.5,
+   "name": "M_BusShelter_Decals"
+  }
+ ]
+}

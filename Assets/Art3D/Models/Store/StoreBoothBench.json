@@ -1,0 +1,42 @@
+{
+ "asset": "StoreBoothBench",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreBoothBench/T_StoreBoothBench_BaseColor.jpg",
+    "Normal": "Textures/StoreBoothBench/T_StoreBoothBench_Normal.png",
+    "MS": "Textures/StoreBoothBench/T_StoreBoothBench_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreBoothBench"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_BaseColor.jpg",
+    "Normal": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_Normal.png",
+    "MS": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreBoothBench_Cushion"
+  }
+ ],
+ "notes": "부스 벤치 폭 0.98(X), 좌면 0.54m, 등받이 윗끝 1.26m, 깊이 0.52m(y -0.25 ~ +0.27). 버건디 비닐 레더(#A32A20) 좌석 쿠션 + 세로 채널 등 쿠션 4칸(솔기 x = -0.245/0/+0.245) + 오크 라미네이트 받침·등판·상단 캡 + 검정 킥플레이트. 원점 = 좌석 중심 바닥, 정면 -Y(테이블 쪽). 루트 = 우드 프레임, 자식 StoreBoothBench_Cushion = 쿠션(정적, 텍스처 세트만 분리). 배치: 프로토타입 N(P) 부스마다 2개, 벤치 원점 = (5.0, 0, P ± 0.82), 두 벤치가 테이블(StoreTable4, 4.72, P)을 마주 봄 (P = -1.95, 0.45, 2.65). 등판 뒤끝이 좌석 중심에서 0.27m 라 이웃 부스 등판끼리 약 2cm 띄워짐 (프로토타입 등받이 0.13 두께를 그대로 쓰면 5cm 겹침). 소켓: _Socket_SitL / _Socket_SitR (x = ∓0.245, 좌면 0.54, 정면에서 본 왼쪽/오른쪽)."
+}

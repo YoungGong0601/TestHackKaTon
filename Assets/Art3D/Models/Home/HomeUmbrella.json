@@ -1,0 +1,25 @@
+{
+ "asset": "HomeUmbrella",
+ "category": "Home",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeUmbrella/T_HomeUmbrella_BaseColor.jpg",
+    "Normal": "Textures/HomeUmbrella/T_HomeUmbrella_Normal.png",
+    "MS": "Textures/HomeUmbrella/T_HomeUmbrella_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeUmbrella"
+  }
+ ],
+ "notes": "검은 장우산(접힘, 끈 묶음) 높이 0.86m. 원점 = 꼭지 끝(바닥), 갈고리 손잡이는 +X 쪽으로 휨. 프로토타입: 우산꽂이 안 three(S-.13, A+.02, R+.22) 기울임 → HomeEntry_Socket_UmbrellaBlack 에 원점을 맞춤(회전 포함). Socket_Grip = 갈고리 잡는 점, Socket_Tip = 꼭지."
+}

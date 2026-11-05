@@ -1,0 +1,59 @@
+{
+ "asset": "BankCard",
+ "category": "Items",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard_Body/T_BankCard_Body_BaseColor.jpg",
+    "Normal": "Textures/BankCard_Body/T_BankCard_Body_Normal.png",
+    "MS": "Textures/BankCard_Body/T_BankCard_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BankCard_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard/T_BankCard_card_front_BaseColor.png",
+    "Normal": "Textures/BankCard/T_BankCard_card_front_Normal.png",
+    "MS": "Textures/BankCard/T_BankCard_card_front_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_BankCard_Front"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard/T_BankCard_card_back_BaseColor.png",
+    "Normal": "Textures/BankCard/T_BankCard_card_back_Normal.png",
+    "MS": "Textures/BankCard/T_BankCard_card_back_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_BankCard_Back"
+  }
+ ],
+ "notes": "시장은행 체크카드 0.0856x0.00076x0.054m (ISO ID-1), 원점 = 아래 긴 변 중앙(세워 둔 상태), 정면(-Y)=앞면(칩·엠보 번호 9420 1183 5507 2841). M_BankCard_Front / M_BankCard_Back: 2048x1292 인쇄면 (BaseColor + _Normal(엠보·뒷면 눌린 자국) + _MS(스무스니스 0.3~0.85: 잔기스·지문·모서리 쓸림·자기띠 긁힘·서명란 무광·은박/홀로그램 광택), 굽지 않음), UV 0..1 = 면 전체 (앞: U 오른쪽 V 위, 뒤: 뒤에서 볼 때 U 오른쪽). 옆면+IC칩은 M_BankCard_Body (512 bake). Socket_Grip = 엄지·검지로 집는 점(프로토타입 holdCard at), Socket_InsertTip = 칩 쪽 짧은 변 중앙 (IC 단말기에 -X 방향으로 꽂음, 칩 면 위). 키오스크 화면 문구 '시장은행 **** 2841' 과 끝번호 일치."
+}

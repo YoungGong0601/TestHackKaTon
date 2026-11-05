@@ -1,0 +1,137 @@
+{
+ "asset": "DeliveryScooter",
+ "category": "Vehicles",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter_Body/T_DeliveryScooter_Body_BaseColor.jpg",
+    "Normal": "Textures/DeliveryScooter_Body/T_DeliveryScooter_Body_Normal.png",
+    "MS": "Textures/DeliveryScooter_Body/T_DeliveryScooter_Body_MS.png",
+    "Emission": "Textures/DeliveryScooter_Body/T_DeliveryScooter_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_DeliveryScooter_Body"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.92,
+    0.95,
+    0.22
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.98,
+   "transparent": true,
+   "name": "M_Glass_DeliveryScooter_Lens"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter/T_DeliveryScooter_box_side.png"
+   },
+   "name": "M_DeliveryScooter_BoxSide"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter/T_DeliveryScooter_box_back.png"
+   },
+   "name": "M_DeliveryScooter_BoxBack"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter/T_DeliveryScooter_plate_moto.png"
+   },
+   "name": "M_DeliveryScooter_Plate"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter_Stand/T_DeliveryScooter_Stand_BaseColor.jpg",
+    "Normal": "Textures/DeliveryScooter_Stand/T_DeliveryScooter_Stand_Normal.png",
+    "MS": "Textures/DeliveryScooter_Stand/T_DeliveryScooter_Stand_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_DeliveryScooter_Stand"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter_WheelFront/T_DeliveryScooter_WheelFront_BaseColor.jpg",
+    "Normal": "Textures/DeliveryScooter_WheelFront/T_DeliveryScooter_WheelFront_Normal.png",
+    "MS": "Textures/DeliveryScooter_WheelFront/T_DeliveryScooter_WheelFront_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_DeliveryScooter_WheelFront"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/DeliveryScooter_WheelRear/T_DeliveryScooter_WheelRear_BaseColor.jpg",
+    "Normal": "Textures/DeliveryScooter_WheelRear/T_DeliveryScooter_WheelRear_Normal.png",
+    "MS": "Textures/DeliveryScooter_WheelRear/T_DeliveryScooter_WheelRear_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_DeliveryScooter_WheelRear"
+  }
+ ],
+ "notes": "배달 스쿠터. 정면 -Y. 원점 바닥 중앙. DeliveryScooter_WheelFront/WheelRear: 원점=차축, 로컬 X 축 회전. DeliveryScooter_Box: 배달통 (M_DeliveryScooter_BoxSide '버거대왕' 로고 / BoxBack '배달앱 주문 전용', 굽지 않은 이미지). 번호판 '서울 중구 바 5821'(가상). 엔진·쇼크는 왼쪽(+X), 머플러·Socket_Exhaust 는 오른쪽(-X). 전조등 = 크롬 반사경 + 전구(구운 발광) + M_Glass_DeliveryScooter_Lens. DeliveryScooter_Stand: 센터 스탠드, 원점 = 경첩 (로컬 X 축). 기본(identity) = 접힘(주행). 주차 시 로컬 X 회전 -70.0° (Blender rotation_euler.x, Unity localEulerAngles.x 도 같은 값 = 290.0) 이면 발판이 바닥에 닿음. 라이더 없음 — Socket_Seat(앉는 점), Grip_L/R, Foot, Exhaust. 약 12.6k tris (몸체 9.2k, 8k 예산 초과)."
+}

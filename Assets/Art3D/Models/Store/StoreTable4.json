@@ -1,0 +1,25 @@
+{
+ "asset": "StoreTable4",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTable4/T_StoreTable4_BaseColor.jpg",
+    "Normal": "Textures/StoreTable4/T_StoreTable4_Normal.png",
+    "MS": "Textures/StoreTable4/T_StoreTable4_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTable4"
+  }
+ ],
+ "notes": "4인(부스) 테이블 1.05(X) x 0.74(Y), 상판 윗면 0.75m, 쌍기둥 받침. 프로토타입 부스(x=4.72)는 긴 변이 벽에 수직이므로 Y축 90도 회전해 배치. 소켓: _Socket_ItemPlaceL/R(쟁반 2개 자리), _Socket_Napkin."
+}

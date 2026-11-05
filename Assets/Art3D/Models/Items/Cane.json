@@ -1,0 +1,25 @@
+{
+ "asset": "Cane",
+ "category": "Items",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Cane_Body/T_Cane_Body_BaseColor.jpg",
+    "Normal": "Textures/Cane_Body/T_Cane_Body_Normal.png",
+    "MS": "Textures/Cane_Body/T_Cane_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Cane_Body"
+  }
+ ],
+ "notes": "지팡이 0.03x0.15x0.882m (그립 윗면), 원점 = 고무 팁 바닥 중앙(땅 닿는 점), 정면(-Y)=손잡이 굽은 쪽(걷는 방향). 갈색 아노다이징 알루미늄 높이조절형: 아래 관 Ø19 (조절 구멍 + 푸시버튼), 검정 잠금 링, 위 관 Ø22 오프셋 손잡이, 고무 그립, 손목끈 클립/고리, 고무 팁(바닥 흙먼지). 정적 메시 1개 (Cane_Body, 1024 bake). Socket_Grip = 손바닥 중심 (프로토타입 gripCane 포즈), Socket_Tip = cane_tap 소리 낼 접지점."
+}

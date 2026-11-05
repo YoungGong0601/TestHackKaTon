@@ -1,0 +1,90 @@
+{
+ "asset": "GrandpaHand_R",
+ "category": "Hands",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/GrandpaHand_R_Skin/T_GrandpaHand_R_Skin_BaseColor.jpg",
+    "Normal": "Textures/GrandpaHand_R_Skin/T_GrandpaHand_R_Skin_Normal.png",
+    "MS": "Textures/GrandpaHand_R_Skin/T_GrandpaHand_R_Skin_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_GrandpaHand_R_Skin"
+  },
+  {
+   "baseColor": [
+    0.4,
+    0.24,
+    0.16,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "name": "M_GrandpaHand_R_ForearmHidden"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Hands_Rib_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Hands_Rib_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Hands_Rib_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Hands_Rib"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Hands_Knit_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Hands_Knit_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Hands_Knit_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Hands_Knit"
+  }
+ ],
+ "notes": {
+  "origin": "손목 관절(wrist 본 머리) = 원점. 1인칭 손 리그라 바닥 중앙 규칙의 예외. 손가락 = Unity +Z, 손등 = +Y.",
+  "rig": "GrandpaHand_R_Rig: forearm(루트, 팔뚝·소매·시계) > wrist > WebXR 25관절 이름 그대로 (예: index-finger-phalanx-proximal). 굽힘 = 각 본 로컬 X 축 회전, 벌림 = 로컬 Z. 메시·가중치 = MakeHuman hm08 기본 메시 + 기본 리그 가중치 (CC0).",
+  "clips": {
+   "Idle": "GrandpaHand_R_Rig|GrandpaHand_R_Idle",
+   "Point": "GrandpaHand_R_Rig|GrandpaHand_R_Point",
+   "HoldMemo": "GrandpaHand_R_Rig|GrandpaHand_R_HoldMemo",
+   "GripMagnifier": "GrandpaHand_R_Rig|GrandpaHand_R_GripMagnifier",
+   "HoldCard": "GrandpaHand_R_Rig|GrandpaHand_R_HoldCard",
+   "Fist": "GrandpaHand_R_Rig|GrandpaHand_R_Fist",
+   "GripCane": "GrandpaHand_R_Rig|GrandpaHand_R_GripCane"
+  },
+  "sockets": {
+   "GrandpaHand_R_Socket_Grip": "parent bone wrist",
+   "GrandpaHand_R_Socket_Pinch": "parent bone wrist",
+   "GrandpaHand_R_Socket_Cane": "parent bone wrist",
+   "GrandpaHand_R_Socket_Tip": "parent bone index-finger-tip"
+  },
+  "socket_notes": "Grip: GripMagnifier 자세의 돋보기 손잡이 중심 (로컬 Z = 손잡이 축 = 가로). Cane: GripCane 자세의 지팡이 손잡이 중심 (로컬 Z = 손잡이 축). Pinch: HoldCard 자세에서 엄지·검지 패드 사이. Tip: 검지 끝 패드 (키오스크 터치 판정). Memo(L): HoldMemo 자세 집는 점. Watch(L): 시계 문자판 중심 (볼 때 시선 대상).",
+  "materials": "피부 2048 아틀라스(손톱 포함), 소매 = M_Tile_Hands_Rib/Knit (원통 UV, 4cm 반복), 소매 속 팔뚝 = 단색."
+ }
+}

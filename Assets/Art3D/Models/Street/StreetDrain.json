@@ -1,0 +1,25 @@
+{
+ "asset": "StreetDrain",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetDrain_Body/T_StreetDrain_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetDrain_Body/T_StreetDrain_Body_Normal.png",
+    "MS": "Textures/StreetDrain_Body/T_StreetDrain_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetDrain_Body"
+  }
+ ],
+ "notes": "빗물받이 강철 격자 뚜껑 0.64(X) x 0.34(Y) m, 높이 9 mm. 원점 = 바닥 중앙(놓일 면 z=0). 평강 30 mm 간격(Y 방향) + 연결봉 3줄, 격자 사이로 보이는 어두운 구덩이 판이 뚜껑 안에 포함(아래 바닥이 비치지 않음). 담배꽁초 3개. StreetRoadAlley_Socket_Drain 에 회전 없이, 큰길은 경계석 앞(노면) 에 긴 변을 경계석과 나란히."
+}

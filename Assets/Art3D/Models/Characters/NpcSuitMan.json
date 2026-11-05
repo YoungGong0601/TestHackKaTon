@@ -1,0 +1,75 @@
+{
+ "asset": "NpcSuitMan",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcSuitMan_Body/T_NpcSuitMan_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcSuitMan_Body/T_NpcSuitMan_Body_Normal.png",
+    "MS": "Textures/NpcSuitMan_Body/T_NpcSuitMan_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcSuitMan_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcSuitMan_Head/T_NpcSuitMan_Head_BaseColor.jpg",
+    "Normal": "Textures/NpcSuitMan_Head/T_NpcSuitMan_Head_Normal.png",
+    "MS": "Textures/NpcSuitMan_Head/T_NpcSuitMan_Head_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcSuitMan_Head"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcSuitMan_Phone/T_NpcSuitMan_Phone_BaseColor.jpg",
+    "Normal": "Textures/NpcSuitMan_Phone/T_NpcSuitMan_Phone_Normal.png",
+    "MS": "Textures/NpcSuitMan_Phone/T_NpcSuitMan_Phone_MS.png",
+    "Emission": "Textures/NpcSuitMan_Phone/T_NpcSuitMan_Phone_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.6,
+   "name": "M_NpcSuitMan_Phone"
+  }
+ ],
+ "notes": {
+  "replaces": "npc_man3 (프로토타입 거리/매장의 양복 남)",
+  "look": "30대 직장인: 감청 울 수트(노치드 라펠·왼가슴 웰트 포켓·허리 플랩 포켓 2개, 능직 결·닳은 모서리), 하늘빛 흰 셔츠(깃끝), 버건디 레지멘탈 넥타이(매듭, 감청+금색 사선), 감청 목줄+사원증('대한물산 박정훈 영업2팀 과장'), 재킷 단추 2개, 검정 구두(갈색 가죽 밑창). 키 1.76m.",
+  "rig": "Quaternius CharacterArmature 62본 유지 (Foot.L/R·PT 는 Root 자식). Generic 리그로 쓸 것.",
+  "clips": "Idle, Idle_Neutral, Walk, Run, Wave, Interact (원본) + SitPhone(120f 루프, 좌판 0.65m), Phone(80f 루프, 한 손 파지·화면이 눈을 향함), Impatient(80f 루프: 팔짱+발끝 까딱+한숨), PointScreen(80f: 오른손 검지로 화면 가리킴, 0/80 프레임은 Idle), LookBack(80f: 오른쪽 어깨 너머 돌아봄 후 복귀). 24fps.",
+  "clips_dropped": "원본 24 클립 중 버림: Death, Gun_Shoot, HitRecieve, HitRecieve_2, Idle_Gun, Idle_Gun_Pointing, Idle_Gun_Shoot, Idle_Sword, Kick_Left, Kick_Right, Punch_Left, Punch_Right, Roll, Run_Back, Run_Left, Run_Right, Run_Shoot, Sword_Slash",
+  "objects": "NpcSuitMan_Body(몸·수트·셔츠·넥타이·사원증·목줄·단추·구두), NpcSuitMan_Head(머리), NpcSuitMan_Phone(오른손 폰, Phone/SitPhone 때만 켤 것)",
+  "sockets": "NpcSuitMan_Socket_Head(Head 본, 시선/자막 기준), _HandR/_HandL(손바닥 중심), _Socket_Seat(SitPhone 때 의자 좌판 윗면 중심, 아마추어 기준)",
+  "dynamic": "없음"
+ }
+}

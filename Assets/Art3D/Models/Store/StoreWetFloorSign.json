@@ -1,0 +1,56 @@
+{
+ "asset": "StoreWetFloorSign",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreWetFloorSign/T_StoreWetFloorSign_BaseColor.jpg",
+    "Normal": "Textures/StoreWetFloorSign/T_StoreWetFloorSign_Normal.png",
+    "MS": "Textures/StoreWetFloorSign/T_StoreWetFloorSign_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreWetFloorSign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.62,
+   "maps": {
+    "BaseColor": "Textures/StoreWetFloorSign/T_StoreWetFloorSign_Label.png"
+   },
+   "name": "M_StoreWetFloorSign_Label"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreWetFloorSign_PanelBack/T_StoreWetFloorSign_PanelBack_BaseColor.jpg",
+    "Normal": "Textures/StoreWetFloorSign_PanelBack/T_StoreWetFloorSign_PanelBack_Normal.png",
+    "MS": "Textures/StoreWetFloorSign_PanelBack/T_StoreWetFloorSign_PanelBack_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreWetFloorSign_PanelBack"
+  }
+ ],
+ "notes": "A자형 미끄럼 주의 입간판, 높이 0.6m, 바닥 폭 0.30m. 루트 = 앞판(정면 -Y). 자식 StoreWetFloorSign_PanelBack: 원점 = 윗변 경첩(높이 0.593m), 로컬 X축 회전으로 접힘(-22도면 앞판과 겹침). 인쇄면 M_StoreWetFloorSign_Label(512x1024) 양쪽 판 공용. 소켓: _Socket_Grip(손잡이 구멍)."
+}

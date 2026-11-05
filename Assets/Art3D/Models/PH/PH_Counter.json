@@ -1,0 +1,41 @@
+{
+ "asset": "PH_Counter",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_Body/T_StoreCounter_Body_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_Body/T_StoreCounter_Body_Normal.png",
+    "MS": "Textures/StoreCounter_Body/T_StoreCounter_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/StoreCounter/T_StoreCounter_counter_signs.png"
+   },
+   "name": "M_StoreCounter_Signs"
+  }
+ ],
+ "notes": {
+  "desc": "주문 카운터. 원점 = 상판 앞 모서리 평면(x 0)의 바닥 중앙, 앞 +X. 슬랫 면은 x -0.03 에 있다. z -2.1 쪽 스테인리스 구간이 픽업 자리(PH_PickupStand 를 y 0.99 에 올린다)."
+ }
+}

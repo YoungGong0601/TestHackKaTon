@@ -1,0 +1,40 @@
+{
+ "asset": "BuildingAcUnit",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BuildingAcUnit/T_BuildingAcUnit_BaseColor.jpg",
+    "Normal": "Textures/BuildingAcUnit/T_BuildingAcUnit_Normal.png",
+    "MS": "Textures/BuildingAcUnit/T_BuildingAcUnit_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BuildingAcUnit"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BuildingAcUnit/T_BuildingAcUnit_Decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BuildingAcUnit_Decal"
+  }
+ ],
+ "notes": "벽에 거는 실외기. 원점 = 벽면(y=0) 위, 거치대 아래 끝 높이(바닥). Unity 에서 원점을 벽면에 붙이고 +Z(forward)가 벽 바깥을 보게 둔다. 본체 0.84x0.30x0.62m, 벽에서 0.12m 띄움. 냉매관은 벽 안으로 4cm 들어감. 용도 구분: 버거대왕 매장 정면(StorefrontFacade_Socket_AC_1..3)은 StorefrontAC, 그 밖의 건물 벽·골목은 BuildingAcUnit (건물 5동에 굽혀 들어간 bld.ac_unit 과 같은 모양)."
+}

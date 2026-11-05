@@ -1,0 +1,31 @@
+{
+ "asset": "FoodBurgerWrapped",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodBurgerWrapped_Mesh/T_FoodBurgerWrapped_Mesh_BaseColor.jpg",
+    "Normal": "Textures/FoodBurgerWrapped_Mesh/T_FoodBurgerWrapped_Mesh_Normal.png",
+    "MS": "Textures/FoodBurgerWrapped_Mesh/T_FoodBurgerWrapped_Mesh_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodBurgerWrapped_Mesh"
+  }
+ ],
+ "notes": {
+  "desc": "버거대왕 포장지에 싼 불고기 버거 (포장 주문/픽업대용). 지름 약 0.118m, 높이 약 0.065m, 원점 바닥 중앙, 정면 -Y. 윗면 체크 패널에 '불고기' 펜 체크, 옆 주름과 접힘선, 윗면 덮개 종이 + 접어 올린 덮개 3장(텍스처 단차), 기름 얼룩.",
+  "sockets": {
+   "FoodBurgerWrapped_Socket_Grip": "손으로 쥐는 중심",
+   "FoodBurgerWrapped_Socket_LookTarget": "윗면 체크 패널 (시선 타깃)"
+  }
+ }
+}

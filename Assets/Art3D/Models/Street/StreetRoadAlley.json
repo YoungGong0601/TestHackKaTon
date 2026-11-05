@@ -1,0 +1,113 @@
+{
+ "asset": "StreetRoadAlley",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Asphalt_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Asphalt_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Asphalt_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Asphalt"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_GutterConcrete_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_GutterConcrete_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_GutterConcrete_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_GutterConcrete"
+  },
+  {
+   "baseColor": [
+    0.01,
+    0.01,
+    0.01,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "name": "M_StreetRoadAlley_Pit"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_AsphaltOld_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_AsphaltOld_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_AsphaltOld_MS.png"
+   },
+   "baseColor": [
+    0.8,
+    0.8,
+    0.82,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_AsphaltOld"
+  },
+  {
+   "baseColor": [
+    0.04,
+    0.04,
+    0.042,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "name": "M_StreetRoadAlley_Tar"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StreetRoadAlley/T_StreetRoadAlley_road_oil.png"
+   },
+   "transparent": true,
+   "name": "M_StreetRoadAlley_Oil"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_PaintWhite_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_PaintWhite_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_PaintWhite_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_PaintWhite"
+  }
+ ],
+ "notes": "골목 모듈 6 m(X) x 5.2 m(Y), 보도 없음. 원점 = 노면 중앙(z=0 = 골목 바닥 = Unity y=0, 프로토타입 골목과 같은 높이). 뒤(+Y) 가장자리에 폭 0.34 m U형 측구 콘크리트 덮개(0.5 m 판, M_Tile_Street_GutterConcrete), 가운데 0.64 m 는 빗물받이 자리: StreetDrain 을 Socket_Drain 에 회전 없이(긴 변 X) 놓는다(6 m 마다 1개 = 프로토타입). 자식 StreetRoadAlley_Parking = 거주자 우선 주차 흰 선(앞쪽 1.9 m 폭, 6 m 칸, 모듈마다 칸 경계 1줄), 차로 가운데 y=-0.3 에 기름 얼룩 띠(M_StreetRoadAlley_Oil, 투명 데칼). StreetRoadAlley_TextSlow = 노면 글자 '천천히'(흰색, 1.9 m x 약 1.5 m, -X 로 진행하는 차에서 바로 읽힘 = +X 로 걷는 사람에겐 거꾸로, 프로토타입은 골목에 1번만) — 필요 없는 모듈에서는 끈다. 보수판 1곳 + 크랙 실링. 모듈 길이 6 m = 타일(3/2/0.6 m) 정수배. min_z -0.058 = 측구 덮개 판이 노면 아래로 묻힌 두께(의도)."
+}

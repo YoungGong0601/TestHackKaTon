@@ -1,0 +1,57 @@
+{
+ "asset": "Bicycle",
+ "category": "Vehicles",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Bicycle_Frame/T_Bicycle_Frame_BaseColor.jpg",
+    "Normal": "Textures/Bicycle_Frame/T_Bicycle_Frame_Normal.png",
+    "MS": "Textures/Bicycle_Frame/T_Bicycle_Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Bicycle_Frame"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/Bicycle/T_Bicycle_bike_decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_Bicycle_Decal"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Bicycle_WheelFront/T_Bicycle_WheelFront_BaseColor.jpg",
+    "Normal": "Textures/Bicycle_WheelFront/T_Bicycle_WheelFront_Normal.png",
+    "MS": "Textures/Bicycle_WheelFront/T_Bicycle_WheelFront_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Bicycle_WheelFront"
+  }
+ ],
+ "notes": "생활자전거. 정면 -Y. 원점 바닥 중앙. Bicycle_WheelFront/WheelRear: 원점=차축, 로컬 X 축 회전. 양발 스탠드가 내려진 주차 상태 (똑바로 섬). 체인 케이스·체인은 오른쪽(-X). Bicycle_Decal: 체인 케이스 데칼 '새싹 CITY 26' 쿼드 0.34x0.0425 m, M_Bicycle_Decal(bike_decal 1024x128, 알파 클립 0.5, 굽지 않음). 소켓: Grip_L/Grip_R(손잡이), Saddle(안장 위), Basket(바구니 바닥). 약 9.4k tris (36살 바퀴 2개 포함, 8k 예산 약간 초과)."
+}

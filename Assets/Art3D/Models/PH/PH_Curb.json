@@ -1,0 +1,76 @@
+{
+ "asset": "PH_Curb",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.95,
+    0.95,
+    0.93,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Curb"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.817,
+    0.817,
+    0.7812,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CurbB"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.95,
+    0.9215,
+    0.8556,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CurbC"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.39899999999999997,
+    0.39899999999999997,
+    0.3813,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CurbJoint"
+  }
+ ],
+ "notes": "1 m 돌 120개, 줄눈 4 mm. 단면 0.26 x 0.16, 원점 = 바닥 중앙. 프리팹 로컬 -Z = 차도(둥근 모서리), +Z = 보도. M_Tile 월드 UV 3 m, 돌마다 UV 위치와 색이 다르다."
+}

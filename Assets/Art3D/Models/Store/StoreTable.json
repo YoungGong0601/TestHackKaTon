@@ -1,0 +1,25 @@
+{
+ "asset": "StoreTable",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTable/T_StoreTable_BaseColor.jpg",
+    "Normal": "Textures/StoreTable/T_StoreTable_Normal.png",
+    "MS": "Textures/StoreTable/T_StoreTable_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTable"
+  }
+ ],
+ "notes": "2인 테이블 0.72x0.72, 상판 윗면 0.75m. HPL 우드 상판 + 검정 ABS 엣지밴드 + X자 분체도장 주철 받침(수평 조절발). 의자는 앞뒤(Y) ±0.62m 에 마주 배치. 소켓: _Socket_ItemPlace(상판 중앙, 쟁반 놓는 곳), _Socket_Napkin(냅킨통 자리, 뒤 왼쪽 모서리)."
+}

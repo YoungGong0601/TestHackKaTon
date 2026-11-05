@@ -1,0 +1,137 @@
+{
+ "asset": "PH_Car",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Body/T_CarSedan_Body_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Body/T_CarSedan_Body_Normal.png",
+    "MS": "Textures/CarSedan_Body/T_CarSedan_Body_MS.png",
+    "Emission": "Textures/CarSedan_Body/T_CarSedan_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarSedan_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.35
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_glass_front.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Window"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.85
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_glass_tint.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Tint"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.92,
+    0.95,
+    0.22
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.98,
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Lens"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Interior/T_CarSedan_Interior_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Interior/T_CarSedan_Interior_Normal.png",
+    "MS": "Textures/CarSedan_Interior/T_CarSedan_Interior_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarSedan_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_plate_sedan.png"
+   },
+   "name": "M_CarSedan_Plate"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_sticker_parking.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_CarSedan_Sticker_Parking"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_Normal.png",
+    "MS": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarSedan_Wheel_FR"
+  }
+ ],
+ "notes": "CarSedan 정적 메시, 등배율 0.9225. 바퀴는 돌지 않는다."
+}

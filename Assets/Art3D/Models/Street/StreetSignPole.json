@@ -1,0 +1,39 @@
+{
+ "asset": "StreetSignPole",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetSignPole_Body/T_StreetSignPole_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetSignPole_Body/T_StreetSignPole_Body_Normal.png",
+    "MS": "Textures/StreetSignPole_Body/T_StreetSignPole_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetSignPole_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/StreetSignPole/T_StreetSignPole_Faces.png"
+   },
+   "name": "M_StreetSignPole_Faces"
+  }
+ ],
+ "notes": "교통표지 기둥 3.35 m. 원점 = 바닥 중앙(바닥 기초 1 cm 묻힘). 표지 정면 = -Y(Unity +Z). 위: 지시표지 322 횡단보도 0.6x0.6 m(중심 2.95 m), 아래: 안내판 '시장 입구 →' 0.6x0.26 m(중심 2.42 m). 표지 면은 굽지 않는 M_StreetSignPole_Faces(1024 아틀라스). Socket_Sign: 시선 대상."
+}

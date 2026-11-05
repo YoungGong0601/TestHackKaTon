@@ -1,0 +1,434 @@
+{
+ "asset": "PH_StorefrontUpper",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade_Frame/T_StorefrontFacade_Frame_BaseColor.jpg",
+    "Normal": "Textures/StorefrontFacade_Frame/T_StorefrontFacade_Frame_Normal.png",
+    "MS": "Textures/StorefrontFacade_Frame/T_StorefrontFacade_Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorefrontFacade_Frame"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_GlassSmudge.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_Storefront"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_BackdropRiceCake.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_BackdropRiceCake.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.35,
+   "name": "M_StorefrontFacade_BackdropRiceCake"
+  },
+  {
+   "baseColor": [
+    0.02,
+    0.02,
+    0.02,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "name": "M_StorefrontFacade_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_SignRiceCake.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_SignRiceCake.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.6,
+   "name": "M_StorefrontFacade_SignRiceCake"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_BackdropPharmacy.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_BackdropPharmacy.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.35,
+   "name": "M_StorefrontFacade_BackdropPharmacy"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_SignPharmacy.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_SignPharmacy.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.6,
+   "name": "M_StorefrontFacade_SignPharmacy"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade_Sign/T_StorefrontFacade_Sign_BaseColor.jpg",
+    "Normal": "Textures/StorefrontFacade_Sign/T_StorefrontFacade_Sign_Normal.png",
+    "MS": "Textures/StorefrontFacade_Sign/T_StorefrontFacade_Sign_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorefrontFacade_Sign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_ProjSign.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_ProjSign.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.2,
+   "name": "M_StorefrontFacade_ProjSign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_SignAcademy.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_SignAcademy.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.5,
+   "name": "M_StorefrontFacade_SignAcademy"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_SignDental.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_SignDental.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.5,
+   "name": "M_StorefrontFacade_SignDental"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_SignBilliards.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_SignBilliards.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.5,
+   "name": "M_StorefrontFacade_SignBilliards"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade_Windows/T_StorefrontFacade_Windows_BaseColor.jpg",
+    "Normal": "Textures/StorefrontFacade_Windows/T_StorefrontFacade_Windows_Normal.png",
+    "MS": "Textures/StorefrontFacade_Windows/T_StorefrontFacade_Windows_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorefrontFacade_Windows"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.92,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_RoomClass.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_RoomClass.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.35,
+   "name": "M_StorefrontFacade_RoomClass"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_VinylAcademy.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StorefrontFacade_VinylAcademy"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_Streaks.png"
+   },
+   "transparent": true,
+   "name": "M_StorefrontFacade_Streaks"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.92,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_RoomCurtain.jpg"
+   },
+   "name": "M_StorefrontFacade_RoomCurtain"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.92,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_RoomBlinds.jpg",
+    "Emission": "Textures/StorefrontFacade/T_StorefrontFacade_RoomBlinds.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.2,
+   "name": "M_StorefrontFacade_RoomBlinds"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_VinylDental.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StorefrontFacade_VinylDental"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_VinylBilliards.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StorefrontFacade_VinylBilliards"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.92,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_RoomEmpty.jpg"
+   },
+   "name": "M_StorefrontFacade_RoomEmpty"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/StorefrontFacade/T_StorefrontFacade_BannerRent.jpg"
+   },
+   "name": "M_StorefrontFacade_BannerRent"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Storefront_FacadeTile_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Storefront_FacadeTile_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Storefront_FacadeTile_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Storefront_FacadeTile"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Storefront_Granite_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Storefront_Granite_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Storefront_Granite_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Storefront_Granite"
+  }
+ ],
+ "notes": {
+  "pivot": "PH_Storefront 와 같은 원점. 규격표에 없는 선택 모델이다. 처마·발매트는 포함하지 않는다."
+ }
+}

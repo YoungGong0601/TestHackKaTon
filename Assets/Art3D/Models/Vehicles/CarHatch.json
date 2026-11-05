@@ -1,0 +1,185 @@
+{
+ "asset": "CarHatch",
+ "category": "Vehicles",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CarHatch_Body/T_CarHatch_Body_BaseColor.jpg",
+    "Normal": "Textures/CarHatch_Body/T_CarHatch_Body_Normal.png",
+    "MS": "Textures/CarHatch_Body/T_CarHatch_Body_MS.png",
+    "Emission": "Textures/CarHatch_Body/T_CarHatch_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarHatch_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.35
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarHatch/T_CarHatch_glass_front.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarHatch_Window"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.85
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarHatch/T_CarHatch_glass_tint.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarHatch_Tint"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.92,
+    0.95,
+    0.22
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.98,
+   "transparent": true,
+   "name": "M_Glass_CarHatch_Lens"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarHatch_Interior/T_CarHatch_Interior_BaseColor.jpg",
+    "Normal": "Textures/CarHatch_Interior/T_CarHatch_Interior_Normal.png",
+    "MS": "Textures/CarHatch_Interior/T_CarHatch_Interior_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarHatch_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/CarHatch/T_CarHatch_plate_hatch.png"
+   },
+   "name": "M_CarHatch_Plate"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/CarHatch/T_CarHatch_sticker_beginner.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_CarHatch_Sticker_Beginner"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarHatch_Wheel_FR/T_CarHatch_Wheel_FR_BaseColor.jpg",
+    "Normal": "Textures/CarHatch_Wheel_FR/T_CarHatch_Wheel_FR_Normal.png",
+    "MS": "Textures/CarHatch_Wheel_FR/T_CarHatch_Wheel_FR_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarHatch_Wheel_FR"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarHatch_Body/T_CarHatch_Body_BaseColor_White.jpg",
+    "Normal": "Textures/CarHatch_Body/T_CarHatch_Body_Normal.png",
+    "MS": "Textures/CarHatch_Body/T_CarHatch_Body_MS.png",
+    "Emission": "Textures/CarHatch_Body/T_CarHatch_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarHatch_Body_White"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarHatch_Body/T_CarHatch_Body_BaseColor_Gray.jpg",
+    "Normal": "Textures/CarHatch_Body/T_CarHatch_Body_Normal.png",
+    "MS": "Textures/CarHatch_Body/T_CarHatch_Body_MS.png",
+    "Emission": "Textures/CarHatch_Body/T_CarHatch_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarHatch_Body_Gray"
+  }
+ ],
+ "notes": "경차 해치백. 정면 -Y(Unity +Z). 원점 바닥 중앙. 바퀴 CarHatch_Wheel_FL/FR/RL/RR: 원점=차축, 로컬 X 축 회전 (좌측 바퀴는 메시가 180° 돌려져 있어 축은 동일). M_Glass_CarHatch_Window/Tint/Lens. 뒷유리 안쪽 '초보운전' 스티커(M_CarHatch_Sticker_Beginner, 알파 클립). 번호판 '45나 7019'(가상). 미등은 아주 약한 발광. 도장 변형 머티리얼: M_CarHatch_Body_White / M_CarHatch_Body_Gray (T_CarHatch_Body_BaseColor_<변형>.jpg, 나머지 맵 공유) -> CarHatch_Body 0번 슬롯 교체. 소켓: Driver, Exhaust, Front, Rear."
+}

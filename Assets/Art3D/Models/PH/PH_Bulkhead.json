@@ -1,0 +1,51 @@
+{
+ "asset": "PH_Bulkhead",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_Paint_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_Paint_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_Paint_MS.png"
+   },
+   "baseColor": [
+    0.9,
+    0.83,
+    0.72,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_Paint"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_BaseColor.jpg",
+    "Normal": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_Normal.png",
+    "MS": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_MS.png",
+    "Emission": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 2.0,
+   "name": "M_StoreShell_Fixtures"
+  }
+ ],
+ "notes": {
+  "desc": "카운터 위 소핏. 원점 = 아랫면 중앙(씬 y 2.2), 벽은 M_Tile_Store_Paint, 아래 몰딩은 StoreShell_Fixtures 그대로."
+ }
+}

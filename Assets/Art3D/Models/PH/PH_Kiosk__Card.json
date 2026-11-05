@@ -1,0 +1,59 @@
+{
+ "asset": "PH_Kiosk__Card",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard_Body/T_BankCard_Body_BaseColor.jpg",
+    "Normal": "Textures/BankCard_Body/T_BankCard_Body_Normal.png",
+    "MS": "Textures/BankCard_Body/T_BankCard_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BankCard_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard/T_BankCard_card_front_BaseColor.png",
+    "Normal": "Textures/BankCard/T_BankCard_card_front_Normal.png",
+    "MS": "Textures/BankCard/T_BankCard_card_front_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_BankCard_Front"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/BankCard/T_BankCard_card_back_BaseColor.png",
+    "Normal": "Textures/BankCard/T_BankCard_card_back_Normal.png",
+    "MS": "Textures/BankCard/T_BankCard_card_back_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_BankCard_Back"
+  }
+ ],
+ "notes": "Card/Visual. 원점 = 카드 중심, 칩 면 +Z, 칩 쪽 끝 +X."
+}

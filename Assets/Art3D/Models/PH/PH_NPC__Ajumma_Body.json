@@ -1,0 +1,25 @@
+{
+ "asset": "PH_NPC__Ajumma_Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcAjumma_Body/T_NpcAjumma_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcAjumma_Body/T_NpcAjumma_Body_Normal.png",
+    "MS": "Textures/NpcAjumma_Body/T_NpcAjumma_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcAjumma_Body"
+  }
+ ],
+ "notes": "NpcAjumma 정적 메시. 포즈 Idle, 배율 1.0539, 키 1.71. 목 중심은 HeadPivot 축에서 x +0.000, Unity z -0.010."
+}

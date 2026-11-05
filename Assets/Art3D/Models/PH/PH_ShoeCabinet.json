@@ -1,0 +1,67 @@
+{
+ "asset": "PH_ShoeCabinet",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeEntry_ShoeCabinet/T_HomeEntry_ShoeCabinet_BaseColor.jpg",
+    "Normal": "Textures/HomeEntry_ShoeCabinet/T_HomeEntry_ShoeCabinet_Normal.png",
+    "MS": "Textures/HomeEntry_ShoeCabinet/T_HomeEntry_ShoeCabinet_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeEntry_ShoeCabinet"
+  },
+  {
+   "baseColor": [
+    0.92,
+    0.93,
+    0.93,
+    1.0
+   ],
+   "metallic": 1.0,
+   "smoothness": 0.96,
+   "name": "M_HomeEntry_Mirror"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeEntry_Clutter/T_HomeEntry_Clutter_BaseColor.jpg",
+    "Normal": "Textures/HomeEntry_Clutter/T_HomeEntry_Clutter_Normal.png",
+    "MS": "Textures/HomeEntry_Clutter/T_HomeEntry_Clutter_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeEntry_Clutter"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/HomeEntry/T_HomeEntry_door_flyers.jpg"
+   },
+   "name": "M_HomeEntry_Paper"
+  }
+ ],
+ "notes": "좌표는 프리팹 로컬 (x3, y3, -z3) 그대로. 문 +X (프로토타입 -x3 벽에 붙어 방 쪽을 봄), 뒷면 -X 가 벽. 거울 문은 -Z 쪽, Reflection Probe 가 있어야 비친다."
+}

@@ -1,0 +1,224 @@
+{
+ "asset": "BuildingShopRow",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_BaseColor.jpg",
+    "Normal": "Textures/BuildingShopRow/T_BuildingShopRow_Normal.png",
+    "MS": "Textures/BuildingShopRow/T_BuildingShopRow_MS.png",
+    "Emission": "Textures/BuildingShopRow/T_BuildingShopRow_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_BuildingShopRow"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_FacadeGrey_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_FacadeGrey_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_FacadeGrey_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_FacadeGrey"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Plaster_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Plaster_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Plaster_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Plaster"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Concrete_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Concrete_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Concrete_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Concrete"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.2,
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_Interior.jpg",
+    "Emission": "Textures/BuildingShopRow/T_BuildingShopRow_Interior.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.3,
+   "name": "M_BuildingShopRow_Interior"
+  },
+  {
+   "baseColor": [
+    0.1,
+    0.12,
+    0.12,
+    0.16
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "transparent": true,
+   "name": "M_Glass_BuildingShopRow_Shop"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_Decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BuildingShopRow_Decal"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Shutter_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Shutter_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Shutter_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Shutter"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_Sign.jpg",
+    "Emission": "Textures/BuildingShopRow/T_BuildingShopRow_Sign.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.12,
+   "name": "M_BuildingShopRow_Sign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.2,
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_Decal.png"
+   },
+   "doubleSided": true,
+   "alphaClip": 0.5,
+   "name": "M_BuildingShopRow_DecalDS"
+  },
+  {
+   "baseColor": [
+    0.045,
+    0.055,
+    0.06,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "transparent": true,
+   "name": "M_Glass_BuildingShopRow_Window"
+  },
+  {
+   "baseColor": [
+    0.05,
+    0.05,
+    0.05,
+    0.55
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "transparent": true,
+   "name": "M_Glass_BuildingShopRow_Screen"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "maps": {
+    "BaseColor": "Textures/BuildingShopRow/T_BuildingShopRow_Grime.png"
+   },
+   "transparent": true,
+   "name": "M_BuildingShopRow_Grime"
+  }
+ ],
+ "notes": "1층 상가 3칸 + 2층 보습학원 + 3층 주거 (회색 타일). 원점 = 도로 쪽 정면 벽 아래 중앙, 정면 = Unity +Z, 깊이 9m. 폭 15m, 높이 9.8m (1층 3.6m + 2.75m x2 + 파라펫 0.7m). 점포: 태평 철물(x -7.2..-2.65, 셔터 반쯤), 꼬꼬 통닭(x -2.35..2.55, 차양), 은하 세탁소(x 2.85..7.2, 셔터 내림). 셔터 = M_Tile_Buildings_Shutter (월드 UV 2m). 간판 M_BuildingShopRow_Sign, 유리 시트·스티커·차양 M_BuildingShopRow_Decal(알파 클립, 차양은 DecalDS 양면). 때 덮개(M_BuildingShopRow_Grime)는 개구부를 잘라낸 띠 메시로 벽에서 12mm 앞에 있다. 배치: 뒷벽과 창 없는 옆벽은 단순 미장면이므로 이웃 건물에 붙이거나 골목 안쪽으로 돌려 가릴 것."
+}

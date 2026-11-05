@@ -1,0 +1,53 @@
+{
+ "asset": "PH_BIS",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_BaseColor.jpg",
+    "Normal": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_Normal.png",
+    "MS": "Textures/BusStopBIS_Body/T_BusStopBIS_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusStopBIS_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BusStopBIS/T_BusStopBIS_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BusStopBIS_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/PH_BIS/T_PH_BIS_Panel.png"
+   },
+   "name": "M_PH_BIS_Panel"
+  }
+ ]
+}

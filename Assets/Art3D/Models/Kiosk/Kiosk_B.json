@@ -1,0 +1,168 @@
+{
+ "asset": "Kiosk_B",
+ "category": "Kiosk",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Kiosk_B_Body/T_Kiosk_B_Body_BaseColor.jpg",
+    "Normal": "Textures/Kiosk_B_Body/T_Kiosk_B_Body_Normal.png",
+    "MS": "Textures/Kiosk_B_Body/T_Kiosk_B_Body_MS.png",
+    "Emission": "Textures/Kiosk_B_Body/T_Kiosk_B_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_Kiosk_B_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Kiosk_B_Controls/T_Kiosk_B_Controls_BaseColor.jpg",
+    "Normal": "Textures/Kiosk_B_Controls/T_Kiosk_B_Controls_Normal.png",
+    "MS": "Textures/Kiosk_B_Controls/T_Kiosk_B_Controls_MS.png",
+    "Emission": "Textures/Kiosk_B_Controls/T_Kiosk_B_Controls_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 4.0,
+   "name": "M_Kiosk_B_Controls"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.45
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Glass.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_Kiosk_B_Cover"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Paper_BaseColor.jpg",
+    "Normal": "Textures/Kiosk/T_Kiosk_Paper_Normal.jpg"
+   },
+   "name": "M_Kiosk_B_Paper"
+  },
+  {
+   "baseColor": [
+    0.86,
+    0.84,
+    0.74,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_Kiosk_B_Tape"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Header.png",
+    "Emission": "Textures/Kiosk/T_Kiosk_Header.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.9,
+   "name": "M_Kiosk_B_Header"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Panel.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_Kiosk_B_Panel"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Screen_Off.png",
+    "Emission": "Textures/Kiosk/T_Kiosk_Screen_Off.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.7,
+   "dynamic": true,
+   "name": "M_Dyn_Kiosk_B_Screen"
+  },
+  {
+   "baseColor": [
+    0.008,
+    0.01,
+    0.012,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.92,
+   "name": "M_Kiosk_B_LcdOff"
+  }
+ ],
+ "notes": "점검 중 키오스크 (프로토 pe.K2X, 주문 불가: 화면 누르면 할아버지 대사). 높이 1.898m (간판 포함), 본체 0.60 x 0.11m, 받침판 0.66 x 0.46m. 정면 = Unity +Z. 원점 = 바닥 중앙. 런타임 화면 교체 시 _BaseMap 과 _EmissionMap 을 둘 다 바꿀 것 (M_Dyn 화면은 같은 이미지로 발광). Kiosk_B_Controls = 조작부 슬롯 모듈·단말기·NFC·호출 버튼·스피커 (따로 1024 굽기). 동적 면: Kiosk_B_Screen (M_Dyn_Kiosk_B_Screen, 0.42 x 0.7467m, 1080x1920px, UV 0-1 U=오른쪽 V=위, 유리보다 5mm 안쪽, 발광). Kiosk_B_Panel (M_Dyn_Kiosk_B_Panel, 하단 조작부 0.54 x 0.585m, 1890x2048px, UV 0-1 정방향; 돋보기 상태는 T_Kiosk_Panel_Lens.png 로 교체). Kiosk_B_TerminalLcd 는 꺼진 화면(단색). Kiosk_B_Glass (M_Glass_Kiosk_B_Cover, 0.468 x 0.803m 투명 지문 유리, 화면 앞). Kiosk_B_Labels = 포스터·스티커·간판(M_Kiosk_B_Paper 아틀라스, M_Kiosk_B_Header 발광) + 테이프(M_Glass_Kiosk_B_Tape). Kiosk_B 는 '점검 중' A4 종이가 화면 위에 테이프로 붙어 있고 덮개/흔들이는 없음. 소켓: CardSlot(진짜 IC 투입구, 덮개 뒤), ReceiptOut(영수증 출구, KioskReceipt 원점을 여기에), Barcode(쿠폰 스캐너 창), Member(가짜 멤버십 슬롯), Terminal(단말기 아래 가짜 투입구), Nfc(탭 패드), Call(직원 호출), Speaker(음성 안내 위치), ScreenCenter(화면 중심, 터치 판정), UserStand(손님이 서는 곳, 정면 0.5m). 슬롯 4개는 일부러 비슷하게 생김."
+}

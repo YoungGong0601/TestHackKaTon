@@ -1,0 +1,159 @@
+{
+ "asset": "StoreGlassDoor",
+ "category": "Storefront",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_BaseColor.jpg",
+    "Normal": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_Normal.png",
+    "MS": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreGlassDoor_Leaf"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_GlassSmudge.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_StoreGlassDoor"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_PushSticker.png"
+   },
+   "name": "M_StoreGlassDoor_PushSticker"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_Caution.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StoreGlassDoor_Caution"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor_Closer/T_StoreGlassDoor_Closer_BaseColor.jpg",
+    "Normal": "Textures/StoreGlassDoor_Closer/T_StoreGlassDoor_Closer_Normal.png",
+    "MS": "Textures/StoreGlassDoor_Closer/T_StoreGlassDoor_Closer_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreGlassDoor_Closer"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor_CloserFore/T_StoreGlassDoor_CloserFore_BaseColor.jpg",
+    "Normal": "Textures/StoreGlassDoor_CloserFore/T_StoreGlassDoor_CloserFore_Normal.png",
+    "MS": "Textures/StoreGlassDoor_CloserFore/T_StoreGlassDoor_CloserFore_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreGlassDoor_CloserFore"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_PullSticker.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_StoreGlassDoor_PullSticker"
+  }
+ ],
+ "notes": {
+  "pivot": "원점 = 힌지 축(맞경첩 너클 중심, 거리에서 볼 때 문짝 왼쪽) 바닥. StoreGlassDoor_Leaf 의 원점도 같은 점이다. 문짝 몸체는 Blender 기준 x -0.004~+0.920, y +0.001~+0.051(축이 거리 쪽 면보다 1mm 바깥), 높이 0.012~2.28m(바닥 틈 12mm), 두께 50mm. 축이 거리 쪽 면선 위에 있어서, 당겨 여는 동안 문짝의 어떤 점도 힌지 쪽 문틀(x<-0.007) 안으로 들어가지 않는다.",
+  "check": "검증: 파사드 .blend 안에서 문짝을 0~1.45rad(0.05rad 간격)로 돌리며 StorefrontFacade_Frame 과의 관통 깊이를 BVH 로 쟀다. 바닥 브러시 실(문턱에 닿는 솔)을 뺀 문짝 정점 전체가 모든 각도에서 0mm.",
+  "budget": "개그의 중심 오브젝트(1m 안에서 보고 손잡이를 잡음)라 소품이 아니라 히어로 예산(8k~40k)으로 잡았다. Leaf 2048 bake.",
+  "place": "StorefrontFacade 의 StorefrontFacade_Socket_DoorHinge 위치·회전에 그대로 붙이면 문 개구부(x 0.935~1.865)와 맞는다.",
+  "swing": "당기면 거리 쪽(정면 방향)으로 열린다: 위에서 볼 때 손잡이가 거리 쪽으로 나오는 방향, 프로토타입 기준 최대 약 83도(1.45rad). Leaf 를 세로축(Unity Y)으로만 돌린다. 부호는 FBX 좌표 변환 때문에 임포트 뒤 한 번 확인할 것(손잡이 끝이 Unity +Z 쪽으로 나오면 당김). 미는 방향은 파사드 안쪽 멈춤대(문짝과 1mm 틈, 지렛대 0.92m)에 막힌다: 매장 쪽 회전은 최대 0.0011rad 로 막고, 거리 쪽으로 최대 0.012rad 되튀게 + 소리 + 카메라 흔들림으로 덜컹을 표현. 프로토타입 값(매장 쪽 0.05rad)을 그대로 쓰면 문짝 끝이 멈춤대를 최대 4.5cm 뚫는다.",
+  "closer": {
+   "links": "StoreGlassDoor_Closer(본암, 원점 = 스핀들 세로축)와 StoreGlassDoor_CloserFore(전완, 원점 = 팔꿈치 세로축)는 둘 다 Leaf 의 자식(형제)이다. 클로저 본체는 Leaf 에 포함.",
+   "L1_m": 0.1812,
+   "L2_m": 0.2033,
+   "rest_dir_blender_xy": {
+    "Closer(스핀들→팔꿈치)": [
+     0.3311,
+     -0.9436
+    ],
+    "CloserFore(팔꿈치→슈)": [
+     0.541,
+     0.841
+    ]
+   },
+   "solve": "매 프레임(문 각도가 바뀔 때): S = Closer 월드 위치, H = StorefrontFacade_Socket_CloserShoe 월드 위치(수평면에 투영). 팔꿈치 E = 중심 S 반지름 L1 원과 중심 H 반지름 L2 원의 교점 중 거리 쪽(-Y/Unity +Z 쪽, 문에서 먼 쪽) 해. Closer 를 세로축으로 돌려 본암 방향(rest_dir)이 E 를 향하게 하고, CloserFore 는 위치를 E 로 옮긴 뒤 세로축으로 돌려 전완 방향이 H 를 향하게 한다. 0~1.45rad 전체에서 |S-H| 는 0.17~0.34m 로 L1+L2(0.385) 안이라 항상 풀린다. 오일러 부호 대신 '방향 맞추기'(LookRotation 류)로 구현할 것."
+  },
+  "dynamic": {
+   "object": "StoreGlassDoor_PullSticker",
+   "material": "M_Dyn_StoreGlassDoor_PullSticker",
+   "size_m": [
+    0.17,
+    0.085
+   ],
+   "texture": "T_StoreGlassDoor_PullSticker.png 1024x512",
+   "uv": "0..1, U→오른쪽, V→위 (거리 쪽에서 볼 때)",
+   "role": "프로토타입의 돋보기 readable '당기세요'. 흐림/선명 텍스처 교체용."
+  },
+  "sockets": {
+   "StoreGlassDoor_Socket_Handle": "거리 쪽 손잡이 바 중심(잡는 점)",
+   "StoreGlassDoor_Socket_HandleInside": "매장 쪽 손잡이",
+   "StoreGlassDoor_Socket_Sticker": "당기세요 스티커 시선 목표"
+  },
+  "hinges": "맞경첩 3개(z 0.26 / 1.16 / 2.08), 너클은 축 위라 문이 돌아도 제자리. 문틀 쪽 날개는 문틀에 묻힌 것으로 보고 모델링하지 않았다.",
+  "glass": "M_Glass_StoreGlassDoor: BaseColor 텍스처 알파 = 유리 불투명도(기본 0.10 + 손자국·먼지). 양면."
+ }
+}

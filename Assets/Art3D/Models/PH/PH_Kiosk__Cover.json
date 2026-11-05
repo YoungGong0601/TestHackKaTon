@@ -1,0 +1,36 @@
+{
+ "asset": "PH_Kiosk__Cover",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/Kiosk/T_Kiosk_Paper_BaseColor.jpg",
+    "Normal": "Textures/Kiosk/T_Kiosk_Paper_Normal.jpg"
+   },
+   "name": "M_Kiosk_Paper"
+  },
+  {
+   "baseColor": [
+    0.86,
+    0.84,
+    0.74,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_Kiosk_Tape"
+  }
+ ],
+ "notes": "Cover/Hinge/Visual. 원점 = 경첩선. 로컬 x 0..0.231, y +-0.085, z -0.006 (말림 앞끝 -0.0275). 부모 Cover 의 Z 180도를 뺀 프레임이라 로컬에서는 인쇄가 뒤집혀 있다. PosterFlap 이 Hinge 를 Y +146.1도 돌려 앞으로 연다."
+}

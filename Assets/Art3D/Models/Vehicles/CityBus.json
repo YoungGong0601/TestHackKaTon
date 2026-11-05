@@ -1,0 +1,279 @@
+{
+ "asset": "CityBus",
+ "category": "Vehicles",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Body/T_CityBus_Body_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Body/T_CityBus_Body_Normal.png",
+    "MS": "Textures/CityBus_Body/T_CityBus_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_CityBus_Decals"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_Normal.png",
+    "MS": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorFront_L"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.62
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_CityBus"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorFront_R/T_CityBus_DoorFront_R_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorFront_R/T_CityBus_DoorFront_R_Normal.png",
+    "MS": "Textures/CityBus_DoorFront_R/T_CityBus_DoorFront_R_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorFront_R"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_Normal.png",
+    "MS": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorMid_L"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_Normal.png",
+    "MS": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorMid_R"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.24
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_CityBus_Clear"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Interior/T_CityBus_Interior_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Interior/T_CityBus_Interior_Normal.png",
+    "MS": "Textures/CityBus_Interior/T_CityBus_Interior_MS.png",
+    "Emission": "Textures/CityBus_Interior/T_CityBus_Interior_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CityBus_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_RouteSign.png",
+    "Emission": "Textures/CityBus/T_CityBus_RouteSign.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 2.5,
+   "dynamic": true,
+   "name": "M_Dyn_CityBus_RouteSign"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Trim/T_CityBus_Trim_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Trim/T_CityBus_Trim_Normal.png",
+    "MS": "Textures/CityBus_Trim/T_CityBus_Trim_MS.png",
+    "Emission": "Textures/CityBus_Trim/T_CityBus_Trim_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CityBus_Trim"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_BaseColor.jpg",
+    "Normal": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_Normal.png",
+    "MS": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_WheelFront"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_BaseColor.jpg",
+    "Normal": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_Normal.png",
+    "MS": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_WheelRear"
+  }
+ ],
+ "notes": {
+  "front": "Blender -Y = Unity +Z(transform.forward). 문은 오른쪽(Unity +X, transform.right) 보도 쪽.",
+  "parts": "CityBus_Body(외판 도장+광고·번호판·스티커 데칼, 2048) / CityBus_Trim(범퍼·등화·거울·와이퍼·지붕 CNG·에어컨·창틀, 2048) / CityBus_Interior(의자·봉·손잡이·운전석, 1024) / CityBus_Glass / CityBus_RouteSign / 문짝 4 / 바퀴 4 — 모두 CityBus_Body 의 자식.",
+  "origin": "차체 바닥 중앙 (범퍼 제외 차체 길이 10.84m 의 가운데, 바닥 z=0). 바퀴가 땅에 닿는다.",
+  "doors": "CityBus_DoorFront_L/R, CityBus_DoorMid_L/R: 원점 = 경첩(회전 기둥) 축의 바닥. _R = 차 앞쪽 짝, _L = 뒤쪽 짝. 열기: 경첩 세로축 기준 차체 바깥쪽으로 약 88도 회전(Blender _R Z +88° / _L Z -88° = Unity localEulerAngles.y _R -88 / _L +88) 또는 프로토타입처럼 바깥 0.08m + 문 중심에서 멀어지는 쪽으로 0.5m 미끄러짐.",
+  "wheels": "CityBus_Wheel_FR/FL/RR/RL: 원점 = 차축 중심 (반지름 0.48m). 회전축 = 로컬 X(Blender) 로 네 바퀴 모두 같다. 뒤는 복륜. 앞 2개는 M_CityBus_WheelFront, 뒤 2개는 M_CityBus_WheelRear 텍스처를 공유. Unity 전진(+Z) 시 네 바퀴 모두 로컬 X 축 + 방향 회전 (각도 rad = 이동거리 / 0.48).",
+  "sockets": "CityBus_Socket_DoorFront / DoorMid: 각 문 앞 보도 위(문 중심에서 바깥 0.45m, 바닥). CityBus_Socket_SignFront / SignSide: 노선 LED 표지 중심 (돋보기·시선 대상).",
+  "dynamic": [
+   {
+    "material": "M_Dyn_CityBus_RouteSign",
+    "object": "CityBus_RouteSign (사각형 3장: 앞·오른쪽 옆·뒤, 같은 머티리얼 공유)",
+    "size_m": {
+     "front": [
+      1.6,
+      0.3
+     ],
+     "side_right": [
+      1.17,
+      0.22
+     ],
+     "rear": [
+      0.96,
+      0.18
+     ]
+    },
+    "texture_px": [
+     2048,
+     384
+    ],
+    "placeholder": "Textures/CityBus/T_CityBus_RouteSign.png (112 시장입구 ↔ 종합병원, 주황 LED 도트)",
+    "uv": "각 사각형 UV 0..1 전체, 밖에서 볼 때 U=오른쪽 V=위. 세 장 모두 5.33:1 이라 한 장의 텍스처를 그대로 쓴다. 2413번 등은 같은 비율 텍스처로 교체 (자리표시 T_CityBus_RouteSign_2413.png, 번호가 번진 T_CityBus_RouteSign_2413_Blur.png). 방출 강도 2.5."
+   }
+  ],
+  "decals": "M_CityBus_Decals (알파 클립): 광고 2종(오른쪽 버거대왕, 왼쪽 은행골구 디지털 배움터), 번호판 '서울 74 사 3112', 대시보드 112 안내판, 회사명 '시민교통(주) 112-07', 저상버스·CNG·승하차·문 주의 스티커.",
+  "glass": "M_Glass_CityBus (옆창·뒷창·문 유리, 짙은 선팅), M_Glass_CityBus_Clear (앞유리·행선지 창) — 양면 투명."
+ }
+}

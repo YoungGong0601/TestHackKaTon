@@ -1,0 +1,39 @@
+{
+ "asset": "NpcOfficeMan",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_Normal.png",
+    "MS": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcOfficeMan_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "maps": {
+    "BaseColor": "Textures/NpcOfficeMan/T_NpcOfficeMan_npc_idcard.png"
+   },
+   "name": "M_NpcOfficeMan_IdCard"
+  }
+ ],
+ "notes": "직장인 남(30대): 하늘색 반팔 와이셔츠(레귤러 칼라·앞 플래킷·단추·왼쪽 가슴 주머니)+남색 사선 넥타이(매듭)+차콜 슬랙스+검정 구두, 사원증(한빛물산 김민수 대리, 증명사진) 목걸이, 은색 손목시계. 점심시간 줄 서는 손님/행인. 키 1.73m(validate). 머티리얼 2개: M_NpcOfficeMan_Body(구운 2048) + M_NpcOfficeMan_IdCard(사원증 앞면 데칼 640x1024, 굽지 않음). | 리그: NpcOfficeMan_Rig (Quaternius HumanArmature 31본 그대로, Generic 권장). 스킨드 메시 1개 NpcOfficeMan_Body, 머티리얼 2개: M_NpcOfficeMan_Body, M_NpcOfficeMan_IdCard. | 클립(FBX take = 'NpcOfficeMan_Rig|<이름>'): Clapping, Idle, Impatient, LookAt, LookAtLeft, Phone, Run, SitIdle, Sitting, Tap, Walk, Watch. Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 새로 만든 2초 루프(48f@24fps, 첫=끝 프레임, Idle 왕복 숨쉬기 포함): Phone=오른손 폰 보기(엄지 스크롤·끄덕), Watch=왼손목 시계 보기(손목 돌림·앞을 흘끗), Impatient=체중 이동·한숨·발 구르기·팔짱, LookAt/LookAtLeft=오른쪽/왼쪽 돌아본 채 유지(돌아보는 동작은 Animator 크로스페이드 0.3초로), Tap=키오스크 화면 두드리기(손끝 1.3m·몸 앞 45cm). Sitting=선 자세에서 앉는 전환(1회 재생 후 마지막 프레임 유지), SitIdle=앉은 상태 루프(매장 앉은 손님은 SitIdle 로 시작). 루프 설정 필요: Idle/Walk/Run/Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 loopTime=on, Sitting/Clapping 은 off. 앉은 상태에서 Phone 을 쓰려면 상체 Avatar Mask 레이어로 SitIdle 위에 얹을 것. | 소켓: NpcOfficeMan_Socket_PhoneGrip (Palm.R 자식, NpcSmartphone 을 localPosition/Rotation 0 으로 붙이면 Phone 클립 손에 맞음), NpcOfficeMan_Socket_Head (Head 자식, 눈 위치: 시선/말풍선/목소리 위치)."
+}

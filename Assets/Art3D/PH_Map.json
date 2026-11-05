@@ -1,0 +1,337 @@
+{
+ "rows": [
+  {
+   "prefab": "PH_Hand",
+   "target": "Hand_Memo/Visual",
+   "model": "Models/PH/PH_Hand__Memo.fbx"
+  },
+  {
+   "prefab": "PH_Hand",
+   "target": "Hand_Lens/Visual",
+   "model": "Models/PH/PH_Hand__Lens.fbx"
+  },
+  {
+   "prefab": "PH_Hand",
+   "target": "Hand_Card/Visual",
+   "model": "Models/PH/PH_Hand__Card.fbx"
+  },
+  {
+   "prefab": "PH_Hand",
+   "target": "Hand_Pointer/Visual",
+   "model": "Models/PH/PH_Hand__Pointer.fbx"
+  },
+  {
+   "prefab": "PH_ShoeRack",
+   "target": "Shoes/Visual",
+   "model": "Models/PH/PH_ShoeRack__Shoes.fbx"
+  },
+  {
+   "prefab": "PH_Cane",
+   "target": "Visual",
+   "model": "Models/PH/PH_Cane.fbx"
+  },
+  {
+   "prefab": "PH_Door_Home",
+   "target": "Visual",
+   "model": "Models/PH/PH_Door_Home__Frame.fbx"
+  },
+  {
+   "prefab": "PH_Door_Home",
+   "target": "Hinge/Visual",
+   "model": "Models/PH/PH_Door_Home__Leaf.fbx"
+  },
+  {
+   "prefab": "PH_ShoeCabinet",
+   "target": "Visual",
+   "model": "Models/PH/PH_ShoeCabinet.fbx"
+  },
+  {
+   "prefab": "PH_Bulb",
+   "target": "Visual",
+   "model": "Models/PH/PH_Bulb.fbx"
+  },
+  {
+   "prefab": "PH_BusShelter",
+   "target": "Visual",
+   "model": "Models/PH/PH_BusShelter.fbx"
+  },
+  {
+   "prefab": "PH_BIS",
+   "target": "Visual",
+   "model": "Models/PH/PH_BIS.fbx"
+  },
+  {
+   "prefab": "PH_BusStopSign",
+   "target": "Visual",
+   "model": "Models/PH/PH_BusStopSign.fbx"
+  },
+  {
+   "prefab": "PH_Bus",
+   "target": "Visual",
+   "model": "Models/PH/PH_Bus__Body.fbx"
+  },
+  {
+   "prefab": "PH_Bus",
+   "target": "DoorLeafA/Visual",
+   "model": "Models/PH/PH_Bus__DoorA.fbx"
+  },
+  {
+   "prefab": "PH_Bus",
+   "target": "DoorLeafB/Visual",
+   "model": "Models/PH/PH_Bus__DoorB.fbx"
+  },
+  {
+   "prefab": "PH_Rail",
+   "target": "Visual",
+   "model": "Models/PH/PH_Rail.fbx"
+  },
+  {
+   "prefab": "PH_Curb",
+   "target": "Visual",
+   "model": "Models/PH/PH_Curb.fbx"
+  },
+  {
+   "prefab": "PH_Storefront",
+   "target": "Visual",
+   "model": "Models/PH/PH_Storefront.fbx"
+  },
+  {
+   "prefab": "PH_Door_Glass",
+   "target": "DoorPivot/Visual",
+   "model": "Models/PH/PH_Door_Glass__Leaf.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Visual",
+   "model": "Models/PH/PH_Kiosk__Body.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Cover/Hinge/Visual",
+   "model": "Models/PH/PH_Kiosk__Cover.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Wing_L/Visual",
+   "model": "Models/PH/PH_Kiosk__WingL.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Wing_R/Visual",
+   "model": "Models/PH/PH_Kiosk__WingR.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Card/Visual",
+   "model": "Models/PH/PH_Kiosk__Card.fbx"
+  },
+  {
+   "prefab": "PH_Kiosk_Broken",
+   "target": "Visual",
+   "model": "Models/PH/PH_Kiosk_Broken.fbx"
+  },
+  {
+   "prefab": "PH_Table",
+   "target": "Visual",
+   "model": "Models/PH/PH_Table.fbx"
+  },
+  {
+   "prefab": "PH_Seat",
+   "target": "Visual",
+   "model": "Models/PH/PH_Seat.fbx"
+  },
+  {
+   "prefab": "PH_Booth",
+   "target": "Visual",
+   "model": "Models/PH/PH_Booth.fbx"
+  },
+  {
+   "prefab": "PH_Counter",
+   "target": "Visual",
+   "model": "Models/PH/PH_Counter.fbx"
+  },
+  {
+   "prefab": "PH_Bulkhead",
+   "target": "Visual",
+   "model": "Models/PH/PH_Bulkhead.fbx"
+  },
+  {
+   "prefab": "PH_KitchenBench",
+   "target": "Visual",
+   "model": "Models/PH/PH_KitchenBench.fbx"
+  },
+  {
+   "prefab": "PH_Fryer",
+   "target": "Visual",
+   "model": "Models/PH/PH_Fryer.fbx"
+  },
+  {
+   "prefab": "PH_Hood",
+   "target": "Visual",
+   "model": "Models/PH/PH_Hood.fbx"
+  },
+  {
+   "prefab": "PH_PickupBoard",
+   "target": "Visual",
+   "model": "Models/PH/PH_PickupBoard.fbx"
+  },
+  {
+   "prefab": "PH_PickupStand",
+   "target": "Visual",
+   "model": "Models/PH/PH_PickupStand.fbx"
+  },
+  {
+   "prefab": "PH_Bag",
+   "target": "Visual",
+   "model": "Models/PH/PH_Bag.fbx"
+  },
+  {
+   "prefab": "PH_Bag",
+   "target": "Cup/Visual",
+   "model": "Models/PH/PH_Bag__Cup.fbx"
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "BagAnchor/Visual",
+   "model": "Models/PH/PH_NPC__Bag.fbx"
+  },
+  {
+   "prefab": "PH_Car",
+   "target": "Visual",
+   "model": "Models/PH/PH_Car.fbx"
+  },
+  {
+   "prefab": "PH_Scooter",
+   "target": "Visual",
+   "model": "Models/PH/PH_Scooter.fbx"
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__OfficeMan_Body.fbx",
+   "look": 0
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__OfficeMan_Head.fbx",
+   "look": 0
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__Ajumma_Body.fbx",
+   "look": 1
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__Ajumma_Head.fbx",
+   "look": 1
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__StudentWoman_Body.fbx",
+   "look": 2
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__StudentWoman_Head.fbx",
+   "look": 2
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__StudentMan_Body.fbx",
+   "look": 3
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__StudentMan_Head.fbx",
+   "look": 3
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__YoungWoman_Body.fbx",
+   "look": 4
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__YoungWoman_Head.fbx",
+   "look": 4
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__OldMan_Body.fbx",
+   "look": 5
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__OldMan_Head.fbx",
+   "look": 5
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__SuitMan_Body.fbx",
+   "look": 6
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__SuitMan_Head.fbx",
+   "look": 6
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__Youth_Body.fbx",
+   "look": 7
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__Youth_Head.fbx",
+   "look": 7
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "ReactPivot/Visual",
+   "model": "Models/PH/PH_NPC__Staff_Body.fbx",
+   "look": 8
+  },
+  {
+   "prefab": "PH_NPC",
+   "target": "HeadPivot/Visual",
+   "model": "Models/PH/PH_NPC__Staff_Head.fbx",
+   "look": 8
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Spot_Call/Visual",
+   "model": ""
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Slot_ic/Visual",
+   "model": ""
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Slot_receipt/Visual",
+   "model": ""
+  },
+  {
+   "prefab": "PH_Kiosk",
+   "target": "Slot_barcode/Visual",
+   "model": ""
+  }
+ ]
+}

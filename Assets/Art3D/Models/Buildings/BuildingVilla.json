@@ -1,0 +1,191 @@
+{
+ "asset": "BuildingVilla",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BuildingVilla/T_BuildingVilla_BaseColor.jpg",
+    "Normal": "Textures/BuildingVilla/T_BuildingVilla_Normal.png",
+    "MS": "Textures/BuildingVilla/T_BuildingVilla_MS.png",
+    "Emission": "Textures/BuildingVilla/T_BuildingVilla_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_BuildingVilla"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_RedBrick_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_RedBrick_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_RedBrick_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_RedBrick"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Plaster_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Plaster_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Plaster_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Plaster"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Concrete_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Concrete_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Concrete_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Concrete"
+  },
+  {
+   "baseColor": [
+    0.045,
+    0.055,
+    0.06,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "transparent": true,
+   "name": "M_Glass_BuildingVilla_Window"
+  },
+  {
+   "baseColor": [
+    0.05,
+    0.05,
+    0.05,
+    0.55
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "transparent": true,
+   "name": "M_Glass_BuildingVilla_Screen"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.2,
+   "maps": {
+    "BaseColor": "Textures/BuildingVilla/T_BuildingVilla_Interior.jpg",
+    "Emission": "Textures/BuildingVilla/T_BuildingVilla_Interior.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.08,
+   "name": "M_BuildingVilla_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "maps": {
+    "BaseColor": "Textures/BuildingVilla/T_BuildingVilla_Grime.png"
+   },
+   "transparent": true,
+   "name": "M_BuildingVilla_Grime"
+  },
+  {
+   "baseColor": [
+    0.1,
+    0.12,
+    0.12,
+    0.16
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "transparent": true,
+   "name": "M_Glass_BuildingVilla_Shop"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BuildingVilla/T_BuildingVilla_Decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BuildingVilla_Decal"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/BuildingVilla/T_BuildingVilla_Sign.jpg",
+    "Emission": "Textures/BuildingVilla/T_BuildingVilla_Sign.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.12,
+   "name": "M_BuildingVilla_Sign"
+  }
+ ],
+ "notes": "붉은 벽돌 다세대 빌라 '행복빌라'. 원점 = 도로 쪽 정면 벽 아래 중앙 (건물은 +Y=Unity -Z 쪽으로 11m 깊다, 정면 = Unity +Z). 폭 12.2m, 필로티 2.5m + 3개 층(2.75m) + 파라펫 0.85m = 11.6m, 옥탑 계단실·물탱크 포함 약 14.4m. 1층 필로티 주차 3칸(기둥 x=±1.95, ±5.85), 공동현관은 y=5.5m 안쪽 벽 x=2.4..4.6 (유리문 '당기세요'). 벽 = M_Tile_Buildings_RedBrick/Plaster/Concrete (월드 UV, 1.4/2.0/3.0m), 창 유리 M_Glass_*, 간판·명판·우편함 M_BuildingVilla_Sign, 창 안쪽 카드 M_BuildingVilla_Interior, 정면 때 덮개 M_BuildingVilla_Grime(투명). 소켓: Entrance(현관문 앞 바닥), ParkingA/B/C(주차칸 중앙 바닥), Mailbox(우편함 앞). 때 덮개(M_BuildingVilla_Grime)는 개구부를 잘라낸 띠 메시로 벽에서 12mm 앞에 있다. 배치: 뒷벽과 창 없는 옆벽은 단순 미장면이므로 이웃 건물에 붙이거나 골목 안쪽으로 돌려 가릴 것."
+}

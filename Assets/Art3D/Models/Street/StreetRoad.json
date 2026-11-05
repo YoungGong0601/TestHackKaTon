@@ -1,0 +1,102 @@
+{
+ "asset": "StreetRoad",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Asphalt_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Asphalt_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Asphalt_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Asphalt"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_PaintYellow_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_PaintYellow_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_PaintYellow_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_PaintYellow"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_PaintWhite_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_PaintWhite_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_PaintWhite_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_PaintWhite"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_AsphaltOld_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_AsphaltOld_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_AsphaltOld_MS.png"
+   },
+   "baseColor": [
+    0.8,
+    0.8,
+    0.82,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_AsphaltOld"
+  },
+  {
+   "baseColor": [
+    0.04,
+    0.04,
+    0.042,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "name": "M_StreetRoad_Tar"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StreetRoad/T_StreetRoad_road_oil.png"
+   },
+   "transparent": true,
+   "name": "M_StreetRoad_Oil"
+  }
+ ],
+ "notes": "도로 모듈 12 m(X) x 8 m(Y). 원점 = 노면 중앙(z=0 = 아스팔트 윗면). 앞(-Y, Unity +Z 반대쪽 아님: 정면) = 버스정류장/보도 쪽 차로. 높이 쌓기: 노면 z=0 -> Unity y=-0.14(보도면 y=0 보다 14 cm 낮음, 프로토타입 zn). 경계석(StreetCurb) 앞면을 y=±4.0 에 붙인다. 우측통행: 앞 차로(-Y)는 +X 로 진행. 층: 보수판(M_Tile_Street_AsphaltOld = 균열 많은 옛 아스팔트 asphalt_02, 3 m) +1.5 mm, 타르 실링(폭 4~8 cm) +2.5 mm, 도료 +3 mm(두께 3 mm, 실제 융착식 도료 두께). M_Tile 은 월드 UV(기본 노면 M_Tile_Street_Asphalt = clean_asphalt 와 도료 2 m, 보수판 3 m) 라 모듈 끝끼리 결이 이어진다. 차로 가운데(y ±1.85)에 기름 얼룩 띠 M_<에셋>_Oil(투명 데칼 0.9 m, +2 mm, U = 월드 X / 6 m). 맨홀은 StreetManhole, 빗물받이는 StreetDrain 을 따로 놓는다. 직선 구간. 가운데 황색 복선 + 양쪽 흰 가장자리선 + 보수판 2곳 + 크랙 실링."
+}

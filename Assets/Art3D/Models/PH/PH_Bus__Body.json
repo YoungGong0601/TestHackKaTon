@@ -1,0 +1,205 @@
+{
+ "asset": "PH_Bus__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Body/T_CityBus_Body_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Body/T_CityBus_Body_Normal.png",
+    "MS": "Textures/CityBus_Body/T_CityBus_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/PH_Bus/T_PH_Bus_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_PH_Bus_Decals"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_Normal.png",
+    "MS": "Textures/CityBus_DoorMid_L/T_CityBus_DoorMid_L_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorMid_L"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.62
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_CityBus"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_Normal.png",
+    "MS": "Textures/CityBus_DoorMid_R/T_CityBus_DoorMid_R_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorMid_R"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.24
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_CityBus_Clear"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Interior/T_CityBus_Interior_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Interior/T_CityBus_Interior_Normal.png",
+    "MS": "Textures/CityBus_Interior/T_CityBus_Interior_MS.png",
+    "Emission": "Textures/CityBus_Interior/T_CityBus_Interior_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CityBus_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/PH_Bus/T_PH_Bus_SignBlank.png"
+   },
+   "name": "M_PH_Bus_SignBlank"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_Trim/T_CityBus_Trim_BaseColor.jpg",
+    "Normal": "Textures/CityBus_Trim/T_CityBus_Trim_Normal.png",
+    "MS": "Textures/CityBus_Trim/T_CityBus_Trim_MS.png",
+    "Emission": "Textures/CityBus_Trim/T_CityBus_Trim_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CityBus_Trim"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_BaseColor.jpg",
+    "Normal": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_Normal.png",
+    "MS": "Textures/CityBus_WheelFront/T_CityBus_WheelFront_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_WheelFront"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_BaseColor.jpg",
+    "Normal": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_Normal.png",
+    "MS": "Textures/CityBus_WheelRear/T_CityBus_WheelRear_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_WheelRear"
+  }
+ ],
+ "notes": {
+  "doors": "앞문(x 4.45) 구멍은 비움, 중문(x -0.90)은 닫힌 채 몸체에 포함. 거울은 앞으로 15도 접음.",
+  "route": "LED 앞·옆·뒤는 꺼진 판, 대시보드 카드는 빈 카드, 번호판 3086, 회사명 시민교통(주). 노선 번호는 Plate_Blur, Plate_112 몫."
+ }
+}

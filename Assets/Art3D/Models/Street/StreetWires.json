@@ -1,0 +1,47 @@
+{
+ "asset": "StreetWires",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetWires_Lines/T_StreetWires_Lines_BaseColor.jpg",
+    "Normal": "Textures/StreetWires_Lines/T_StreetWires_Lines_Normal.png",
+    "MS": "Textures/StreetWires_Lines/T_StreetWires_Lines_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetWires_Lines"
+  },
+  {
+   "baseColor": [
+    0.42,
+    0.43,
+    0.43,
+    1.0
+   ],
+   "metallic": 1.0,
+   "smoothness": 0.58,
+   "name": "M_StreetWires_Conductor"
+  },
+  {
+   "baseColor": [
+    0.018,
+    0.018,
+    0.019,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "name": "M_StreetWires_Cable"
+  }
+ ],
+ "notes": "경간 25 m 전선 묶음. 원점 = 시작 전주(StreetUtilityPole) 원점과 같은 지면 위치, 전선은 로컬 +X 로 25 m. 고압 3가닥(처짐 0.42~0.48 m), 저압 2가닥, 통신 3가닥(처짐 0.75~0.91 m) + 통신 접속함. 다른 경간 길이는 X 스케일로 맞춘다(가는 선이라 비균일 스케일 무방). 바닥(min_z)이 0 이 아닌 것은 의도(공중 전선)."
+}

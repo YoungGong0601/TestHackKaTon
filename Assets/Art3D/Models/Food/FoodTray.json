@@ -1,0 +1,50 @@
+{
+ "asset": "FoodTray",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodTray_Mesh/T_FoodTray_Mesh_BaseColor.jpg",
+    "Normal": "Textures/FoodTray_Mesh/T_FoodTray_Mesh_Normal.png",
+    "MS": "Textures/FoodTray_Mesh/T_FoodTray_Mesh_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodTray_Mesh"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.15,
+   "maps": {
+    "BaseColor": "Textures/FoodTray/T_FoodTray_tray_liner.png"
+   },
+   "name": "M_FoodTray_Liner"
+  }
+ ],
+ "notes": {
+  "desc": "패스트푸드 쟁반 0.41 x 0.31 x 0.022m (바닥 윗면 0.006m, 깔지 윗면 약 0.0065m, 안쪽 깊이 약 1.6cm). 음식은 FoodTray_Socket_* 위치에 놓는다. 정면 -Y, 원점 바닥 중앙.",
+  "liner": "M_FoodTray_Liner 는 굽지 않은 2048 원본 텍스처(UV 0-1 이 깔지 전체, U 오른쪽 V 위쪽). 앱 주문 홍보·'주문은 키오스크에서만' 안내 문구 인쇄.",
+  "sockets": {
+   "FoodTray_Socket_Burger": "버거 자리",
+   "FoodTray_Socket_Fries": "감자튀김 자리",
+   "FoodTray_Socket_Cup": "음료 자리",
+   "FoodTray_Socket_Pager": "진동벨 자리",
+   "FoodTray_Socket_GripL": "왼손 잡는 곳",
+   "FoodTray_Socket_GripR": "오른손 잡는 곳"
+  }
+ }
+}

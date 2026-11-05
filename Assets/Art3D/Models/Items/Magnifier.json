@@ -1,0 +1,40 @@
+{
+ "asset": "Magnifier",
+ "category": "Items",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Magnifier_Body/T_Magnifier_Body_BaseColor.jpg",
+    "Normal": "Textures/Magnifier_Body/T_Magnifier_Body_Normal.png",
+    "MS": "Textures/Magnifier_Body/T_Magnifier_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Magnifier_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/Magnifier/T_Magnifier_lens_smudge.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_Magnifier_Lens"
+  }
+ ],
+ "notes": "돋보기 0.112x0.0076x0.267m (렌즈 보이는 지름 96mm, 테 바깥 112.5mm), 원점 = 손잡이 끝 바닥 중앙, 정면(-Y)=렌즈면. Magnifier_Body(황동 테·클램프 블록·일자나사·페룰·호두나무 손잡이·마개, 2048 bake) 루트, 자식 Magnifier_Lens: 원점 = 렌즈 중심(0,0,0.210), M_Glass_Magnifier_Lens(투명, BaseMap 알파 = 지문/얼룩), UV 0..1 = 보이는 원판(반지름 48mm)을 정면에서 본 평면 투영 (U 오른쪽 +X, V 위 +Z; 뒷면은 좌우 반전으로 같은 UV), 테 속에 숨은 유리 가장자리는 UV 0..1 밖(최대 1.017). 줌 렌더 텍스처를 렌즈에 바로 매핑 가능. Socket_Grip = 손잡이 쥐는 점(z 0.062, 축 +Z = 손잡이 방향), Socket_LensCenter = 렌즈 중심(정면 -Y). 프로토타입: lensRadius 0.05, 손잡이 길이 0.16, 손에 쥐고 화면 중앙 0.34m 앞. Unity: Magnifier_Lens 렌더러는 Cast Shadows = Off 로 둘 것 (투명 Lit 은 꽉 찬 원판 그림자를 만듦)."
+}

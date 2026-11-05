@@ -1,0 +1,40 @@
+{
+ "asset": "StreetUtilityPole",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetUtilityPole_Body/T_StreetUtilityPole_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetUtilityPole_Body/T_StreetUtilityPole_Body_Normal.png",
+    "MS": "Textures/StreetUtilityPole_Body/T_StreetUtilityPole_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetUtilityPole_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "maps": {
+    "BaseColor": "Textures/StreetUtilityPole/T_StreetUtilityPole_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StreetUtilityPole_Decals"
+  }
+ ],
+ "notes": "높이 9.8 m(+애자 0.37 m). 원점 = 지면 중앙. 정면 -Y(Unity +Z) = 보도 쪽: 테이프 전단지·'광고물 부착 금지' 안내·번호찰이 이쪽을 보므로 정면을 보도(걷는 사람) 쪽으로 돌려 놓는다. 단자함·입상관·통신 케이블은 뒤(도로 쪽)에 있다. 완철은 Y 방향(Y 대칭), 전선은 X 방향으로 뻗는다: StreetWires 를 같은 위치/회전에 놓고 다음 전주를 로컬 +X 25 m 에 두면 애자에 정확히 붙는다. Socket: Flyers(전단지 보기 시선 대상 1.7 m), WireHV/WireLV/WireTel(전선 높이), Transformer. 데칼(M_StreetUtilityPole_Decals, alpha clip 0.5): 전단지 4장·광고물 금지 안내·번호찰·고압 경고·반사띠·스티커."
+}

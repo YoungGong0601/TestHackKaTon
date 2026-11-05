@@ -1,0 +1,25 @@
+{
+ "asset": "StoreChair",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreChair/T_StoreChair_BaseColor.jpg",
+    "Normal": "Textures/StoreChair/T_StoreChair_Normal.png",
+    "MS": "Textures/StoreChair/T_StoreChair_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreChair"
+  }
+ ],
+ "notes": "패스트푸드 의자, 등판 윗끝 0.84m, 좌면 0.455m, 정면(-Y)으로 앉음. 성형 합판(오크 무늬목, 단면 겹 줄무늬) + Ø19 검정 분체도장 강관 + 나일론 발굽. 소켓: _Socket_Sit(좌면 중앙). 프로토타입처럼 테이블 중심에서 ±0.62m 에 마주보게 배치."
+}

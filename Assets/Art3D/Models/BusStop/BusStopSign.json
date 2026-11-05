@@ -1,0 +1,109 @@
+{
+ "asset": "BusStopSign",
+ "category": "BusStop",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusStopSign_Body/T_BusStopSign_Body_BaseColor.jpg",
+    "Normal": "Textures/BusStopSign_Body/T_BusStopSign_Body_Normal.png",
+    "MS": "Textures/BusStopSign_Body/T_BusStopSign_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusStopSign_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/BusStopSign/T_BusStopSign_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BusStopSign_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "maps": {
+    "BaseColor": "Textures/BusStopSign/T_BusStopSign_Head.png"
+   },
+   "name": "M_BusStopSign_Head"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/BusStopSign/T_BusStopSign_Routes.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_BusStopSign_Routes"
+  }
+ ],
+ "notes": {
+  "pivot": "기둥 바닥 중심. 앞(-Y→Unity +Z)·뒤 모두 같은 그림. 승차대 옆 보도에 세운다.",
+  "dynamic": [
+   {
+    "object": "BusStopSign_Routes",
+    "material": "M_Dyn_BusStopSign_Routes",
+    "size_m": [
+     0.5,
+     0.86
+    ],
+    "texture_px": [
+     1190,
+     2048
+    ],
+    "uv": "면마다 UV 0..1, U→오른쪽 V→위 (각 면을 정면에서 볼 때), 앞뒤 2장 같은 머티리얼",
+    "placeholder": "Textures/BusStopSign/T_BusStopSign_Routes.png (112/2413/7 노선 정류장 목록, 실제 크기 약 11 mm 글씨 — 돋보기 없이는 못 읽게)",
+    "center_height_m": 1.46,
+    "base_lens": [
+     {
+      "base": "Textures/BusStopSign/T_BusStopSign_Routes_Base.png",
+      "lens": "Textures/BusStopSign/T_BusStopSign_Routes.png"
+     }
+    ],
+    "readable": "base = 돋보기 밖(흐림 9 px, 작은 글씨 못 읽음), lens = 돋보기 안(선명). 머티리얼 기본 텍스처는 lens"
+   }
+  ],
+  "static_image": {
+   "object": "BusStopSign_Head",
+   "material": "M_BusStopSign_Head",
+   "size_m": [
+    0.5,
+    0.56
+   ],
+   "content": "BUS STOP 은행골 입구 / 정류소 번호 14-208"
+  },
+  "sockets": {
+   "BusStopSign_Socket_LookTarget_Routes": "노선판 중심 (높이 1.46 m, 돋보기/시선 판정)",
+   "BusStopSign_Socket_LookTarget_Head": "머리판 중심 (높이 2.62 m)"
+  },
+  "collider": "기둥 원기둥 r0.04 h2.97 + 판 박스 0.56x0.09x(0.62@2.62, 0.92@1.46)"
+ }
+}

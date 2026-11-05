@@ -1,0 +1,25 @@
+{
+ "asset": "NpcStudentMan",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcStudentMan_Body/T_NpcStudentMan_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcStudentMan_Body/T_NpcStudentMan_Body_Normal.png",
+    "MS": "Textures/NpcStudentMan_Body/T_NpcStudentMan_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcStudentMan_Body"
+  }
+ ],
+ "notes": "대학생 남(20대): 회색 후드티(목 뒤에 접혀 내려앉은 후드·캥거루 주머니·후드 끈·골지 시보리)+청바지+흰 운동화, 차콜 600D 백팩(둥근 윗면, 메인·앞주머니 지퍼, 옆 물병 메시 주머니, 윗 손잡이 고리, 패치, 패드 어깨끈 -> 사다리 버클 -> 웨빙이 겨드랑이 밑으로 가방 아래 모서리까지, 가슴 스트랩), 검정 손목시계. 줄 맨 앞 '뒤 손님'(yM: '저기요, 빨리 좀 해요.', '비켜보세요, 제가 먼저 할게요.') 추천, 끼어들기 장면은 Tap 클립. 키 1.77m(validate). | 리그: NpcStudentMan_Rig (Quaternius HumanArmature 31본 그대로, Generic 권장). 스킨드 메시 1개 NpcStudentMan_Body, 머티리얼 1개: M_NpcStudentMan_Body. | 클립(FBX take = 'NpcStudentMan_Rig|<이름>'): Clapping, Idle, Impatient, LookAt, LookAtLeft, Phone, Run, SitIdle, Sitting, Tap, Walk, Watch. Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 새로 만든 2초 루프(48f@24fps, 첫=끝 프레임, Idle 왕복 숨쉬기 포함): Phone=오른손 폰 보기(엄지 스크롤·끄덕), Watch=왼손목 시계 보기(손목 돌림·앞을 흘끗), Impatient=체중 이동·한숨·발 구르기·팔짱, LookAt/LookAtLeft=오른쪽/왼쪽 돌아본 채 유지(돌아보는 동작은 Animator 크로스페이드 0.3초로), Tap=키오스크 화면 두드리기(손끝 1.3m·몸 앞 45cm). Sitting=선 자세에서 앉는 전환(1회 재생 후 마지막 프레임 유지), SitIdle=앉은 상태 루프(매장 앉은 손님은 SitIdle 로 시작). 루프 설정 필요: Idle/Walk/Run/Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 loopTime=on, Sitting/Clapping 은 off. 앉은 상태에서 Phone 을 쓰려면 상체 Avatar Mask 레이어로 SitIdle 위에 얹을 것. | 소켓: NpcStudentMan_Socket_PhoneGrip (Palm.R 자식, NpcSmartphone 을 localPosition/Rotation 0 으로 붙이면 Phone 클립 손에 맞음), NpcStudentMan_Socket_Head (Head 자식, 눈 위치: 시선/말풍선/목소리 위치)."
+}

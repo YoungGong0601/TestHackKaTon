@@ -1,0 +1,56 @@
+{
+ "asset": "BuildingBackdrop",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.15,
+   "maps": {
+    "BaseColor": "Textures/BuildingBackdrop/T_BuildingBackdrop_Facade.jpg"
+   },
+   "name": "M_BuildingBackdrop_Facade"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Concrete_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Concrete_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Concrete_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Concrete"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Plaster_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Plaster_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Plaster_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Plaster"
+  }
+ ],
+ "notes": "먼 배경 아파트 동 (15층, 폭 36m 깊이 13m, 높이 43.8m + 옥탑 2.8m). 원점 = 정면 벽 아래 중앙, 정면 = Unity +Z. 굽기 없음: 벽 = M_BuildingBackdrop_Facade (그림 1장, 정면/뒤 같은 그림, 옆 = '101 푸른마을'), 옥상·띠 = M_Tile_Buildings_*. 60m 이상 떨어진 곳에 여러 개 두고 Y 회전/좌우 반전으로 변화를 줄 것."
+}

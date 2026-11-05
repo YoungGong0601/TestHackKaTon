@@ -1,0 +1,40 @@
+{
+ "asset": "Memo",
+ "category": "Items",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Memo_Sheet/T_Memo_Sheet_BaseColor.jpg",
+    "Normal": "Textures/Memo_Sheet/T_Memo_Sheet_Normal.png",
+    "MS": "Textures/Memo_Sheet/T_Memo_Sheet_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_Memo_Sheet"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.14,
+   "maps": {
+    "BaseColor": "Textures/Memo/T_Memo_memo.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_Memo_Paper"
+  }
+ ],
+ "notes": "메모 한 장 0.165x0.21m (프로토타입 크기), 두께 0.12mm, 원점 = 아랫변 중앙, 정면(-Y)=글씨 면. 위쪽은 수첩에서 찢긴 들쭉날쭉한 변, 4등분 접었다 편 자국(세로 골짜기·가로 산) + 오른쪽 아래 말림. 동적 면: Memo_Sheet 의 앞면 서브메시, 머티리얼 M_Dyn_Memo_Paper, 실제 크기 0.165x0.21m, placeholder 1608x2048 px (손자가 부탁한 것 / 시장 입구 버거대왕 / 불고기 버거 세트 / 콜라 말고 사이다로 / 포장 / 112번 버스, Nanum Pen Script 볼펜), UV 0..1 = 시트 전체 (U 오른쪽 +X, V 위 +Z, 정면에서 봤을 때 똑바로). 프로토타입 줄 간격: 640px 기준 62px, 첫 글줄 74px. 뒷면·옆면은 M_Memo_Sheet (1024 bake, 무지 종이·접힌 자국 — 앞 글씨는 동적이라 비친 잉크를 굽지 않음). Socket_Grip = 왼쪽 아래 집는 점(프로토타입 pinchMemo), Socket_ReadCenter = 시선 목표(종이 중앙)."
+}

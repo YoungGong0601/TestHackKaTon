@@ -1,0 +1,41 @@
+{
+ "asset": "PH_PickupStand",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_PickupStand_Steel/T_PH_PickupStand_Steel_BaseColor.jpg",
+    "Normal": "Textures/PH_PickupStand_Steel/T_PH_PickupStand_Steel_Normal.png",
+    "MS": "Textures/PH_PickupStand_Steel/T_PH_PickupStand_Steel_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_PickupStand_Steel"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/StoreCounter/T_StoreCounter_counter_signs.png"
+   },
+   "name": "M_StoreCounter_Signs"
+  }
+ ],
+ "notes": {
+  "desc": "음식 받는 곳 받침. 원점 = 바닥 중앙, 윗면 y 0.1 (봉투가 놓이는 고무 매트), 손님 쪽 +X 에 픽업 표시."
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "asset": "PH_Hand__Memo",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Memo_Sheet/T_Memo_Sheet_BaseColor.jpg",
+    "Normal": "Textures/Memo_Sheet/T_Memo_Sheet_Normal.png",
+    "MS": "Textures/Memo_Sheet/T_Memo_Sheet_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_Memo_Sheet"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.14,
+   "maps": {
+    "BaseColor": "Textures/PH_Hand__Memo/T_PH_Hand__Memo_Paper.png"
+   },
+   "name": "M_PH_Hand__Memo_Paper"
+  }
+ ],
+ "notes": "빈 종이(글씨, 줄 없음), 접힌 자국 유지. 맨 앞 z -0.0008, Hand_Memo/Text 는 그보다 앞(-Z)에 있어야 한다."
+}

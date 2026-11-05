@@ -1,0 +1,57 @@
+{
+ "asset": "StreetLight",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetLight_Body/T_StreetLight_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetLight_Body/T_StreetLight_Body_Normal.png",
+    "MS": "Textures/StreetLight_Body/T_StreetLight_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetLight_Body"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.88,
+    0.82,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.8,
+   "emission": [
+    1.0,
+    0.9,
+    0.76
+   ],
+   "emissionStrength": 6.0,
+   "name": "M_StreetLight_LED"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/StreetLight/T_StreetLight_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StreetLight_Decals"
+  }
+ ],
+ "notes": "높이 7.5 m 가로등. 원점 = 바닥 중앙. 암과 등기구는 정면(-Y, Unity +Z) 쪽으로 1.6 m 뻗는다 = 도로 쪽으로 돌려 배치. M_StreetLight_LED = 발광 렌즈(Emission 6, 4000K) — 밤/낮 전환 시 emission 만 조절. Socket_Lamp: 렌즈 중심(아래를 향함, Spot/Point Light 부착). Socket_Plate: 관리번호판(2.48 m)."
+}

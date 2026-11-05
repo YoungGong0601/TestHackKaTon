@@ -1,0 +1,90 @@
+{
+ "asset": "StoreTrashStation",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTrashStation/T_StoreTrashStation_BaseColor.jpg",
+    "Normal": "Textures/StoreTrashStation/T_StoreTrashStation_Normal.png",
+    "MS": "Textures/StoreTrashStation/T_StoreTrashStation_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTrashStation"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "maps": {
+    "BaseColor": "Textures/StoreTrashStation/T_StoreTrashStation_Label.png"
+   },
+   "name": "M_StoreTrashStation_Label"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTrashStation_FlapCup/T_StoreTrashStation_FlapCup_BaseColor.jpg",
+    "Normal": "Textures/StoreTrashStation_FlapCup/T_StoreTrashStation_FlapCup_Normal.png",
+    "MS": "Textures/StoreTrashStation_FlapCup/T_StoreTrashStation_FlapCup_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTrashStation_FlapCup"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTrashStation_FlapFood/T_StoreTrashStation_FlapFood_BaseColor.jpg",
+    "Normal": "Textures/StoreTrashStation_FlapFood/T_StoreTrashStation_FlapFood_Normal.png",
+    "MS": "Textures/StoreTrashStation_FlapFood/T_StoreTrashStation_FlapFood_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTrashStation_FlapFood"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTrashStation_FlapGeneral/T_StoreTrashStation_FlapGeneral_BaseColor.jpg",
+    "Normal": "Textures/StoreTrashStation_FlapGeneral/T_StoreTrashStation_FlapGeneral_Normal.png",
+    "MS": "Textures/StoreTrashStation_FlapGeneral/T_StoreTrashStation_FlapGeneral_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTrashStation_FlapGeneral"
+  }
+ ],
+ "notes": "퇴식구 겸 분리수거함 1.0x0.5m, 높이 0.785m(상판 턱 포함). trashcan.glb 와 프로토타입 x=2.75 절차 '쓰레기/트레이' 카운터를 모두 대체한다 (카운터 자리에 1개 배치, x=4.25 휴지통 자리는 제거). 프로토타입 트레이 4장 더미는 Food 그룹 FoodTray 를 _Socket_TrayReturn 에 쌓는다. 상판은 트레이 반납 선반(스테인리스, 뒤/옆 턱). 앞면 투입구 3개: 일반쓰레기 / 음식물 / 컵·빨대. 덮개 자식: StoreTrashStation_FlapGeneral/FlapFood/FlapCup(진회색 ABS, '미세요/PUSH' 데칼), 원점 = 윗변 경첩, 로컬 X축 회전(+ 안쪽으로 밀림, 0~70도). 라벨 M_StoreTrashStation_Label(2048x1024, 굽지 않음). 소켓: _Socket_General/_Food/_Cup(각 투입구 앞), _Socket_TrayReturn(상판 트레이 놓는 곳)."
+}

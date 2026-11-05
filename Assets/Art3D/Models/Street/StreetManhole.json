@@ -1,0 +1,53 @@
+{
+ "asset": "StreetManhole",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetManhole_Body/T_StreetManhole_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetManhole_Body/T_StreetManhole_Body_Normal.png",
+    "MS": "Textures/StreetManhole_Body/T_StreetManhole_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetManhole_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Asphalt_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Asphalt_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Asphalt_MS.png"
+   },
+   "baseColor": [
+    0.78,
+    0.79,
+    0.81,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_AsphaltPatch"
+  },
+  {
+   "baseColor": [
+    0.016,
+    0.016,
+    0.017,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "name": "M_StreetManhole_Tar"
+  }
+ ],
+ "notes": "하수 맨홀. 원점 = 노면 위 중앙(z=0 = 놓일 바닥면), 뚜껑 윗면 +5.5 mm. 뚜껑 Ø0.644 m(양각 '하수'·'은행골구'·격자 미끄럼 방지·둘레 글자, 들어올림 홈 2개), 주철 테 Ø0.80 m. 자식 StreetManhole_Collar = 둘레 보수 아스팔트 고리(Ø1.25 m, M_Tile_Street_AsphaltPatch, +1.2 mm) + 타르 실링 — 보도/골목 바닥에 놓을 때는 끈다. min_z -0.035 = 노면 속에 묻히는 테 아래쪽(의도). 프로토타입 위치: 골목 (0.7, -6.2), (-1, -24.4), 큰길 (8, -37.6)."
+}

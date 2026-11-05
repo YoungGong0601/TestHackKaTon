@@ -1,0 +1,39 @@
+{
+ "asset": "StoreExtinguisher",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreExtinguisher/T_StoreExtinguisher_BaseColor.jpg",
+    "Normal": "Textures/StoreExtinguisher/T_StoreExtinguisher_Normal.png",
+    "MS": "Textures/StoreExtinguisher/T_StoreExtinguisher_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreExtinguisher"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/StoreExtinguisher/T_StoreExtinguisher_Label.jpg"
+   },
+   "name": "M_StoreExtinguisher_Label"
+  }
+ ],
+ "notes": "Poly Haven CC0 스캔(korean_fire_extinguisher_01) 기반. 실물 0.659m 를 0.60m 로 균일 축소(프로토타입 0.56m 허용범위). 빨간 '소화기' 받침대 포함: 프로토타입이 바닥(벽 앞)에 두므로 벽 브래킷 대신 받침대를 씀. 원점 = 받침대 바닥 중앙. 라벨은 M_StoreExtinguisher_Label(원본 2k 텍스처, 굽지 않음). 소켓: _Socket_Grip(손잡이 레버), _Socket_Pin(안전핀), _Socket_Nozzle(호스 노즐)."
+}

@@ -1,0 +1,74 @@
+{
+ "asset": "PH_Door_Glass__Leaf",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_BaseColor.jpg",
+    "Normal": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_Normal.png",
+    "MS": "Textures/StoreGlassDoor_Leaf/T_StoreGlassDoor_Leaf_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreGlassDoor_Leaf"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_GlassSmudge.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_StoreGlassDoor"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_PushSticker.png"
+   },
+   "name": "M_StoreGlassDoor_PushSticker"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreGlassDoor/T_StoreGlassDoor_Caution.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_StoreGlassDoor_Caution"
+  }
+ ],
+ "notes": {
+  "pivot": "원점 = 문틀 쪽 끝, 문 두께 중심, 바닥. 문짝은 경첩에서 +X 로 0.927m. 앞(거리, 손잡이·클로저 본체 쪽) -Z.",
+  "sticker": "당기세요 스티커는 넣지 않았다. 유리 z 0, 문틀 면 z -0.025 라 Sticker_Pull(z -0.03) 이 앞에 온다. 매장 쪽 미세요 스티커는 z +0.0025.",
+  "closer": "클로저 암은 뺐다: 닫힌 상태에서 z -0.244 까지 나와 깊이 규격을 넘고, 헤더에 붙은 채 움직이려면 2링크 계산이 필요하다."
+ }
+}

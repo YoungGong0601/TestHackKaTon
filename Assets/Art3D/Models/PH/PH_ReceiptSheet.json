@@ -1,0 +1,30 @@
+{
+ "asset": "PH_ReceiptSheet",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "baseColor": [
+    0.92,
+    0.905,
+    0.85,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "name": "M_PH_ReceiptSheet_Paper"
+  },
+  {
+   "baseColor": [
+    0.84,
+    0.83,
+    0.79,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.3,
+   "name": "M_KioskReceipt_Back"
+  }
+ ],
+ "notes": "무지 감열지, 앞면 -Z. 글씨는 Receipt_View 의 Sharp TMP 와 Blurred 막대가 그린다. Receipt_View/Visual 아래 로컬 0 에 넣고 회색 Sheet 를 지운다 (Sheet 자식으로 넣으면 그 스케일이 곱해진다)."
+}

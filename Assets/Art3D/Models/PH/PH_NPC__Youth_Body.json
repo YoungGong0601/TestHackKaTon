@@ -1,0 +1,25 @@
+{
+ "asset": "PH_NPC__Youth_Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcYouth_Body/T_NpcYouth_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcYouth_Body/T_NpcYouth_Body_Normal.png",
+    "MS": "Textures/NpcYouth_Body/T_NpcYouth_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcYouth_Body"
+  }
+ ],
+ "notes": "NpcYouth 정적 메시. 포즈 Idle_Neutral, 배율 0.9979, 키 1.71. 목 중심은 HeadPivot 축에서 x +0.000, Unity z -0.013."
+}

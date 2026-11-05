@@ -1,0 +1,291 @@
+{
+ "asset": "StoreShell",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_Floor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_Floor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_Floor_MS.png"
+   },
+   "baseColor": [
+    0.95,
+    0.93,
+    0.9,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_Floor"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_Ceiling_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_Ceiling_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_Ceiling_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_Ceiling"
+  },
+  {
+   "baseColor": [
+    0.92,
+    0.94,
+    0.96,
+    0.12
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "transparent": true,
+   "name": "M_Glass_StoreShell_ClockGlass"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreShell_DoorMat/T_StoreShell_DoorMat_BaseColor.jpg",
+    "Normal": "Textures/StoreShell_DoorMat/T_StoreShell_DoorMat_Normal.png",
+    "MS": "Textures/StoreShell_DoorMat/T_StoreShell_DoorMat_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": false,
+   "name": "M_StoreShell_DoorMat"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreShell_Duct/T_StoreShell_Duct_BaseColor.jpg",
+    "Normal": "Textures/StoreShell_Duct/T_StoreShell_Duct_Normal.png",
+    "MS": "Textures/StoreShell_Duct/T_StoreShell_Duct_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreShell_Duct"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_BaseColor.jpg",
+    "Normal": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_Normal.png",
+    "MS": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_MS.png",
+    "Emission": "Textures/StoreShell_Fixtures/T_StoreShell_Fixtures_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 2.0,
+   "name": "M_StoreShell_Fixtures"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_KitchenFloor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_KitchenFloor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_KitchenFloor_MS.png"
+   },
+   "baseColor": [
+    0.85,
+    0.72,
+    0.62,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_KitchenFloor"
+  },
+  {
+   "baseColor": [
+    0.95,
+    0.96,
+    0.98,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "emission": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "emissionStrength": 3.2,
+   "name": "M_StoreShell_LightFlicker"
+  },
+  {
+   "baseColor": [
+    0.95,
+    0.96,
+    0.98,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "emission": [
+    0.92,
+    0.96,
+    1.0
+   ],
+   "emissionStrength": 3.2,
+   "name": "M_StoreShell_LightPanel"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreShell_RestroomDoor/T_StoreShell_RestroomDoor_BaseColor.jpg",
+    "Normal": "Textures/StoreShell_RestroomDoor/T_StoreShell_RestroomDoor_Normal.png",
+    "MS": "Textures/StoreShell_RestroomDoor/T_StoreShell_RestroomDoor_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreShell_RestroomDoor"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StoreShell/T_StoreShell_shell_signs.png"
+   },
+   "name": "M_StoreShell_Signs"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/StoreShell/T_StoreShell_shell_signs.png",
+    "Emission": "Textures/StoreShell/T_StoreShell_shell_signs.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 1.6,
+   "name": "M_StoreShell_ExitGlow"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_WallTile_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_WallTile_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_WallTile_MS.png"
+   },
+   "baseColor": [
+    1.0,
+    1.0,
+    1.0,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_KitchenTile"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_Paint_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_Paint_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_Paint_MS.png"
+   },
+   "baseColor": [
+    0.9,
+    0.83,
+    0.72,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_Paint"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_WallTile_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_WallTile_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_WallTile_MS.png"
+   },
+   "baseColor": [
+    0.92,
+    0.88,
+    0.8,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_WallTile"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Store_WallTile_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Store_WallTile_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Store_WallTile_MS.png"
+   },
+   "baseColor": [
+    0.55,
+    0.07,
+    0.045,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Store_WallTileRed"
+  }
+ ],
+ "notes": {
+  "pivot": "원점 = 매장 원점(프로토타입 (0,0,0) 바닥). Unity 에 (0,0,0) 회전 0 으로 두면 프로토타입과 같은 자리. 블렌더 (x,y,z) -> Unity (-x, z, -y) = 프로토 (x_p,y_p,z_p) -> Unity (-x_p, y_p, z_p).",
+  "size": "방 x -6~5.5, z -4.2~3.8(유리선), 높이 3.1. 벽 두께 0.15 는 방 바깥쪽. 앞(유리선)은 비어 있음: StorefrontFacade 를 StoreShell_Socket_FacadeOrigin(Unity (0,0,3.8)) 에 회전 0 으로 둔다.",
+  "layout": "주방 = 프로토 x -6~-2.6, z -4.2~1.7 (논슬립 타일 바닥·흰 타일 벽). 칸막이벽 z 1.70~1.82. 카운터 위 소핏 앞면 프로토 x=-2.62, 바닥 2.2 (StoreMenuBoard/StoreOrderBoard 를 앞면에 붙임). 화장실 문 뒷벽 x=-1.72 (장식, 뒤는 막힘).",
+  "materials": "벽/바닥/천장 = M_Tile_Store_* (월드 UV, Floor 1.9m·KitchenFloor 1.8m·WallTile/Red/KitchenTile 1.27m·Paint 2m·Ceiling 2.4m=600 T-bar 4x4). WallTileRed·KitchenTile 은 T_Tile_Store_WallTile_* 텍스처를 같이 쓰고 JSON baseColor 틴트로만 색을 구분한다. 설비 StoreShell_Fixtures(2048 굽기), 덕트 StoreShell_Duct(1024), 문 StoreShell_RestroomDoor(1024, 원점=경첩축), 매트 512.",
+  "lights": "평판등 12개(1200x600, 객석 9 + 주방 3) + 다운라이트 5 = StoreShell_LightPanels (M_StoreShell_LightPanel 발광 3.2). 프로토타입에서 깜빡이는 등(프로토 (1,-0.8)) = StoreShell_LightFlicker 따로, 머티리얼 M_StoreShell_LightFlicker 의 발광 세기를 게임에서 깜빡이면 된다. 실제 포인트 라이트 자리 = StoreShell_Socket_Light_*.",
+  "signs": "StoreShell_Signs: CCTV 안내(오른쪽 벽), 비상구 유도등 면(M_StoreShell_ExitGlow 발광 1.6, 문 위 천장에 매단 박스), 시계(11:42), 바닥 스티커 '이곳에서 기다려 주세요'(키오스크 대기 첫 자리, 프로토 (-0.6, -1.77)). 화장실 문 표지는 문 메시에 포함(머티리얼 슬롯 M_StoreShell_Signs).",
+  "sockets": "FacadeOrigin(파사드 원점), DoorChime(문 차임 소리), Queue0(대기 첫 자리), CCTVLook(돔 카메라), Light_A/B/C/Kitchen(프로토 포인트 라이트 위치)."
+ }
+}

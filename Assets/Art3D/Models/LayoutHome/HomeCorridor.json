@@ -1,0 +1,110 @@
+{
+ "asset": "HomeCorridor",
+ "category": "LayoutHome",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeCorridor_Trim/T_HomeCorridor_Trim_BaseColor.jpg",
+    "Normal": "Textures/HomeCorridor_Trim/T_HomeCorridor_Trim_Normal.png",
+    "MS": "Textures/HomeCorridor_Trim/T_HomeCorridor_Trim_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeCorridor_Trim"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_LayoutHome_CorridorFloor_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_LayoutHome_CorridorFloor_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_LayoutHome_CorridorFloor_MS.png"
+   },
+   "baseColor": [
+    0.74,
+    0.82,
+    0.76,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_LayoutHome_CorridorFloor"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_LayoutHome_Asphalt_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_LayoutHome_Asphalt_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_LayoutHome_Asphalt_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_LayoutHome_Asphalt"
+  },
+  {
+   "baseColor": [
+    0.95,
+    0.94,
+    0.9,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "emission": [
+    1.0,
+    0.97,
+    0.9
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_HomeCorridor_LampGlow"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_LayoutHome_CorridorWainscot_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_LayoutHome_CorridorWainscot_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_LayoutHome_CorridorWainscot_MS.png"
+   },
+   "baseColor": [
+    0.2,
+    0.3,
+    0.25,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_LayoutHome_CorridorWainscot"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_LayoutHome_CorridorWall_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_LayoutHome_CorridorWall_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_LayoutHome_CorridorWall_MS.png"
+   },
+   "baseColor": [
+    0.93,
+    0.9,
+    0.82,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_LayoutHome_CorridorWall"
+  }
+ ],
+ "notes": "현관문 밖 복도식 아파트 공용 복도 (레이아웃 배경 조각). 좌표 = HomeEntry 좌표계 그대로: 레이아웃에서 (0,0,0) 회전 없음. 원점은 바닥 중앙이 아니라 HomeEntry 원점이고, 지면(HomeCorridor_Ground, z=-13.63 = 5층 아래 단지 주차장)까지 포함하므로 validate 의 min_z 는 의도한 값. 복도 폭 1.5m, 바닥 z=-0.13 (현관 타일과 같은 높이, 문턱 2cm), 천장 2.32, 난간벽 1.1m + 갓돌 + 녹색 페인트 난간(녹 모서리), x -7.5..7.5 양끝은 계단실 벽. 자식: _Floor (M_Tile_LayoutHome_CorridorFloor), _Walls (난간벽/외벽/천장/보/끝벽, M_Tile_LayoutHome_CorridorWall), _Wainscot (난간벽 아래 0.78m 녹색 칠, M_Tile_LayoutHome_CorridorWainscot, 벽에서 4mm), _Ground (M_Tile_LayoutHome_Asphalt), _LampGlow (천장등 커버 발광 M_HomeCorridor_LampGlow, 루트는 1024 굽기). 소켓: Lamp (복도 천장등 Point Light 위치), Exit (문 열고 걸어 나가는 지점)."
+}

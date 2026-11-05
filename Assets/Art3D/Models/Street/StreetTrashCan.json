@@ -1,0 +1,67 @@
+{
+ "asset": "StreetTrashCan",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetTrashCan_Body/T_StreetTrashCan_Body_BaseColor.jpg",
+    "Normal": "Textures/StreetTrashCan_Body/T_StreetTrashCan_Body_Normal.png",
+    "MS": "Textures/StreetTrashCan_Body/T_StreetTrashCan_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetTrashCan_Body"
+  },
+  {
+   "baseColor": [
+    0.01,
+    0.01,
+    0.01,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.05,
+   "name": "M_StreetTrashCan_Inside"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/StreetTrashCan/T_StreetTrashCan_Decals.png"
+   },
+   "name": "M_StreetTrashCan_Decals"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StreetTrashCan_Door/T_StreetTrashCan_Door_BaseColor.jpg",
+    "Normal": "Textures/StreetTrashCan_Door/T_StreetTrashCan_Door_Normal.png",
+    "MS": "Textures/StreetTrashCan_Door/T_StreetTrashCan_Door_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StreetTrashCan_Door"
+  }
+ ],
+ "notes": "가로 휴지통 0.66 x 0.46 x 0.95 m. 원점 = 바닥 중앙, 정면 -Y. 투입구 2개(왼쪽 일반쓰레기, 오른쪽 재활용)는 실제로 뚫려 있고 안쪽은 검은 M_StreetTrashCan_Inside. StreetTrashCan_Door = 수거문(원점 = 왼쪽 경첩, 로컬 Z 회전). Socket_General / Socket_Recycle: 버리는 위치. 프로토타입 길거리 배치 높이 0.95 m."
+}

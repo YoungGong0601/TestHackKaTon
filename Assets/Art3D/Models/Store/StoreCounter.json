@@ -1,0 +1,145 @@
+{
+ "asset": "StoreCounter",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_Body/T_StoreCounter_Body_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_Body/T_StoreCounter_Body_Normal.png",
+    "MS": "Textures/StoreCounter_Body/T_StoreCounter_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_Body"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_Back/T_StoreCounter_Back_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_Back/T_StoreCounter_Back_Normal.png",
+    "MS": "Textures/StoreCounter_Back/T_StoreCounter_Back_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_Back"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/StoreCounter/T_StoreCounter_counter_signs.png"
+   },
+   "name": "M_StoreCounter_Signs"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.85,
+   "maps": {
+    "BaseColor": "Textures/StoreCounter/T_StoreCounter_counter_signs.png",
+    "Emission": "Textures/StoreCounter/T_StoreCounter_counter_signs.png"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.8,
+   "name": "M_StoreCounter_Screens"
+  },
+  {
+   "baseColor": [
+    1.0,
+    0.55,
+    0.25,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.6,
+   "emission": [
+    1.0,
+    0.45,
+    0.15
+   ],
+   "emissionStrength": 6.0,
+   "name": "M_StoreCounter_LampGlow"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_PickupLamp/T_StoreCounter_PickupLamp_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_PickupLamp/T_StoreCounter_PickupLamp_Normal.png",
+    "MS": "Textures/StoreCounter_PickupLamp/T_StoreCounter_PickupLamp_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_PickupLamp"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_POS/T_StoreCounter_POS_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_POS/T_StoreCounter_POS_Normal.png",
+    "MS": "Textures/StoreCounter_POS/T_StoreCounter_POS_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_POS"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreCounter_Stool/T_StoreCounter_Stool_BaseColor.jpg",
+    "Normal": "Textures/StoreCounter_Stool/T_StoreCounter_Stool_Normal.png",
+    "MS": "Textures/StoreCounter_Stool/T_StoreCounter_Stool_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreCounter_Stool"
+  }
+ ],
+ "notes": "주문/픽업 카운터. 길이 5.9m, 높이 1.055m, 정면(손님)=-Y. 매장 배치: Unity 위치 (2.96, 0, -1.25), Y회전 -90 (블렌더 매장좌표 (-2.96, 1.25, 0), Z회전 +90). 로컬 +X 끝(x=2.95)이 뒷벽, -X 끝이 칸막이벽/픽업 쪽. 자식: StoreCounter_Stool(직원 스툴, 원점=바닥 중앙, 좌석 높이 0.655), StoreCounter_LampGlow(열등 발광), StoreCounter_Labels(사인·화면 이미지, 굽지 않음). 소켓: StaffSit(스툴 좌석), StaffTalk(말 걸기 지점, 프로토 COUNTER_X-0.2), Pickup(픽업 받침 위, 프로토 PICK), PickupCall(호출음), TrayStack(쟁반 쌓는 자리, 쟁반은 food 그룹), POS. 열등 갠트리 봉은 천장 소핏 아래(z=2.2)에 닿음."
+}

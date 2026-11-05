@@ -1,0 +1,59 @@
+{
+ "asset": "StreetCurbRamp",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.95,
+    0.95,
+    0.93,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Curb"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.95,
+    0.9215,
+    0.8556,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CurbC"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.817,
+    0.817,
+    0.7812,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CurbB"
+  }
+ ],
+ "notes": "경계석 12 m(1 m 돌 x 12개, 줄눈 4 mm). 원점 = 경계석 앞면 아래선 = 노면 높이(z=0 = 도로 윗면). 앞(-Y) = 도로 쪽. 단면 폭 0.18 m, 노면 위 0.15 m(보도면보다 1 cm 높음), 노면 아래 0.05 m 묻힘 (min_z 가 0 이 아닌 것은 의도: 노면 아래 묻히는 부분). StreetRoad 원점 + (0, ±4.0, 0) 에 앞면이 닿게: 도로 +Y 쪽은 회전 0, 도로 -Y(앞, 버스정류장) 쪽은 Z 180°. 돌마다 높이·각도 오차와 텍스처 위치가 달라 반복이 안 보인다. M_Tile_Street_Curb/CurbB/CurbC (같은 텍스처, 색만 다름, 월드 UV 3 m). 낮춘 구간 x -3~3: 노면 위 3 cm (양옆 1 m 전이 돌). StreetSidewalkRamp 과 짝."
+}

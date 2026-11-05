@@ -1,0 +1,58 @@
+{
+ "asset": "PH_Bus__DoorA",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_BaseColor.jpg",
+    "Normal": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_Normal.png",
+    "MS": "Textures/CityBus_DoorFront_L/T_CityBus_DoorFront_L_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CityBus_DoorFront_L"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.62
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "maps": {
+    "BaseColor": "Textures/CityBus/T_CityBus_GlassDirt.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_CityBus"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/PH_Bus/T_PH_Bus_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_PH_Bus_Decals"
+  }
+ ],
+ "notes": {
+  "origin": "프리팹 로컬 (4.16, 1.5, -1.29) 의 DoorLeaf 원점. 닫힌 위치 기준."
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "asset": "StorePlant",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StorePlant/T_StorePlant_BaseColor.jpg",
+    "Normal": "Textures/StorePlant/T_StorePlant_Normal.png",
+    "MS": "Textures/StorePlant/T_StorePlant_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StorePlant"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.2,
+   "maps": {
+    "BaseColor": "Textures/StorePlant/T_StorePlant_Bark_BaseColor.jpg",
+    "Normal": "Textures/StorePlant/T_StorePlant_Bark_Normal.jpg"
+   },
+   "name": "M_StorePlant_Bark"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/StorePlant/T_StorePlant_Leaves_BaseColor.jpg",
+    "Normal": "Textures/StorePlant/T_StorePlant_Leaves_Normal.jpg"
+   },
+   "doubleSided": true,
+   "name": "M_StorePlant_Leaves"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.65,
+   "maps": {
+    "BaseColor": "Textures/StorePlant/T_StorePlant_Label.png"
+   },
+   "doubleSided": true,
+   "name": "M_StorePlant_Ribbon"
+  }
+ ],
+ "notes": "파키라 화분(Poly Haven CC0 pachira_aquatica_01 변형 c, 데시메이트) + FRP 화분/물받침/마사토 흙 + 빛바랜 개업 리본(祝開業 / 큰길시장상인회일동). 잎 M_StorePlant_Leaves(양면), 줄기 M_StorePlant_Bark, 리본 M_StorePlant_Ribbon(양면) 은 굽지 않은 텍스처 머티리얼. 화분/흙만 bake."
+}

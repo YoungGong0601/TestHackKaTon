@@ -1,0 +1,105 @@
+{
+ "asset": "BusStopRouteMap",
+ "category": "BusStop",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BusStopRouteMap_Body/T_BusStopRouteMap_Body_BaseColor.jpg",
+    "Normal": "Textures/BusStopRouteMap_Body/T_BusStopRouteMap_Body_Normal.png",
+    "MS": "Textures/BusStopRouteMap_Body/T_BusStopRouteMap_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_BusStopRouteMap_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.94,
+   "maps": {
+    "BaseColor": "Textures/BusShelter/T_BusShelter_Glass.png"
+   },
+   "transparent": true,
+   "doubleSided": true,
+   "name": "M_Glass_BusStopRouteMap_Cover"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/BusStopRouteMap/T_BusStopRouteMap_Decals.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BusStopRouteMap_Decals"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.45,
+   "maps": {
+    "BaseColor": "Textures/BusStopRouteMap/T_BusStopRouteMap_Map.png"
+   },
+   "dynamic": true,
+   "name": "M_Dyn_BusStopRouteMap_Map"
+  }
+ ],
+ "notes": {
+  "pivot": "바닥점, y=0 = 뒷면 고정쇠가 유리 앞면에 닿는 면. BusShelter_Socket_RouteMap 위치·회전에 그대로 놓는다.",
+  "dynamic": [
+   {
+    "object": "BusStopRouteMap_Map",
+    "material": "M_Dyn_BusStopRouteMap_Map",
+    "size_m": [
+     1.0,
+     1.36
+    ],
+    "texture_px": [
+     1506,
+     2048
+    ],
+    "uv": "UV 0..1, U→오른쪽 V→위 (정면 -Y 에서 볼 때)",
+    "placeholder": "Textures/BusStopRouteMap/T_BusStopRouteMap_Map.png (112/2413/7 노선선·정류장 이름 24 px≈16 mm, 주변 지도, 운행 시간, 요금 — 돋보기용 작은 글씨)",
+    "center_height_m": 1.32,
+    "base_lens": [
+     {
+      "base": "Textures/BusStopRouteMap/T_BusStopRouteMap_Map_Base.png",
+      "lens": "Textures/BusStopRouteMap/T_BusStopRouteMap_Map.png"
+     }
+    ],
+    "readable": "base = 돋보기 밖(흐림 9 px, 정류장 이름 못 읽음), lens = 돋보기 안(선명). 머티리얼 기본 텍스처는 lens"
+   }
+  ],
+  "shadows": {
+   "BusStopRouteMap_Cover": "Cast Shadows Off (투명 아크릴)"
+  },
+  "glass": "M_Glass_BusStopRouteMap_Cover: 아크릴 덮개 (먼지·손자국 = 텍스처 알파, 텍스처는 BusShelter 유리 공용)",
+  "sockets": {
+   "BusStopRouteMap_Socket_LookTarget": "노선도 중심 (높이 1.32 m, 돋보기/시선 판정)"
+  },
+  "collider": "박스 1.07x0.075x1.43 (중심 높이 1.32, y -0.0375)"
+ }
+}

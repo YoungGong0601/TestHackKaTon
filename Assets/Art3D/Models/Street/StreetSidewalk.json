@@ -1,0 +1,59 @@
+{
+ "asset": "StreetSidewalk",
+ "category": "Street",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Pavers_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Pavers_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Pavers_MS.png"
+   },
+   "baseColor": [
+    0.92,
+    0.92,
+    0.92,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Pavers"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_TactileLine_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_TactileLine_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_TactileLine_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_TactileLine"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Curb_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Curb_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Curb_MS.png"
+   },
+   "baseColor": [
+    0.741,
+    0.741,
+    0.7068000000000001,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_CementPatch"
+  }
+ ],
+ "notes": "보도 모듈 12 m(X) x 4 m(Y). 원점 = 보도 윗면 중앙(z=0 = Unity y=0, 프로토타입 보도 높이). 앞(-Y) 끝 = 경계석 뒷면: StreetCurb 원점 + 경계석 로컬 (0, 2.18, 0.14) 에 같은 회전으로 놓는다(노면보다 14 cm 위). I형 보도블록 M_Tile_Street_Pavers(월드 UV 2 m), 노란 점자블록 M_Tile_Street_TactileLine(선형, 돌기 방향 = 진행 방향)/TactileDot(점형) 0.6 m 타일 = 300 mm 블록, 3 mm 돌출. 선형 유도 띠 y 0.6~0.9. 가장자리 15 cm 치마(아래로). 시멘트 땜질 2곳. 모듈 길이 12 m = 타일 정수배."
+}

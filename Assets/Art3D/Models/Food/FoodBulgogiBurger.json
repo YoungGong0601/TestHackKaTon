@@ -1,0 +1,31 @@
+{
+ "asset": "FoodBulgogiBurger",
+ "category": "Food",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/FoodBulgogiBurger_Mesh/T_FoodBulgogiBurger_Mesh_BaseColor.jpg",
+    "Normal": "Textures/FoodBulgogiBurger_Mesh/T_FoodBulgogiBurger_Mesh_Normal.png",
+    "MS": "Textures/FoodBulgogiBurger_Mesh/T_FoodBulgogiBurger_Mesh_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_FoodBulgogiBurger_Mesh"
+  }
+ ],
+ "notes": {
+  "desc": "불고기 버거(히어로). 단일 정적 메시. 정면 -Y(Unity +Z), 원점 바닥 중앙. 지름 약 0.11m, 높이 약 0.089m.",
+  "sockets": {
+   "FoodBulgogiBurger_Socket_Grip": "손으로 쥘 때 중심",
+   "FoodBulgogiBurger_Socket_LookTarget": "시선/카메라 포커스"
+  }
+ }
+}

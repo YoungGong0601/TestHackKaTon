@@ -1,0 +1,39 @@
+{
+ "asset": "StoreExtinguisherSign",
+ "category": "Store",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreExtinguisherSign/T_StoreExtinguisherSign_BaseColor.jpg",
+    "Normal": "Textures/StoreExtinguisherSign/T_StoreExtinguisherSign_Normal.png",
+    "MS": "Textures/StoreExtinguisherSign/T_StoreExtinguisherSign_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreExtinguisherSign"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "maps": {
+    "BaseColor": "Textures/StoreExtinguisherSign/T_StoreExtinguisherSign_Label.png"
+   },
+   "name": "M_StoreExtinguisherSign_Label"
+  }
+ ],
+ "notes": "벽 부착 소화기 표지 0.24x0.12m. 원점 = 판 아래 가운데, 뒷면(벽) = y 0 평면, 정면 -Y. 프로토타입 위치: 소화기 바로 위 벽, 판 중심 높이 1.05m -> 원점 높이 0.99m. 인쇄면 M_StoreExtinguisherSign_Label(1024x512)."
+}

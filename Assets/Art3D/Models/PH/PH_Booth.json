@@ -1,0 +1,58 @@
+{
+ "asset": "PH_Booth",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTable4/T_StoreTable4_BaseColor.jpg",
+    "Normal": "Textures/StoreTable4/T_StoreTable4_Normal.png",
+    "MS": "Textures/StoreTable4/T_StoreTable4_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTable4"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreBoothBench/T_StoreBoothBench_BaseColor.jpg",
+    "Normal": "Textures/StoreBoothBench/T_StoreBoothBench_Normal.png",
+    "MS": "Textures/StoreBoothBench/T_StoreBoothBench_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreBoothBench"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_BaseColor.jpg",
+    "Normal": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_Normal.png",
+    "MS": "Textures/StoreBoothBench_Cushion/T_StoreBoothBench_Cushion_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreBoothBench_Cushion"
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "asset": "PH_NPC__OfficeMan_Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_Normal.png",
+    "MS": "Textures/NpcOfficeMan_Body/T_NpcOfficeMan_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcOfficeMan_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.68,
+   "maps": {
+    "BaseColor": "Textures/NpcOfficeMan/T_NpcOfficeMan_npc_idcard.png"
+   },
+   "name": "M_NpcOfficeMan_IdCard"
+  }
+ ],
+ "notes": "NpcOfficeMan 정적 메시. 포즈 Idle, 배율 0.9876, 키 1.71. 목 중심은 HeadPivot 축에서 x +0.000, Unity z -0.000."
+}

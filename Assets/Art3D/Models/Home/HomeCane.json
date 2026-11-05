@@ -1,0 +1,25 @@
+{
+ "asset": "HomeCane",
+ "category": "Home",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeCane/T_HomeCane_BaseColor.jpg",
+    "Normal": "Textures/HomeCane/T_HomeCane_Normal.png",
+    "MS": "Textures/HomeCane/T_HomeCane_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeCane"
+  }
+ ],
+ "notes": "할아버지 나무 지팡이 높이 0.89m (갈고리 손잡이, 고무 발굽, 손목 끈). 원점 = 발굽 바닥, 갈고리는 -X 쪽. 프로토타입: 현관 우산꽂이 옆 three(S-.2, A, R+.62) 벽에 기대 rot z -0.075 (HomeEntry_Socket_Cane), 신발 신기 후 숨기고 손에 든다. Socket_Grip = 손잡이 잡는 점, Socket_Tip = 바닥 끝."
+}

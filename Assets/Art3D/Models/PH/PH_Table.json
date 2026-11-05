@@ -1,0 +1,24 @@
+{
+ "asset": "PH_Table",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/StoreTable/T_StoreTable_BaseColor.jpg",
+    "Normal": "Textures/StoreTable/T_StoreTable_Normal.png",
+    "MS": "Textures/StoreTable/T_StoreTable_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_StoreTable"
+  }
+ ]
+}

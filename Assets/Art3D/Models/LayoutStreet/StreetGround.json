@@ -1,0 +1,25 @@
+{
+ "asset": "StreetGround",
+ "category": "LayoutStreet",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Street_Asphalt_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Street_Asphalt_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Street_Asphalt_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Street_Asphalt"
+  }
+ ],
+ "notes": "거리 씬 바닥 메우기 판 (700 x 500 m, z=-0.17 = 노면 3cm 아래). 원점 = 씬 원점이라 레이아웃에서 (0,0,0) 회전 없이 둔다. 도로·보도·골목 모듈 밖(건물 사이 틈, 길 양끝 안개 속)에서 허공 대신 아스팔트가 보이게 한다. 재질은 도로와 같은 M_Tile_Street_Asphalt(월드 UV 4 m). min_z -0.17 은 의도한 값. Cast Shadows Off 권장."
+}

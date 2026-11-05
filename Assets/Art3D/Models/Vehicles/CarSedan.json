@@ -1,0 +1,185 @@
+{
+ "asset": "CarSedan",
+ "category": "Vehicles",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Body/T_CarSedan_Body_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Body/T_CarSedan_Body_Normal.png",
+    "MS": "Textures/CarSedan_Body/T_CarSedan_Body_MS.png",
+    "Emission": "Textures/CarSedan_Body/T_CarSedan_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarSedan_Body"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.35
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_glass_front.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Window"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    0.85
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_glass_tint.png"
+   },
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Tint"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.92,
+    0.95,
+    0.22
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.98,
+   "transparent": true,
+   "name": "M_Glass_CarSedan_Lens"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Interior/T_CarSedan_Interior_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Interior/T_CarSedan_Interior_Normal.png",
+    "MS": "Textures/CarSedan_Interior/T_CarSedan_Interior_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarSedan_Interior"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_plate_sedan.png"
+   },
+   "name": "M_CarSedan_Plate"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.4,
+   "maps": {
+    "BaseColor": "Textures/CarSedan/T_CarSedan_sticker_parking.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_CarSedan_Sticker_Parking"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_BaseColor.jpg",
+    "Normal": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_Normal.png",
+    "MS": "Textures/CarSedan_Wheel_FR/T_CarSedan_Wheel_FR_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_CarSedan_Wheel_FR"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Body/T_CarSedan_Body_BaseColor_Silver.jpg",
+    "Normal": "Textures/CarSedan_Body/T_CarSedan_Body_Normal.png",
+    "MS": "Textures/CarSedan_Body/T_CarSedan_Body_MS.png",
+    "Emission": "Textures/CarSedan_Body/T_CarSedan_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarSedan_Body_Silver"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/CarSedan_Body/T_CarSedan_Body_BaseColor_DarkGray.jpg",
+    "Normal": "Textures/CarSedan_Body/T_CarSedan_Body_Normal.png",
+    "MS": "Textures/CarSedan_Body/T_CarSedan_Body_MS.png",
+    "Emission": "Textures/CarSedan_Body/T_CarSedan_Body_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_CarSedan_Body_DarkGray"
+  }
+ ],
+ "notes": "세단. 정면 -Y(Unity +Z). 원점 바닥 중앙. 바퀴 CarSedan_Wheel_FL/FR/RL/RR: 원점=차축, 로컬 X 축 회전 (전진 시 +X 기준 같은 부호, 좌측 바퀴는 메시가 180° 돌려져 있어 축은 동일). M_Glass_CarSedan_Window(앞·앞문, 반투명)/Tint(뒷유리·뒷문 진한 썬팅)/Lens(전조등 렌즈). 전조등 DRL 은 구운 Emission, 미등은 아주 약하게(꺼진 상태에 가깝게). 번호판 '123가 4568'(가상) M_CarSedan_Plate. 도장 변형 머티리얼: M_CarSedan_Body_Silver / M_CarSedan_Body_DarkGray (T_CarSedan_Body_BaseColor_<변형>.jpg, 나머지 맵 공유) -> 인스턴스의 CarSedan_Body 0번 슬롯을 바꾸면 은색·짙은 회색 차. 소켓: Driver(운전석 앉는 점), Exhaust(배기 연기), Front/Rear(소리·충돌 기준)."
+}

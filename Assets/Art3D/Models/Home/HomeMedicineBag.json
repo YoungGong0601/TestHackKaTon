@@ -1,0 +1,25 @@
+{
+ "asset": "HomeMedicineBag",
+ "category": "Home",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeMedicineBag/T_HomeMedicineBag_BaseColor.jpg",
+    "Normal": "Textures/HomeMedicineBag/T_HomeMedicineBag_Normal.png",
+    "MS": "Textures/HomeMedicineBag/T_HomeMedicineBag_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeMedicineBag"
+  }
+ ],
+ "notes": "약 봉투 0.13x0.17x0.026m, 원점 바닥 중앙, 정면(-Y)=약 봉투 앞면(새봄 약국 인쇄). 프로토타입 위치: 신발장 위 (three -0.84, 0.96, -1.45) 기울임 rot z 0.12. Socket_Grab=집는 점."
+}

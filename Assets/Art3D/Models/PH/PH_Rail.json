@@ -1,0 +1,25 @@
+{
+ "asset": "PH_Rail",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_Rail/T_PH_Rail_BaseColor.jpg",
+    "Normal": "Textures/PH_Rail/T_PH_Rail_Normal.png",
+    "MS": "Textures/PH_Rail/T_PH_Rail_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_Rail"
+  }
+ ],
+ "notes": "길이 85.4 m, 39칸(기둥 간격 2.187 m). 높이 0.92, 기둥 0.06, 기초판 0.1(전체 깊이). 원점 = 바닥 중앙. 프리팹 로컬 +Z = 차도(반사지), -Z = 보도. 프로토타입 기둥은 1 m 지만 규격 0.92 를 따랐다."
+}

@@ -1,0 +1,25 @@
+{
+ "asset": "NpcStudentWoman",
+ "category": "Characters",
+ "rigged": true,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/NpcStudentWoman_Body/T_NpcStudentWoman_Body_BaseColor.jpg",
+    "Normal": "Textures/NpcStudentWoman_Body/T_NpcStudentWoman_Body_Normal.png",
+    "MS": "Textures/NpcStudentWoman_Body/T_NpcStudentWoman_Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_NpcStudentWoman_Body"
+  }
+ ],
+ "notes": "대학생 여(20대): 남색 줄무늬 반팔 티, 연청 청바지, 흰 캔버스화, 짙은 갈색 단발, 뿔테 안경, 가죽줄 시계. 줄 선 손님/행인(yF 대사 가능). 키 1.64m(validate). | 리그: NpcStudentWoman_Rig (Quaternius HumanArmature 31본 그대로, Generic 권장). 스킨드 메시 1개 NpcStudentWoman_Body, 머티리얼 1개: M_NpcStudentWoman_Body. | 클립(FBX take = 'NpcStudentWoman_Rig|<이름>'): Clapping, Idle, Impatient, LookAt, LookAtLeft, Phone, Run, SitIdle, Sitting, Tap, Walk, Watch. Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 새로 만든 2초 루프(48f@24fps, 첫=끝 프레임, Idle 왕복 숨쉬기 포함): Phone=오른손 폰 보기(엄지 스크롤·끄덕), Watch=왼손목 시계 보기(손목 돌림·앞을 흘끗), Impatient=체중 이동·한숨·발 구르기·팔짱, LookAt/LookAtLeft=오른쪽/왼쪽 돌아본 채 유지(돌아보는 동작은 Animator 크로스페이드 0.3초로), Tap=키오스크 화면 두드리기(손끝 1.3m·몸 앞 45cm). Sitting=선 자세에서 앉는 전환(1회 재생 후 마지막 프레임 유지), SitIdle=앉은 상태 루프(매장 앉은 손님은 SitIdle 로 시작). 루프 설정 필요: Idle/Walk/Run/Phone/Watch/Impatient/LookAt/LookAtLeft/Tap/SitIdle 은 loopTime=on, Sitting/Clapping 은 off. 앉은 상태에서 Phone 을 쓰려면 상체 Avatar Mask 레이어로 SitIdle 위에 얹을 것. | 소켓: NpcStudentWoman_Socket_PhoneGrip (Palm.R 자식, NpcSmartphone 을 localPosition/Rotation 0 으로 붙이면 Phone 클립 손에 맞음), NpcStudentWoman_Socket_Head (Head 자식, 눈 위치: 시선/말풍선/목소리 위치)."
+}

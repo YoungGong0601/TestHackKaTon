@@ -1,0 +1,25 @@
+{
+ "asset": "PH_Door_Home__Frame",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_Door_Home__Frame/T_PH_Door_Home__Frame_BaseColor.jpg",
+    "Normal": "Textures/PH_Door_Home__Frame/T_PH_Door_Home__Frame_Normal.png",
+    "MS": "Textures/PH_Door_Home__Frame/T_PH_Door_Home__Frame_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_Door_Home__Frame"
+  }
+ ],
+ "notes": "좌표는 프리팹 로컬 (x3, y3, -z3) 그대로. 원점 = 문 아래 중앙. Hinge(-0.46, 0, 0) 에 문짝 경첩 축이 온다. 앞(스톱) -Z, 복도 +Z."
+}

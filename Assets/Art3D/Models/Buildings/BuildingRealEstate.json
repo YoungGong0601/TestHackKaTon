@@ -1,0 +1,179 @@
+{
+ "asset": "BuildingRealEstate",
+ "category": "Buildings",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/BuildingRealEstate/T_BuildingRealEstate_BaseColor.jpg",
+    "Normal": "Textures/BuildingRealEstate/T_BuildingRealEstate_Normal.png",
+    "MS": "Textures/BuildingRealEstate/T_BuildingRealEstate_MS.png",
+    "Emission": "Textures/BuildingRealEstate/T_BuildingRealEstate_Emission.jpg"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_BuildingRealEstate"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_FacadeBrown_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_FacadeBrown_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_FacadeBrown_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_FacadeBrown"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Plaster_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Plaster_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Plaster_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Plaster"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Buildings_Concrete_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Buildings_Concrete_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Buildings_Concrete_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Buildings_Concrete"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.2,
+   "maps": {
+    "BaseColor": "Textures/BuildingRealEstate/T_BuildingRealEstate_Interior.jpg",
+    "Emission": "Textures/BuildingRealEstate/T_BuildingRealEstate_Interior.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.3,
+   "name": "M_BuildingRealEstate_Interior"
+  },
+  {
+   "baseColor": [
+    0.1,
+    0.12,
+    0.12,
+    0.16
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.97,
+   "transparent": true,
+   "name": "M_Glass_BuildingRealEstate_Shop"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "maps": {
+    "BaseColor": "Textures/BuildingRealEstate/T_BuildingRealEstate_Decal.png"
+   },
+   "alphaClip": 0.5,
+   "name": "M_BuildingRealEstate_Decal"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "maps": {
+    "BaseColor": "Textures/BuildingRealEstate/T_BuildingRealEstate_Sign.jpg",
+    "Emission": "Textures/BuildingRealEstate/T_BuildingRealEstate_Sign.jpg"
+   },
+   "emission": [
+    1,
+    1,
+    1
+   ],
+   "emissionStrength": 0.12,
+   "name": "M_BuildingRealEstate_Sign"
+  },
+  {
+   "baseColor": [
+    0.045,
+    0.055,
+    0.06,
+    0.42
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.96,
+   "transparent": true,
+   "name": "M_Glass_BuildingRealEstate_Window"
+  },
+  {
+   "baseColor": [
+    1,
+    1,
+    1,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.1,
+   "maps": {
+    "BaseColor": "Textures/BuildingRealEstate/T_BuildingRealEstate_Grime.png"
+   },
+   "transparent": true,
+   "name": "M_BuildingRealEstate_Grime"
+  }
+ ],
+ "notes": "1층 '믿음 공인중개사'(x -5.75..-0.25, 유리창 매물 전단) + '새봄 약국'(x 0.05..5.4), 2층 치과 3층 한의원 4층 영어 (창 시트 글자), 오른쪽 세로 돌출 간판 x=5.62 (양면, 벽에서 0.74m). 원점 = 도로 쪽 정면 벽 아래 중앙, 정면 = Unity +Z, 깊이 11m. 폭 12m, 높이 12.6m. 매물 전단/시트 글자 = M_BuildingRealEstate_Decal (알파 클립, 유리 2cm 안쪽). 때 덮개(M_BuildingRealEstate_Grime)는 개구부를 잘라낸 띠 메시로 벽에서 12mm 앞에 있다. 배치: 뒷벽과 창 없는 옆벽은 단순 미장면이므로 이웃 건물에 붙이거나 골목 안쪽으로 돌려 가릴 것."
+}

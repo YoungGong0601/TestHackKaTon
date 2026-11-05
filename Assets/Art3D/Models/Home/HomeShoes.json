@@ -1,0 +1,25 @@
+{
+ "asset": "HomeShoes",
+ "category": "Home",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/HomeShoes/T_HomeShoes_BaseColor.jpg",
+    "Normal": "Textures/HomeShoes/T_HomeShoes_Normal.png",
+    "MS": "Textures/HomeShoes/T_HomeShoes_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_HomeShoes"
+  }
+ ],
+ "notes": "할아버지 갈색 가죽 벨크로 단화 한 켤레 (창 길이 0.28m, 높이 ~0.1m). 원점 = 두 짝 바닥 중앙, 앞코 = -Y (Unity +Z). 프로토타입 위치 three(0.18, -0.13, -1.28) rotY 0.16 = 현관 타일 위 (HomeEntry_Socket_Shoes). Socket_Grab = 집는/바라보는 점, Socket_StepIn = 신을 때 서는 점(뒤꿈치 쪽). 왼짝은 오른짝 거울 복제(같은 텍스처). 높이 0.098m 는 실제 단화 치수: brief 의 0.135(프로토타입 하이탑 GLB) 기준 validate 경고는 의도한 것."
+}
