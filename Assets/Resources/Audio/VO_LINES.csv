@@ -53,3 +53,44 @@ bus_ann,busann,"이번 정류장은, 시장 입구입니다.",ko-KR-SunHiNeural
 y_move1,yM,할아버지 뭐 해요.,ko-KR-HyunsuMultilingualNeural
 y_move2,yM,비키세요.,ko-KR-HyunsuMultilingualNeural
 staff_call3,staff,"이백칠십사번 고객님, 메뉴 가져가세요.",ko-KR-HyunsuMultilingualNeural
+a20_nobill,a20,그거 지폐 안 받아요.,ko-KR-HyunsuMultilingualNeural
+gp_giveup,gp,그려? 어쩔 수 없구만...,ko-KR-InJoonNeural
+gp_note,gp,뭐라고 썼더라.,ko-KR-InJoonNeural
+gp_money,gp,돈을 어디다 넣으라는 거야.,ko-KR-InJoonNeural
+gp_notthis,gp,"아이고, 아니구먼.",ko-KR-InJoonNeural
+gp_watch,gp,벌써 이렇게 됐구먼.,ko-KR-InJoonNeural
+gp_notice,gp,현금 없는 버스 운행 안내.,ko-KR-InJoonNeural
+pass_3,pass,백십이번 타시면 돼요. 곧 와요.,ko-KR-HyunsuMultilingualNeural
+bus_take,busann,백십이번 버스를 타세요.,ko-KR-SunHiNeural
+staff_hello,staff,어서 오세요!,ko-KR-HyunsuMultilingualNeural
+staff_help,staff,여기 누르시면 돼요. 제가 도와드릴게요.,ko-KR-HyunsuMultilingualNeural
+staff_wait,staff,아직입니다.,ko-KR-HyunsuMultilingualNeural
+staff_cafe,staff,"아, 그거 여기 누르시면 돼요.",ko-KR-HyunsuMultilingualNeural
+staff_cinema,staff,거기 다 나와 있어요.,ko-KR-HyunsuMultilingualNeural
+staff_call5,staff,이백칠십오번 고객님.,ko-KR-HyunsuMultilingualNeural
+k_home,kiosk,처음 화면으로 돌아갑니다.,ko-KR-SunHiNeural
+k_again,kiosk,죄송합니다. 다시 말씀해 주세요.,ko-KR-SunHiNeural
+drv_117,drv,백십칠번이요.,ko-KR-HyunsuMultilingualNeural
+drv_172,drv,백칠십이번이요.,ko-KR-HyunsuMultilingualNeural
+drv_112,drv,백십이번이요.,ko-KR-HyunsuMultilingualNeural
+drv_nocash,drv,현금은 안 받아요.,ko-KR-HyunsuMultilingualNeural
+drv_there,drv,거기 써 있잖아요.,ko-KR-HyunsuMultilingualNeural
+drv_card,drv,카드 찍으세요.,ko-KR-HyunsuMultilingualNeural
+drv_app,drv,앱에서 하세요.,ko-KR-HyunsuMultilingualNeural
+y_hurry8,yM,"아, 좀 빨리요.",ko-KR-HyunsuMultilingualNeural
+y_hurry9,yF,영화 시작하는데요.,ko-KR-SunHiNeural
+a20_why1,a20,왜 안 되지?,ko-KR-HyunsuMultilingualNeural
+a20_why2,a20,이게 왜 안 돼.,ko-KR-HyunsuMultilingualNeural
+a20_why3,a20,이건 또 뭐야.,ko-KR-HyunsuMultilingualNeural
+a20_what1,a20,이게 무슨 말이야.,ko-KR-HyunsuMultilingualNeural
+a20_read1,a20,글씨가 왜 이렇게 작아.,ko-KR-HyunsuMultilingualNeural
+a40_why1,a40,왜 안 되지?,ko-KR-InJoonNeural
+a40_why2,a40,이게 왜 안 돼.,ko-KR-InJoonNeural
+a40_why3,a40,이건 또 뭐야.,ko-KR-InJoonNeural
+a40_what1,a40,이게 무슨 말이야.,ko-KR-InJoonNeural
+a40_read1,a40,글씨가 왜 이렇게 작아.,ko-KR-InJoonNeural
+a60_why1,a60,왜 안 되지?,ko-KR-InJoonNeural
+a60_why2,a60,이게 왜 안 돼.,ko-KR-InJoonNeural
+a60_why3,a60,이건 또 뭐야.,ko-KR-InJoonNeural
+a60_what1,a60,이게 무슨 말이야.,ko-KR-InJoonNeural
+a60_read1,a60,글씨가 왜 이렇게 작아.,ko-KR-InJoonNeural

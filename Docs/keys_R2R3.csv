@@ -1,0 +1,8 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+R2_CallFirstSec,주문 뒤 첫 호출까지,Float,6,s,2-7 대기
+R2_CallShowSec,화면 번호 표시,Float,3,s,2-7 잠깐 뜬다
+R2_CallRepeatSec,다시 부름,Float,12,s,2-7 놓치면 다시 부른다
+R2_CallVolume,호출 음성 음량,Float,0.3,ratio,2-7 작고 웅얼거린다
+R3_SmsLimitSec,문자 번호 제한 시간,Float,30,s,3-8
+R3_VoiceListenSec,음성 상담 듣는 시간,Float,1.5,s,3-5
+R2_DoneShowSec,주문 완료 화면 표시,Float,2.5,s,T14 번호를 읽을 시간

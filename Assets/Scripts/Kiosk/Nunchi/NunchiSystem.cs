@@ -1,4 +1,4 @@
-// 눈치: 게이지 증감, 한숨과 재촉 스케줄, 실수 직후 혼잣말, 뒤돌아 사과, 폭발 트리거, 단계 효과.
+// 눈치: 게이지 증감, 한숨과 재촉 스케줄, 실수 직후 혼잣말, 그만두기 버튼, 단계 효과.
 // 수치는 전부 Bal에서 사용 시점에 읽는다. 인물 정보는 GameState.I.Profile만 본다.
 // 배치: queue = Store 씬 Director의 QueueManager (뒤 사람 소리가 나는 곳)
 // 배치: heartbeat = 자식 AudioSource Nunchi_Heartbeat (loop, playOnAwake 끔, 볼륨 0, clip heartbeat)
@@ -19,13 +19,15 @@ public class NunchiSystem : MonoBehaviour
     public Func<bool> CanBlow;
     public Func<int> QueueCount;
 
-    public event Action BlowupRequested;
-    public event Action Sorried;
+    NunchiRule rule;
+    float hurryMul = 1f, sighMul = 1f;
+    bool asking;
+
+    /// <summary>회차 규칙. Enter 전에 부른다.</summary>
+    public void Configure(NunchiRule r) => rule = r;
 
     public bool Running { get; private set; }
-    public bool Hold { get; private set; }
     public float RateMul { get; private set; } = 1f;
-    public float Cooldown { get; private set; }
     public int BlurStep { get; private set; }
 
     float gauge;
@@ -49,7 +51,8 @@ public class NunchiSystem : MonoBehaviour
     public void Begin()
     {
         if (!GameState.I.Profile.kioskNunchi) return;
-        gauge = 0f; RateMul = 1f; Cooldown = 0f; Hold = false; LookingBack = false;
+        gauge = 0f; RateMul = 1f; LookingBack = false;
+        hurryMul = 1f; sighMul = 1f; asking = false;
         hurryWait = 0f; hurryIdx = 0; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
         nextHurry = Range("Nunchi_HurryFirstMin", 16f, "Nunchi_HurryFirstMax", 26f);
         nextSigh = Range("Nunchi_SighFirstMin", 4f, "Nunchi_SighFirstMax", 8f);
@@ -60,8 +63,9 @@ public class NunchiSystem : MonoBehaviour
     public void End()
     {
         if (!Running) return;
-        Running = false; Hold = false;
+        Running = false;
         heartTarget = 0f; ringTarget = 0f; crowdTarget = 0f;
+        if (RoundUi.I != null) RoundUi.I.GiveUp(null);
         SetBlurStep(0);
         HandRig.I.tremble = 0f;
         Hud.I.Nunchi(gauge, false);
@@ -80,21 +84,7 @@ public class NunchiSystem : MonoBehaviour
 
     public void Add(float a)
     {
-        if (Running && !Hold) Value = gauge + a;
-    }
-
-    /// <summary>뒤돌아 사과. 쿨타임이면 false.</summary>
-    public bool Sorry()
-    {
-        if (!Running || Hold || Cooldown > 0f) return false;
-        int i = UnityEngine.Random.Range(0, NunchiLines.Sorry.GetLength(0));
-        Say(Speaker, NunchiLines.Sorry[i, 1], Speaker + "_" + NunchiLines.Sorry[i, 0]);
-        Value = gauge - Bal.G("Nunchi_Sorry", 12f);
-        Cooldown = Bal.G("Nunchi_SorryCooldown", 8f);
-        hurryWait = 0f;
-        GameState.I.Stats.sorry++;
-        Sorried?.Invoke();
-        return true;
+        if (Running) Value = gauge + a;
     }
 
     /// <summary>실수 직후 혼잣말을 청한다. 쿨타임이면 무시하고, 다른 말이 나오는 중이면 끝난 뒤에 한다.</summary>
@@ -109,14 +99,14 @@ public class NunchiSystem : MonoBehaviour
         mutterWant = 0f;
         mutterReady = Time.time + Bal.G("Nunchi_MutterCooldown", 9f);
         int i = UnityEngine.Random.Range(0, NunchiLines.Mutter.GetLength(0));
-        Say(Speaker, NunchiLines.Mutter[i, 1], Speaker + "_" + NunchiLines.Mutter[i, 0], null, Bal.G("Nunchi_MutterVolume", 0.9f));
+        Say(null, NunchiLines.Mutter[i, 1], Speaker + "_" + NunchiLines.Mutter[i, 0], null, Bal.G("Nunchi_MutterVolume", 0.9f));
     }
 
     /// <summary>다른 말과 겹치지 않게 시간을 기록하며 자막을 띄운다. pos가 있으면 음성은 그 자리에서 난다.</summary>
-    public Coroutine Say(string who, string text, string vo = null, Vector3? pos = null, float vol = 1f)
+    public Coroutine Say(string who, string text, string vo = null, Vector3? pos = null, float vol = 1f, bool clear = false)
     {
         sayUntil = Time.time + Mathf.Max(1.6f, text.Length * 0.1f);
-        return Hud.I.Say(who, text, vo, -1f, pos, vol);
+        return Hud.I.Say(who, text, vo, -1f, pos, vol, clear);
     }
 
     void Murmur(string text, float sec)
@@ -126,60 +116,26 @@ public class NunchiSystem : MonoBehaviour
         sayUntil = Time.time + sec;
     }
 
-    // ---- 폭발 ----
-
-    /// <summary>폭발 장면 동안 게이지를 멈추고 지켜볼 수 있는 시야로 바꾼다.</summary>
-    public void HoldForBlowup()
-    {
-        if (Hold) return;
-        Hold = true;
-        Hud.I.Nunchi(Max, true);
-        HandRig.I.tremble = 0f;
-    }
-
-    /// <summary>폭발 장면이 끝나고 키오스크로 돌아왔을 때.</summary>
-    public void ResumeAfterBlowup()
-    {
-        gauge = Bal.G("Nunchi_ResumeValue", 45f);
-        RateMul *= Bal.G("Nunchi_ResumeRateMul", 0.7f);
-        hurryWait = 0f;
-        nextHurry = Bal.G("Nunchi_ResumeHurry", 20f);
-        Hold = false;
-    }
-
-    void TryBlow()
-    {
-        bool can = BlowupRequested != null && (CanBlow == null || CanBlow());
-        if (!can) { gauge = Mathf.Min(gauge, Max - 1f); return; }
-        HoldForBlowup();
-        BlowupRequested.Invoke();
-    }
-
     // ---- 매 프레임 ----
 
     void Update()
     {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        var kb = UnityEngine.InputSystem.Keyboard.current;
-        if (kb != null && kb.f6Key.wasPressedThisFrame) Add(100f);
-#endif
         FadeLoop(heartbeat, heartTarget);
         FadeLoop(tinnitus, ringTarget);
         FadeLoop(crowd, crowdTarget);
-        if (Running && !Hold) Tick(Time.deltaTime);
         if (Running)
         {
-            // 폭발 장면은 지켜볼 수 있는 시야로 둔다
-            PostState.Nunchi = Hold ? Bal.G("Post_WatchNunchi", 50f) : gauge;
+            Tick(Time.deltaTime);
+            PostState.Nunchi = gauge;
             PostState.HeartTime = heartbeat != null && heartbeat.isPlaying ? heartbeat.time : -1f;
         }
     }
 
     void Tick(float dt)
     {
-        Cooldown = Mathf.Max(0f, Cooldown - dt);
-        int q = QueueCount != null ? QueueCount() : Bal.I("Nunchi_DefaultQueue", 3);
-        Value = gauge + (Bal.G("Nunchi_PerSecond", 0.6f) + Bal.G("Nunchi_PerQueue", 0.2f) * q) * RateMul * dt;
+        int q = QueueCount != null ? QueueCount() : 1;
+        float fill = Mathf.Max(Bal.Age("NunchiFillSec", 900f, 120f, 80f, 60f), 1f);
+        Value = gauge + Max / fill * (1f + Bal.G("Nunchi_PerQueueMul", 0.03f) * Mathf.Max(q - 1, 0)) * RateMul * dt;
         Hud.I.Nunchi(gauge, true);
         ApplyStage();
 
@@ -188,9 +144,9 @@ public class NunchiSystem : MonoBehaviour
         if (nextSigh <= 0f)
         {
             nextSigh = Range("Nunchi_SighMin", 5f, "Nunchi_SighMax", 10f) * (1f - gauge / (Max * 2f));
-            string s = NunchiLines.Sighs[UnityEngine.Random.Range(0, NunchiLines.Sighs.Length)];
-            AudioManager.I.Play(s, QueuePos, Bal.G("Nunchi_SighVolume", 0.8f), UnityEngine.Random.Range(0.95f, 1.05f));
-            if (!LookingBack) Murmur(NunchiLines.SighText(s), 1.3f);
+            // 1회차에 들은 그 소리를 끝까지 쓴다
+            AudioManager.I.Play("sigh_m_1", QueuePos, Bal.G("Nunchi_SighVolume", 0.8f) * sighMul, 1f, true);
+            if (!LookingBack) Murmur("(한숨 소리)", 1.3f);
         }
 
         // 실수 직후 혼잣말
@@ -204,11 +160,15 @@ public class NunchiSystem : MonoBehaviour
         nextHurry -= dt;
         if (nextHurry <= 0f)
         {
-            nextHurry = Range("Nunchi_HurryMin", 25f, "Nunchi_HurryMax", 40f);
-            int i = hurryIdx++ % NunchiLines.Hurry.GetLength(0);
-            Say(NunchiLines.Hurry[i, 1], NunchiLines.Hurry[i, 2], NunchiLines.Hurry[i, 0], QueuePos);
-            PlayerController.I.AddShake(Bal.G("Nunchi_HurryShake", 0.12f));
-            if (!LookingBack) hurryWait = Bal.G("Nunchi_HurryIgnoreWindow", 7f);
+            nextHurry = Range("Nunchi_HurryMin", 25f, "Nunchi_HurryMax", 40f) * hurryMul;
+            var lines = BandLines();
+            if (lines != null && lines.Length > 0)
+            {
+                string text = lines[hurryIdx++ % lines.Length];
+                Say(null, text, VoFor(text), QueuePos, 1f, true);
+                PlayerController.I.AddShake(Bal.G("Nunchi_HurryShake", 0.12f));
+                if (!LookingBack) hurryWait = Bal.G("Nunchi_HurryIgnoreWindow", 7f);
+            }
         }
         if (hurryWait > 0f)
         {
@@ -220,7 +180,42 @@ public class NunchiSystem : MonoBehaviour
             }
         }
 
-        if (gauge >= Max) TryBlow();
+        // 다 차면 버튼. 규칙에 선택지가 없으면 100에서 멈추고 한숨만 계속된다
+        bool can = gauge >= Max && rule != null && rule.choices != null && !asking && (CanBlow == null || CanBlow());
+        if (RoundUi.I != null)
+        {
+            RoundUi.I.GiveUp(can ? "그만두기" : null);   // 임시 T06
+            if (can && RoundUi.I.GiveUpClicked()) StartCoroutine(GiveUpRun());
+        }
+    }
+
+    // 게이지 구간 대사. 임시 T07
+    string[] BandLines()
+    {
+        if (rule == null) return null;
+        return gauge < Bal.G("Nunchi_LowMax", 40f) ? rule.low : gauge < Bal.G("Nunchi_MidMax", 80f) ? rule.mid : rule.high;
+    }
+
+    // 음성은 기존 파일이 있는 문구만
+    static string VoFor(string text)
+    {
+        for (int i = 0; i < NunchiLines.Hurry.GetLength(0); i++)
+            if (NunchiLines.Hurry[i, 2] == text) return NunchiLines.Hurry[i, 0];
+        return null;
+    }
+
+    System.Collections.IEnumerator GiveUpRun()
+    {
+        asking = true;
+        RoundUi.I.GiveUp(null);
+        int picked = 1;
+        yield return Choice.Ask(rule.choices, i => picked = i);
+        asking = false;
+        if (picked == 0) { rule.onLeave?.Invoke(); yield break; }
+        // 임시 T18
+        gauge = Bal.G("Nunchi_ResumeValue", 45f);
+        hurryMul *= Bal.G("Nunchi_StayHurryMul", 0.7f);
+        sighMul *= Bal.G("Nunchi_StaySighMul", 1.3f);
     }
 
     // ---- 단계 효과 ----

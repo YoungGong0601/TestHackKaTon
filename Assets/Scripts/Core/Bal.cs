@@ -6,4 +6,11 @@ public static class Bal
     public static float F(string name, float fb) => ConfigTableLoader.Get(Prefix + name, fb);
     public static float G(string fullKey, float fb) => ConfigTableLoader.Get(fullKey, fb);
     public static int I(string fullKey, int fb) => ConfigTableLoader.Get(fullKey, fb);
+
+    // 인물 키. fallback은 Age20, Age40, Age60, Age80 순서이고 프로필 handLook으로 고른다
+    public static float Age(string name, float a20, float a40, float a60, float a80)
+    {
+        int look = GameState.I != null && GameState.I.Profile != null ? GameState.I.Profile.handLook : 3;
+        return F(name, look <= 0 ? a20 : look == 1 ? a40 : look == 2 ? a60 : a80);
+    }
 }

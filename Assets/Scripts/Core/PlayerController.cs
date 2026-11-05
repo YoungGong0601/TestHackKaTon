@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
     public float Yaw { get; private set; }      // 도, Unity 기준
     public float Pitch { get; private set; }    // 도, 위가 +
     public bool HoldStill { get; set; }         // 시선은 돌되 걷지 않음(메모 읽기)
-    public float EyeHeight => Bal.F("EyeHeight", 1.56f);
+    public float EyeHeight => Bal.Age("EyeHeight", 1.68f, 1.66f, 1.62f, 1.56f);
+    float MoveSpeed => Bal.Age("MoveSpeed", 2.2f, 1.9f, 1.5f, 0.9f);
     public Vector3 EyePos => transform.position + Vector3.up * EyeHeight;
     public Vector2 Cursor01 => cursor01;        // 뷰포트 좌표, 왼쪽 아래가 (0,0)
 
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     Turn turn;
     Walk walk;
-    Vector2 cursor01 = new(0.5f, 0.5f);
+    Vector2 cursor01 = new(0.5f, 0.5f), cursorWant = new(0.5f, 0.5f);
     float groundY, moving, stepAcc, bob, shake;
     int stepsTaken;
 
@@ -54,15 +55,25 @@ public class PlayerController : MonoBehaviour
         CurrentMode = m;
         Cursor.lockState = m == Mode.Fps || m == Mode.Hidden ? CursorLockMode.Locked : m == Mode.Cursor ? CursorLockMode.Confined : CursorLockMode.None;
         Cursor.visible = m == Mode.Locked;
-        if (m == Mode.Cursor) cursor01 = new Vector2(0.5f, 0.5f);
+        if (m == Mode.Cursor) cursor01 = cursorWant = new Vector2(0.5f, 0.5f);
         if (Hud.I != null) Hud.I.Cross(m == Mode.Fps);
     }
 
     public void Freeze(bool on) => Frozen = on;
 
-    public void SetCursor01(Vector2 v) => cursor01 = v;
+    public void SetCursor01(Vector2 v) => cursor01 = cursorWant = v;
 
     public void AddShake(float a) => shake = Mathf.Min(1f, shake + a);
+
+    // 시선은 두고 자리만 옮긴다(계단)
+    public void MoveTo(Vector3 pos)
+    {
+        groundY = pos.y;
+        if (body != null) body.enabled = false;
+        transform.position = pos;
+        Physics.SyncTransforms();
+        if (body != null) body.enabled = true;
+    }
 
     // yaw는 도, Unity 기준. HTML판 라디안 yaw는 -yaw * Mathf.Rad2Deg
     public void Teleport(Vector3 pos, float yaw)
@@ -97,7 +108,7 @@ public class PlayerController : MonoBehaviour
     // speed 생략하면 현재 인물의 걸음 속도
     public IEnumerator WalkTo(Vector3 world, float speed = -1f)
     {
-        var w = new Walk { target = world, speed = speed > 0f ? speed : Bal.F("MoveSpeed", 1.15f) };
+        var w = new Walk { target = world, speed = speed > 0f ? speed : MoveSpeed };
         walk = w;
         while (walk == w) yield return null;
     }
@@ -115,8 +126,10 @@ public class PlayerController : MonoBehaviour
             if (mouse != null && mouse.delta.ReadValue().sqrMagnitude > 0f)
             {
                 Vector2 p = mouse.position.ReadValue();
-                cursor01 = new Vector2(Mathf.Clamp01(p.x / Screen.width), Mathf.Clamp01(p.y / Screen.height));
+                cursorWant = new Vector2(Mathf.Clamp01(p.x / Screen.width), Mathf.Clamp01(p.y / Screen.height));
             }
+            float lag = Debuff.CursorLagSec;
+            cursor01 = lag > 0.001f ? Vector2.Lerp(cursor01, cursorWant, 1f - Mathf.Exp(-dt / lag)) : cursorWant;
         }
         else if (CurrentMode == Mode.Fps && !Frozen && walk == null && turn == null)
             Interactable.Tick(eye.transform.position, eye.transform.forward);
@@ -147,7 +160,7 @@ public class PlayerController : MonoBehaviour
 
     void Move(float dt)
     {
-        float speed = Bal.F("MoveSpeed", 1.15f);
+        float speed = MoveSpeed;
         Vector3 dir = Vector3.zero;
         float want = 0f;
         if (walk != null)
@@ -199,7 +212,7 @@ public class PlayerController : MonoBehaviour
         var profile = GameState.I != null ? GameState.I.Profile : null;
         float limp = profile != null && profile.limp ? 1f : 0f;
         float s = Mathf.Sin(bob), c = Mathf.Cos(bob * 0.5f);
-        float amp = Mathf.Clamp01(moving / Mathf.Max(Bal.F("MoveSpeed", 1.15f), 0.01f));
+        float amp = Mathf.Clamp01(moving / Mathf.Max(MoveSpeed, 0.01f));
 
         // 왼다리가 불편한 걸음: 위아래가 좌우 비대칭
         float h = Bal.F("BobHeight", 0.042f);
@@ -225,7 +238,8 @@ public class PlayerController : MonoBehaviour
         audio.Play(Ground == "tile" ? "step_tile" : "step_concrete", null, 0.42f, Random.Range(0.92f, 1.04f));
         var profile = GameState.I != null ? GameState.I.Profile : null;
         if (profile == null || !profile.limp) return;
-        if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("CaneEverySteps", 2f))) == 0) audio.Play("cane_tap", null, 0.26f, Random.Range(0.95f, 1.05f));
+        int cane = Mathf.RoundToInt(Bal.F("CaneEverySteps", 0f));
+        if (cane > 0 && stepsTaken % cane == 0) audio.Play("cane_tap", null, 0.26f, Random.Range(0.95f, 1.05f));
         if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("BreathEverySteps", 19f))) == 0) audio.Play("breath_old", null, 0.32f);
     }
 

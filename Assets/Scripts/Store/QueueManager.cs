@@ -1,4 +1,4 @@
-// 줄 손님, 픽업 대기 손님, 드나드는 문, 눈치 폭발 끼어들기. Store 씬 Director 오브젝트에 부착.
+// 줄 손님, 픽업 대기 손님, 드나드는 문. Store 씬 Director 오브젝트에 부착.
 // 좌표는 HTML판 값의 z에 -1을 곱한 Unity 좌표. L.KX -0.6, L.KZ -3.82 기준.
 // 배치: kiosk = PH_Kiosk (KioskController)
 // 배치: nunchi = PH_Kiosk 쪽 NunchiSystem
@@ -8,8 +8,6 @@
 // 배치: doorIn = Anchor_DoorIn (1.4, 0, -3.1) 문 안쪽
 // 배치: doorOut = Anchor_DoorOut (1.4, 0, -4.7) 문 바깥
 // 배치: doorPivot = PH_Door_Glass 안의 DoorPivot (Store 씬은 시작할 때 열려 있다가 닫힘)
-// 배치: yoExit = Anchor_YoExit (-0.15, 0, -1.55) 끼어든 사람이 물러나는 자리
-// 배치: yoRoute = Anchor_QueueSide0 (-1.25, 0, 2.6), Anchor_QueueSide1 (-1.2, 0, -0.75) 줄 왼쪽으로 돌아 나가는 길
 // 배치: pickupFront = Anchor_PickupFront (-2.2, 0, -0.85) 손님이 받는 자리
 // 배치: pickupLook = Anchor_PickupLook (-2.92, 1.08, -0.85) 픽업 대
 // 배치: boardLook = Anchor_Board (-2.72, 2.62, -0.9) 대기 손님이 보는 전광판
@@ -29,8 +27,6 @@ public class QueueManager : MonoBehaviour
     [SerializeField] Transform doorIn;
     [SerializeField] Transform doorOut;
     [SerializeField] Transform doorPivot;
-    [SerializeField] Transform yoExit;
-    [SerializeField] List<Transform> yoRoute = new List<Transform>();
     [SerializeField] Transform pickupFront;
     [SerializeField] Transform pickupLook;
     [SerializeField] Transform boardLook;
@@ -45,7 +41,6 @@ public class QueueManager : MonoBehaviour
 
     /// <summary>키오스크 조작 중에만 줄이 늘어난다.</summary>
     public bool KioskOn { get; set; }
-    public bool Blowing { get; private set; }
     public int Count => queue.Count;
     public Vector3 QueuePos => Slot(0) + Vector3.up * 1.5f;
 
@@ -79,18 +74,6 @@ public class QueueManager : MonoBehaviour
         nextArrive = Bal.G("Queue_FirstArrive", 5f);
     }
 
-    void OnEnable()
-    {
-        kiosk.Blowup += OnBlowup;
-        nunchi.Sorried += Sorry;
-    }
-
-    void OnDisable()
-    {
-        kiosk.Blowup -= OnBlowup;
-        nunchi.Sorried -= Sorry;
-    }
-
     void Update()
     {
         float dt = Time.deltaTime;
@@ -99,12 +82,15 @@ public class QueueManager : MonoBehaviour
         doorA = StoreFlow.Damp(doorA, doorWant, doorWant != 0f ? 5f : 3f, dt);
         doorPivot.localRotation = doorBase * Quaternion.Euler(0f, doorA * Mathf.Rad2Deg, 0f);
 
-        if (KioskOn && !Blowing)
+        // 줄은 게이지를 따라 길어진다
+        if ((KioskOn || (nunchi != null && nunchi.Running)) && nunchi != null)
         {
+            int max = Bal.I("Queue_Max", 4);
+            int want = 1 + Mathf.FloorToInt(nunchi.Value / Mathf.Max(Bal.G("Nunchi_Max", 100f), 1f) * max);
             nextArrive -= dt;
-            if (nextArrive <= 0f && queue.Count < Bal.I("Queue_Max", 4) && pool.Count > 0)
+            if (nextArrive <= 0f && queue.Count < Mathf.Min(want, max) && pool.Count > 0)
             {
-                nextArrive = Random.Range(Bal.G("Queue_ArriveMin", 17f), Bal.G("Queue_ArriveMax", 25f));
+                nextArrive = Bal.G("Queue_GrowGapSec", 3f);
                 Arrive();
             }
         }
@@ -154,92 +140,6 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    /// <summary>사과: 앞사람은 고개를 까딱, 뒷사람은 고개를 살짝 돌림.</summary>
-    public void Sorry()
-    {
-        for (int i = 0; i < queue.Count; i++)
-            queue[i].React(i == 0);
-    }
-
-    void OnBlowup()
-    {
-        if (Blowing) return;
-        StartCoroutine(BlowupRun());
-    }
-
-    /// <summary>눈치 폭발: 맨 앞 사람이 밀고 들어와 10초 만에 끝내는 걸 줄 맨 뒤에서 본다.</summary>
-    IEnumerator BlowupRun()
-    {
-        Blowing = true;
-        var player = PlayerController.I;
-
-        if (queue.Count == 0)
-        {
-            NpcMover p = TakeFromPool();
-            if (p)
-            {
-                p.Place(Slot(0));
-                p.Show();
-                queue.Add(p);
-            }
-        }
-        NpcMover yo = null;
-        if (queue.Count > 0)
-        {
-            yo = queue[0];
-            queue.RemoveAt(0);
-        }
-        player.AddShake(0.7f);
-        nunchi.Value = Bal.G("Nunchi_BlowupWatch", 62f); // 눈앞은 맑아지고 민망함만 남는다
-
-        bool yoDone = yo == null;
-        if (yo) StartCoroutine(YoRun(yo, () => yoDone = true));
-
-        // 옆으로 밀려나 맨 뒤로
-        Vector3 tail = Slot(queue.Count);
-        CloseUp();
-        Coroutine aside = StartCoroutine(player.WalkTo(stand.position + Vector3.right * 1.15f + Back * 0.5f, Bal.F("PushedAsideSpeed", 1.5f)));
-        yield return new WaitForSeconds(0.5f);
-        StopCoroutine(aside);
-        yield return StoreFlow.Race(this, player.WalkTo(tail + Vector3.right * 1.2f + Back * 0.3f, Bal.F("PushedBackSpeed", 1.7f)), 3.2f);
-        yield return StoreFlow.Race(this, player.LookAt(kioskLook.position, 0.8f), 0.9f);
-        while (!yoDone) yield return null;
-        yield return Hud.I.Fade(1f, 0.45f);
-
-        // 그사이 앞사람들도 끝냈다
-        if (yo)
-        {
-            yo.Hide();
-            pool.Add(yo);
-        }
-        foreach (NpcMover n in queue)
-        {
-            n.Hide();
-            pool.Add(n);
-        }
-        queue.Clear();
-        nextArrive = Bal.G("Queue_ArriveAfterBlowup", 2.5f);
-        Blowing = false;
-    }
-
-    IEnumerator YoRun(NpcMover yo, System.Action done)
-    {
-        Vector3 kioskFloor = kioskLook.position;
-        yield return StoreFlow.Race(this, yo.WalkTo(stand.position, Bal.G("Queue_YoSpeed", 2.3f)), 3.4f);
-        yo.Place(stand.position);
-        yo.Face(kioskFloor);
-        yield return new WaitForSeconds(Bal.G("Queue_YoTapSec", 4.2f));
-        AudioManager.I.Play("card_insert", kioskFloor, 0.6f);
-        yield return new WaitForSeconds(Bal.G("Queue_YoCardSec", 1f));
-        AudioManager.I.Play("receipt_print", kioskFloor, 0.6f);
-        yield return new WaitForSeconds(Bal.G("Queue_YoPrintSec", 1.3f));
-        AudioManager.I.Play("paper_tear", kioskFloor, 0.6f);
-        Hud.I.Say(null, "{y:10초}", null, 2.2f);
-        yo.GoVia(yoRoute, yoExit.position, Bal.G("Queue_YoLeaveSpeed", 1.5f));
-        yield return new WaitForSeconds(2.2f);
-        done();
-    }
-
     /// <summary>주문을 마친 뒤 줄이 앞으로 간다. 플레이어가 키오스크 앞을 비울 때까지 맨 앞 손님은 기다리며 재촉한다.</summary>
     public void ShuffleForward()
     {
@@ -259,7 +159,6 @@ public class QueueManager : MonoBehaviour
     IEnumerator NextUp()
     {
         float wait = Bal.G("Queue_MoveWaitSec", 6f);
-        int nag = 0;
         while (queue.Count > 0 && PlayerAtStand)
         {
             wait -= Time.deltaTime;
@@ -268,8 +167,7 @@ public class QueueManager : MonoBehaviour
                 NpcMover front = queue[0];
                 front.Face(PlayerController.I.transform.position);
                 Vector3 head = front.transform.position + Vector3.up * 1.5f;
-                if (nag++ == 0) Hud.I.Say("yM", "할아버지 뭐 해요.", "y_move1", -1f, head);
-                else Hud.I.Say("yM", "비키세요.", "y_move2", -1f, head);
+                Hud.I.Say(null, "비키세요.", "y_move2", -1f, head);
                 wait = Bal.G("Queue_MoveAgainSec", 7f);
             }
             yield return null;

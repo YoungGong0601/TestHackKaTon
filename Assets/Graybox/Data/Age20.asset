@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 551056568ee3b84499b429d87d83c595, type: 3}
+  m_Name: Age20
+  m_EditorClassIdentifier: KioskGame::CharacterProfile
+  id: age20
+  displayName: 
+  keyPrefix: Age20_
+  speakerKey: a20
+  handLook: 0
+  items: 03000000
+  limp: 0
+  visionBlur: 0
+  kioskBlur: 0
+  kioskNunchi: 1
+  kioskHideMeaning: 0
+  kioskTouchFail: 0
+  muffle: 0
+  tremble: 0
+  cursorLag: 0
+  lensFocus: 0
+  kioskTimeout: 0

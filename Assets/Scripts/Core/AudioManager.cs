@@ -17,6 +17,7 @@ public class AudioManager : MonoBehaviour
     string[] loopKey;
     float[] loopTarget, loopRate;
     int nextSfx, nextVoice;
+    readonly Dictionary<AudioSource, AudioLowPassFilter> filters = new();
 
     static float Master => Bal.G("Audio_Master", 0.9f);
 
@@ -27,6 +28,27 @@ public class AudioManager : MonoBehaviour
         loopKey = new string[loops.Length];
         loopTarget = new float[loops.Length];
         loopRate = new float[loops.Length];
+        FindFilters(sfx);
+        FindFilters(voice);
+        FindFilters(loops);
+    }
+
+    // 소리 소스별 저역 통과. 필터는 Systems 프리팹의 각 소스에 붙어 있다
+    void FindFilters(AudioSource[] list)
+    {
+        foreach (var s in list)
+        {
+            var f = s.GetComponent<AudioLowPassFilter>();
+            if (f == null) continue;
+            f.cutoffFrequency = Debuff.OpenHz;
+            filters[s] = f;
+        }
+    }
+
+    // 소리 하나의 먹먹함을 정한다. clear는 뒷사람의 한숨과 재촉
+    void Muffle(AudioSource src, bool clear)
+    {
+        if (filters.TryGetValue(src, out var f)) f.cutoffFrequency = clear ? Debuff.OpenHz : Debuff.MuffleCutoff;
     }
 
     AudioClip[] Variants(string key)
@@ -53,7 +75,7 @@ public class AudioManager : MonoBehaviour
         src.maxDistance = 80f;
     }
 
-    public void Play(string key, Vector3? pos = null, float vol = 1f, float rate = 1f)
+    public void Play(string key, Vector3? pos = null, float vol = 1f, float rate = 1f, bool clear = false)
     {
         var list = Variants(key);
         if (list.Length == 0 || sfx.Length == 0) return;
@@ -62,13 +84,14 @@ public class AudioManager : MonoBehaviour
         if (src == null) { src = sfx[nextSfx]; nextSfx = (nextSfx + 1) % sfx.Length; }
         Place(src, pos);
         src.clip = list[Random.Range(0, list.Length)];
+        Muffle(src, clear);
         src.volume = vol * Master;
         src.pitch = rate;
         src.Play();
     }
 
     // 음성을 틀고 길이(초)를 돌려준다. 파일이 없으면 0
-    public float Vo(string key, Vector3? pos = null, float vol = 1f)
+    public float Vo(string key, Vector3? pos = null, float vol = 1f, bool clear = false)
     {
         var clip = Resources.Load<AudioClip>("Audio/vo/" + key);
         if (clip == null || voice.Length == 0) return 0f;
@@ -77,6 +100,7 @@ public class AudioManager : MonoBehaviour
         if (src == null) { src = voice[nextVoice]; nextVoice = (nextVoice + 1) % voice.Length; }
         Place(src, pos);
         src.clip = clip;
+        Muffle(src, clear);
         src.volume = vol * Master;
         src.Play();
         return clip.length;
@@ -136,6 +160,7 @@ public class AudioManager : MonoBehaviour
         {
             if (loopKey[i] == null) continue;
             var src = loops[i];
+            if (filters.TryGetValue(src, out var f)) f.cutoffFrequency = Debuff.MuffleCutoff;
             src.volume = Mathf.MoveTowards(src.volume, loopTarget[i], loopRate[i] * Time.unscaledDeltaTime);
             if (loopKey[i].Length == 0 && src.volume <= 0f)
             {

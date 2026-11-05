@@ -6,20 +6,29 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Home.unity
-    guid: 7cda7759767724c4399c89294c203de5
+    path: Assets/Scenes/R1_Stop.unity
+    guid: aef98cb64a575bb4e9bba68912aa95f4
   - enabled: 1
-    path: Assets/Scenes/Street.unity
-    guid: 8016cd64690d33f41963e1c73882399c
+    path: Assets/Scenes/R1_Storefront.unity
+    guid: 2f2a2e9fc7fc56e42892e2408d63db28
   - enabled: 1
-    path: Assets/Scenes/Bus.unity
-    guid: a8d8c8d8e4b349e46848ab03bf99c024
+    path: Assets/Scenes/R1_Store.unity
+    guid: ca6bd98a9a2f02a48a7a60edb3c1ac11
   - enabled: 1
-    path: Assets/Scenes/Storefront.unity
-    guid: 3d40a54069f78e84298c0d5c2c2d6eed
+    path: Assets/Scenes/R2_Cafe.unity
+    guid: 730fdb7a8a9df6b429c01797b7199625
   - enabled: 1
-    path: Assets/Scenes/Store.unity
-    guid: 5c5bf064135a4aa4eae8e930dffc45d9
+    path: Assets/Scenes/R3_Cinema.unity
+    guid: a3fa81d6963fd8e4daa2ee9d09f2b88a
+  - enabled: 1
+    path: Assets/Scenes/R4_Storefront.unity
+    guid: 0469d6bd85808604b99f15e0546d607f
+  - enabled: 1
+    path: Assets/Scenes/R4_Store.unity
+    guid: bfd145d77e8a6b14f80f40ce3c4e3281
+  - enabled: 1
+    path: Assets/Scenes/R4_Stop.unity
+    guid: 9f79ac50a868c1e4e89971386882e066
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

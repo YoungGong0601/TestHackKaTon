@@ -141,7 +141,7 @@ class KioskPostPass : ScriptableRenderPass
         float pulse = HeartPulse() * beat;
 
         var profile = GameState.I != null ? GameState.I.Profile : null;
-        bool vision = profile != null && profile.visionBlur;
+        float vision = Bal.Age("PostBlurMul", 0f, 0.4f, 0.8f, 1f);   // 평온 단계 번짐이 남는 비율
 
         material.SetFloat(Spread, Bal.G("Post_BlurSpread", 1.4f));
         material.SetFloat(PostTime, Time.unscaledTime);
@@ -168,8 +168,8 @@ class KioskPostPass : ScriptableRenderPass
 
         // 평온 값은 시야 번짐 인물의 몫, 그 위 증가분은 눈치의 몫
         float calmC = Bal.G(CenterKeys[0], 0.1f), calmE = Bal.G(EdgeKeys[0], 0.55f);
-        float center = Stage(CenterKeys, g, 0.1f, 0.14f, 0.2f, 0.3f, 0.45f) - (vision ? 0f : calmC);
-        float edge = Stage(EdgeKeys, g, 0.55f, 0.65f, 0.78f, 0.9f, 1f) - (vision ? 0f : calmE);
+        float center = Stage(CenterKeys, g, 0.1f, 0.14f, 0.2f, 0.3f, 0.45f) - (1f - vision) * calmC;
+        float edge = Stage(EdgeKeys, g, 0.55f, 0.65f, 0.78f, 0.9f, 1f) - (1f - vision) * calmE;
         material.SetFloat(BlurCenter, center);
         material.SetFloat(BlurEdge, edge);
         material.SetFloat(BlurStart, Bal.G("Post_BlurStart", 0.35f));

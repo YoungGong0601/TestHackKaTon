@@ -18,8 +18,6 @@ using UnityEngine.UI;
 // 배치: nunchiFill = Nunchi 자식 Fill Image (anchorMin 0 0, 오프셋 0, 코드가 anchorMax y로 높이 조절)
 // 배치: fade = Fade (화면 전체 검정 Image)
 // 배치: titlePanel = Title (전체 화면 크림색, 글자 불고기 세트 하나 / 시작, 처음 꺼짐)
-// 배치: resultGroup = Result (전체 화면 크림색 CanvasGroup, 처음 꺼짐. 제목 불고기 세트 하나, 라벨 걸린 시간 / 터치 / 잘못 누름 / 사과 / 처음으로 돌아간 횟수 / 메모대로 주문, 끝 줄 65세 이상 노인 중 키오스크로 주문할 수 있는 사람은 약 18%. / 한국보건사회연구원, 2023 노인실태조사 재분석 (한겨레 2025-04-07 보도))
-// 배치: resultValues = Result 안 값 Text 6개, 위 라벨 순서
 // 배치: debugText = Debug (왼쪽 위 작은 글자, 처음 꺼짐)
 public class Hud : MonoBehaviour
 {
@@ -35,8 +33,6 @@ public class Hud : MonoBehaviour
     [SerializeField] Image nunchiFill;
     [SerializeField] Image fade;
     [SerializeField] GameObject titlePanel;
-    [SerializeField] CanvasGroup resultGroup;
-    [SerializeField] TMP_Text[] resultValues;
     [SerializeField] Text debugText;
 
     const string PlayerColor = "#f3d24b";
@@ -57,8 +53,9 @@ public class Hud : MonoBehaviour
     static readonly Regex MarkRegex = new(@"\{([yrgb]):([^}]*)\}");
 
     int subToken, fadeToken;
+    string goalLine = "";   // keep 0인 목표. 대사가 끝나면 자막 자리로 돌아온다
     float nunchiNow, nunchiWant, nunchiAlpha;
-    bool titleOpen, resultOpen;
+    bool titleOpen;
 
     public bool TitleOpen => titleOpen;
 
@@ -87,31 +84,38 @@ public class Hud : MonoBehaviour
     }
 
     // {y:글자} {r:} {g:} {b:} 색 표기. voKey가 있으면 음성이 끝날 때까지 표시. hold 음수면 글자 수로 정한다
-    public Coroutine Say(string speaker, string text, string voKey = null, float hold = -1f, Vector3? pos = null, float vol = 1f)
+    public Coroutine Say(string speaker, string text, string voKey = null, float hold = -1f, Vector3? pos = null, float vol = 1f, bool clear = false)
     {
-        return StartCoroutine(SayRoutine(speaker, text, voKey, hold, pos, vol));
+        return StartCoroutine(SayRoutine(speaker, text, voKey, hold, pos, vol, clear));
     }
 
-    IEnumerator SayRoutine(string speaker, string text, string voKey, float hold, Vector3? pos, float vol)
+    IEnumerator SayRoutine(string speaker, string text, string voKey, float hold, Vector3? pos, float vol, bool clear)
     {
         int token = ++subToken;
         subs.text = Wrap(Name(speaker) + Mark(text));
         float len = hold >= 0f ? hold : Mathf.Max(1.5f, text.Length * 0.1f);
         if (!string.IsNullOrEmpty(voKey))
         {
-            float vo = AudioManager.I != null ? AudioManager.I.Vo(voKey, pos, vol) : 0f;
+            float vo = AudioManager.I != null ? AudioManager.I.Vo(voKey, pos, vol, clear) : 0f;
             len = Mathf.Max(vo > 0f ? vo : len, hold >= 0f ? hold : 0.6f);
         }
         yield return new WaitForSeconds(len);
-        if (token == subToken) subs.text = "";
+        if (token == subToken) subs.text = goalLine;
     }
 
-    // 자막 자리에 표시, keep초 뒤 사라진다. keep 0이면 다음 대사까지
+    // 자막 자리에 표시, keep초 뒤 사라진다. keep 0이면 지울 때까지 남고 대사가 끝나면 돌아온다
     public void Objective(string text, float keep = 6f)
     {
         int token = ++subToken;
         subs.text = string.IsNullOrEmpty(text) ? "" : Wrap(Mark(text));
+        goalLine = keep > 0f ? "" : subs.text;
         if (!string.IsNullOrEmpty(text) && keep > 0f) StartCoroutine(ClearAfter(token, keep));
+    }
+
+    // 왼쪽 위 작은 글자. null이면 지움
+    public void SideNote(string text)
+    {
+        if (RoundUi.I != null) RoundUi.I.SideNote(text);
     }
 
     IEnumerator ClearAfter(int token, float sec)
@@ -123,6 +127,7 @@ public class Hud : MonoBehaviour
     public void ClearSubs()
     {
         subToken++;
+        goalLine = "";
         subs.text = "";
     }
 
@@ -180,10 +185,12 @@ public class Hud : MonoBehaviour
         {
             foreach (var id in profile.items)
             {
+                // 지갑 속 물건은 칸에 나오지 않는다
+                if (id == ItemId.Memo || id == ItemId.Cash || (id == ItemId.Card && profile.Has(ItemId.Wallet))) continue;
                 if (n >= itemSlots.Length) break;
                 var slot = itemSlots[n++];
                 slot.gameObject.SetActive(true);
-                slot.text = $"<color={(hands.Held == id ? ItemOn : ItemOff)}><b>{(int)id}</b> {ItemName(id)}</color>";
+                slot.text = $"<color={(hands.Held == id || (id == ItemId.Wallet && hands.walletOut) ? ItemOn : ItemOff)}><b>{(id == ItemId.Wallet ? 3 : (int)id)}</b> {ItemName(id)}</color>";
             }
         }
         for (; n < itemSlots.Length; n++) itemSlots[n].gameObject.SetActive(false);
@@ -191,9 +198,9 @@ public class Hud : MonoBehaviour
 
     static string ItemName(ItemId id) => id switch
     {
-        ItemId.Memo => "메모",
         ItemId.Lens => "돋보기",
         ItemId.Card => "카드",
+        ItemId.Wallet => "지갑",
         _ => "",
     };
 
@@ -261,44 +268,6 @@ public class Hud : MonoBehaviour
         return (mouse != null && mouse.leftButton.wasPressedThisFrame) || (kb != null && (kb.enterKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame));
     }
 
-    public void ShowResult()
-    {
-        var game = GameState.I;
-        var st = game.Stats;
-        Prompt(null);
-        ClearSubs();
-        Views(null);
-        Nunchi(0f, false);
-        if (HandRig.I != null) HandRig.I.SetEnabled(false);
-        if (PlayerController.I != null) PlayerController.I.SetMode(PlayerController.Mode.Locked);
-        if (AudioManager.I != null) AudioManager.I.Ambience();
-
-        var miss = MemoMiss(game.Order);
-        string[] rows =
-        {
-            Clock((st.endTime >= 0f ? st.endTime : Time.time) - st.startTime),
-            $"{st.touches}번",
-            $"{st.wrong}번",
-            $"{st.sorry}번",
-            $"{st.resets}번",
-            miss.Count > 0 ? $"아니오 ({string.Join(", ", miss)} 틀림)" : "예",
-        };
-        for (int i = 0; i < rows.Length && i < resultValues.Length; i++) resultValues[i].text = rows[i];
-        resultGroup.gameObject.SetActive(true);
-        resultGroup.alpha = 0f;
-        resultOpen = true;
-    }
-
-    static List<string> MemoMiss(OrderData o)
-    {
-        var miss = new List<string>();
-        if (o.item != "bulgogi") miss.Add("메뉴");
-        if (o.combo != "combo") miss.Add("세트");
-        if (o.drink != "cider") miss.Add("사이다");
-        if (o.place != "takeout") miss.Add("포장");
-        return miss;
-    }
-
     static string Clock(float sec)
     {
         int s = Mathf.Max(0, Mathf.RoundToInt(sec)), m = s / 60;
@@ -321,23 +290,12 @@ public class Hud : MonoBehaviour
             r.anchorMax = new Vector2(r.anchorMax.x, nunchiNow / 100f);
         }
 
-        if (resultOpen)
-        {
-            resultGroup.alpha = Mathf.MoveTowards(resultGroup.alpha, 1f, dt / 1.2f);
-            if (resultGroup.alpha >= 1f && Clicked())
-            {
-                resultOpen = false;
-                resultGroup.gameObject.SetActive(false);
-                if (HandRig.I != null) HandRig.I.SetEnabled(true);
-                GameState.I.Restart();
-            }
-        }
-
         if (debugText != null && debugText.gameObject.activeSelf)
         {
             var g = GameState.I;
             string profile = g != null && g.Profile != null ? g.Profile.id : "";
-            debugText.text = $"chapter {(g != null ? g.chapterIndex : -1)} {profile}  config {(ConfigTableLoader.IsLoaded ? "loaded" : "fallback")}  fps {Mathf.RoundToInt(1f / Mathf.Max(dt, 1e-4f))}";
+            float run = g != null ? Time.time - g.Stats.startTime : 0f;
+            debugText.text = $"chapter {(g != null ? g.chapterIndex : -1)} {profile}  {Clock(run)} / {Clock(Bal.G("Run_TotalTargetSec", 600f))}  nunchi {Mathf.RoundToInt(nunchiWant)}  config {(ConfigTableLoader.IsLoaded ? "loaded" : "fallback")}  fps {Mathf.RoundToInt(1f / Mathf.Max(dt, 1e-4f))}";
         }
     }
 }

@@ -30,6 +30,8 @@ public sealed class KioskView
 
     public void ToggleDown() => downTarget = Down ? 0f : 1f;
 
+    public void SetDown(bool on) => downTarget = on ? 1f : 0f;
+
     /// <summary>포인터를 화면 위아래 끝에 대고 있으면 고개를 움직인다.</summary>
     public bool EdgeTick(float cursorDown, float dt)
     {
@@ -51,7 +53,7 @@ public sealed class KioskView
         // 플레이어가 이번 프레임에 넣은 흔들림만 이어 받는다
         Vector3 shake = eye.transform.localPosition - Vector3.up * pc.EyeHeight;
         down = snap ? downTarget : Damp(down, downTarget, 5f, dt);
-        float h = Mathf.Lerp(Bal.F("KioskEye", 1.47f), Bal.F("KioskEyeDown", 1.3f), down);
+        float h = Mathf.Lerp(Bal.Age("KioskEye", 1.58f, 1.56f, 1.52f, 1.47f), Bal.F("KioskEyeDown", 1.3f), down);
         float dist = Mathf.Lerp(Bal.G("Kiosk_Dist", 0.76f), Bal.G("Kiosk_DistDown", 0.6f), down);
         float aimY = Mathf.Lerp(Bal.G("Kiosk_AimY", 1.372f), Bal.G("Kiosk_AimYDown", 0.74f), down);
 

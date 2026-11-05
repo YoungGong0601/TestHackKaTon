@@ -1,4 +1,105 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+Age20_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age20_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age20_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age20_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age20_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age20_CursorLagSec,커서 지연,Float,0,s,ROUND_PLAN 7절
+Age20_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_EyeHeight,눈높이,Float,1.68,m,ROUND_PLAN 7절
+Age20_KioskBlur,키오스크 글씨 번짐,Float,0,px,ROUND_PLAN 7절
+Age20_KioskEye,키오스크 앞 눈높이,Float,1.58,m,ROUND_PLAN 7절
+Age20_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age20_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age20_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age20_MoveSpeed,걸음 속도,Float,2.2,m/s,ROUND_PLAN 7절
+Age20_MuffleCutoff,먹먹함 저역 통과,Float,22000,Hz,ROUND_PLAN 7절
+Age20_NunchiFillSec,게이지가 차는 시간,Float,900,s,ROUND_PLAN 7절
+Age20_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0,배,ROUND_PLAN 7절
+Age20_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age20_TouchFailChance,터치 안 먹음 확률,Float,0,비율,ROUND_PLAN 7절
+Age20_TouchMissChance,옆 버튼 눌림 확률,Float,0,비율,ROUND_PLAN 7절
+Age20_Tremble,손떨림,Float,0,0~1,ROUND_PLAN 7절
+Age40_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age40_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age40_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age40_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age40_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age40_CursorLagSec,커서 지연,Float,0,s,ROUND_PLAN 7절
+Age40_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_EyeHeight,눈높이,Float,1.66,m,ROUND_PLAN 7절
+Age40_KioskBlur,키오스크 글씨 번짐,Float,3,px,ROUND_PLAN 7절
+Age40_KioskEye,키오스크 앞 눈높이,Float,1.56,m,ROUND_PLAN 7절
+Age40_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age40_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age40_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age40_MoveSpeed,걸음 속도,Float,1.9,m/s,ROUND_PLAN 7절
+Age40_MuffleCutoff,먹먹함 저역 통과,Float,6000,Hz,ROUND_PLAN 7절
+Age40_NunchiFillSec,게이지가 차는 시간,Float,120,s,ROUND_PLAN 7절
+Age40_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.4,배,ROUND_PLAN 7절
+Age40_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age40_TouchFailChance,터치 안 먹음 확률,Float,0,비율,ROUND_PLAN 7절
+Age40_TouchMissChance,옆 버튼 눌림 확률,Float,0,비율,ROUND_PLAN 7절
+Age40_Tremble,손떨림,Float,0,0~1,ROUND_PLAN 7절
+Age60_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age60_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age60_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age60_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age60_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age60_CursorLagSec,커서 지연,Float,0.12,s,ROUND_PLAN 7절
+Age60_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_EyeHeight,눈높이,Float,1.62,m,ROUND_PLAN 7절
+Age60_KioskBlur,키오스크 글씨 번짐,Float,7,px,ROUND_PLAN 7절
+Age60_KioskEye,키오스크 앞 눈높이,Float,1.52,m,ROUND_PLAN 7절
+Age60_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age60_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age60_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age60_MoveSpeed,걸음 속도,Float,1.5,m/s,ROUND_PLAN 7절
+Age60_MuffleCutoff,먹먹함 저역 통과,Float,2500,Hz,ROUND_PLAN 7절
+Age60_NunchiFillSec,게이지가 차는 시간,Float,80,s,ROUND_PLAN 7절
+Age60_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.8,배,ROUND_PLAN 7절
+Age60_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age60_TouchFailChance,터치 안 먹음 확률,Float,0.08,비율,ROUND_PLAN 7절
+Age60_TouchMissChance,옆 버튼 눌림 확률,Float,0.2,비율,ROUND_PLAN 7절
+Age60_Tremble,손떨림,Float,0.6,0~1,ROUND_PLAN 7절
+Age80_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age80_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age80_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age80_BreathEverySteps,숨소리 주기,Float,19,걸음,ROUND_PLAN 7절
+Age80_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age80_CursorLagSec,커서 지연,Float,0.2,s,ROUND_PLAN 7절
+Age80_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_EyeHeight,눈높이,Float,1.56,m,ROUND_PLAN 7절
+Age80_KioskBlur,키오스크 글씨 번짐,Float,12,px,ROUND_PLAN 7절
+Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
+Age80_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_KioskTimeoutSec,4회차 시간 초과,Float,40,s,ROUND_PLAN 7절
+Age80_LimpRoll,다리 절기 기울기,Float,0.016,rad,ROUND_PLAN 7절
+Age80_LimpSway,다리 절기 좌우 폭,Float,0.018,m,ROUND_PLAN 7절
+Age80_MashCount,계단 마싱 횟수,Float,40,번,ROUND_PLAN 7절
+Age80_MoveSpeed,걸음 속도,Float,0.9,m/s,ROUND_PLAN 7절
+Age80_MuffleCutoff,먹먹함 저역 통과,Float,1000,Hz,ROUND_PLAN 7절
+Age80_NunchiFillSec,게이지가 차는 시간,Float,60,s,ROUND_PLAN 7절
+Age80_PostBlurMul,평온 단계 번짐이 남는 비율,Float,1,배,ROUND_PLAN 7절
+Age80_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age80_TouchFailChance,터치 안 먹음 확률,Float,0.12,비율,ROUND_PLAN 7절
+Age80_TouchMissChance,옆 버튼 눌림 확률,Float,0.3,비율,ROUND_PLAN 7절
+Age80_Tremble,손떨림,Float,1,0~1,ROUND_PLAN 7절
 Audio_Master,전체 음량,Float,0.9,배,전체 소리 크기
 Bus_AfterAnnounceSec,안내방송 뒤 다음 장까지,Float,1.2,sec,암전 전 호흡
 Bus_AnnounceHoldSec,안내방송 최소 표시,Float,2.4,sec,자막 읽을 시간
@@ -16,6 +117,7 @@ Bus_RideDoorSec,내부가 보인 뒤 출발 소리까지,Float,1.6,sec,내부를
 Bus_RideEngineSec,출발 소리 뒤 안내방송까지,Float,2.4,sec,내부를 둘러볼 시간
 Bus_RideFadeSec,승차 암전,Float,0.8,sec,장면 전환
 Bus_SecondWaitSec,112번 등장 전 대기,Float,2.5,sec,기다리는 시간
+Cash_BounceCount,지폐 튕김,Int,3,번,ROUND_PLAN 7절
 Chapter_FadeInSec,Director 없는 챕터의 암전 풀림,Float,1,s,PlainChapter 기본
 Door_AmbientBlendSec,문 지나며 매장 앰비언트로 맞추는 시간,Float,1.6,sec,들어갈 때 밝기가 튀지 않음
 Door_Kick,유리문 밀기 한 번의 충격,Float,0.55,rad/s,덜컥거리는 정도
@@ -32,22 +134,8 @@ Door_SignLookSec,간판 올려다보는 시간,Float,3.2,sec,로고를 천천히
 Door_SpringD,유리문 스프링 감쇠,Float,24,per s,빠르게 튕겨 돌아옴
 Door_SpringK,유리문 스프링 강성,Float,620,per s2,빠르게 튕겨 돌아옴
 Door_StoreOpenAngle,매장 안에서 손님이 드나들 때 각도,Float,1.15,rad,드나듦이 보임
-Elder_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,뒷걸음은 더 느리게
-Elder_BobHeight,고개 위아래 폭,Float,0.042,m,비대칭 걸음 높이
-Elder_BobRate,고개 흔들림 속도,Float,5.1,rad/m,걸음과 맞는 흔들림 주기
-Elder_BreathEverySteps,숨소리 주기,Float,19,걸음,가끔 숨이 찬다
-Elder_CaneEverySteps,지팡이 소리 주기,Float,2,걸음,절뚝이는 박자
-Elder_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,문 앞 머뭇거림
-Elder_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,나가는 느린 걸음
-Elder_EyeHeight,눈높이,Float,1.56,m,구부정한 노인 눈높이
-Elder_KioskEye,키오스크 앞 눈높이,Float,1.47,m,인물별 값
-Elder_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,인물별 값
-Elder_LimpRoll,다리 절기 기울기,Float,0.016,rad,왼다리 불편함 표현
-Elder_LimpSway,다리 절기 좌우 폭,Float,0.018,m,왼다리 불편함 표현
-Elder_MoveSpeed,노인 걸음 속도,Float,1.15,m/s,답답할 만큼 느린 걸음
-Elder_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,떠밀리는 느낌
-Elder_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,쫓겨나는 느낌
-Elder_StepStride,걸음 소리 간격,Float,0.62,m,보폭이 좁은 걸음
+End_StatSec,통계 문구 시간,Float,5,s,ROUND_PLAN 7절
+End_TitleMinSec,제목 뒤 클릭을 받기까지,Float,1.5,s,ROUND_PLAN 7절
 Hand_TrembleScale,손 떨림이 포인터에 주는 폭,Float,0.012,화면 비율,키오스크 포인터 떨림
 Home_FadeInSec,현관 시작 밝아짐,Float,1.4,sec,첫 장면 호흡
 Home_MemoScale,현관에서 읽는 메모 배율,Float,1.34,배,화면 대부분을 메모가 채움
@@ -98,14 +186,18 @@ Kiosk_ReceiptWidth,영수증 종이 폭,Float,0.074,m,HTML 값
 Kiosk_SizeUpPrice,사이즈 UP 추가금,Int,800,won,업셀 함정
 Kiosk_SlideSec,대기 광고 넘김 간격,Float,3.6,sec,대기 화면
 Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
-Kiosk_TimerLow,남은 시간 강조 시작,Int,15,sec,막판 압박
+Kiosk_TimerLow,남은 시간 강조 시작,Int,10,sec,막판 압박
+Kiosk_ToastSec,키오스크 알림 시간,Float,1.8,s,ROUND_PLAN 7절
 Kiosk_TouchFailChance,터치가 안 먹을 확률,Float,0.07,ratio,마른 손가락. 프로필 kioskTouchFail일 때만
 Kiosk_TouchRange,터치 레이 길이,Float,3,m,키오스크 앞에서 충분한 길이
 Kiosk_WrongMutterChance,실수 뒤 혼잣말 확률,Float,0.7,ratio,혼잣말은 실수 직후에만 나옴. 연속은 Nunchi_MutterCooldown이 막음
 Kiosk_WrongSlot,틀린 틈 눈치 상승,Float,6,gauge,SPEC 잘못된 카드 슬롯 +6
 Kiosk_WrongTouch,오터치 눈치 상승,Float,4,gauge,SPEC 오터치 +4
+Lens_FocusBlurSec,초점 흐려짐 길이,Float,2,s,ROUND_PLAN 7절
+Lens_FocusPeriodSec,초점 흐려짐 주기,Float,8,s,ROUND_PLAN 7절
 Lens_Radius,돋보기 유리 반지름,Float,0.06,m,Hand_Lens Rim 모델과 같게
 Lens_Zoom,돋보기 확대,Float,1.45,배,키오스크와 월드 글 공용
+Mash_DescendSec,계단 내려가는 시간,Float,1.4,s,ROUND_PLAN 7절
 Npc_AvoidGap,비켜 지나갈 때 옆 간격,Float,0.62,m,겹치지 않음
 Npc_AvoidLook,손님이 앞을 살피는 거리,Float,1.2,m,미리 옆으로 돌아감
 Npc_MinGap,더 다가가지 않는 최소 거리,Float,0.5,m,겹치지 않음
@@ -127,11 +219,14 @@ Nunchi_HurryIgnored,재촉 뒤 안 돌아보면 추가,Float,8,gauge,재촉 무�
 Nunchi_HurryMax,재촉 간격 최대,Float,40,sec,SPEC 25초에서 40초
 Nunchi_HurryMin,재촉 간격 최소,Float,25,sec,SPEC 25초에서 40초
 Nunchi_HurryShake,재촉 때 화면 흔들림,Float,0.12,amount,움찔하는 느낌
+Nunchi_LowMax,대사 구간 낮음 끝,Float,40,게이지,ROUND_PLAN 7절
 Nunchi_Max,폭발 값,Float,100,gauge,게이지 끝
+Nunchi_MidMax,대사 구간 중간 끝,Float,80,게이지,ROUND_PLAN 7절
 Nunchi_MutterCooldown,혼잣말 쿨타임,Float,9,sec,실수가 이어져도 연속으로 말하지 않음
 Nunchi_MutterVolume,혼잣말 볼륨,Float,0.9,ratio,HTML 값
 Nunchi_MutterWait,다른 말이 끝나길 기다리는 한도,Float,3,sec,넘으면 그 혼잣말은 버림
 Nunchi_PerQueue,줄 1명당 초당 추가,Float,0.2,per sec,줄이 길수록 빨라짐
+Nunchi_PerQueueMul,줄 1명당 상승률 추가,Float,0.03,배,ROUND_PLAN 7절
 Nunchi_PerSecond,기본 초당 상승,Float,0.6,per sec,가만 있어도 쌓이는 압박
 Nunchi_ResumeHurry,폭발 뒤 첫 재촉,Float,20,sec,HTML 값
 Nunchi_ResumeRateMul,폭발 뒤 상승률 배수,Float,0.7,ratio,회차마다 누적
@@ -146,6 +241,8 @@ Nunchi_SighMin,한숨 간격 최소,Float,5,sec,눈치 높을수록 짧아짐
 Nunchi_SighVolume,한숨 볼륨,Float,0.8,ratio,뒤쪽 소리 크기
 Nunchi_Sorry,사과 감소량,Float,12,gauge,뒤돌아 사과의 보상
 Nunchi_SorryCooldown,사과 쿨타임,Float,8,sec,그동안 시간은 흐름
+Nunchi_StayHurryMul,조금만요 뒤 재촉 간격,Float,0.7,배,ROUND_PLAN 7절
+Nunchi_StaySighMul,조금만요 뒤 한숨 음량,Float,1.3,배,ROUND_PLAN 7절
 Nunchi_TrembleAt,손 떨림 시작,Float,60,gauge,2단계
 Pickup_CallMax,앞 번호 호출 최대 간격,Float,10,sec,기다림
 Pickup_CallMin,앞 번호 호출 최소 간격,Float,8,sec,기다림
@@ -224,6 +321,7 @@ Queue_ArriveMax,다음 손님 최대 간격,Float,25,sec,줄이 시간 따라 �
 Queue_ArriveMin,다음 손님 최소 간격,Float,17,sec,줄이 시간 따라 늘어남
 Queue_CookSpeed,주방 직원 걸음,Float,1.3,m/s,배경 움직임
 Queue_FirstArrive,첫 손님이 오기까지,Float,5,sec,줄이 곧 생김
+Queue_GrowGapSec,줄이 늘 때 최소 간격,Float,3,s,ROUND_PLAN 7절
 Queue_Max,줄 최대 인원,Int,4,명,압박의 상한
 Queue_MoveAgainSec,다음 재촉까지 간격,Float,7,sec,계속 안 비키면 또 재촉
 Queue_MoveClearDist,키오스크 앞을 비웠다고 보는 거리,Float,0.9,m,조금 물러나면 손님이 들어옴
@@ -236,6 +334,57 @@ Queue_YoLeaveSpeed,끼어든 사람이 물러나는 걸음,Float,1.5,m/s,할 일
 Queue_YoPrintSec,영수증 출력 뒤 뜯기까지,Float,1.3,sec,10초 만에 끝내는 대비
 Queue_YoSpeed,끼어드는 사람 걸음,Float,2.3,m/s,밀고 들어옴
 Queue_YoTapSec,끼어든 사람 터치 시간,Float,4.2,sec,10초 만에 끝내는 대비
+R1_AfterTapSec,카드 찍고 암전까지,Float,0.7,sec,승인음을 듣는 틈
+R1_BusArriveSec,안내 뒤 버스 출발까지,Float,6,sec,행인에게 물을 틈
+R1_BusDriveSec,버스 도착 주행,Float,7,sec,1회차는 짧게
+R1_DoneShowSec,주문 완료 화면 표시,Float,1.6,sec,번호를 보는 틈
+R1_ElderHeadDownDeg,어르신 고개 숙임,Float,28,deg,슬픈 얼굴 대신(T13)
+R1_ElderSceneSec,1-6 어르신 장면 길이,Float,15,sec,시트 값
+R1_ElderShotDist,뒷모습 컷을 시작할 문까지 거리,Float,2.7,m,카메라가 벽 안에 들도록
+R1_ElderWalkSpeed,어르신 나가는 걸음,Float,1.1,m/s,뒷모습을 오래 보임
+R1_GoalReadSec,목표를 읽을 틈,Float,2.5,sec,안내 전
+R1_GreetDelaySec,장면 뒤 알바생 인사까지,Float,0.5,sec,먼저 인사
+R1_OrderNumber,내 호출 번호,Int,274,번,T14
+R1_PickupWaitSec,호출까지,Float,5,sec,픽업도 매우 쉽게
+R1_StaffQuietSec,시선으로 알바생이 다시 말할 간격,Float,6,sec,반복 방지
+R2_CallFirstSec,주문 뒤 첫 호출까지,Float,6,s,2-7 대기
+R2_CallRepeatSec,다시 부름,Float,12,s,2-7 놓치면 다시 부른다
+R2_CallShowSec,화면 번호 표시,Float,3,s,2-7 잠깐 뜬다
+R2_CallVolume,호출 음성 음량,Float,0.3,ratio,2-7 작고 웅얼거린다
+R2_DoneShowSec,주문 완료 화면 표시,Float,2.5,s,T14 번호를 읽을 시간
+R3_SmsLimitSec,문자 번호 제한 시간,Float,30,s,3-8
+R3_VoiceListenSec,음성 상담 듣는 시간,Float,1.5,s,3-5
+R4_BigTextScale,큰 글씨 배율,Float,1.6,x,T21 결제 버튼이 밀려남
+R4_BisLookDist,전광판 보는 거리,Float,8.5,m,4-11
+R4_BisLookDot,전광판 보는 각도,Float,0.9,dot,4-11
+R4_Bus1ArriveSec,첫 버스 도착,Float,8,s,T25
+R4_CardOnlyBlinkSec,카드 전용 깜빡임,Float,1.2,s,튕김이 버그로 안 보이게
+R4_CashHoldSec,지폐 쥔 손 시간,Float,2,s,마지막 버스
+R4_DriverRepeatSec,기사 반복 간격,Float,6,s,N8
+R4_DuskExtraSec,노을 변화 추가 시간,Float,6,s,버스가 오는 동안 저문다
+R4_EndWalkSec,E-1 걷는 시간,Float,8,s,T28
+R4_GazeBodyTurn,시선 몸 회전,Float,1.2,1/s,4-10b
+R4_GazeTurn,시선 고개 회전,Float,5,1/s,4-10b
+R4_LastDuskSec,마지막 저무는 시간,Float,2,s,가로등 켜짐
+R4_NextBusSec,다음 버스 간격,Float,6,s,T26
+R4_NoteHoldSec,쪽지 읽은 뒤 지갑 닫기까지,Float,2,s,4-0
+R4_RevealSec,초점 맞는 시간,Float,1.6,s,4-21
+R4_RivalSpeed,뒷사람 걸음,Float,1.4,m/s,금방 결제
+R4_SadLookSec,시선 내리는 시간,Float,1.2,s,T13
+R4_SadPitch,돌아설 때 시선 각도,Float,-28,deg,T13
+R4_SadTurnSec,돌아서는 시간,Float,1.6,s,T13
+R4_TraySec,쟁반 지나는 시간,Float,2.4,s,4-10a
+R4_WatchHour1,첫 손목시계 바늘,Int,2,h,시트 값
+R4_WatchHour2,둘째 손목시계 바늘,Int,4,h,시트 값
+R4_WatchHour3,셋째 손목시계 바늘,Int,6,h,시트 값
+Round_BlinkCloseSec,눈 감기,Float,0.6,s,ROUND_PLAN 7절
+Round_BlinkOpenSec,눈 뜨기,Float,0.9,s,ROUND_PLAN 7절
+Round_GoalKeepSec,"목표 표시 시간, 0은 계속",Float,0,s,ROUND_PLAN 7절
+Round_HandShowSec,손 보여 주기,Float,1.5,s,ROUND_PLAN 7절
+Run_RoundTargetSec,회차당 시간,Float,120,s,ROUND_PLAN 7절
+Run_TotalTargetSec,전체 시간,Float,600,s,ROUND_PLAN 7절
+Shot_BackDist,뒷모습 컷 거리,Float,4,m,ROUND_PLAN 7절
+Shot_BackHeight,뒷모습 컷 높이,Float,1.5,m,ROUND_PLAN 7절
 Store_FryerBeepMax,튀김기 소리 최대 간격,Float,32,s,주방 생활음
 Store_FryerBeepMin,튀김기 소리 최소 간격,Float,18,s,주방 생활음
 Store_PhoneNotifyMax,알바생 폰 알림 최대 간격,Float,40,s,폰만 보는 알바생
@@ -250,8 +399,8 @@ Street_ReadNagSec,돋보기 대사 반복 간격,Float,16,sec,막힌 사람에�
 Street_StudentWalkSpeed,학생 걷는 속도,Float,1.3,m/s,할아버지보다 빠름
 Street_WorkerRetrySec,직장인을 놓친 뒤 재등장,Float,2.5,sec,다시 말 걸 기회
 Street_WorkerWalkSpeed,직장인 걷는 속도,Float,1.28,m/s,멈추지 않고 지나감
-Traffic_BusRetrySec,버스 운행 중 차 등장 재시도,Float,3,sec,HTML 값
-Traffic_BusWaitMaxSec,버스가 차선 빌 때까지 기다리는 최대,Float,8,sec,HTML 값
+Traffic_BusRetrySec,버스 운행 중 차 등장 재시도,Float,3,sec,"HTML 값, 버스 차선 비움"
+Traffic_BusWaitMaxSec,버스가 차선 빌 때까지 기다리는 최대,Float,8,sec,"HTML 값, 막힘 방지"
 Traffic_CarSpeedMax,차 속도 최대,Float,11,m/s,HTML 값
 Traffic_CarSpeedMin,차 속도 최소,Float,8.8,m/s,HTML 값
 Traffic_CarVolume,차 지나가는 소리 볼륨,Float,0.55,ratio,HTML 값
@@ -261,10 +410,10 @@ Traffic_CrosswalkGapMin,횡단보도 신호음 간격 최소,Float,22,sec,HTML�
 Traffic_CrosswalkVolume,횡단보도 신호음 볼륨,Float,0.45,ratio,멀리서 들리는 배경
 Traffic_EndX,차가 사라지는 x 거리,Float,130,m,화면 밖에서 끝
 Traffic_FirstGapMax,차 첫 등장 순번 간격 최대,Float,5,sec,HTML 값
-Traffic_FirstGapMin,차 첫 등장 순번 간격 최소,Float,2,sec,HTML 값
+Traffic_FirstGapMin,차 첫 등장 순번 간격 최소,Float,2,sec,"HTML 값, 처음부터 몰리지 않게"
 Traffic_FirstSec,첫 차 등장까지,Float,1,sec,HTML 값
-Traffic_GapMax,지나간 뒤 다시 나오기까지 최대,Float,11,sec,HTML 값
-Traffic_GapMin,지나간 뒤 다시 나오기까지 최소,Float,2,sec,HTML 값
+Traffic_GapMax,지나간 뒤 다시 나오기까지 최대,Float,11,sec,"HTML 값, 큰길 빈도"
+Traffic_GapMin,지나간 뒤 다시 나오기까지 최소,Float,2,sec,"HTML 값, 큰길 빈도"
 Traffic_HearDist,차 소리가 나는 플레이어 거리,Float,26,m,곁을 지날 때 한 번
 Traffic_HearMinZ,큰길 소리가 들리는 플레이어 z,Float,24,m,골목 안쪽은 조용함
 Traffic_LaneCheckPast,정류장 지나 검사하는 거리,Float,8,m,HTML 값
@@ -274,3 +423,5 @@ Traffic_ScooterSpeed,오토바이 속도,Float,12,m/s,HTML 값
 Traffic_ScooterVolume,오토바이 소리 볼륨,Float,0.5,ratio,HTML 값
 Traffic_SoundLead,차 소리를 앞쪽에 두는 거리,Float,14,m,지나가는 방향으로 소리가 먼저 감
 Traffic_StartX,차가 나오는 x 거리,Float,125,m,화면 밖에서 시작
+Wallet_PartRadius,지갑 클릭 자리 반지름,Float,0.07,화면 높이,ROUND_PLAN 7절
+Watch_LookSec,손목시계 보는 시간,Float,2,s,ROUND_PLAN 7절

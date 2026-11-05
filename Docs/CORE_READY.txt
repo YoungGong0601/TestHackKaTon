@@ -1,0 +1,6 @@
+CORE 1단계 완료. 2026-11-05
+시그니처는 ROUND_PLAN 6절 그대로 컴파일됨. 몸체 구현 완료. 사용법은 Docs/CORE_API.md.
+씬 8개, Age20 Age40 Age60 Age80, ChapterFlow, Build Settings 준비됨. 구 Director는 복제 씬에서 제거. QueueManager는 Store 계열 Director 오브젝트에 남아 있음.
+PlayerSpawn id는 씬 이름 소문자.
+공통 물건: PH_Kiosk/Sticker_CardOnly, Room/PH_Poster(Store 계열), BusStop_Area/PH_Notice_Cashless(Stop 계열), PH_BusInterior(y -40) 안 Driver와 PH_BusTerminal(PayPoint, Interactable), Anchors/Anchor_BusInside. 문의 당기기 스티커는 기존 Sticker_Pull.
+PH_Kiosk의 화면 14개는 빠짐. 씬의 KioskCanvas 아래에 Pack 프리팹을 넣는다.

@@ -16,10 +16,8 @@ public sealed class KioskLens
         if (!screen) return;
 
         // 번짐 반지름은 캔버스 픽셀(1080 x 1920) 기준, 셰이더가 mip 위에서 16점으로 번지게 한다
-        float px = 0f;
-        var profile = GameState.I != null ? GameState.I.Profile : null;
-        if (profile != null && profile.kioskBlur)
-            px = Bal.G("Kiosk_BlurBase", 12f) + blurStep * Bal.G("Nunchi_ScreenBlurPerStep", 5f);
+        float px = Debuff.KioskBlur;
+        if (px > 0f) px += blurStep * Bal.G("Nunchi_ScreenBlurPerStep", 5f);
 
         screen.GetPropertyBlock(block);
         block.SetFloat(BlurRadius, px);

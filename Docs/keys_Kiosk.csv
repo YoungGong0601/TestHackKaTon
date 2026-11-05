@@ -1,6 +1,6 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
 Kiosk_Timer,터치 없을 때 처음으로 돌아가는 시간,Float,90,sec,SPEC 90초
-Kiosk_TimerLow,남은 시간 강조 시작,Int,15,sec,막판 압박
+Kiosk_TimerLow,남은 시간 강조 시작,Int,10,sec,막판 압박
 Kiosk_WrongTouch,오터치 눈치 상승,Float,4,gauge,SPEC 오터치 +4
 Kiosk_WrongSlot,틀린 틈 눈치 상승,Float,6,gauge,SPEC 잘못된 카드 슬롯 +6
 Kiosk_ErrorVolume,거부 소리 볼륨,Float,0.3,ratio,오터치에는 안 나고 카드 거부 등 진짜 거부에만 작게
@@ -37,8 +37,6 @@ Kiosk_BlowupTurnSec,폭발 때 뒤도는 시간,Float,0.7,sec,강제로 뒤돎
 Kiosk_BlowupMaxSec,폭발 연출 최대 대기,Float,45,sec,연출 멈춤 방지
 Kiosk_BlowupAloneSec,줄 없을 때 폭발 대기,Float,3,sec,시험과 단독 실행용
 Kiosk_Fov,키오스크 앞 화각,Float,60,deg,화면이 크게 보임
-Elder_KioskEye,키오스크 앞 눈높이,Float,1.47,m,인물별 값
-Elder_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,인물별 값
 Kiosk_Dist,화면과의 거리,Float,0.76,m,시점 고정 자리
 Kiosk_DistDown,아래 볼 때 거리,Float,0.6,m,틈을 찾는 자세
 Kiosk_AimY,바라보는 높이,Float,1.372,m,화면 중심

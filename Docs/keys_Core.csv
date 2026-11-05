@@ -1,17 +1,131 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
-Elder_MoveSpeed,노인 걸음 속도,Float,1.15,m/s,답답할 만큼 느린 걸음
-Elder_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,뒷걸음은 더 느리게
-Elder_EyeHeight,눈높이,Float,1.56,m,구부정한 노인 눈높이
-Elder_StepStride,걸음 소리 간격,Float,0.62,m,보폭이 좁은 걸음
-Elder_BobRate,고개 흔들림 속도,Float,5.1,rad/m,걸음과 맞는 흔들림 주기
-Elder_BobHeight,고개 위아래 폭,Float,0.042,m,비대칭 걸음 높이
-Elder_LimpRoll,다리 절기 기울기,Float,0.016,rad,왼다리 불편함 표현
-Elder_LimpSway,다리 절기 좌우 폭,Float,0.018,m,왼다리 불편함 표현
 Player_MouseSens,마우스 감도,Float,0.0019,rad/px,시점 회전 감도
 Player_PitchUp,위 시선 한계,Float,1.05,rad,고개 드는 한계
 Player_PitchDown,아래 시선 한계,Float,-1.1,rad,고개 숙이는 한계
 Hand_TrembleScale,손 떨림이 포인터에 주는 폭,Float,0.012,화면 비율,키오스크 포인터 떨림
 Audio_Master,전체 음량,Float,0.9,배,전체 소리 크기
-Elder_CaneEverySteps,지팡이 소리 주기,Float,2,걸음,절뚝이는 박자
-Elder_BreathEverySteps,숨소리 주기,Float,19,걸음,가끔 숨이 찬다
 Chapter_FadeInSec,Director 없는 챕터의 암전 풀림,Float,1,s,PlainChapter 기본
+Age20_MoveSpeed,걸음 속도,Float,2.2,m/s,ROUND_PLAN 7절
+Age40_MoveSpeed,걸음 속도,Float,1.9,m/s,ROUND_PLAN 7절
+Age60_MoveSpeed,걸음 속도,Float,1.5,m/s,ROUND_PLAN 7절
+Age80_MoveSpeed,걸음 속도,Float,0.9,m/s,ROUND_PLAN 7절
+Age20_EyeHeight,눈높이,Float,1.68,m,ROUND_PLAN 7절
+Age40_EyeHeight,눈높이,Float,1.66,m,ROUND_PLAN 7절
+Age60_EyeHeight,눈높이,Float,1.62,m,ROUND_PLAN 7절
+Age80_EyeHeight,눈높이,Float,1.56,m,ROUND_PLAN 7절
+Age20_KioskEye,키오스크 앞 눈높이,Float,1.58,m,ROUND_PLAN 7절
+Age40_KioskEye,키오스크 앞 눈높이,Float,1.56,m,ROUND_PLAN 7절
+Age60_KioskEye,키오스크 앞 눈높이,Float,1.52,m,ROUND_PLAN 7절
+Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
+Age20_KioskBlur,키오스크 글씨 번짐,Float,0,px,ROUND_PLAN 7절
+Age40_KioskBlur,키오스크 글씨 번짐,Float,3,px,ROUND_PLAN 7절
+Age60_KioskBlur,키오스크 글씨 번짐,Float,7,px,ROUND_PLAN 7절
+Age80_KioskBlur,키오스크 글씨 번짐,Float,12,px,ROUND_PLAN 7절
+Age20_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0,배,ROUND_PLAN 7절
+Age40_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.4,배,ROUND_PLAN 7절
+Age60_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.8,배,ROUND_PLAN 7절
+Age80_PostBlurMul,평온 단계 번짐이 남는 비율,Float,1,배,ROUND_PLAN 7절
+Age20_MuffleCutoff,먹먹함 저역 통과,Float,22000,Hz,ROUND_PLAN 7절
+Age40_MuffleCutoff,먹먹함 저역 통과,Float,6000,Hz,ROUND_PLAN 7절
+Age60_MuffleCutoff,먹먹함 저역 통과,Float,2500,Hz,ROUND_PLAN 7절
+Age80_MuffleCutoff,먹먹함 저역 통과,Float,1000,Hz,ROUND_PLAN 7절
+Age20_Tremble,손떨림,Float,0,0~1,ROUND_PLAN 7절
+Age40_Tremble,손떨림,Float,0,0~1,ROUND_PLAN 7절
+Age60_Tremble,손떨림,Float,0.6,0~1,ROUND_PLAN 7절
+Age80_Tremble,손떨림,Float,1,0~1,ROUND_PLAN 7절
+Age20_CursorLagSec,커서 지연,Float,0,s,ROUND_PLAN 7절
+Age40_CursorLagSec,커서 지연,Float,0,s,ROUND_PLAN 7절
+Age60_CursorLagSec,커서 지연,Float,0.12,s,ROUND_PLAN 7절
+Age80_CursorLagSec,커서 지연,Float,0.2,s,ROUND_PLAN 7절
+Age20_TouchMissChance,옆 버튼 눌림 확률,Float,0,비율,ROUND_PLAN 7절
+Age40_TouchMissChance,옆 버튼 눌림 확률,Float,0,비율,ROUND_PLAN 7절
+Age60_TouchMissChance,옆 버튼 눌림 확률,Float,0.2,비율,ROUND_PLAN 7절
+Age80_TouchMissChance,옆 버튼 눌림 확률,Float,0.3,비율,ROUND_PLAN 7절
+Age20_TouchFailChance,터치 안 먹음 확률,Float,0,비율,ROUND_PLAN 7절
+Age40_TouchFailChance,터치 안 먹음 확률,Float,0,비율,ROUND_PLAN 7절
+Age60_TouchFailChance,터치 안 먹음 확률,Float,0.08,비율,ROUND_PLAN 7절
+Age80_TouchFailChance,터치 안 먹음 확률,Float,0.12,비율,ROUND_PLAN 7절
+Age20_NunchiFillSec,게이지가 차는 시간,Float,900,s,ROUND_PLAN 7절
+Age40_NunchiFillSec,게이지가 차는 시간,Float,120,s,ROUND_PLAN 7절
+Age60_NunchiFillSec,게이지가 차는 시간,Float,80,s,ROUND_PLAN 7절
+Age80_NunchiFillSec,게이지가 차는 시간,Float,60,s,ROUND_PLAN 7절
+Age20_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age40_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age60_MashCount,계단 마싱 횟수,Float,10,번,ROUND_PLAN 7절
+Age80_MashCount,계단 마싱 횟수,Float,40,번,ROUND_PLAN 7절
+Age20_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age40_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age60_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age80_BackSpeedMul,뒤로 걸을 때 속도 배율,Float,0.7,배,ROUND_PLAN 7절
+Age20_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age40_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age60_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age80_StepStride,걸음 소리 간격,Float,0.62,m,ROUND_PLAN 7절
+Age20_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age40_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age60_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age80_BobRate,고개 흔들림 속도,Float,5.1,rad/m,ROUND_PLAN 7절
+Age20_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age40_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age60_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age80_BobHeight,고개 위아래 폭,Float,0.042,m,ROUND_PLAN 7절
+Age20_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age40_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age60_LimpRoll,다리 절기 기울기,Float,0,rad,ROUND_PLAN 7절
+Age80_LimpRoll,다리 절기 기울기,Float,0.016,rad,ROUND_PLAN 7절
+Age20_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age40_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age60_LimpSway,다리 절기 좌우 폭,Float,0,m,ROUND_PLAN 7절
+Age80_LimpSway,다리 절기 좌우 폭,Float,0.018,m,ROUND_PLAN 7절
+Age20_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age40_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age60_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age80_CaneEverySteps,"지팡이 소리 주기, 0이면 없음",Float,0,걸음,ROUND_PLAN 7절
+Age20_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age40_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age60_BreathEverySteps,숨소리 주기,Float,0,걸음,ROUND_PLAN 7절
+Age80_BreathEverySteps,숨소리 주기,Float,19,걸음,ROUND_PLAN 7절
+Age80_KioskTimeoutSec,4회차 시간 초과,Float,40,s,ROUND_PLAN 7절
+Run_RoundTargetSec,회차당 시간,Float,120,s,ROUND_PLAN 7절
+Run_TotalTargetSec,전체 시간,Float,600,s,ROUND_PLAN 7절
+Lens_FocusPeriodSec,초점 흐려짐 주기,Float,8,s,ROUND_PLAN 7절
+Lens_FocusBlurSec,초점 흐려짐 길이,Float,2,s,ROUND_PLAN 7절
+Watch_LookSec,손목시계 보는 시간,Float,2,s,ROUND_PLAN 7절
+Cash_BounceCount,지폐 튕김,Int,3,번,ROUND_PLAN 7절
+Round_BlinkCloseSec,눈 감기,Float,0.6,s,ROUND_PLAN 7절
+Round_BlinkOpenSec,눈 뜨기,Float,0.9,s,ROUND_PLAN 7절
+Round_HandShowSec,손 보여 주기,Float,1.5,s,ROUND_PLAN 7절
+Round_GoalKeepSec,"목표 표시 시간, 0은 계속",Float,0,s,ROUND_PLAN 7절
+Shot_BackDist,뒷모습 컷 거리,Float,4,m,ROUND_PLAN 7절
+Shot_BackHeight,뒷모습 컷 높이,Float,1.5,m,ROUND_PLAN 7절
+Nunchi_LowMax,대사 구간 낮음 끝,Float,40,게이지,ROUND_PLAN 7절
+Nunchi_MidMax,대사 구간 중간 끝,Float,80,게이지,ROUND_PLAN 7절
+Nunchi_StayHurryMul,조금만요 뒤 재촉 간격,Float,0.7,배,ROUND_PLAN 7절
+Nunchi_StaySighMul,조금만요 뒤 한숨 음량,Float,1.3,배,ROUND_PLAN 7절
+Nunchi_PerQueueMul,줄 1명당 상승률 추가,Float,0.03,배,ROUND_PLAN 7절
+Queue_GrowGapSec,줄이 늘 때 최소 간격,Float,3,s,ROUND_PLAN 7절
+Mash_DescendSec,계단 내려가는 시간,Float,1.4,s,ROUND_PLAN 7절
+Wallet_PartRadius,지갑 클릭 자리 반지름,Float,0.07,화면 높이,ROUND_PLAN 7절
+Kiosk_ToastSec,키오스크 알림 시간,Float,1.8,s,ROUND_PLAN 7절
+End_StatSec,통계 문구 시간,Float,5,s,ROUND_PLAN 7절
+End_TitleMinSec,제목 뒤 클릭을 받기까지,Float,1.5,s,ROUND_PLAN 7절
+Age20_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age20_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age40_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age60_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
+Age80_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"

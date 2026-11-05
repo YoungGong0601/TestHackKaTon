@@ -16,9 +16,11 @@ public class GameState : MonoBehaviour
     public CharacterProfile Profile { get; private set; }
     public OrderData Order { get; private set; } = new();
     public RunStats Stats { get; private set; } = new();
-    public bool DebugToKiosk;   // F5. 키오스크가 있는 씬의 Director가 보고 끈다
 
     bool loading;
+    Coroutine finish;
+
+    public ChapterEntry CurrentEntry => Current;
 
     ChapterEntry Current => flow != null && chapterIndex >= 0 && chapterIndex < flow.chapters.Count ? flow.chapters[chapterIndex] : null;
 
@@ -87,34 +89,52 @@ public class GameState : MonoBehaviour
             player.HoldStill = false;
             player.SetMode(PlayerController.Mode.Fps);
         }
-        if (HandRig.I != null) HandRig.I.Clear();
+        if (HandRig.I != null)
+        {
+            HandRig.I.Clear();
+            HandRig.I.ApplyLook(Profile != null ? Profile.handLook : 0);
+        }
+        if (Wallet.I != null) Wallet.I.Clear();
         // 제목은 챕터 순서의 맨 앞에서만. 씬 코드는 Hud.TitleOpen이 꺼질 때까지 기다린다
         if (chapterIndex == 0 && Hud.I != null) Hud.I.ShowTitle();
     }
 
-    // 다음 챕터 로드, 마지막이면 결과
+    // 다음 챕터 로드, 마지막이면 엔딩
     public void CompleteChapter()
     {
         if (loading) return;
-        if (flow == null || chapterIndex + 1 >= flow.chapters.Count) StartCoroutine(Finish());
-        else JumpChapter(chapterIndex + 1);
+        if (flow == null || chapterIndex + 1 >= flow.chapters.Count) { if (finish == null) finish = StartCoroutine(Finish()); }
+        else JumpChapter(chapterIndex + 1, true);
     }
 
-    public void JumpChapter(int index)
+    // eyes: 다음 프로필이 다르면 암전 대신 눈을 감는다. 진행만 쓰고 디버그와 처음으로는 쓰지 않는다
+    public void JumpChapter(int index, bool eyes = false)
     {
         if (loading || flow == null || index < 0 || index >= flow.chapters.Count) return;
-        StartCoroutine(Load(index));
+        StopEnding();
+        StartCoroutine(Load(index, eyes));
     }
 
-    // 결과 화면을 닫을 때. 첫 챕터로
+    // 엔딩 중 시연자 키로 옮길 때 엔딩 화면을 걷는다
+    void StopEnding()
+    {
+        if (finish == null) return;
+        StopCoroutine(finish);
+        finish = null;
+        if (RoundUi.I != null) RoundUi.I.End(false);
+    }
+
+    // 엔딩이 끝날 때와 처음으로 키. 첫 챕터로
     public void Restart()
     {
         Order = new OrderData();
         Stats = new RunStats { startTime = Time.time };
+        Round.ProfileChanged = false;
+        if (Wallet.I != null) Wallet.I.ResetRun();
         JumpChapter(0);
     }
 
-    IEnumerator Load(int index)
+    IEnumerator Load(int index, bool eyes)
     {
         loading = true;
         if (PlayerController.I != null) PlayerController.I.Freeze(true);
@@ -123,7 +143,9 @@ public class GameState : MonoBehaviour
             Hud.I.Prompt(null);
             Hud.I.ClearSubs();
             Hud.I.Views(null);
-            yield return Hud.I.Fade(1f, 0.7f);
+            Round.ProfileChanged = Current != null && flow.chapters[index].profile != Current.profile;
+            if (eyes && Round.ProfileChanged) yield return Round.CloseEyes();
+            else yield return Hud.I.Fade(1f, 0.7f);
         }
         chapterIndex = index;
         Profile = Current.profile;
@@ -143,33 +165,27 @@ public class GameState : MonoBehaviour
         loading = true;
         if (Stats.endTime < 0f) Stats.endTime = Time.time;
         if (PlayerController.I != null) PlayerController.I.Freeze(true);
-        if (Hud.I != null)
-        {
-            yield return Hud.I.Fade(1f, 0.7f);
-            Hud.I.ShowResult();
-        }
         loading = false;
+        yield return Ending.Play();
+        finish = null;
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-    // F1 표시, F2 다음 챕터, F3 이전 챕터, F5 키오스크로, F7 시트 다시 읽기. F6은 NunchiSystem
+    // 시연자 키. 빌드에도 들어간다. Ctrl+Shift 없이는 동작하지 않는다
     void Update()
     {
         var kb = Keyboard.current;
-        if (kb == null) return;
+        if (kb == null || !kb.ctrlKey.isPressed || !kb.shiftKey.isPressed) return;
         if (kb.f1Key.wasPressedThisFrame && Hud.I != null) Hud.I.ToggleDebug();
         if (kb.f2Key.wasPressedThisFrame) CompleteChapter();
         if (kb.f3Key.wasPressedThisFrame) JumpChapter(chapterIndex - 1);
-        if (kb.f5Key.wasPressedThisFrame && flow != null)
+        if (kb.f6Key.wasPressedThisFrame)
         {
-            int i = flow.chapters.FindIndex(c => c.hasKiosk);
-            if (i >= 0)
-            {
-                DebugToKiosk = true;
-                if (i != chapterIndex) JumpChapter(i);
-            }
+            var nunchi = FindAnyObjectByType<NunchiSystem>();
+            if (nunchi != null) nunchi.Add(100f);
         }
         if (kb.f7Key.wasPressedThisFrame) ConfigTableLoader.Load();
+        if (kb.homeKey.wasPressedThisFrame) Restart();
+        for (int i = 0; i < 8; i++)
+            if (kb[Key.Digit1 + i].wasPressedThisFrame) JumpChapter(i);
     }
-#endif
 }

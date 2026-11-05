@@ -1,0 +1,24 @@
+ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
+R4_BigTextScale,큰 글씨 배율,Float,1.6,x,T21 결제 버튼이 밀려남
+R4_Bus1ArriveSec,첫 버스 도착,Float,8,s,T25
+R4_NextBusSec,다음 버스 간격,Float,6,s,T26
+R4_DriverRepeatSec,기사 반복 간격,Float,6,s,N8
+R4_WatchHour1,첫 손목시계 바늘,Int,2,h,시트 값
+R4_WatchHour2,둘째 손목시계 바늘,Int,4,h,시트 값
+R4_WatchHour3,셋째 손목시계 바늘,Int,6,h,시트 값
+R4_CardOnlyBlinkSec,카드 전용 깜빡임,Float,1.2,s,튕김이 버그로 안 보이게
+R4_GazeTurn,시선 고개 회전,Float,5,1/s,4-10b
+R4_GazeBodyTurn,시선 몸 회전,Float,1.2,1/s,4-10b
+R4_SadPitch,돌아설 때 시선 각도,Float,-28,deg,T13
+R4_SadLookSec,시선 내리는 시간,Float,1.2,s,T13
+R4_SadTurnSec,돌아서는 시간,Float,1.6,s,T13
+R4_RivalSpeed,뒷사람 걸음,Float,1.4,m/s,금방 결제
+R4_TraySec,쟁반 지나는 시간,Float,2.4,s,4-10a
+R4_BisLookDist,전광판 보는 거리,Float,8.5,m,4-11
+R4_BisLookDot,전광판 보는 각도,Float,0.9,dot,4-11
+R4_DuskExtraSec,노을 변화 추가 시간,Float,6,s,버스가 오는 동안 저문다
+R4_LastDuskSec,마지막 저무는 시간,Float,2,s,가로등 켜짐
+R4_CashHoldSec,지폐 쥔 손 시간,Float,2,s,마지막 버스
+R4_RevealSec,초점 맞는 시간,Float,1.6,s,4-21
+R4_EndWalkSec,E-1 걷는 시간,Float,8,s,T28
+R4_NoteHoldSec,쪽지 읽은 뒤 지갑 닫기까지,Float,2,s,4-0

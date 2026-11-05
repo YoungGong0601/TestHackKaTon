@@ -1,7 +1,4 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
-Elder_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,문 앞 머뭇거림
-Elder_PushedAsideSpeed,폭발 때 옆으로 밀려나는 걸음,Float,1.5,m/s,떠밀리는 느낌
-Elder_PushedBackSpeed,폭발 때 줄 뒤로 가는 걸음,Float,1.7,m/s,쫓겨나는 느낌
 Bus_LeaveAccel,내려 준 버스 가속,Float,1.7,m/s2,떠나는 버스
 Bus_LeaveMaxSpeed,내려 준 버스 최고 속도,Float,9,m/s,떠나는 버스
 Door_Kick,유리문 밀기 한 번의 충격,Float,0.55,rad/s,덜컥거리는 정도
