@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -45,6 +46,48 @@ public static class DressStore
         int[] looks = { 0, 12, 6, 4, 14, 13, 2, 3, 1 };
         for (int i = 0; i < guests.Length; i++) Wear(cafe, "NPCs/NPC_" + guests[i], looks[i]);
         Save(cafe);
+        Corridor();
+    }
+
+    // 문을 열면 보이는 복도가 비어 있어 이웃집 문과 생활 소품을 둔다. 집 안 벽지가 복도 쪽으로 드러난 문 둘레도 덮는다
+    static void Corridor()
+    {
+        var s = Open("R1_Home");
+        var old = s.GetRootGameObjects().FirstOrDefault(g => g.name == "CorridorProps");
+        if (old != null) Object.DestroyImmediate(old);
+        var root = new GameObject("CorridorProps").transform;
+        const float Floor = -0.135f, Rail = 3.72f;
+        var door = Find(s, "PH_Door_Home");
+        foreach (var part in new[] { door.Find("Visual").GetChild(0), door.Find("Hinge").GetChild(0) })
+            foreach (var x in new[] { -6.6f, -3.3f, 3.3f, 6.6f })
+            {
+                var go = (GameObject)PrefabUtility.InstantiatePrefab(PrefabUtility.GetCorrespondingObjectFromOriginalSource(part.gameObject), root);
+                go.transform.SetPositionAndRotation(part.position + new Vector3(x, 0f, 0.1f), part.rotation);   // 우리 집 문은 벽(z 2.47)보다 안쪽이다
+                go.transform.localScale = part.lossyScale;
+            }
+        Prop(root, "Models/Store/StorePlant.fbx", new Vector3(-1.35f, Floor, Rail), 30f);
+        Prop(root, "Models/Store/StorePlant.fbx", new Vector3(4.6f, Floor, Rail), 200f);
+        Prop(root, "Models/Vehicles/Bicycle.fbx", new Vector3(2.0f, Floor, Rail + 0.03f), 90f);
+        Prop(root, "Models/Store/StoreExtinguisher.fbx", new Vector3(1.5f, Floor, 2.68f), 180f);
+        var wall = AssetDatabase.LoadAssetAtPath<Material>(Art + "Materials/M_Tile_LayoutHome_CorridorWall.mat");
+        Panel(root, wall, new Vector3(-0.8f, 1.19f, 2.48f), new Vector3(0.56f, 2.66f, 0.01f));
+        Panel(root, wall, new Vector3(0.8f, 1.19f, 2.48f), new Vector3(0.56f, 2.66f, 0.01f));
+        Panel(root, wall, new Vector3(0f, 2.275f, 2.48f), new Vector3(1.04f, 0.49f, 0.01f));
+        Save(s);
+    }
+
+    static void Prop(Transform root, string model, Vector3 pos, float yaw) =>
+        Place(new Item { model = model, name = Path.GetFileNameWithoutExtension(model) }, root, pos, Quaternion.Euler(0f, yaw, 0f));
+
+    static void Panel(Transform root, Material mat, Vector3 pos, Vector3 size)
+    {
+        var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.name = "DoorWall";
+        Object.DestroyImmediate(go.GetComponent<Collider>());
+        go.transform.SetParent(root, false);
+        go.transform.position = pos;
+        go.transform.localScale = size;
+        go.GetComponent<Renderer>().sharedMaterial = mat;
     }
 
     static void Wear(Scene s, string path, int look)
