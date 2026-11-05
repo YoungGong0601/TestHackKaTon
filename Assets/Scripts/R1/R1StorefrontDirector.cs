@@ -78,7 +78,7 @@ public class R1StorefrontDirector : MonoBehaviour
         {
             busV = Mathf.Min(Bal.G("Bus_LeaveMaxSpeed", 9f), busV + dt * Bal.G("Bus_LeaveAccel", 1.7f));
             bus.position += bus.right * (busV * dt);   // PH_Bus의 앞은 로컬 +X
-            if (Mathf.Abs(bus.position.x) > 46f)
+            if (Mathf.Abs(bus.position.x) > 125f)   // 안개 끝(플레이어에서 110m) 너머, 도로는 140까지 있다
             {
                 bus.gameObject.SetActive(false);
                 busGo = false;
