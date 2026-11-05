@@ -42,7 +42,7 @@ public class R1BurgerPack : KioskPack
         switch (id)
         {
             case "burger":
-                GameState.I.Order.item = "불고기 버거 세트";
+                GameState.I.Order.item = KioskPick.SetName;
                 Show("pay");
                 HandRig.I.Equip(ItemId.Card);
                 AudioManager.I.Vo("k_card");
@@ -60,7 +60,7 @@ public class R1BurgerPack : KioskPack
 
     void OnEmpty()
     {
-        Ctl.Toast(screen == "pay" ? "3 카드" : "메뉴");
+        Ctl.Toast(screen == "pay" ? $"{ItemKeys.Of(ItemId.Card)} 카드" : "메뉴");
     }
 
     void OnPaid()

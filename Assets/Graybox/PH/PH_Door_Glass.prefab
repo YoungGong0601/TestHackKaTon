@@ -50,6 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: KioskGame::Readable
   blurred: {fileID: 1555096196407488792}
   sharp: {fileID: 8804810749645032578}
+  wide: 0
+  postBlur: 1
   onRead:
     m_PersistentCalls:
       m_Calls: []
@@ -90,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &830831910697666059
 Transform:
   m_ObjectHideFlags: 0
@@ -359,7 +361,7 @@ GameObject:
   - component: {fileID: 1633465047867757906}
   - component: {fileID: 5785669073130064608}
   - component: {fileID: 926540964238081749}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Plate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -414,7 +416,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bb8e3855bcedbd1408cc62f2585160c6, type: 2}
+  - {fileID: 2100000, guid: 8ecb027ade2bef043bfd248aa9c5c0e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -1,10 +1,9 @@
-// 4-3~4-10b: 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도하고, 지폐가 3번 튕기면 시선을 받으며 문까지 걸어 나간다. 가게를 나가는 길은 이것뿐이다.
-// 도움을 받는 분기와 성공 경로는 없다. R4_Store 씬 Director 오브젝트에 부착.
+// 4회차 가게: 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도한다. 지폐가 3번 튕기면 뒷사람과 말을 나누고 돌아서서 시선을 받으며 못 사고 나간다.
+// R4_Store 씬 Director 오브젝트에 부착.
 // 배치: kiosk = PH_Kiosk, pack = KioskCanvas (R4ProtoPack), queue = QueueManager
 // 배치: stand = Anchor_KioskStand, kioskLook = Anchor_KioskLook, staffPos = Anchor_Staff, exitPos = Anchor_FrontDoor
 // 배치: orderKiosk = Interact_Order, talkStaff = Interact_Staff, brokenKiosk = Interact_Broken, exitDoor = Interact_Exit (label 나가기)
 // 배치: pool = 줄 손님 NPC_Queue0~4 (맨 앞 사람이 뒷사람), tray = Tray_Pass (쟁반, 처음 꺼짐), trayFrom, trayTo = 쟁반이 지나는 양 끝
-// 배치: watchers = 문까지 가는 길 양옆 사람들 (NpcMover, 처음 꺼짐)
 using System.Collections;
 using UnityEngine;
 
@@ -15,7 +14,6 @@ public class R4StoreDirector : MonoBehaviour
     [SerializeField] KioskController kiosk;
     [SerializeField] R4ProtoPack pack;
     [SerializeField] QueueManager queue;
-    [SerializeField] R4Gaze gaze;
     [SerializeField] Transform stand;
     [SerializeField] Transform kioskLook;
     [SerializeField] Transform staffPos;
@@ -28,7 +26,6 @@ public class R4StoreDirector : MonoBehaviour
     [SerializeField] GameObject tray;
     [SerializeField] Transform trayFrom;
     [SerializeField] Transform trayTo;
-    [SerializeField] NpcMover[] watchers;
 
     Leave leave;
     NpcMover rival;
@@ -44,7 +41,6 @@ public class R4StoreDirector : MonoBehaviour
     {
         exitDoor.active = false;
         if (tray) tray.SetActive(false);
-        foreach (var w in watchers) w.gameObject.SetActive(false);
         GameObject fryer = GameObject.Find("Anchor_Fryer");
         fryerPos = fryer ? fryer.transform : staffPos;
     }
@@ -67,14 +63,12 @@ public class R4StoreDirector : MonoBehaviour
         exitDoor.onUse.RemoveListener(OnExit);
         kiosk.StaffCalled -= OnStaffCalled;
         pack.Bounced -= OnBounced;
-        if (Wallet.I) Wallet.I.NoteMissed -= OnNoteMissed;
     }
 
     IEnumerator Start()
     {
         AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.5f));
         yield return Round.Open();
-        Wallet.I.NoteMissed += OnNoteMissed;
         PlayerController.I.Freeze(true);
         yield return Ui.Say(null, "주문은... 어디다 하는 거지.", Me + "_whereorder");
         if (!ordered) PlayerController.I.Freeze(false);
@@ -96,8 +90,6 @@ public class R4StoreDirector : MonoBehaviour
             AudioManager.I.Play("phone_notify", staffPos.position, 0.22f);
         }
     }
-
-    void OnNoteMissed() => Ui.Say(null, "지갑에 뭐라 썼더라...", Me + "_wallet");
 
     // ---- 알바생과 고장 난 기계 ----
 
@@ -221,60 +213,41 @@ public class R4StoreDirector : MonoBehaviour
 
     void OnFull()
     {
-        if (leave != Leave.None) return;
+        if (leave != Leave.None || pack.Done) return;
         leave = Leave.Back;
         pack.Stop();
         kiosk.Finish();
     }
 
-    // 4-10a. 입력 없음
+    // 4-10a. 입력 없음. 슬픈 얼굴은 보이지 않고 시선을 내리고 돌아선 뒤, 키오스크 앞을 비우면 뒷사람이 쓴다
     IEnumerator Sent()
     {
         var player = PlayerController.I;
         rival = Front();
-        Vector3 back = rival.transform.position + Vector3.up * 1.5f;
-        {
-            yield return player.LookAt(back, Bal.G("Cine_BlendSec", 1f));
-            yield return Ui.Say(null, "그거 지폐 안 받아요.", "a20_nobill", 2f, rival.transform.position + Vector3.up * 1.5f, 1f, true);
-            yield return new WaitForSeconds(0.4f);
-            yield return Ui.Say(null, "그려? 어쩔 수 없구만...", Me + "_giveup", 2.4f);
-        }
+        float sad = Bal.G("R4_SadPitch", -28f);
+        yield return player.TurnTo(player.Yaw, sad, Bal.G("R4_SadLookSec", 1.2f));
+        yield return player.TurnTo(player.Yaw + 180f, sad, Bal.G("R4_SadTurnSec", 1.6f));
 
-        // 임시 T13: 슬픈 얼굴은 보이지 않고 시선을 내리고 돌아선다
-        yield return player.TurnTo(player.Yaw, Bal.G("R4_SadPitch", -28f), Bal.G("R4_SadLookSec", 1.2f));
-        yield return player.TurnTo(player.Yaw + 180f, Bal.G("R4_SadPitch", -28f), Bal.G("R4_SadTurnSec", 1.6f));
+        Vector3 way = exitPos.position - stand.position;
+        way.y = 0f;
+        Vector3 aside = stand.position + way.normalized * (Bal.G("Queue_ClearDist", 1.1f) + Bal.G("R4_SentStepDist", 0.6f)) + Vector3.right * 0.8f;
+        aside.y = player.transform.position.y;
+        yield return StoreFlow.Race(this, player.WalkTo(aside, Bal.F("MoveSpeed", 1.15f)), Bal.G("R4_RequeueWalkSec", 3f));
+        // 1회차와 같은 순서: 어르신이 돌아서 나가는 동안 뒷사람이 키오스크로 가서 카드로 결제한다
+        StartCoroutine(RivalPays());
+        yield return player.TurnTo(player.Yaw, 0f, Bal.G("R4_SadTurnSec", 1.6f));
 
-        yield return Takeover();
-        yield return Tray(rival);
-        yield return player.TurnTo(player.Yaw, 0f, 0.8f);
-
-        // 4-10b
-        foreach (var w in watchers) w.gameObject.SetActive(true);
-        foreach (var npc in FindObjectsByType<NpcMover>(FindObjectsSortMode.None))
-            if (npc.gameObject.scene == gameObject.scene) gaze.Add(npc);
+        // 4-10b. 어르신은 그냥 돌아서 나간다
         exitDoor.active = true;
         player.Freeze(false);
-        StartCoroutine(LookAround());
     }
 
-    // 4-10b 임시 타이밍: 문까지 절반쯤 걸으면 입력 없이 주위를 한 번 둘러본다. 멈추면 그대로 기다린다
-    IEnumerator LookAround()
+    IEnumerator RivalPays()
     {
-        var player = PlayerController.I;
-        float start = Flat(player.transform.position, exitPos.position);
-        while (Flat(player.transform.position, exitPos.position) > start * 0.5f) yield return null;
-        player.Freeze(true);
-        float yaw = player.Yaw, pitch = player.Pitch, arc = Bal.G("R4_LookAroundDeg", 75f), sec = Bal.G("R4_LookAroundSec", 3f);
-        yield return player.TurnTo(yaw - arc, pitch, sec * 0.3f);
-        yield return player.TurnTo(yaw + arc, pitch, sec * 0.45f);
-        yield return player.TurnTo(yaw, pitch, sec * 0.25f);
-        player.Freeze(false);
-    }
-
-    static float Flat(Vector3 a, Vector3 b)
-    {
-        a.y = b.y = 0f;
-        return Vector3.Distance(a, b);
+        yield return Takeover();
+        yield return Tray(rival);
+        var served = rival;
+        served.Go(exitPos.position, Bal.G("R4_RivalSpeed", 1.4f), () => queue.Done(served));
     }
 
     // 지금 키오스크에 가장 가까운 줄 손님. 아직 아무도 안 왔으면 줄 맨 앞에 세운다
@@ -295,19 +268,10 @@ public class R4StoreDirector : MonoBehaviour
         return best;
     }
 
-    // 뒷사람이 카드로 금방 결제한다
+    // 뒷사람이 실제 화면을 넘기며 결제한다. 다음 손님 규칙은 QueueManager가 맡는다
     IEnumerator Takeover()
     {
-        Vector3 at = kiosk.transform.position;
-        yield return rival.WalkTo(stand.position, Bal.G("R4_RivalSpeed", 1.4f));
-        yield return new WaitForSeconds(0.4f);
-        AudioManager.I.Play("kiosk_tap", at, 0.6f);
-        yield return new WaitForSeconds(0.35f);
-        AudioManager.I.Play("kiosk_tap", at, 0.6f);
-        yield return new WaitForSeconds(0.35f);
-        AudioManager.I.Play("card_insert", at, 0.8f);
-        yield return new WaitForSeconds(0.5f);
-        AudioManager.I.Play("kiosk_ok", at, 0.8f);
+        yield return queue.UseKiosk(rival);
     }
 
     // 결제한 손님이 두 손으로 쟁반을 들고 지나간다. 들고 갈 사람이 없으면 쟁반은 안 보인다

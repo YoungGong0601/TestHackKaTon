@@ -1,5 +1,6 @@
 ConfigKey,Description,ValueType,Value,Unit,BalanceIntent
 End_WalkSpeed,E-1a 걸음 속도,Float,0.35,m/s,아주 느림
+End_CorridorSpeed,복도 걸음 속도,Float,0.7,m/s,문까지 약 8초
 End_DoorReach,문 앞 E-1b 시작 거리,Float,1.1,m,
 End_StrainFirstSec,첫 소리까지,Float,1.5,s,
 End_StrainEverySec,걷는 동안 소리 간격,Float,4.5,s,

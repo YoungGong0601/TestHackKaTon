@@ -40,17 +40,20 @@ Shader "Hidden/Graybox/KioskPost"
     TEXTURE2D_X(_NearTex);
     TEXTURE2D_X(_MidTex);
     TEXTURE2D_X(_FarTex);
+    TEXTURE2D_X(_SignMask);
+    TEXTURE2D_X(_SignWide);
     TEXTURE2D(_LensTex);
     float4 _MidTex_TexelSize;
 
     float _PostTime;
     float _Aspect;
-    float _Dim, _Sat, _Grain, _Ca;
+    float _Dim, _Sat, _Grain, _Ca, _GrainSub;
     float4 _Tint;
     float4 _ShadowColor;
     float _Depth, _Corner, _Bottom, _FieldAspect, _SoftWide, _SoftCore, _StrengthWide, _StrengthCore;
     float _WobbleAmp, _WobbleFreq, _WobbleSpeed;
-    float _BlurCenter, _BlurEdge, _BlurStart;
+    float _BlurCenter, _BlurEdge, _BlurStart, _SignBlur;
+    float4 _NoteRect;
     float _LensRim, _LensShade;
     float4 _LensHole;
 
@@ -104,7 +107,13 @@ Shader "Hidden/Graybox/KioskPost"
         {
             float e = saturate(1.0 + dw);
             float b = lerp(_BlurCenter, _BlurEdge, smoothstep(_BlurStart, 1.0, e));
-            b = saturate(b) * 3.0;
+            b = saturate(b);
+            half2 sign = SAMPLE_TEXTURE2D_X_LOD(_SignMask, sampler_LinearClamp, uv, 0).rg;
+            // 들고 있는 쪽지 자리는 번지지 않는다
+            float2 nd = max(_NoteRect.xy - uv, uv - _NoteRect.zw);
+            float keep = _NoteRect.z > 0.0 ? smoothstep(0.0, 0.015, max(nd.x, nd.y)) : 1.0;
+            sign *= keep;
+            b = max(b, sign.r * saturate(_SignBlur)) * 3.0 * keep;
 
             half3 nearC = SAMPLE_TEXTURE2D_X_LOD(_NearTex, sampler_LinearClamp, uv, 0).rgb;
             float2 mo = _MidTex_TexelSize.xy * 0.5;
@@ -118,6 +127,7 @@ Shader "Hidden/Graybox/KioskPost"
             c = lerp(c, nearC, saturate(b));
             c = lerp(c, midC, saturate(b - 1.0));
             c = lerp(c, farC, saturate(b - 2.0));
+            c = lerp(c, SAMPLE_TEXTURE2D_X_LOD(_SignWide, sampler_LinearClamp, uv, 0).rgb, saturate(sign.g * _SignBlur));
         }
 
         // 돋보기 원: 돋보기 카메라가 확대해 그린 또렷한 그림으로 바꾼다
@@ -146,7 +156,7 @@ Shader "Hidden/Graybox/KioskPost"
 
         // 어두운 곳에 더 보이는 필름 그레인
         float n = Hash(i.positionCS.xy + frac(_PostTime) * 917.0) - 0.5;
-        g += n * _Grain * (0.45 + 0.55 * (1.0 - saturate(l)));
+        g += n * _Grain * (0.45 + 0.55 * (1.0 - saturate(l))) * lerp(_GrainSub, 1.0, smoothstep(0.08, 0.3, uv.y));
 
         g = max(g, 0.0);
         return g * g;

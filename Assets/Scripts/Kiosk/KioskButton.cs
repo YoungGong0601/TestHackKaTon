@@ -23,13 +23,40 @@ public class KioskButton : MonoBehaviour
         return Mathf.Max(Mathf.Abs(p.x) / Mathf.Max(r.width * 0.5f, 1f), Mathf.Abs(p.y) / Mathf.Max(r.height * 0.5f, 1f));
     }
 
+    // 터치 표시는 잠깐만. 트윈은 화면이 꺼지거나 다시 그려질 때 끊겨 회색이 남으니 쓰지 않고 시간을 직접 센다. 선택 표시는 on 필드가 따로 맡는다
+    float flash;
+
     public void Flash()
     {
         var g = button ? button.targetGraphic : null;
         if (!g) return;
-        g.CrossFadeColor(Color.gray, 0f, true, false);
-        g.CrossFadeColor(Color.white, 0.2f, true, false);
+        flash = FlashSec;
+        g.canvasRenderer.SetColor(Color.gray);
     }
+
+    static float FlashSec => Mathf.Max(Bal.G("Kiosk_FlashSec", 0.2f), 0.01f);
+
+    /// <summary>터치 표시를 sec만큼 진행한다. 다 되면 정확히 흰색으로 돌아간다.</summary>
+    public void FlashTick(float sec)
+    {
+        if (flash <= 0f) return;
+        flash -= sec;
+        var g = button ? button.targetGraphic : null;
+        if (!g || flash <= 0f) { ClearPress(); return; }
+        g.canvasRenderer.SetColor(Color.Lerp(Color.white, Color.gray, flash / FlashSec));
+    }
+
+    void Update() => FlashTick(Time.unscaledDeltaTime);
+
+    void ClearPress()
+    {
+        flash = 0f;
+        var g = button ? button.targetGraphic : null;
+        if (g) g.canvasRenderer.SetColor(Color.white);
+    }
+
+    void OnEnable() => ClearPress();
+    void OnDisable() => ClearPress();
 
     void Reset() => button = GetComponent<Button>();
 }

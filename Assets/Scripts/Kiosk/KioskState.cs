@@ -17,7 +17,7 @@ public sealed class DraftOrder
 
 public sealed class KioskInfo
 {
-    public string title, mean;
+    public string title, mean, kind, yes = "닫기", no, terms;   // kind: app code point, 비면 글자만
     public bool qr, skip;
     public string[] lines;
 }
@@ -25,7 +25,8 @@ public sealed class KioskInfo
 public sealed class KioskState
 {
     public string screen = "idle", tab = "SIGNATURE", place, phone = "", toast, cardMsg, view = "kiosk";
-    public int slide, memberErrs;
+    public int slide, memberErrs, run;
+    public float payProgress;
     public bool memberErr, ad, classicSeen;
     public float toastUntil, adAt, adUntil;
     public DraftOrder draft;

@@ -70,7 +70,11 @@ public class KioskController : MonoBehaviour
 
     public bool IsScreen(Collider col) => col.transform == screenQuad;
 
-    public void ResetTimer() => timer = Bal.F("KioskTimeoutSec", 40f);
+    public void ResetTimer() => timer = IdleSec + CountSec;
+
+    // 입력 없이 IdleSec이 지나면 CountSec 동안 화면에 안내가 뜨고, 끝까지 없으면 처음 화면으로
+    static float IdleSec => Bal.G("Kiosk_IdleSec", 20f);
+    static float CountSec => Bal.G("Kiosk_IdleCountSec", 10f);
 
     KioskView view;
     KioskLens lens;
@@ -232,7 +236,6 @@ public class KioskController : MonoBehaviour
     void PackTouch(Vector2 uv)
     {
         var profile = GameState.I.Profile;
-        ResetTimer();
         var b = packScreens.At(uv);
         Vector3 at = packScreens.World(uv);
         bool edge = b && profile.kioskTouchFail && b.EdgeRatio(at) > 1f - Bal.G("Kiosk_TouchEdgeFrac", 0.25f);
@@ -275,6 +278,7 @@ public class KioskController : MonoBehaviour
 
     void Click()
     {
+        ResetTimer();
         if ((RoundUi.I != null && RoundUi.I.Blocks) || (Wallet.I != null && Wallet.I.Over)) return;
         HandRig.I.Tap();
         if (Pick(out var hit))
@@ -318,13 +322,22 @@ public class KioskController : MonoBehaviour
         HandleKeys();
         if (Busy || !ctrl) return;
 
-        // 시간 제한
-        if (Pack.Timed && GameState.I.Profile.kioskTimeout)
+        // 무입력
+        if (Pack.Timed)
         {
             timer -= Time.deltaTime;
-            int s = Mathf.Max(0, Mathf.CeilToInt(timer));
-            if (s != lastSec) { lastSec = s; screens.SetTimer(s, true); }
-            if (timer <= 0f) { ResetTimer(); Pack.OnTimeout(); }
+            if (timer <= CountSec)
+            {
+                int s = Mathf.Max(0, Mathf.CeilToInt(timer));
+                if (s != lastSec)
+                {
+                    if (lastSec == -1) Sfx("kiosk_popup", 0.7f);
+                    lastSec = s;
+                    screens.SetTimer(s, true);
+                }
+            }
+            else if (lastSec != -1) { lastSec = -1; screens.SetTimer(0, false); }
+            if (timer <= 0f) { ResetTimer(); lastSec = -1; screens.SetTimer(0, false); Pack.OnTimeout(); }
         }
         else if (lastSec != -1) { lastSec = -1; screens.SetTimer(0, false); }
 
@@ -359,4 +372,23 @@ public class KioskController : MonoBehaviour
     }
 
     public void Mutter() { if (nunchi && nunchi.Running) nunchi.Mutter(); }
+
+    // ---- 다음 손님 ----
+
+    /// <summary>플레이어 다음 손님이 실제 화면을 넘기며 쓴다. 플레이어는 이때 조작하지 못한다.</summary>
+    public IEnumerator CustomerUse()
+    {
+        Vector3 at = screenQuad.position;
+        float step = Bal.G("Kiosk_DemoStepSec", 0.85f);
+        foreach (string id in Pack.CustomerScreens)
+        {
+            AudioManager.I.Play("kiosk_tap", at, 0.6f);
+            Pack.ShowCustomer(id);
+            yield return new WaitForSeconds(step);
+        }
+        yield return new WaitForSeconds(Bal.G("Kiosk_CustomerUseSec", 4f));
+        AudioManager.I.Play("card_insert", at, 0.8f);
+        yield return new WaitForSeconds(step);
+        AudioManager.I.Play("kiosk_ok", at, 0.8f);
+    }
 }

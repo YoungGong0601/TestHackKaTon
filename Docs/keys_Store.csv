@@ -50,3 +50,6 @@ Npc_AvoidGap,비켜 지나갈 때 옆 간격,Float,0.62,m,겹치지 않음
 Npc_MinGap,더 다가가지 않는 최소 거리,Float,0.5,m,겹치지 않음
 Npc_StuckSec,막혔을 때 도착으로 치는 시간,Float,2.5,sec,진행이 멈추지 않음
 Queue_MinBack,키오스크 뒤 최소 손님,Int,2,명,뒤에 사람이 늘 있게
+Queue_ClearDist,다음 손님이 출발하는 플레이어 이탈 거리,Float,1.1,m,키오스크 앞 구역
+Queue_StandBlockDist,자리에 플레이어가 있으면 손님이 멈추는 거리,Float,0.7,m,플레이어를 뚫지 않음
+Queue_NextGapSec,손님이 떠난 뒤 다음 손님까지,Float,1,sec,이어받기 간격

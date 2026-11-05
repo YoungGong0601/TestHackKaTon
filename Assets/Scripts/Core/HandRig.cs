@@ -1,9 +1,10 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.InputSystem;
 
-// 카메라에 붙은 손과 소지품. 1 메모 2 돋보기 3 카드, Q 메모. 영수증은 돋보기와 같이 써서 StoreDirector가 따로 다룬다
+// 카메라에 붙은 손과 소지품. 번호는 ItemKeys가 정한다. 영수증은 돋보기와 같이 써서 StoreDirector가 따로 다룬다
 // 위치는 코드가 매 프레임 로컬로 정한다. 부착: Player의 HandRoot
 // 배치: lens = HandRoot 자식 Hand_Lens (원점이 렌즈 중심)
 // 배치: lensEye = Eye 자식 LensEye (targetTexture RT_Lens, 꺼 둠, 돋보기 들 때만 그린다)
@@ -13,6 +14,7 @@ using UnityEngine.InputSystem;
 // 배치: wallet = HandRoot 자식 Hand_Wallet (펼친 지갑, 자식에 카드, 지폐, 쪽지. 왼손 자리)
 // 배치: bill = HandRoot 자식 Hand_Bill (지폐 한 장, Hand_Card와 같은 축)
 // 배치: watch = HandRoot 자식 Hand_Watch (왼 손목과 시계판), watchHour = 그 자식 HourHand (시계판 중심, +Y가 12시)
+// 배치: paper = HandRoot 자식 Hand_Note (손에 든 쪽지, 왼손 자리), paperKinds = 그 자식 종이들(0 구겨진 쪽지, 1 포스트잇), paperTexts = 각 종이의 글자. 내용은 Note가 넣는다
 // 배치: cane = HandRoot 자식 Hand_Cane (원점이 손잡이, 자식에 PH_Cane). 다리를 저는 인물만 든다
 // 배치: skins = 손 단계별 묶음(look은 프로필 handLook, parts는 소매와 반지까지 그 단계에서 켤 오브젝트)
 [Serializable]
@@ -35,6 +37,9 @@ public class HandRig : MonoBehaviour
     [SerializeField] Transform bill;
     [SerializeField] Transform watch;
     [SerializeField] Transform watchHour;
+    [SerializeField] Transform paper;
+    [SerializeField] GameObject[] paperKinds = new GameObject[0];
+    [SerializeField] TMP_Text[] paperTexts = new TMP_Text[0];
     [SerializeField] Transform cane;
     [SerializeField] HandSkin[] skins = new HandSkin[0];
 
@@ -59,8 +64,10 @@ public class HandRig : MonoBehaviour
 
     readonly Ray[] rim = new Ray[6];
 
-    float tap, kick, tLens, tCard, tBill, tWallet, tWatch, tPoint, tCane;
-    bool watchUp;
+    float tap, kick, tLens, tCard, tBill, tWallet, tWatch, tPaper, tPoint, tCane;
+    bool watchUp, paperUp;
+    float paperSoft, paperSoftNow = -1f;
+    int paperKind;
     RenderTexture lensFull;
     RenderTexture[] lensSmall;
 
@@ -121,7 +128,8 @@ public class HandRig : MonoBehaviour
         Ray center = cam.ViewportPointToRay(at);
         float tan = radius * 2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         lensEye.transform.SetPositionAndRotation(cam.transform.position, Quaternion.LookRotation(center.direction, cam.transform.up));
-        lensEye.fieldOfView = 2f * Mathf.Atan(tan / Mathf.Max(Bal.G("Lens_Zoom", 1.45f), 0.01f)) * Mathf.Rad2Deg;
+        float zoom = LensHit != null && LensHit.wide ? Bal.G("Lens_BoardZoom", 1.15f) : Bal.G("Lens_Zoom", 1.45f);
+        lensEye.fieldOfView = 2f * Mathf.Atan(tan / Mathf.Max(zoom, 0.01f)) * Mathf.Rad2Deg;
         lensEye.clearFlags = cam.clearFlags;
         lensEye.backgroundColor = cam.backgroundColor;
 
@@ -163,6 +171,13 @@ public class HandRig : MonoBehaviour
 
     public void SetPointer(bool on) => Pointer = on;
 
+    /// <summary>손 자세 자리를 켠다. Pose_ 로 시작하는 자식 중 이름이 맞는 것만 켠다. Pose_Open은 반전 짝(Pose_Open_Mirror)도 같이 켠다.</summary>
+    public void SetPose(string pose)
+    {
+        foreach (Transform c in transform)
+            if (c.name.StartsWith("Pose_")) c.gameObject.SetActive(c.name.StartsWith(pose));
+    }
+
     public void Tap() => tap = 1f;
 
     // 지폐가 튕겨 손 쪽으로 밀려난다
@@ -183,6 +198,46 @@ public class HandRig : MonoBehaviour
     }
 
     public void HideWatch() => watchUp = false;
+
+    /// <summary>쪽지를 들거나 내린다. body가 있으면 글을 바꾼다. soft 0 또렷, 클수록 번진다.</summary>
+    public void SetPaper(bool up, string body = null, float soft = 0f, int kind = 0)
+    {
+        paperUp = up;
+        if (body == null) return;
+        paperSoft = soft;
+        paperKind = kind;
+        for (int i = 0; i < paperKinds.Length; i++) if (paperKinds[i]) paperKinds[i].SetActive(i == kind);
+        if (kind < paperTexts.Length && paperTexts[kind]) paperTexts[kind].text = body;
+        paperSoftNow = -1f;
+    }
+
+    // 들고 있는 쪽지가 화면에서 차지하는 자리. 후처리가 이 자리를 번지지 않게 둔다
+    void NoteRect(Camera cam)
+    {
+        if (paperKind >= paperKinds.Length || !paperKinds[paperKind]) return;
+        Vector2 lo = Vector2.one, hi = Vector2.zero;
+        foreach (var r in paperKinds[paperKind].GetComponentsInChildren<Renderer>())
+        {
+            Bounds b = r.bounds;
+            for (int i = 0; i < 8; i++)
+            {
+                Vector3 p = cam.WorldToViewportPoint(b.center + Vector3.Scale(b.extents, new Vector3(i & 1, i >> 1 & 1, i >> 2 & 1) * 2f - Vector3.one));
+                lo = Vector2.Min(lo, p);
+                hi = Vector2.Max(hi, p);
+            }
+        }
+        PostState.NoteRect = new Vector4(lo.x, lo.y, hi.x, hi.y);
+    }
+
+    // 시야가 번지는 인물은 돋보기를 들어야 또렷하다
+    void PaperFocus()
+    {
+        if (paperKind >= paperTexts.Length || !paperTexts[paperKind]) return;
+        float want = Held == ItemId.Lens ? 0f : paperSoft;
+        if (Mathf.Approximately(want, paperSoftNow)) return;
+        paperSoftNow = want;
+        paperTexts[paperKind].fontMaterial.SetFloat(ShaderUtilities.ID_OutlineSoftness, want);
+    }
 
     public void ApplyLook(int look)
     {
@@ -226,16 +281,12 @@ public class HandRig : MonoBehaviour
         var mode = PlayerController.I.CurrentMode;
         if (kb == null || !ItemsEnabled || mode == PlayerController.Mode.Locked || mode == PlayerController.Mode.Hidden) return;
         if (kb.ctrlKey.isPressed) return;   // 시연자 키
-        if (kb.digit2Key.wasPressedThisFrame) Toggle(ItemId.Lens);
-        else if (kb.digit3Key.wasPressedThisFrame)
+        if (ItemKeys.Pressed(kb, ItemId.Lens)) Toggle(ItemId.Lens);
+        else if (ItemKeys.Pressed(kb, ItemId.Card)) Toggle(ItemId.Card);
+        else if (ItemKeys.Pressed(kb, ItemId.Wallet) && Wallet.I != null)
         {
-            var profile = GameState.I != null ? GameState.I.Profile : null;
-            if (profile != null && profile.Has(ItemId.Wallet) && Wallet.I != null)
-            {
-                Wallet.I.SetOpen(!Wallet.I.Open);
-                if (Wallet.I.Open) trembleFrom = Time.time;
-            }
-            else Toggle(ItemId.Card);
+            Wallet.I.SetOpen(!Wallet.I.Open);
+            if (Wallet.I.Open) trembleFrom = Time.time;
         }
     }
 
@@ -271,6 +322,7 @@ public class HandRig : MonoBehaviour
         tBill = Damp(tBill, Held == ItemId.Cash ? 1f : 0f, 9f, dt);
         tWallet = Damp(tWallet, walletOut ? 1f : 0f, 9f, dt);
         tWatch = Damp(tWatch, watchUp ? 1f : 0f, 9f, dt);
+        tPaper = Damp(tPaper, paperUp && player.CurrentMode != PlayerController.Mode.Hidden ? 1f : 0f, 9f, dt);
         tPoint = Damp(tPoint, Pointer && Held == ItemId.None ? 1f : 0f, 9f, dt);
 
         float sway = Mathf.Sin(t * 1.2f) * 0.003f;
@@ -315,7 +367,7 @@ public class HandRig : MonoBehaviour
         if (Show(cane, tCane))
         {
             float amp = player.Walk01, ph = player.Bob * 0.5f;
-            cane.localPosition = new Vector3(0.3f + Mathf.Sin(ph) * 0.008f * amp, -0.3f - (1f - tCane) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * 0.022f * amp, 0.5f);
+            cane.localPosition = new Vector3(0.3f + Mathf.Sin(ph) * 0.008f * amp, Bal.G("Hand_CaneY", -0.13f) - (1f - tCane) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * 0.022f * amp, 0.5f);
             cane.localRotation = Rad(-0.32f - Mathf.Cos(ph) * 0.11f * amp, 0f, 0.13f);
         }
 
@@ -343,6 +395,16 @@ public class HandRig : MonoBehaviour
             watch.localPosition = new Vector3(-0.05f + jx, -0.34f + tWatch * 0.26f + jy, 0.3f);
             watch.localRotation = Rad(-0.5f, 0f, 0f);
         }
+
+        // 쪽지: 왼손 자리. 흔들림은 지갑과 같은 만큼만
+        if (Show(paper, tPaper))
+        {
+            PaperFocus();
+            paper.localPosition = new Vector3(Bal.G("Note_HandX", -0.09f) * cam.aspect / 1.78f + jx, Bal.G("Note_HandY", -0.06f) - (1f - tPaper) * 0.3f + sway + jy, Bal.G("Note_HandZ", 0.34f));
+            paper.localRotation = Rad(0.14f, -0.1f, 0.07f);
+            NoteRect(cam);
+        }
+        else PostState.NoteRect = Vector4.zero;
 
         if (Show(pointer, tPoint))
         {

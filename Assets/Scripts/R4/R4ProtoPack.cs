@@ -1,4 +1,4 @@
-// 4회차 키오스크. 프로토타입 화면 14개와 KioskFlow를 Pack 자리에 끼운다. 성공 경로가 없다: IC 틈은 지폐를 튕길 뿐이다.
+// 4회차 키오스크. 프로토타입 화면 14개와 KioskFlow를 Pack 자리에 끼운다. 지폐는 튕기고 카드가 없어 사지 못한다.
 // 부착: PH_Kiosk_R4 의 KioskCanvas (KioskScreens와 같은 오브젝트)
 // 배치: cover = IC 틈을 가린 PosterFlap
 using System;
@@ -8,34 +8,44 @@ public class R4ProtoPack : KioskPack
 {
     [SerializeField] PosterFlap cover;
 
-    /// <summary>지폐가 정해진 횟수만큼 튕겼다. 4-10a로 넘어간다.</summary>
+    /// <summary>지폐가 정해진 횟수만큼 튕기고 뒷사람과 말을 마쳤다. 4-10a로 넘어간다.</summary>
     public event Action Bounced;
 
     public KioskFlow Flow { get; private set; }
 
     PayPoint pay;
     KioskScreens scr;
-    bool moneySaid, whatSaid, done;
+    KioskHardware hw;
+    bool whatSaid, cashTold, done;
+    int cashLine;
     float blinkT;
 
     static string Me => GameState.I.Profile.speakerKey;
 
     public override string FirstScreen => "idle";
     public override bool Timed => Flow != null && Flow.Timed && !done;
-    public override bool CanGiveUp => Flow != null && Flow.K.screen != "pay" && Flow.K.screen != "card" && !done;
+    public override bool CanGiveUp => Flow != null && !done;
+    /// <summary>더 받지 않는다. 대화 중 게이지가 차도 줄로 돌아가지 않는다.</summary>
+    public bool Done => done;
+    public override string[] CustomerScreens => new[] { "idle", "place", "menu" };
+    public override void ShowCustomer(string id) { if (Flow != null) Flow.ShowCustomer(id); }
 
     void Awake() => scr = GetComponent<KioskScreens>();
 
     public override void OnEnter()
     {
         done = false;
-        moneySaid = false;
+        cashLine = 0;
+        cashTold = false;
         blinkT = 0f;
+        hw = Ctl.GetComponent<KioskHardware>();
         if (Flow == null) Flow = new KioskFlow(this, scr);
         Flow.ResetAll();
         pay = Ctl.Pay;
         if (!pay) return;
         pay.ResetCount();
+        Unhook();
+        pay.DeferOk = true;
         pay.CashRejected += OnCash;
         pay.Empty += OnEmpty;
     }
@@ -87,14 +97,26 @@ public class R4ProtoPack : KioskPack
         }
         Flow.CardOnly();
         blinkT = Bal.G("R4_CardOnlyBlinkSec", 1.2f);
-        if (!moneySaid)
-        {
-            moneySaid = true;
-            Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
-        }
-        if (count < Bal.I("Cash_BounceCount", 3)) return;
-        done = true;
-        Unhook();
+        // 첫 튕김은 1회차 어르신과 같은 머뭇거림, 그 뒤는 두 혼잣말을 번갈아 한다
+        if (cashLine == 0) Ctl.Say(Me, "왜 안 되지?", Me + "_why1");
+        else if (cashLine % 2 == 1) Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
+        else Ctl.Say(Me, "왜 기계가 돈을 안먹지? 이상하네", Me + "_no_eat");
+        cashLine++;
+        if (count < Bal.I("Cash_BounceCount", 3) || cashTold) return;
+        cashTold = true;
+        Stop();
+        StartCoroutine(CashTalk());
+    }
+
+    // 뒷사람이 1회차에 플레이어가 고른 말을 그대로 한다
+    System.Collections.IEnumerator CashTalk()
+    {
+        int said = GameState.I.CashLine;
+        yield return Ctl.Say("back", KioskData.CashLines[said], KioskData.CashVo("back", said));
+        yield return Ctl.Say(Me, "아, 그려?", Me + "_really");
+        yield return Ctl.Say(Me, "그러면 방법이 없는겨?", Me + "_nomore");
+        yield return Ctl.Say("back", "일단 현금은 안된다네요.", "back_nocash");
+        yield return Ctl.Say(Me, "그려? 어쩔 수 없구만...", Me + "_giveup");
         Bounced?.Invoke();
     }
 
@@ -150,9 +172,9 @@ public class R4ProtoPack : KioskPack
     }
 
     public void Touched() => Ctl.ResetTimer();
+
     public void HardwareReset()
     {
-        var hw = Ctl.GetComponent<KioskHardware>();
         if (hw) hw.Clear();
         else if (cover) cover.Close();
     }

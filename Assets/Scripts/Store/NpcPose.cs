@@ -22,6 +22,8 @@ public class NpcPose : MonoBehaviour
         if (visuals == null || visuals.Length == 0 || visuals[0].childCount == 0) return;
         int n = visuals[0].childCount;
         int pick = look >= 0 ? look % n : (Animator.StringToHash(name + transform.GetSiblingIndex()) & int.MaxValue) % n;
+        // 할아버지 모델은 1회차 어르신만 쓴다. 이름으로 고를 때는 건너뛴다
+        if (look < 0 && visuals[0].GetChild(pick).name == "NpcOldMan") pick = (pick + 1) % n;
         var model = visuals[0].GetChild(pick);
         foreach (var v in visuals)
             for (int i = 0; i < v.childCount; i++)
