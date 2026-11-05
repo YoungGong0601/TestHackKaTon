@@ -1874,6 +1874,7 @@ GameObject:
   - component: {fileID: 1329678911029519149}
   - component: {fileID: 3891588067958345662}
   - component: {fileID: 4543853422296463643}
+  - component: {fileID: 959403264100243857}
   m_Layer: 8
   m_Name: Cart_Slot0
   m_TagString: Untagged
@@ -1938,6 +1939,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &959403264100243857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297487763237503204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98ac75c8bb9f004e924f200a28fd8d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: KioskGame::KioskButton
+  id: slot0
+  button: {fileID: 0}
 --- !u!1 &313008739050528780
 GameObject:
   m_ObjectHideFlags: 0
@@ -7115,6 +7130,7 @@ GameObject:
   - component: {fileID: 5076297706163607193}
   - component: {fileID: 3725142387019144215}
   - component: {fileID: 9199134506303914666}
+  - component: {fileID: 721936228841151752}
   m_Layer: 8
   m_Name: Cart_Total
   m_TagString: Untagged
@@ -7241,6 +7257,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &721936228841151752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746462157539363870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5299711813897ff42803d0b5a329c458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: KioskGame::KioskField
+  key: cart_total
+  graphic: {fileID: 9199134506303914666}
 --- !u!1 &1789651366022269161
 GameObject:
   m_ObjectHideFlags: 0
@@ -10168,12 +10198,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: KioskGame::KioskScreen
   fields:
+  - {fileID: 6097479077967779609}
+  - {fileID: 721936228841151752}
   - {fileID: 4072104399593225704}
   - {fileID: 1650787623108977487}
   id: menu
   backdrop: {fileID: 0}
   buttons:
   - {fileID: 4146234268388113692}
+  - {fileID: 959403264100243857}
+  - {fileID: 2410015769835769402}
+  - {fileID: 7392982135940049990}
   - {fileID: 8878860245207373285}
   - {fileID: 7472269151807854717}
   - {fileID: 3424746479598503252}
@@ -14660,6 +14695,7 @@ GameObject:
   - component: {fileID: 4507010232600441159}
   - component: {fileID: 9200998126727588405}
   - component: {fileID: 4944107938891777828}
+  - component: {fileID: 7392982135940049990}
   m_Layer: 8
   m_Name: Cart_Slot2
   m_TagString: Untagged
@@ -14724,6 +14760,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7392982135940049990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3316639748656921309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98ac75c8bb9f004e924f200a28fd8d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: KioskGame::KioskButton
+  id: slot2
+  button: {fileID: 0}
 --- !u!1 &3368815336140915809
 GameObject:
   m_ObjectHideFlags: 0
@@ -17547,6 +17597,7 @@ MonoBehaviour:
   toast: {fileID: 0}
   info: {fileID: 0}
   infoClose: {fileID: 0}
+  infoSkip: {fileID: 0}
   timer: {fileID: 0}
 --- !u!114 &2483460454241813859
 MonoBehaviour:
@@ -17560,6 +17611,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f827c979a6406844691972c5ef05cab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: KioskGame::R2CafePack
+  slots:
+  - {fileID: 4543853422296463643}
+  - {fileID: 2593497172552254392}
+  - {fileID: 4944107938891777828}
+  cupArt:
+  - {fileID: 21300000, guid: 9a1b65b93519c9b49ad1a794e2932a75, type: 3}
+  - {fileID: 21300000, guid: 0db69806af5becf46aa9584d66884ae5, type: 3}
+  - {fileID: 21300000, guid: 0ce6e80154d777d41af3b1234f5d7a8f, type: 3}
+  emptyArt: {fileID: 21300000, guid: 08183bfb28b782e42a9ec5ce3f0676cd, type: 3}
 --- !u!1 &4106747409490236763
 GameObject:
   m_ObjectHideFlags: 0
@@ -19817,6 +19877,7 @@ GameObject:
   - component: {fileID: 5182655671682756760}
   - component: {fileID: 237086784043574350}
   - component: {fileID: 2593497172552254392}
+  - component: {fileID: 2410015769835769402}
   m_Layer: 8
   m_Name: Cart_Slot1
   m_TagString: Untagged
@@ -19881,6 +19942,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2410015769835769402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4630703921016378535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98ac75c8bb9f004e924f200a28fd8d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: KioskGame::KioskButton
+  id: slot1
+  button: {fileID: 0}
 --- !u!1 &4652442194212124163
 GameObject:
   m_ObjectHideFlags: 0
@@ -39268,6 +39343,7 @@ GameObject:
   - component: {fileID: 1258765137390439137}
   - component: {fileID: 2304766848835538820}
   - component: {fileID: 3681879764736128035}
+  - component: {fileID: 6097479077967779609}
   m_Layer: 8
   m_Name: Cart_Count
   m_TagString: Untagged
@@ -39394,6 +39470,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6097479077967779609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8127106497658435655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5299711813897ff42803d0b5a329c458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: KioskGame::KioskField
+  key: cart_count
+  graphic: {fileID: 3681879764736128035}
 --- !u!1 &8138497434253290167
 GameObject:
   m_ObjectHideFlags: 0

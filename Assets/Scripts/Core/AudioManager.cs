@@ -62,6 +62,12 @@ public class AudioManager : MonoBehaviour
             var c = Resources.Load<AudioClip>($"Audio/sfx/{key}_{i}");
             if (c != null) list.Add(c);
         }
+        // 정우 사본에만 있는 소리(bus_door_open, bus_door_close)
+        if (list.Count == 0)
+        {
+            var jw = Resources.Load<AudioClip>("JW/Audio/sfx/" + key);
+            if (jw != null) list.Add(jw);
+        }
         return clips[key] = list.ToArray();
     }
 
@@ -71,7 +77,7 @@ public class AudioManager : MonoBehaviour
         if (!pos.HasValue) return;
         src.transform.position = pos.Value;
         src.rolloffMode = AudioRolloffMode.Logarithmic;
-        src.minDistance = 1.5f;
+        src.minDistance = 6f;   // 1.5면 12m 밖 차 소리가 앰비언스에 묻힌다
         src.maxDistance = 80f;
     }
 
@@ -90,11 +96,38 @@ public class AudioManager : MonoBehaviour
         src.Play();
     }
 
+    // 가까이 지나는 사람의 걸음. moved를 acc에 쌓다가 보폭마다 한 번 낸다
+    public void Footstep(Vector3 pos, float moved, ref float acc)
+    {
+        acc += moved;
+        if (acc < 0.7f) return;
+        acc = 0f;
+        var player = PlayerController.I;
+        if (player == null || (player.transform.position - pos).sqrMagnitude > 36f) return;
+        Play(player.Ground == "tile" ? "step_tile" : "step_concrete", pos + Vector3.up * 0.1f, 0.1f, Random.Range(0.95f, 1.1f));
+    }
+
+    static AudioClip VoClip(string key)
+    {
+        var clip = Resources.Load<AudioClip>("Audio/vo/" + key);
+        return clip != null ? clip : Resources.Load<AudioClip>("JW/Audio/vo/" + key);
+    }
+
+    public float VoLength(string key)
+    {
+        var clip = VoClip(key);
+        return clip != null ? clip.length : 0f;
+    }
+
     // 음성을 틀고 길이(초)를 돌려준다. 파일이 없으면 0
     public float Vo(string key, Vector3? pos = null, float vol = 1f, bool clear = false)
     {
-        var clip = Resources.Load<AudioClip>("Audio/vo/" + key);
+        var clip = VoClip(key);
         if (clip == null || voice.Length == 0) return 0f;
+        // 화면을 빨리 넘기면 키오스크 안내가 겹치지 않게 앞 안내를 끊는다
+        if (key.StartsWith("k_"))
+            foreach (var s in voice)
+                if (s.isPlaying && s.clip != null && s.clip.name.StartsWith("k_")) s.Stop();
         AudioSource src = null;
         foreach (var s in voice) if (!s.isPlaying) { src = s; break; }
         if (src == null) { src = voice[nextVoice]; nextVoice = (nextVoice + 1) % voice.Length; }

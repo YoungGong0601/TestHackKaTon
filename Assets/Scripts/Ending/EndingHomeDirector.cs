@@ -162,9 +162,7 @@ public class EndingHomeDirector : MonoBehaviour
         yield return new WaitForSeconds(Bal.G("End_CrushHoldSec", 1.6f));
         right.shake = 0.4f;
 
-        // 허리를 숙여 바닥에 둔다
-        StartCoroutine(player.TurnTo(player.Yaw, -62f, 1.8f));
-        yield return Sink(Bal.G("End_BendEye", 0.85f), 1.8f);
+        // 손만 내려 쪽지를 둔다. 몸은 숙이지 않는다
         yield return Reach(right, noteSpot, 1.2f);
         noteBall.transform.SetParent(null, true);
         Vector3 rest = noteBall.transform.position;
@@ -181,8 +179,7 @@ public class EndingHomeDirector : MonoBehaviour
         sound.Play("sigh_m_1", null, Bal.G("End_SighVol", 1f), Bal.G("End_SighRate", 0.8f), clear: true);
         StartCoroutine(player.TurnTo(Yaw(wallStand.position), -6f, sec));
         StartCoroutine(Drop(right, sec));
-        yield return Sink(player.EyeHeight, sec);
-        yield return new WaitForSeconds(Bal.G("End_SighSec", 1.8f));
+        yield return new WaitForSeconds(sec * 0.5f);
         yield return player.WalkTo(wallStand.position, Bal.G("End_WalkSpeed", 0.35f));
 
         sec = Bal.G("End_LeanSec", 1.3f);

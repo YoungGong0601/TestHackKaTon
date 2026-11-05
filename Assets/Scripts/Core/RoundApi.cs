@@ -15,7 +15,13 @@ public static class Mash
         bool frozen = pc.Frozen;
         pc.Freeze(true);
         pc.SetMode(PlayerController.Mode.Hidden);
-        pc.Teleport(bottom.position, top.eulerAngles.y);
+        // 계단 진행 방향을 본다. 앵커 회전에 기대지 않고 아래에서 위로 가는 방향을 쓴다
+        Vector3 up = top.position - bottom.position;
+        up.y = 0f;
+        float yaw = up.sqrMagnitude > 1e-3f ? Mathf.Atan2(up.x, up.z) * Mathf.Rad2Deg : top.eulerAngles.y;
+        pc.BlendCamera();
+        pc.Teleport(bottom.position, pc.Yaw);
+        pc.StartCoroutine(pc.TurnTo(yaw, Bal.G("Mash_LookPitch", 6f), Bal.G("Cine_BlendSec", 1f)));
 
         int total = Mathf.Max(1, Mathf.RoundToInt(Bal.Age("MashCount", 10f, 10f, 10f, 40f))), done = 0;
         float shown = 0f;
@@ -27,7 +33,7 @@ public static class Mash
             if ((mouse != null && mouse.leftButton.wasPressedThisFrame) || (kb != null && kb.eKey.wasPressedThisFrame))
             {
                 done++;
-                AudioManager.I.Play("step_concrete", null, 0.5f, UnityEngine.Random.Range(0.92f, 1.04f));
+                AudioManager.I.Play("step_concrete", null, 0.5f, UnityEngine.Random.Range(0.92f, 1.04f), true);
                 if (RoundUi.I != null) RoundUi.I.Mash(true, done, total);
             }
             shown = Mathf.MoveTowards(shown, (float)done / total, Time.deltaTime * 4f);
@@ -53,7 +59,7 @@ public static class Mash
             if (step > 0.45f)
             {
                 step = 0f;
-                AudioManager.I.Play("step_concrete", null, 0.45f);
+                AudioManager.I.Play("step_concrete", null, 0.45f, 1f, true);
             }
             yield return null;
         }
@@ -127,12 +133,14 @@ public static class Cine
         dir = dir.sqrMagnitude > 1e-4f ? dir.normalized : walker.transform.forward;
         Vector3 cam = from - dir * Bal.G("Shot_BackDist", 4f);
         cam.y = from.y + Bal.G("Shot_BackHeight", 1.5f) - pc.EyeHeight;
+        pc.BlendCamera();
         pc.Teleport(cam, Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg);
 
         float speed = Vector3.Distance(from, walkTo) / Mathf.Max(sec, 0.01f);
         walker.Go(walkTo, speed);
         yield return new WaitForSeconds(sec);
 
+        pc.BlendCamera();
         pc.Teleport(back, yaw);
         yield return pc.TurnTo(yaw, pitch, 0.01f);
         HandRig.I.SetEnabled(true);

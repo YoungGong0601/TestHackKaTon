@@ -47,7 +47,7 @@ public class R4StopDirector : MonoBehaviour
     [SerializeField] Color[] ambientMul = { Color.white, new Color(1f, 0.8f, 0.7f), new Color(0.7f, 0.5f, 0.55f), new Color(0.35f, 0.35f, 0.5f) };
     [SerializeField] Color[] skyTint = { new Color(0.8f, 0.8f, 0.8f), new Color(0.85f, 0.52f, 0.36f), new Color(0.45f, 0.25f, 0.3f), new Color(0.09f, 0.09f, 0.18f) };
 
-    bool boardPressed, askPressed, toofarSaid, noticeSaid, asked, noticeRead, driverBusy, muttering;
+    bool tracking, boardPressed, askPressed, toofarSaid, noticeSaid, asked, noticeRead, driverBusy, muttering;
     int stage;
     Material sky;
     Color ambSky, ambEquator, ambGround;
@@ -104,7 +104,7 @@ public class R4StopDirector : MonoBehaviour
         yield return Script();
     }
 
-    void OnNoteMissed() => Ui.Say(null, "뭐라고 썼더라.", Me + "_note");
+    void OnNoteMissed() => Ui.Say(null, "지갑에 뭐라 썼더라...", Me + "_wallet");
 
     void Update()
     {
@@ -136,14 +136,23 @@ public class R4StopDirector : MonoBehaviour
     IEnumerator Passer()
     {
         Player.Freeze(true);
-        yield return Player.LookAt(passer.HeadPos, 0.45f);
+        yield return Player.LookAt(passer.HeadPos, Bal.G("Cine_BlendSec", 1f));
         yield return Ui.Say(null, "저기요, 말 좀 물읍시다.", Me + "_ask2");
         passer.Glance();
         yield return Ui.Say(null, "저 바빠서요.", "pass_2");
         StartCoroutine(PasserLeave());
+        tracking = true;
+        StartCoroutine(TrackPasser());
         yield return new WaitForSeconds(0.6f);
         yield return Ui.Say(null, "허허... 다들 바쁘구먼.", Me + "_ask3");
+        tracking = false;
         Player.Freeze(false);
+    }
+
+    // 지나가는 사람을 눈으로 좇는다
+    IEnumerator TrackPasser()
+    {
+        while (tracking && passer.gameObject.activeSelf) yield return Player.LookAt(passer.HeadPos, 0.15f);
     }
 
     IEnumerator PasserLeave()
@@ -171,8 +180,8 @@ public class R4StopDirector : MonoBehaviour
             boardUse.active = false;
             Player.Freeze(true);
             Ui.ClearSubs();
-            StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, 0.4f));
-            yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 0.9f)), 6f);
+            StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, Bal.G("Cine_BlendSec", 1f)));
+            yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 1.15f)), 6f);
             yield return Mash.Climb(stepBottom, stepTop);
             if (i == 2) break;   // 4-19: 세 번째는 묻지 않아도 고개가 들리며 단말기가 보인다
             yield return Enter();
@@ -197,20 +206,21 @@ public class R4StopDirector : MonoBehaviour
     IEnumerator Enter()
     {
         Player.Teleport(inside.position, inside.eulerAngles.y);
+        yield return Player.LookAt(Player.EyePos + inside.forward, 0.01f);
         askPressed = false;
         askDriver.active = true;
         Player.Freeze(false);
         yield return Until(() => askPressed);
         askDriver.active = false;
         Player.Freeze(true);
-        yield return Player.LookAt(driverPos.position, 0.5f);
+        yield return Player.LookAt(driverPos.position, Bal.G("Cine_BlendSec", 1f));
     }
 
     // 임시 T27: 재촉은 문구 없이 소리와 먼저 닫히기 시작하는 문
     IEnumerator GetOff(BusMover bus)
     {
         Sound.Play("tsk", driverPos.position, 0.8f);
-        Sound.Play("bus_door", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
+        Sound.Play("bus_door_close", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
         Player.Teleport(stepTop.position, stepTop.eulerAngles.y);
         yield return Mash.Descend(stepTop, stepBottom);
         bus.Doors(false);
@@ -223,6 +233,7 @@ public class R4StopDirector : MonoBehaviour
         // 4-19 입력 없이 고개가 들리며 단말기가 보인다
         Player.Teleport(inside.position, inside.eulerAngles.y);
         Player.Freeze(true);
+        yield return Player.LookAt(Player.EyePos + inside.forward, 0.01f);
         yield return Player.LookAt(terminalPay.transform.position, Bal.G("R4_TerminalLookSec", 1.2f));
         yield return Ui.Say(null, "112번이요.", "drv_112", 1.8f, driverPos.position);
 
@@ -254,7 +265,7 @@ public class R4StopDirector : MonoBehaviour
         // 4-21b
         Player.Teleport(stepTop.position, stepTop.eulerAngles.y);
         yield return Mash.Descend(stepTop, stepBottom);
-        Sound.Play("bus_door", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
+        Sound.Play("bus_door_close", busStop.position + new Vector3(4f, 1f, 0f), 0.9f);
         Coroutine leaving = StartCoroutine(Leave(bus));
         HandRig.I.Equip(ItemId.Cash);     // 지폐를 쥔 손
         yield return new WaitForSeconds(Bal.G("R4_CashHoldSec", 2f));
@@ -315,12 +326,21 @@ public class R4StopDirector : MonoBehaviour
         TrafficMover.BusBusy = true;
         bus.gameObject.SetActive(true);
         yield return Until(() => TrafficMover.LaneClear(stop.x), Bal.G("Traffic_BusWaitMaxSec", 8f));
-        Sound.Play("bus_arrive", stop + new Vector3(-30f, 1f, 0f), 1f);
-        yield return bus.Drive(busStart.position, stop, Bal.G("Bus_ArriveSec", 11f), Bal.G("Bus_ArriveEase", 2.4f), true);
+        float arrive = Bal.G("Bus_ArriveSec", 11f);
+        Sound.Loop("bus_idle", 0.32f, arrive);   // 멀리서 엔진음이 서서히 커진다
+        StartCoroutine(BrakeSound(stop, arrive));
+        yield return bus.Drive(busStart.position, stop, arrive, Bal.G("Bus_ArriveEase", 2.4f), true);
         Sound.Ambience(("amb_city_morning", 0.62f), ("bus_idle", 0.32f));
         yield return new WaitForSeconds(0.4f);
-        Sound.Play("bus_door", stop + new Vector3(4f, 1f, 0f), 0.9f);
+        Sound.Play("bus_door_open", stop + new Vector3(4f, 1f, 0f), 0.9f);
         bus.Doors(true);
+    }
+
+    // bus_arrive 앞부분이 브레이크 소리다. 버스가 서기 5초 전에 틀어야 멈출 때 들린다
+    IEnumerator BrakeSound(Vector3 stop, float arrive)
+    {
+        yield return new WaitForSeconds(Mathf.Max(0f, arrive - 5f));
+        Sound.Play("bus_arrive", stop + new Vector3(-6f, 1f, 0f), 1f);
     }
 
     IEnumerator Leave(BusMover bus)

@@ -30,6 +30,7 @@ public class R4ProtoPack : KioskPack
     {
         done = false;
         moneySaid = false;
+        blinkT = 0f;
         if (Flow == null) Flow = new KioskFlow(this, scr);
         Flow.ResetAll();
         pay = Ctl.Pay;
@@ -58,7 +59,9 @@ public class R4ProtoPack : KioskPack
         if (slot) { Flow.WrongSlot(slot.id); return true; }
         var spot = col.GetComponentInParent<KioskSpot>();
         if (spot) { Flow.Spot(spot.id); return true; }
-        return false;
+        if (Ctl.IsScreen(col)) return false;
+        Flow.Spot("body");
+        return true;
     }
 
     public override void OnTick(float dt)
@@ -147,7 +150,12 @@ public class R4ProtoPack : KioskPack
     }
 
     public void Touched() => Ctl.ResetTimer();
-    public void HardwareReset() { if (cover) cover.Close(); }
+    public void HardwareReset()
+    {
+        var hw = Ctl.GetComponent<KioskHardware>();
+        if (hw) hw.Clear();
+        else if (cover) cover.Close();
+    }
     public void OpenCover() { if (cover) cover.Open(); }
     public void AddNunchi(float n) { if (Ctl.Nunchi) Ctl.Nunchi.Add(n); }
     public void Mutter() => Ctl.Mutter();

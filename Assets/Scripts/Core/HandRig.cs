@@ -13,6 +13,7 @@ using UnityEngine.InputSystem;
 // 배치: wallet = HandRoot 자식 Hand_Wallet (펼친 지갑, 자식에 카드, 지폐, 쪽지. 왼손 자리)
 // 배치: bill = HandRoot 자식 Hand_Bill (지폐 한 장, Hand_Card와 같은 축)
 // 배치: watch = HandRoot 자식 Hand_Watch (왼 손목과 시계판), watchHour = 그 자식 HourHand (시계판 중심, +Y가 12시)
+// 배치: cane = HandRoot 자식 Hand_Cane (원점이 손잡이, 자식에 PH_Cane). 다리를 저는 인물만 든다
 // 배치: skins = 손 단계별 묶음(look은 프로필 handLook, parts는 소매와 반지까지 그 단계에서 켤 오브젝트)
 [Serializable]
 public class HandSkin
@@ -34,6 +35,7 @@ public class HandRig : MonoBehaviour
     [SerializeField] Transform bill;
     [SerializeField] Transform watch;
     [SerializeField] Transform watchHour;
+    [SerializeField] Transform cane;
     [SerializeField] HandSkin[] skins = new HandSkin[0];
 
     public float tremble;           // 눈치가 쓰는 떨림
@@ -57,7 +59,7 @@ public class HandRig : MonoBehaviour
 
     readonly Ray[] rim = new Ray[6];
 
-    float tap, kick, tLens, tCard, tBill, tWallet, tWatch, tPoint;
+    float tap, kick, tLens, tCard, tBill, tWallet, tWatch, tPoint, tCane;
     bool watchUp;
     RenderTexture lensFull;
     RenderTexture[] lensSmall;
@@ -111,7 +113,7 @@ public class HandRig : MonoBehaviour
     {
         FocusLens();
         Vector3 at = cam.WorldToViewportPoint(lens.position);
-        Vector3 edge = cam.WorldToViewportPoint(lens.position + cam.transform.up * Bal.G("Lens_Radius", 0.06f));
+        Vector3 edge = cam.WorldToViewportPoint(lens.position + cam.transform.up * (Bal.G("Lens_Radius", 0.06f) * lens.localScale.x));
         float radius = Mathf.Abs(edge.y - at.y);
         PostState.Lens = new Vector3(at.x, at.y, radius);
         PostState.LensTexture = lensEye.targetTexture;
@@ -280,11 +282,16 @@ public class HandRig : MonoBehaviour
         float half = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad) * d;
         float tx = ndc.x * half * cam.aspect, ty = ndc.y * half;
         float hit = Pointer ? pointerDist ?? 0.6f : 0.6f;
+        // 지갑이 펴지면 손과 돋보기는 지갑보다 앞으로 온다. 화면 자리와 크기는 그대로 둔다
+        float front = Bal.G("Hand_WalletFrontDist", 0.26f);
+        hit = Mathf.Lerp(hit, Mathf.Min(hit, front), tWallet);
+        float near = Mathf.Lerp(1f, front / d, tWallet);
         Vector3 dir = new Vector3(tx, ty, d).normalized;
 
         if (Show(lens, tLens))
         {
-            lens.localPosition = new Vector3(tx, ty - (1f - tLens) * 0.35f, d + tap * 0.02f);
+            lens.localPosition = new Vector3(tx, ty - (1f - tLens) * 0.35f, d + tap * 0.02f) * near;
+            lens.localScale = Vector3.one * near;
             lens.localRotation = Rad(0f, 0f, -0.12f);
         }
 
@@ -298,6 +305,18 @@ public class HandRig : MonoBehaviour
             }
             else card.localPosition = new Vector3(tx + 0.1f, ty - 0.11f - (1f - tCard) * 0.35f, d);
             card.localRotation = Rad(0.2f, 0f, -0.1f);
+        }
+
+        // 지팡이: 빈손일 때 오른쪽 아래에 들고, 걸음에 맞춰 약하게 흔든다. 원본 street.js makeCane
+        var who = GameState.I != null ? GameState.I.Profile : null;
+        bool caneOn = who != null && who.limp && ItemsEnabled && Held == ItemId.None && !Pointer && !walletOut
+            && player.CurrentMode != PlayerController.Mode.Hidden;
+        tCane = Damp(tCane, caneOn ? 1f : 0f, 8f, dt);
+        if (Show(cane, tCane))
+        {
+            float amp = player.Walk01, ph = player.Bob * 0.5f;
+            cane.localPosition = new Vector3(0.3f + Mathf.Sin(ph) * 0.008f * amp, -0.3f - (1f - tCane) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * 0.022f * amp, 0.5f);
+            cane.localRotation = Rad(-0.32f - Mathf.Cos(ph) * 0.11f * amp, 0f, 0.13f);
         }
 
         if (Show(bill, tBill))
@@ -341,6 +360,12 @@ public class HandRig : MonoBehaviour
         Ray aim = lensOn ? LensView(cam) : PointerRay();
         if (!lensOn) PostState.Lens = Vector3.zero;
         if (lensEye != null && lensEye.enabled != lensOn) lensEye.enabled = lensOn;
+        // 지갑과 쪽지 종이는 HandModel이라 돋보기 그림에 넣어야 뒤 풍경이 비치지 않는다
+        if (lensEye != null)
+        {
+            int handMask = LayerMask.GetMask("HandModel");
+            lensEye.cullingMask = walletOut ? lensEye.cullingMask | handMask : lensEye.cullingMask & ~handMask;
+        }
         // 초점이 나간 동안에는 글이 읽히지 않는다
         bool focused = Debuff.LensFocused;
         LensHit = Readable.Aim(aim, Held == ItemId.Lens && focused, lensOn && focused ? rim : null);

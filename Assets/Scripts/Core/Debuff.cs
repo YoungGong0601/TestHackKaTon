@@ -10,7 +10,7 @@ public static class Debuff
     /// <summary>화면 쿼드 번짐 반지름. 눈치 BlurStep 가산은 KioskLens가 더한다.</summary>
     public static float KioskBlur => P != null && P.kioskBlur ? Bal.Age("KioskBlur", 0f, 3f, 7f, 12f) : 0f;
 
-    public static float MuffleCutoff => P != null && P.muffle ? Bal.Age("MuffleCutoff", OpenHz, 6000f, 2500f, 1000f) : OpenHz;
+    public static float MuffleCutoff => P != null && P.muffle ? Bal.Age("MuffleCutoff", OpenHz, 6000f, 3000f, 1800f) : OpenHz;
 
     /// <summary>0 또렷, 1 최대</summary>
     public static float Muffle01 => 1f - Mathf.InverseLerp(Mathf.Log(1000f), Mathf.Log(OpenHz), Mathf.Log(MuffleCutoff));

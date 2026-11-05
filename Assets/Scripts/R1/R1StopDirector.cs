@@ -56,7 +56,6 @@ public class R1StopDirector : MonoBehaviour
         AudioManager.I.Ambience(("amb_city_morning", 0.62f));
         AudioManager.I.Play("door_close_metal", null, 0.6f);
         yield return Round.Open();
-        Note.Peek();
         while (!stopZone.bounds.Contains(Player.transform.position)) yield return null;
         yield return Hud.I.Say(null, "112번 버스를 타세요.", "bus_take");
         yield return new WaitForSeconds(Bal.G("R1_BusArriveSec", 6f));
@@ -69,11 +68,20 @@ public class R1StopDirector : MonoBehaviour
         Vector3 stop = busStop.position;
         TrafficMover.BusBusy = true;
         bus.gameObject.SetActive(true);
-        AudioManager.I.Play("bus_arrive", stop + new Vector3(-30f, 1f, 0f), 1f);
-        yield return bus.Drive(busStart.position, stop, Bal.G("R1_BusDriveSec", 7f), Bal.G("Bus_ArriveEase", 2.4f), true);
+        float arrive = Bal.G("R1_BusDriveSec", 7f);
+        AudioManager.I.Loop("bus_idle", 0.32f, arrive);   // 멀리서 엔진음이 서서히 커진다
+        StartCoroutine(BrakeSound(stop, arrive));
+        yield return bus.Drive(busStart.position, stop, arrive, Bal.G("Bus_ArriveEase", 2.4f), true);
         AudioManager.I.Ambience(("amb_city_morning", 0.62f), ("bus_idle", 0.32f));
-        AudioManager.I.Play("bus_door", stop + new Vector3(4f, 1f, 0f), 0.9f);
+        AudioManager.I.Play("bus_door_open", stop + new Vector3(4f, 1f, 0f), 0.9f);
         bus.Doors(true);
+    }
+
+    // bus_arrive 앞부분이 브레이크 소리다. 버스가 서기 5초 전에 틀어야 멈출 때 들린다
+    IEnumerator BrakeSound(Vector3 stop, float arrive)
+    {
+        yield return new WaitForSeconds(Mathf.Max(0f, arrive - 5f));
+        AudioManager.I.Play("bus_arrive", stop + new Vector3(-6f, 1f, 0f), 1f);
     }
 
     void OnAsk()
@@ -102,7 +110,7 @@ public class R1StopDirector : MonoBehaviour
     {
         Player.Freeze(true);
         Hud.I.ClearSubs();
-        StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, 0.4f));
+        StartCoroutine(Player.LookAt(stepTop.position + Vector3.up * 1.4f, Bal.G("Cine_BlendSec", 1f)));
         yield return StoreFlow.Race(this, Player.WalkTo(stepBottom.position, Bal.F("MoveSpeed", 2.2f)), 2.5f);
         yield return Mash.Climb(stepBottom, stepTop);
         yield return Hud.I.Fade(1f, 0.2f);
@@ -133,11 +141,11 @@ public class R1StopDirector : MonoBehaviour
         HandRig.I.Equip(ItemId.None);
         Hud.I.CardName = "카드";
         yield return new WaitForSeconds(Bal.G("R1_AfterTapSec", 0.7f));
-        AudioManager.I.Play("bus_door", null, 0.8f);
+        AudioManager.I.Play("bus_door_close", null, 0.8f);
         AudioManager.I.Play("bus_leave", null, 0.9f);   // N13
         yield return Hud.I.Fade(1f, 0.35f);             // 1-3a 짧은 암전 컷
         yield return new WaitForSeconds(Bal.G("R1_RideSec", 1.6f));
-        AudioManager.I.Play("bus_door", null, 0.8f);
+        AudioManager.I.Play("bus_door_open", null, 0.8f);
         TrafficMover.BusBusy = false;
         GameState.I.CompleteChapter();
     }

@@ -25,7 +25,6 @@ public sealed class KioskView
         pos = eye.transform.position;
         rot = eye.transform.rotation;
         down = downTarget = 0f; edge = 0f;
-        eye.fieldOfView = Bal.G("Kiosk_Fov", 60f);
     }
 
     public void ToggleDown() => downTarget = Down ? 0f : 1f;
@@ -53,6 +52,8 @@ public sealed class KioskView
         // 플레이어가 이번 프레임에 넣은 흔들림만 이어 받는다
         Vector3 shake = eye.transform.localPosition - Vector3.up * pc.EyeHeight;
         down = snap ? downTarget : Damp(down, downTarget, 5f, dt);
+        float wantFov = Bal.G("Kiosk_Fov", 60f);
+        eye.fieldOfView = snap ? wantFov : Damp(eye.fieldOfView, wantFov, 5f, dt);
         float h = Mathf.Lerp(Bal.Age("KioskEye", 1.58f, 1.56f, 1.52f, 1.47f), Bal.F("KioskEyeDown", 1.3f), down);
         float dist = Mathf.Lerp(Bal.G("Kiosk_Dist", 0.76f), Bal.G("Kiosk_DistDown", 0.6f), down);
         float aimY = Mathf.Lerp(Bal.G("Kiosk_AimY", 1.372f), Bal.G("Kiosk_AimYDown", 0.74f), down);

@@ -232,7 +232,7 @@ public class Art3DTools : AssetPostprocessor
         foreach (var group in Rows().Where(r => names == null || names.Contains(r.prefab)).GroupBy(r => r.prefab))
         {
             var path = AssetDatabase.FindAssets(group.Key + " t:Prefab").Select(AssetDatabase.GUIDToAssetPath)
-                .FirstOrDefault(p => p.StartsWith("Assets/Graybox/") && Path.GetFileNameWithoutExtension(p) == group.Key); // 사본 Assets/JeongWoo 는 JWBuild 가 맡는다
+                .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p) == group.Key);
             if (path == null)
             {
                 Warn("프리팹 없음 " + group.Key);

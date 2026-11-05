@@ -27,8 +27,10 @@ public class PlayerController : MonoBehaviour
     public float Pitch { get; private set; }    // 도, 위가 +
     public bool HoldStill { get; set; }         // 시선은 돌되 걷지 않음(메모 읽기)
     public float EyeHeight => Bal.Age("EyeHeight", 1.68f, 1.66f, 1.62f, 1.56f);
-    float MoveSpeed => Bal.Age("MoveSpeed", 2.2f, 1.9f, 1.5f, 0.9f);
+    float MoveSpeed => Bal.Age("MoveSpeed", 2.2f, 1.9f, 1.5f, 1.15f);
     public Vector3 EyePos => transform.position + Vector3.up * EyeHeight;
+    public float Bob => bob;
+    public float Walk01 => Mathf.Clamp01(moving / 1.15f);
     public Vector2 Cursor01 => cursor01;        // 뷰포트 좌표, 왼쪽 아래가 (0,0)
 
     class Turn { public float t, sec, y0, y1, p0, p1; }
@@ -39,6 +41,11 @@ public class PlayerController : MonoBehaviour
     Vector2 cursor01 = new(0.5f, 0.5f), cursorWant = new(0.5f, 0.5f);
     float groundY, moving, stepAcc, bob, shake;
     int stepsTaken;
+
+    // 컷 전환: 지금 시점에서 새 시점으로 천천히 옮겨 간다
+    Vector3 blendPos;
+    Quaternion blendRot;
+    float blendT = -1f, blendSec, blendFov, blendFovTo = -1f;
 
     void Awake()
     {
@@ -60,6 +67,17 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Freeze(bool on) => Frozen = on;
+
+    /// <summary>순간이동 직전에 부른다. 지금 보이는 시점에서 Cine_BlendSec 동안 새 시점으로 옮겨 간다. 암전 컷에는 쓰지 않는다.</summary>
+    public void BlendCamera()
+    {
+        blendPos = eye.transform.position;
+        blendRot = eye.transform.rotation;
+        blendFov = eye.fieldOfView;
+        blendFovTo = -1f;
+        blendSec = Mathf.Max(Bal.G("Cine_BlendSec", 1f), 0.01f);
+        blendT = 0f;
+    }
 
     public void SetCursor01(Vector2 v) => cursor01 = cursorWant = v;
 
@@ -179,7 +197,8 @@ public class PlayerController : MonoBehaviour
             if (f != 0 || s != 0)
             {
                 dir = (transform.forward * f + transform.right * s).normalized;
-                want = speed * (f < 0 ? Bal.F("BackSpeedMul", 0.7f) : 1f);
+                bool run = f >= 0 && CanRun && kb.shiftKey.isPressed;
+                want = run ? RunSpeed : speed * (f < 0 ? Bal.F("BackSpeedMul", 0.7f) : 1f);
             }
         }
 
@@ -201,10 +220,16 @@ public class PlayerController : MonoBehaviour
             }
 
             stepAcc += moving * dt;
-            if (stepAcc > Bal.F("StepStride", 0.62f)) { stepAcc = 0f; Step(); }
+            if (stepAcc > Mathf.Lerp(Bal.Age("StepStride", 0.85f, 0.75f, 0.68f, 0.62f), CanRun ? Bal.F("RunStepStride", 0.95f) : 0f, Run01)) { stepAcc = 0f; Step(); }
         }
-        bob += moving * dt * Bal.F("BobRate", 5.1f);
+        bob += moving * dt * Mathf.Lerp(Bal.Age("BobRate", 3.7f, 4.2f, 4.6f, 5.1f), CanRun ? Bal.F("RunBobRate", 3.3f) : 0f, Run01);
     }
+
+    static bool CanRun => GameState.I != null && GameState.I.Profile != null && GameState.I.Profile.canRun;
+    static float RunSpeed => Bal.F("RunSpeed", 3.96f);
+
+    // 0 걷기, 1 달리기. 빨라지는 동안 걸음과 고개 흔들림이 따라간다
+    float Run01 => CanRun ? Mathf.Clamp01((moving - MoveSpeed) / Mathf.Max(RunSpeed - MoveSpeed, 0.01f)) : 0f;
 
     void ApplyCamera(float dt)
     {
@@ -215,7 +240,7 @@ public class PlayerController : MonoBehaviour
         float amp = Mathf.Clamp01(moving / Mathf.Max(MoveSpeed, 0.01f));
 
         // 왼다리가 불편한 걸음: 위아래가 좌우 비대칭
-        float h = Bal.F("BobHeight", 0.042f);
+        float h = Mathf.Lerp(Bal.Age("BobHeight", 0.018f, 0.026f, 0.034f, 0.042f), CanRun ? Bal.F("RunBobHeight", 0.06f) : 0f, Run01);
         float by = (Mathf.Abs(s) * h - h * 0.476f) * amp + Mathf.Sin(t * 1.3f) * 0.0035f;
         float roll = c * Bal.F("LimpRoll", 0.016f) * amp * limp + Mathf.Sin(t * 0.7f) * 0.0022f;
         float sway = c * Bal.F("LimpSway", 0.018f) * amp * limp;
@@ -228,6 +253,19 @@ public class PlayerController : MonoBehaviour
             0f);
         float pitch = Pitch + (Random.Range(-1f, 1f) * sh * 0.006f + Mathf.Sin(t * 0.9f) * 0.0016f) * Mathf.Rad2Deg;
         eye.transform.localRotation = Quaternion.Euler(-pitch, 0f, roll * Mathf.Rad2Deg);
+
+        if (blendT < 0f) return;
+        if (blendFovTo < 0f) blendFovTo = eye.fieldOfView;
+        blendT += dt / blendSec;
+        if (blendT >= 1f)
+        {
+            eye.fieldOfView = blendFovTo;
+            blendT = -1f;
+            return;
+        }
+        float e = blendT * blendT * (3f - 2f * blendT);
+        eye.transform.SetPositionAndRotation(Vector3.Lerp(blendPos, eye.transform.position, e), Quaternion.Slerp(blendRot, eye.transform.rotation, e));
+        eye.fieldOfView = Mathf.Lerp(blendFov, blendFovTo, e);
     }
 
     void Step()
@@ -235,12 +273,13 @@ public class PlayerController : MonoBehaviour
         stepsTaken++;
         var audio = AudioManager.I;
         if (audio == null) return;
-        audio.Play(Ground == "tile" ? "step_tile" : "step_concrete", null, 0.42f, Random.Range(0.92f, 1.04f));
+        // 자기 몸 소리는 먹먹함을 받지 않는다
+        audio.Play(Ground == "tile" ? "step_tile" : "step_concrete", null, 0.42f, Random.Range(0.92f, 1.04f), true);
         var profile = GameState.I != null ? GameState.I.Profile : null;
         if (profile == null || !profile.limp) return;
-        int cane = Mathf.RoundToInt(Bal.F("CaneEverySteps", 0f));
-        if (cane > 0 && stepsTaken % cane == 0) audio.Play("cane_tap", null, 0.26f, Random.Range(0.95f, 1.05f));
-        if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("BreathEverySteps", 19f))) == 0) audio.Play("breath_old", null, 0.32f);
+        int cane = Mathf.RoundToInt(Bal.Age("CaneEverySteps", 0f, 0f, 0f, 2f));
+        if (cane > 0 && stepsTaken % cane == 0) audio.Play("cane_tap", null, 0.26f, Random.Range(0.95f, 1.05f), true);
+        if (stepsTaken % Mathf.Max(1, Mathf.RoundToInt(Bal.F("BreathEverySteps", 19f))) == 0) audio.Play("breath_old", null, 0.32f, 1f, true);
     }
 
     static float Damp(float a, float b, float k, float dt) => Mathf.Lerp(a, b, 1f - Mathf.Exp(-k * dt));

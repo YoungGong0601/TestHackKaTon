@@ -29,6 +29,7 @@ ArtSource/_ref/*
 !ArtSource/_ref/models/
 ArtSource/_ref/models/*
 !ArtSource/_ref/models/npc_*.glb
+*.blend1.meta
 
 # MemoryCaptures can get excessive in size.
 /[Mm]emoryCaptures/

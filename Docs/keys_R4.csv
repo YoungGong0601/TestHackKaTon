@@ -31,3 +31,14 @@ R4_TerminalLookSec,4-19 고개가 들리는 시간,Float,1.2,sec,임시
 R4_WalletHabitSec,4-20 지갑을 여는 시간,Float,2,sec,임시
 R4_LookAroundDeg,4-10b 둘러보는 각도,Float,75,deg,임시
 R4_LookAroundSec,4-10b 둘러보는 시간,Float,3,sec,임시 타이밍 미정
+R4_IntroHandSec,4회차 시작 두 손만 보이는 시간,Float,2.5,sec,노인 손 인지
+R4_IntroLiftSec,시선이 올라오며 배경이 걷히는 시간,Float,2.5,sec,연출
+R4_IntroPitch,시작 시선 각도,Float,-38,deg,손을 내려다봄
+R4_IntroWatchHour,시작 때 왼손 시계 바늘,Int,10,hour,낮
+R4_IntroFogStart,시작 때 검은 안개 시작,Float,0.7,m,손 뒤만 가림
+R4_IntroFogEnd,시작 때 검은 안개 끝,Float,1,m,손 뒤만 가림
+Door_SeatLookSec,문 소리에 손님이 돌아보는 시간,Float,2.6,sec,연출
+Door_SeatBodyDeg,손님 몸통 회전,Float,35,deg,연출
+Door_SeatHeadDeg,손님 고개 회전,Float,70,deg,연출
+R4_TrayHandY,쟁반 높이,Float,1.05,m,손 높이
+R4_TrayReach,쟁반이 몸 앞으로 나온 거리,Float,0.32,m,손 앞

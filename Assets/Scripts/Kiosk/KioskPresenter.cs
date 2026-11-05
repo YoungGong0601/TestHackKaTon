@@ -1,5 +1,7 @@
 // 상태를 배치된 화면에 옮긴다. 켜고 끄기와 글자 값만. 원본 screens.js의 S 함수에 해당.
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 using static KioskData;
 
 public sealed class KioskPresenter
@@ -7,7 +9,26 @@ public sealed class KioskPresenter
     readonly KioskScreens scr;
     readonly KioskState K;
 
-    public KioskPresenter(KioskScreens scr, KioskState K) { this.scr = scr; this.K = K; }
+    readonly KioskFood food;
+
+    public KioskPresenter(KioskScreens scr, KioskState K)
+    {
+        this.scr = scr;
+        this.K = K;
+        food = scr.GetComponentInParent<KioskFood>(true);
+    }
+
+    /// <summary>회색 자리(Img)에 음식 그림을 넣는다.</summary>
+    public void Put(Component owner, string file, string slotName = "Img")
+    {
+        var slot = owner.transform.Find(slotName);
+        if (!slot || !slot.TryGetComponent(out Image image) || !food) return;
+        var sprite = food.Get(file);
+        if (!sprite) return;
+        image.sprite = sprite;
+        image.color = Color.white;
+        image.preserveAspect = true;
+    }
 
     string PlaceLabel => K.place == "dine" ? "DINE-IN" : "TAKE-OUT";
 
@@ -36,6 +57,7 @@ public sealed class KioskPresenter
             case "side": Grid(s, SideOpts, K.draft?.side, "side"); break;
             case "drink": Grid(s, DrinkOpts, K.draft?.drink, "drink"); break;
             case "cart": Cart(s); break;
+            case "upsell": if (K.draft != null) Put(s, ComboPicture(K.draft.item), "Art"); break;
             case "pay": s.Text("total", "총 결제 금액 " + Won(K.Total)); break;
             case "card":
                 s.Show("msg_box", K.cardMsg != null);
@@ -71,13 +93,18 @@ public sealed class KioskPresenter
             c.Text("desc", it.desc);
             c.Text("tag", it.tag);
             c.Show("tag_box", it.tag != "");
+            Put(c, Picture(it.id));
         }
         s.Show("ad", K.ad);
         int n = K.cart.Count;
         s.Text("item_count", $"{n} ITEM");
         s.Text("total", Won(K.Total));
         s.Show("checkout_off", n == 0);
-        for (int i = 0; i < 3; i++) s.Show("thumb" + i, i < n);
+        for (int i = 0; i < 3; i++)
+        {
+            s.Show("thumb" + i, i < n);
+            if (i < n) Put(s, Picture(K.cart[i].item), "Footer/Thumb" + i);
+        }
     }
 
     void Option(KioskScreen s)
@@ -88,6 +115,7 @@ public sealed class KioskPresenter
         s.Text("desc", it.desc);
         s.Text("price", $"{Won(it.price)}  {it.kcal}kcal");
         s.Text("mean", Mean(it.mean));
+        Put(s, Picture(it.id));
         for (int i = 0; i < s.cells.Length && i < Combos.Length; i++)
         {
             var o = Combos[i];
@@ -98,6 +126,7 @@ public sealed class KioskPresenter
             c.Text("price", Won(it.price + o.add));
             c.Text("add", o.add > 0 ? "+" + Won(o.add) : "");
             c.Text("mean", Mean(o.mean));
+            Put(c, Picture(it.id));
         }
     }
 
@@ -114,6 +143,7 @@ public sealed class KioskPresenter
             c.Text("add", add > 0 ? "+" + Won(add) : "+0원");
             c.Text("mean", Mean(it.mean));
             c.Show("on", sel == id);
+            Put(c, Picture(id));
         }
     }
 
@@ -133,6 +163,7 @@ public sealed class KioskPresenter
             c.Text("opts", opts);
             c.Text("price", Won(l.price));
             c.Text("mean", Mean(l.drink != null ? $"{it.mean}, {ById(l.drink).mean}" : it.mean));
+            Put(c, Picture(l.item), "Art");
         }
         s.Show("empty", !K.cart.Any());
         s.Show("promo", K.cart.Count <= 2);

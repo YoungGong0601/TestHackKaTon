@@ -25,12 +25,14 @@ public class NunchiSystem : MonoBehaviour
 
     /// <summary>회차 규칙. Enter 전에 부른다.</summary>
     public void Configure(NunchiRule r) => rule = r;
+    public event Action Sorried;
 
     public bool Running { get; private set; }
     public float RateMul { get; private set; } = 1f;
+    public float Cooldown { get; private set; }
     public int BlurStep { get; private set; }
 
-    float gauge;
+    float gauge, calmUntil;
     public float Value
     {
         get => gauge;
@@ -51,7 +53,7 @@ public class NunchiSystem : MonoBehaviour
     public void Begin()
     {
         if (!GameState.I.Profile.kioskNunchi) return;
-        gauge = rule != null ? rule.start : 0f; RateMul = 1f; LookingBack = false;
+        gauge = rule != null ? rule.start : 0f; RateMul = 1f; Cooldown = 0f; LookingBack = false;
         hurryMul = 1f; sighMul = 1f; asking = false;
         hurryWait = 0f; hurryIdx = 0; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
         nextHurry = Range("Nunchi_HurryFirstMin", 16f, "Nunchi_HurryFirstMax", 26f);
@@ -85,6 +87,20 @@ public class NunchiSystem : MonoBehaviour
     public void Add(float a)
     {
         if (Running) Value = gauge + a;
+    }
+
+    /// <summary>뒤돌아 사과. 쿨타임이면 false.</summary>
+    public bool Sorry()
+    {
+        if (!Running || Cooldown > 0f) return false;
+        int i = UnityEngine.Random.Range(0, NunchiLines.Sorry.GetLength(0));
+        Say(Speaker, NunchiLines.Sorry[i, 1], Speaker + "_" + NunchiLines.Sorry[i, 0]);
+        Value = gauge - Bal.G("Nunchi_Sorry", 25f);
+        Cooldown = Bal.G("Nunchi_SorryCooldown", 5f);
+        calmUntil = Time.time + Bal.G("Nunchi_SorryHoldSec", 2f);
+        hurryWait = 0f;
+        Sorried?.Invoke();
+        return true;
     }
 
     /// <summary>실수 직후 혼잣말을 청한다. 쿨타임이면 무시하고, 다른 말이 나오는 중이면 끝난 뒤에 한다.</summary>
@@ -133,9 +149,10 @@ public class NunchiSystem : MonoBehaviour
 
     void Tick(float dt)
     {
+        Cooldown = Mathf.Max(0f, Cooldown - dt);
         int q = QueueCount != null ? QueueCount() : 1;
         float fill = Mathf.Max(Bal.Age("NunchiFillSec", 900f, 120f, 80f, 60f), 1f);
-        Value = gauge + Max / fill * (1f + Bal.G("Nunchi_PerQueueMul", 0.03f) * Mathf.Max(q - 1, 0)) * RateMul * dt;
+        if (Time.time >= calmUntil) Value = gauge + Max / fill * (1f + Bal.G("Nunchi_PerQueueMul", 0.03f) * Mathf.Max(q - 1, 0)) * RateMul * dt;
         Hud.I.Nunchi(gauge, true);
         ApplyStage();
 

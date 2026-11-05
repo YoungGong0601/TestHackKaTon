@@ -1021,7 +1021,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1609362738333694487}
+  - {fileID: 4120825712684932500}
   m_Father: {fileID: 5691237469283313125}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1050352495772718985
@@ -1359,7 +1359,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7949946465343731744}
+  - {fileID: 6463957199592929964}
   m_Father: {fileID: 320437600031421651}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1402425222511328054
@@ -2979,7 +2979,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1293891751374860878}
+  - {fileID: 5139888523400496785}
   m_Father: {fileID: 7110694555701597483}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3175899411586193086
@@ -10329,6 +10329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd03a0cd4eae71c42b9556549774989c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: KioskGame::PayPoint
+  DeferOk: 0
 --- !u!1 &8927702527604574171
 GameObject:
   m_ObjectHideFlags: 0
@@ -11051,7 +11052,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 4686654354963424657}
   m_maskType: 0
---- !u!1001 &1287787185392344572
+--- !u!1001 &4520105884342090367
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11108,12 +11109,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37d043b0b1ac741528c457e0c1929f91, type: 3}
---- !u!4 &1609362738333694487 stripped
+--- !u!4 &4120825712684932500 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 37d043b0b1ac741528c457e0c1929f91, type: 3}
-  m_PrefabInstance: {fileID: 1287787185392344572}
+  m_PrefabInstance: {fileID: 4520105884342090367}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1620850341182231973
+--- !u!1001 &4674230759343104378
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11174,12 +11175,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de11ec09f99ec4976839f06137133812, type: 3}
---- !u!4 &1293891751374860878 stripped
+--- !u!4 &5139888523400496785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de11ec09f99ec4976839f06137133812, type: 3}
-  m_PrefabInstance: {fileID: 1620850341182231973}
+  m_PrefabInstance: {fileID: 4674230759343104378}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &7627227834302472139
+--- !u!1001 &6790917713224916295
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11240,8 +11241,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2aabcabbbabf24d4ab59cd835bad5085, type: 3}
---- !u!4 &7949946465343731744 stripped
+--- !u!4 &6463957199592929964 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2aabcabbbabf24d4ab59cd835bad5085, type: 3}
-  m_PrefabInstance: {fileID: 7627227834302472139}
+  m_PrefabInstance: {fileID: 6790917713224916295}
   m_PrefabAsset: {fileID: 0}

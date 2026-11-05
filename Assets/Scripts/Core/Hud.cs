@@ -155,9 +155,10 @@ public class Hud : MonoBehaviour
         if (prompt.text != t) prompt.text = t;
     }
 
+    // 십자선은 쓰지 않는다. 상호작용 판정은 그대로 화면 중앙
     public void Cross(bool on)
     {
-        if (cross != null) cross.enabled = on;
+        if (cross != null) cross.enabled = false;
     }
 
     // 현재 인물의 소지품과 든 물건을 표시한다. 키는 ItemId 값과 같다
@@ -181,11 +182,23 @@ public class Hud : MonoBehaviour
                 if (n >= itemSlots.Length) break;
                 var slot = itemSlots[n++];
                 slot.gameObject.SetActive(true);
+                if (id == hint && hands.Held != id) { slot.text = $"<size=130%><color={ItemOn}><b>{(int)KeyOf(id)} {ItemName(id)}</b></color></size>"; continue; }
                 slot.text = $"<color={(hands.Held == id || (id == ItemId.Wallet && hands.walletOut) ? ItemOn : ItemOff)}><b>{(id == ItemId.Wallet ? 3 : (int)id)}</b> {ItemName(id)}</color>";
             }
         }
         for (; n < itemSlots.Length; n++) itemSlots[n].gameObject.SetActive(false);
     }
+
+    ItemId hint;
+
+    /// <summary>다음에 쓸 소지품 칸을 크게 강조한다. None이면 끈다.</summary>
+    public void Hint(ItemId id)
+    {
+        hint = id;
+        Items();
+    }
+
+    static int KeyOf(ItemId id) => id == ItemId.Lens ? 2 : 3;
 
     string ItemName(ItemId id) => id switch
     {

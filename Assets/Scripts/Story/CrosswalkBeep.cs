@@ -14,6 +14,6 @@ public class CrosswalkBeep : MonoBehaviour
         if (wait > 0f) return;
         wait = Random.Range(Bal.G("Traffic_CrosswalkGapMin", 22f), Bal.G("Traffic_CrosswalkGapMax", 38f));
         if (PlayerController.I == null || PlayerController.I.transform.position.z <= Bal.G("Traffic_HearMinZ", 24f)) return;
-        AudioManager.I.Play("crosswalk_beep", transform.position, Bal.G("Traffic_CrosswalkVolume", 0.45f));
+        AudioManager.I.Play("crosswalk_beep", transform.position, Bal.G("Traffic_CrosswalkVolume", 1f));
     }
 }

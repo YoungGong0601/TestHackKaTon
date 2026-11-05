@@ -10,13 +10,14 @@ using UnityEngine.TestTools;
 
 public class RoundPathTests : RoundFixture
 {
-    const int R2 = 3, R4Front = 4, R4Store = 5, R4Stop = 6, EndHome = 7;
+    const int R2 = 4, R4Front = 5, R4Store = 6, R4Stop = 7, EndHome = 8;
 
     [UnityTest, Timeout(Limit)]
     public IEnumerator FullRun()
     {
         SteadyHands();
         Time.timeScale = Fast;
+        yield return PlayR1Home();
         yield return PlayR1Stop();
         yield return PlayR1Storefront();
         yield return PlayR1Store();
@@ -32,7 +33,7 @@ public class RoundPathTests : RoundFixture
         AssertSaw("112번 버스를 타세요.", "왜 안 되지?", "그거 지폐 안 받아요.", "그려? 어쩔 수 없구만...",
             "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.", 
             "이건 또 뭐야.", "돈을 어디다 넣으라는 거야.", "117번이요.", "아이고, 아니구먼.", "벌써 이렇게 됐구먼.", "172번이요.");
-        Assert.AreEqual(new[] { 2, 4, 6 }, rec.Hours.ToArray(), "손목시계 바늘");
+        Assert.AreEqual(new[] { 10, 2, 4, 6 }, rec.Hours.ToArray(), "손목시계 바늘");
         AssertCleanText();
     }
 
@@ -69,6 +70,7 @@ public class RoundPathTests : RoundFixture
         SteadyHands();
         rec.gameObject.AddComponent<Shooter>();
         Time.timeScale = 2f;
+        yield return PlayR1Home();
         yield return PlayR1Stop();
         yield return PlayR1Storefront();
         yield return PlayR1Store();
@@ -94,7 +96,7 @@ public class RoundPathTests : RoundFixture
     [UnityTest, Timeout(Limit)]
     public IEnumerator R1_KioskCard_HumanClick()
     {
-        yield return Chapter(2);
+        yield return Chapter(3);
         Time.timeScale = Fast;
         yield return R1Kiosk();
         yield return Free(30f);
@@ -105,6 +107,7 @@ public class RoundPathTests : RoundFixture
     public IEnumerator R1_Whole()
     {
         Time.timeScale = Fast;
+        yield return PlayR1Home();
         yield return PlayR1Stop();
         yield return PlayR1Storefront();
         yield return PlayR1Store();
@@ -417,7 +420,7 @@ public class RoundPathTests : RoundFixture
         }
 
         // 처음으로. 회차 안, 키오스크 안, 엔딩에서
-        yield return Chord(Key.Digit4);
+        yield return Chord(Key.Digit5);
         yield return InChapter(R2);
         yield return EnterKiosk();
         yield return Chord(Key.Home);
@@ -425,14 +428,14 @@ public class RoundPathTests : RoundFixture
         yield return Real(1f);
         Assert.AreEqual(PlayerController.Mode.Fps, Pc.CurrentMode, "처음으로 뒤 모드");
 
-        yield return Chord(Key.Digit7);
+        yield return Chord(Key.Digit8);
         yield return InChapter(R4Stop);
         yield return Chord(Key.Home);
         yield return InChapter(0);
         yield return Until(() => !Pc.Frozen, 20f, "처음 조작");
 
         // 엔딩 안에서 처음으로
-        yield return Chord(Key.Digit8);
+        yield return Chord(Key.Digit9);
         yield return InChapter(EndHome);
         yield return Real(2f);
         yield return Chord(Key.F2);

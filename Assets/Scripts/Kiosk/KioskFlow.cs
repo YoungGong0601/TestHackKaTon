@@ -82,7 +82,7 @@ public sealed class KioskFlow
     {
         K.cart.Clear();
         K.draft = null; K.place = null; K.phone = ""; K.memberErr = false; K.memberErrs = 0; K.toast = null; K.ad = false; K.info = null;
-        K.cardMsg = null; K.tab = "SIGNATURE"; pop = -1;
+        K.cardMsg = null; K.tab = "SIGNATURE"; K.classicSeen = false; pop = -1;
         ctl.HardwareReset();
         ctl.SetBig(false);
         K.screen = "idle";
@@ -128,10 +128,10 @@ public sealed class KioskFlow
             case "back": if (Back.TryGetValue(K.screen, out var b)) Go(b, true); return;
             case "add_more": Go("menu", true); return;
             case "cart":
-                if (!K.cart.Any()) { Wrong(WrongTouch); Toast("메뉴를 먼저 선택해 주세요"); return; }
+                if (!K.cart.Any()) { Wrong(WrongTouch, "kiosk_error", ErrorVol); Toast("메뉴를 먼저 선택해 주세요"); return; }
                 Go("cart", true); return;
             case "checkout":
-                if (!K.cart.Any()) { Wrong(WrongTouch); Toast("메뉴를 먼저 선택해 주세요"); return; }
+                if (!K.cart.Any()) { Wrong(WrongTouch, "kiosk_error", ErrorVol); Toast("메뉴를 먼저 선택해 주세요"); return; }
                 Popup(0); return;
             case "info_close": CloseInfo(); return;
             case "pop_skip": ctl.Sfx("kiosk_tap", 0.8f); Go("pay"); return;
@@ -141,9 +141,10 @@ public sealed class KioskFlow
             case "ad": case "hero": case "promo":
                 AdTap(); return;
             case "easy":
-                Wrong(WrongTouch); Toast("서비스 준비 중입니다"); return;
+                Wrong(WrongTouch, "kiosk_error", ErrorVol); Toast("서비스 준비 중입니다"); return;
             case "access": ctl.ToggleBig(); return;   // 임시 T21: 4-5a 큰 글씨
         }
+        if (id.StartsWith("lang") || id.StartsWith("filter")) { Wrong(WrongTouch, "kiosk_error", ErrorVol); Toast("서비스 준비 중입니다"); return; }
         if (id.StartsWith("key")) Key(id.Substring(3));
         else if (id.StartsWith("rec")) AdTap();
         else if (id.StartsWith("tab_")) Tab(id.Substring(4));
@@ -161,7 +162,6 @@ public sealed class KioskFlow
             Redraw();
         }
         else if (id.StartsWith("pay_")) Pay(id.Substring(4));
-        else ctl.Sfx("kiosk_error", ErrorVol);   // 언어, 필터: 소리로 안 됨을 알린다
     }
 
     void Popup(int i)
@@ -232,7 +232,7 @@ public sealed class KioskFlow
                 return;
             case "call":
                 ctl.Touched();
-                ctl.Sfx("kiosk_tap", 0.7f, 0.8f); ctl.Sfx("fryer_beep", 0.3f);
+                ctl.Sfx("kiosk_tap", 0.7f, 0.8f); ctl.Sfx("fryer_beep", 0.6f);
                 Toast("직원을 호출했습니다", 2.4f);
                 return;
             default: ctl.Sfx("kiosk_tap", 0.35f, 0.7f); return;
