@@ -93,7 +93,7 @@ class Art3DTools : AssetPostprocessor
 
     static int warnings;
 
-    [MenuItem("Tools/키오스크/3D 에셋 적용")]
+    [UnityEditor.MenuItem("Tools/키오스크/3D 에셋 적용")]
     static void Apply()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
@@ -198,7 +198,7 @@ class Art3DTools : AssetPostprocessor
 
     // 모델링목록.md 규칙: Visual 아래 회색 메시만 지우고 모델을 넣는다. Visual 밖(앵커 · 콜라이더 · 글자)은 건드리지 않는다.
     // 다시 눌러도 된다. 찾지 못한 프리팹이나 자리는 건너뛰고 경고만 남긴다.
-    [MenuItem("Tools/키오스크/PH 프리팹에 모델 넣기")]
+    [UnityEditor.MenuItem("Tools/키오스크/PH 프리팹에 모델 넣기")]
     static void FillPlaceholders()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
