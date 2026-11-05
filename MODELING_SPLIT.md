@@ -105,7 +105,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 3. 키오스크입니다. PH/kiosk.py 는 고치지 않습니다(사본이 씁니다). 복사해 PH/kiosk_r4.py 를 만들고 edit_labels 의 sticker 조건을 빼서 PH_KioskR4__Body, PH_KioskR4__Broken 으로 내보냅니다. 맵에는 PH_Kiosk 행(Wing_L/Visual, Wing_R/Visual, 빈 행들)을 복사하고, Visual 은 PH_KioskR4__Body, Cover/Hinge/Visual 은 PH_Kiosk__Cover 입니다. PH_Kiosk_Broken 은 Visual 빈 행 뒤에 새 모델 행을 씁니다.
 4. Sticker_CardOnly/Visual 판과 PH_Poster/Visual 판을 넣습니다. store_tex.py 의 poster_kiosk 는 고치지 않습니다(StorePosters 를 사본이 씁니다). 글자 없는 인쇄면을 새로 그려 Textures/PH_Poster 에 둡니다.
 5. Env_StoreInterior 와 Env_Storefront 를 DressStore.cs 로 만듭니다. Storefront 씬에도 Env_StoreInterior 를 넣습니다. R 씬은 Single 로드라 유리 너머가 비어 보입니다.
-6. 네 씬에 적용합니다. JWDress 와 다른 점입니다: StoreDirector.sharedRoom, 영수증, 사본 조명값은 뺍니다. PH_Bus, BusStop, PlayerSpawn, Bound_Road 이동은 R1, R4 두 Storefront 에 똑같이 합니다. 포스터 자리는 두 Store 씬 모두 (0.75, 2.28) 입니다(D12).
+6. 네 씬에 적용합니다. JWDress 와 다른 점입니다: StoreDirector.sharedRoom, 영수증, 안개, 반사 프로브는 뺍니다. 두 Store 씬의 Lights 는 코드가 참조하지 않으니 지우고 Store.json 의 lights 로 바꿉니다(LayoutLights). PH_Bus, BusStop, PlayerSpawn, Bound_Road 이동은 R1, R4 두 Storefront 에 똑같이 합니다. 포스터 자리는 두 Store 씬 모두 (0.75, 2.28) 입니다(D12).
 7. 씬 전용 자리입니다. R4_Store: NPCs/Watcher0~4 의 ReactPivot/Visual 과 ReactPivot/HeadPivot/Visual, Counter/Tray_Pass/Visual, NPCs/NPC_Staff 휴대폰. R1_Store: NPCs/NPC_Elder 의 look 9, NPCs/NPC_Elder/ReactPivot/Arm_Pivot/Visual 과 Arm_Pivot/Bill/Visual(2번 결과), PH_Cane.
 8. 흐린 사본입니다(D16, PREP 3.7).
 9. `git log --oneline --grep "끝\]"` 로 2, 3, 4번의 끝 표시를 보고 마지막 점검을 합니다. pull, Unity 한 번 실행, 씬 8개 캡처, 경고 확인 뒤 사용자에게 보고합니다.
