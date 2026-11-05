@@ -12,13 +12,12 @@ using Object = UnityEngine.Object;
 // - 임포트 설정: 텍스처(노멀·MS 는 선형), 모델(리깅 여부는 같은 이름의 JSON)
 // - 3D 에셋 적용: JSON → URP/Lit 머티리얼 · FBX 머티리얼 연결. Models 의 JSON 이 바뀌면 자동 실행
 // - PH 프리팹에 모델 넣기: 모델링목록.md 대로 PH_ 프리팹의 Visual 을 Models/PH 모델로 바꾼다 (PH_Map.json)
-class Art3DTools : AssetPostprocessor
+public class Art3DTools : AssetPostprocessor
 {
     const string Art = "Assets/Art3D/";
     const string ModelsDir = Art + "Models";
     const string TexturesDir = Art + "Textures";
     const string MaterialsDir = Art + "Materials";
-    const string PhMapPath = Art + "PH_Map.json";
 
     // ── JSON 형식 (notes 는 문자열 또는 객체라 읽지 않는다) ──
 #pragma warning disable 0649 // JsonUtility 가 채운다
@@ -94,7 +93,7 @@ class Art3DTools : AssetPostprocessor
     static int warnings;
 
     [UnityEditor.MenuItem("Tools/키오스크/3D 에셋 적용")]
-    static void Apply()
+    public static void Apply()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
         var lit = Shader.Find("Universal Render Pipeline/Lit");
@@ -199,13 +198,38 @@ class Art3DTools : AssetPostprocessor
     // 모델링목록.md 규칙: Visual 아래 회색 메시만 지우고 모델을 넣는다. Visual 밖(앵커 · 콜라이더 · 글자)은 건드리지 않는다.
     // 다시 눌러도 된다. 찾지 못한 프리팹이나 자리는 건너뛰고 경고만 남긴다.
     [UnityEditor.MenuItem("Tools/키오스크/PH 프리팹에 모델 넣기")]
-    static void FillPlaceholders()
+    public static void FillPlaceholders() => Fill(null);
+
+    // 여러 컴퓨터가 서로의 프리팹을 저장하지 않도록 그 맵 파일에 나오는 프리팹만 고친다.
+    // Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap PH_Map_Cafe.json -logFile -
+    public static void FillMap()
+    {
+        var args = Environment.GetCommandLineArgs();
+        Fill(Art + args[Array.IndexOf(args, "-phmap") + 1]);
+    }
+
+    // PH_Map.json 은 사본도 읽으니 그대로 두고 새 행은 PH_Map_<묶음>.json 에 쓴다.
+    // 뒤 파일의 빈 model 행은 그 자리의 앞선 행을 지운다.
+    static List<PhRow> Rows()
+    {
+        var rows = new List<PhRow>();
+        foreach (var path in Directory.GetFiles(Art, "PH_Map*.json").OrderBy(p => p, StringComparer.Ordinal))
+            foreach (var r in Read<PhMap>(path).rows)
+            {
+                if (string.IsNullOrEmpty(r.model)) rows.RemoveAll(x => x.prefab == r.prefab && x.target == r.target);
+                rows.Add(r);
+            }
+        return rows;
+    }
+
+    static void Fill(string only)
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
         Apply(); // 첫 임포트 뒤 스크립트 컴파일로 자동 적용이 끊길 수 있어 여기서도 맞춘다
         warnings = 0;
         int placed = 0, prefabs = 0;
-        foreach (var group in Read<PhMap>(PhMapPath).rows.GroupBy(r => r.prefab))
+        var names = only == null ? null : Read<PhMap>(only).rows.Select(r => r.prefab).ToHashSet();
+        foreach (var group in Rows().Where(r => names == null || names.Contains(r.prefab)).GroupBy(r => r.prefab))
         {
             var path = AssetDatabase.FindAssets(group.Key + " t:Prefab").Select(AssetDatabase.GUIDToAssetPath)
                 .FirstOrDefault(p => p.StartsWith("Assets/Graybox/") && Path.GetFileNameWithoutExtension(p) == group.Key); // 사본 Assets/JeongWoo 는 JWBuild 가 맡는다
