@@ -496,6 +496,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: KioskGame::Readable
   blurred: {fileID: 6129409556905379354}
   sharp: {fileID: 725815392347745509}
+  wide: 0
+  postBlur: 0
   onRead:
     m_PersistentCalls:
       m_Calls: []

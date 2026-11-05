@@ -96,7 +96,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 
 참고 코드는 Assets/JeongWoo/Editor/JWDress.cs 입니다(Street 318-406행, Storefront 440-490행, Store 492-579행, Home 266-313행). 사본 전제가 있으니 복사할 때 각 절의 주의를 지킵니다. 안개, 반사 프로브, Director 호출은 옮기지 않습니다.
 
-씬의 PH_NPC 인스턴스는 전부 look 을 정합니다. 비워 두면 이름 해시로 골라 손님이 직원이나 어르신 모습이 됩니다. 0~8 은 OfficeMan, Ajumma, StudentWoman, StudentMan, YoungWoman, OldMan, SuitMan, Youth, Staff 이고 9 는 어르신, 10 은 카페 직원입니다.
+씬의 PH_NPC 인스턴스는 전부 look 을 정합니다. 비워 두면 이름 해시로 골라 손님이 직원이나 어르신 모습이 됩니다. 0~8 은 OfficeMan, Ajumma, StudentWoman, StudentMan, YoungWoman, OldMan, SuitMan, Youth, Staff 이고 9 는 어르신, 10 은 카페 직원, 11 은 신입 사원, 12~14 는 행인(ClerkWoman, AjummaB, StudentB)입니다. 모습은 PH_NPC 의 NpcPose.look 으로 고릅니다. 5 할아버지는 손님에게 쓰지 않습니다.
 
 ## 5. 1번 정우맥: 버거집, 사람, 마지막 점검
 

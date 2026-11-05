@@ -1,8 +1,9 @@
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static DressKit;
 
 // 1번 몫: 새 인물을 PH_NPC 에 더하고, 매장 손님 모습과 포스터 인쇄면을 입힌다. 다시 돌려도 된다.
@@ -26,7 +27,8 @@ public static class DressStore
             Wear(s, "NPCs/NPC_SeatOld", 13);
             Wear(s, "NPCs/NPC_Wait2", 12);
             Wear(s, "NPCs/NPC_Queue4", 14);
-            if (name == "R1_Store") Wear(s, "NPCs/NPC_Elder", 9);
+            if (name == "R1_Store") Elder(s);
+            else Blur(s);
             // 화장실 문과 겹치지 않게 벽의 키오스크 포스터 위로 옮긴다. 그 인쇄물의 글자는 Readable 이 아니라 80대에도 읽히기 때문이다
             var poster = Find(s, "Room/PH_Poster");
             poster.position = new Vector3(0.75f, 2.28f, poster.position.z);
@@ -36,12 +38,40 @@ public static class DressStore
         }
     }
 
-    static void Wear(UnityEngine.SceneManagement.Scene s, string path, int look)
+    static void Wear(Scene s, string path, int look)
     {
         var t = Find(s, path);
         if (t == null) return;
         t.GetComponent<NpcPose>().look = look;
         Keep(t.GetComponent<NpcPose>());
+    }
+
+    // 키오스크 앞 어르신. 서 있기만 하면 뻣뻣해 화면을 두드리게 하고, 4회차 주인공과 같은 사람이라 지팡이를 짚는다
+    static void Elder(Scene s)
+    {
+        Wear(s, "NPCs/NPC_Elder", 9);
+        var elder = Find(s, "NPCs/NPC_Elder");
+        var pose = elder.GetComponent<NpcPose>();
+        pose.pose = "Tap";
+        Keep(pose);
+        Off(s, "NPCs/NPC_Elder/ReactPivot/Arm_Pivot");   // 지폐 넣는 동작을 뺐고 몸에 제 팔이 있다
+        var pivot = elder.Find("ReactPivot");
+        if (pivot.Find("PH_Cane") != null) return;
+        var cane = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(Prefabs + "PH_Cane.prefab"), pivot);
+        cane.transform.localPosition = new Vector3(-0.28f, 0f, 0.12f);   // Tap 은 오른손이라 왼쪽에 둔다
+        var bottom = cane.GetComponentsInChildren<Renderer>().Min(r => r.bounds.min.y);
+        cane.transform.position += Vector3.up * (elder.position.y - bottom);
+    }
+
+    // 4회차 글씨는 돋보기 없이 번진다. 구운 글씨도 SignBlur 레이어로 옮긴다(Docs/BLUR_LIST.md). 간판은 번지지 않는다
+    static void Blur(Scene s)
+    {
+        foreach (var r in s.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<Renderer>(true)))
+            if (Regex.IsMatch(r.name, @"^(StoreMenuBoard_Panel\w|StorePosters_\w+_Print|PH_Kiosk__(WingL|WingR|Cover))$") || (r.name == "Paper" && r.transform.parent.parent.name == "Wing_R2"))
+            {
+                r.gameObject.layer = LayerMask.NameToLayer("SignBlur");
+                Keep(r.gameObject);
+            }
     }
 
     static void People()

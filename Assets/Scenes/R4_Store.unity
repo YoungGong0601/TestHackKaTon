@@ -4269,6 +4269,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PH_Kiosk__WingL
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2aabcabbbabf24d4ab59cd835bad5085, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5320,6 +5324,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PH_Kiosk__Cover
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8c52c5478ba894caeb6afcfcd494cdaf, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6026,9 +6034,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7977719350073845628, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -7186980359546945135, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -6342815731606731546, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -5052707339241104218, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -2028609505856756148, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
       propertyPath: m_Name
       value: StorePosters
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506894782805003130, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718364448687003510, guid: d908ca7aaf475430abba56ad325bd516, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7721,6 +7757,10 @@ PrefabInstance:
       propertyPath: m_TextStyleHashCode
       value: -1183493901
       objectReference: {fileID: 0}
+    - target: {fileID: 8682237339941997858, guid: c279ffadd02dbca489011dde25ba0d30, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 8972898166282701883, guid: c279ffadd02dbca489011dde25ba0d30, type: 3}
       propertyPath: m_Layer
       value: 13
@@ -9094,6 +9134,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: de11ec09f99ec4976839f06137133812, type: 3}
       propertyPath: m_Name
       value: PH_Kiosk__WingR
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: de11ec09f99ec4976839f06137133812, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12338,9 +12382,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6754886191631132018, guid: 7c51a83c2b3dc42aa97339ad2118c273, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -3243584184810460316, guid: 7c51a83c2b3dc42aa97339ad2118c273, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7c51a83c2b3dc42aa97339ad2118c273, type: 3}
       propertyPath: m_Name
       value: StoreMenuBoard
+      objectReference: {fileID: 0}
+    - target: {fileID: 7315345488307194643, guid: 7c51a83c2b3dc42aa97339ad2118c273, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
