@@ -159,6 +159,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Wait1
@@ -1672,6 +1676,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Queue1
@@ -8245,6 +8253,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Cook
@@ -9073,6 +9085,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Queue3
@@ -11617,6 +11633,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Wait2
@@ -13557,6 +13577,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Queue4
@@ -14889,10 +14913,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2326263514148785864, guid: f24184d17ba523649b6006c9aaeba023, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1670012475}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1849023111699462341, guid: f24184d17ba523649b6006c9aaeba023, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f24184d17ba523649b6006c9aaeba023, type: 3}
 --- !u!4 &1176994874 stripped
 Transform:
@@ -15530,6 +15551,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Staff
@@ -16449,6 +16474,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Queue0
@@ -19866,6 +19895,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Wait0
@@ -20293,6 +20326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
       value: NPC_Queue2
@@ -23550,7 +23587,7 @@ MonoBehaviour:
   visuals:
   - {fileID: 1709094993}
   - {fileID: 1601359495}
-  look: 1
+  look: 11
   pose: Phone
 --- !u!114 &1790285440
 MonoBehaviour:
@@ -24339,6 +24376,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 633517668}
     m_Modifications:
+    - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
+      propertyPath: look
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5758685351256980527, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: pose
       value: SitIdle

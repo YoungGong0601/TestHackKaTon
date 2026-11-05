@@ -36,6 +36,15 @@ public static class DressStore
             Keep(poster);
             Save(s);
         }
+        // 비워 두면 이름 해시로 고르고 인물 수에 따라 바뀐다. 손님이 어르신이나 직원이 되지 않게 전부 정한다
+        var cafe = Open("R2_Cafe");
+        Wear(cafe, "NPCs/NPC_Staff", 10);
+        Wear(cafe, "NPCs/NPC_Cook", 10);
+        Wear(cafe, "NPCs/NPC_Rookie", 11);
+        string[] guests = { "Queue0", "Queue1", "Queue2", "Queue3", "Queue4", "Wait0", "Wait1", "Wait2", "Eater" };
+        int[] looks = { 0, 12, 6, 4, 14, 13, 2, 3, 1 };
+        for (int i = 0; i < guests.Length; i++) Wear(cafe, "NPCs/NPC_" + guests[i], looks[i]);
+        Save(cafe);
     }
 
     static void Wear(Scene s, string path, int look)
