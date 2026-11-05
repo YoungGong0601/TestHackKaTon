@@ -293,7 +293,7 @@ def _cycles(samples):
         else:
             raise RuntimeError("GPU 없음")
         for d in pr.devices:
-            d.use = d.type == kind  # CPU 를 같이 켜면 Metal 베이크가 힙 손상으로 죽었다
+            d.use = d.type == kind  # CPU 를 같이 켜면 Metal 베이크가 힙 손상으로 더 자주 죽는다
         sc.cycles.device = 'GPU'
     except Exception:
         sc.cycles.device = 'CPU'

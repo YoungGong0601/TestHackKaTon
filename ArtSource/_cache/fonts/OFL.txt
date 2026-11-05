@@ -1,7 +1,8 @@
 이 폴더의 폰트는 모델 텍스처의 글자를 그릴 때만 쓴다.
 
 Black Han Sans, Do Hyeon, Gothic A1, Jua: Google Fonts 배포본, SIL OFL 1.1
-Nanum Pen Script, NanumSquare: (c) NAVER Corporation, SIL OFL 1.1
+Nanum Pen Script: (c) NAVER Corporation, SIL OFL 1.1
+NanumSquare: (c) NAVER Corporation, 네이버 나눔글꼴 라이선스(hangeul.naver.com/font). 글꼴 자체 판매 금지
 Pretendard: (c) Kil Hyung-jin, SIL OFL 1.1
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

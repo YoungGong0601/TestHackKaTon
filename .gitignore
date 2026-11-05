@@ -18,7 +18,7 @@ __pycache__/
 *.pyc
 .DS_Store
 ArtSource/*
-!ArtSource/PH_인계.md
+!ArtSource/PH_*.md
 !ArtSource/Blender/
 !ArtSource/_cache/
 ArtSource/_cache/*
@@ -114,5 +114,4 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
-docs/.DS_Store
 CLAUDE.md

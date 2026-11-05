@@ -10,7 +10,7 @@
 ## 1. 요약
 
 - 모델 155개가 이미 있습니다. 그런데 Assets/Graybox/PH 프리팹에는 FBX 가 하나도 들어가 있지 않습니다. 지금 R 씬이 회색인 이유는 모델이 없어서가 아니라 넣지 않아서입니다.
-- 3절의 78개 항목 중 45개는 모델링 없이 끝납니다. 고치는 것이 19개, 새로 만드는 것이 14개입니다.
+- 3절의 80개 항목 중 47개는 모델링 없이 끝납니다. 고치는 것이 19개, 새로 만드는 것이 14개입니다.
 - 거리, 정류장, 버거집은 새로 만들 것이 거의 없습니다. 새 모델링은 손과 소지품, 카페, 엔딩 소품에 몰려 있습니다.
 - 스크립트 한 번은 수 초에서 1분입니다. 시간은 모델링보다 정확한 자리에 넣는 일에 듭니다.
 
@@ -19,7 +19,7 @@
 | 그대로 | 모델과 PH_Map 행이 있습니다. 메뉴만 돌리면 들어갑니다 | 24 |
 | 행 추가 | 모델이 있습니다. 맵 행만 더합니다 | 1 |
 | 배치 | 모델이 있습니다. 배경 프리팹이나 씬 오브젝트 아래에 놓습니다 | 15 |
-| 색만 | 메시는 두고 재질이나 텍스처만 바꿉니다 | 5 |
+| 색만 | 메시는 두고 재질이나 텍스처만 바꿉니다 | 7 |
 | 고침 | 기존 스크립트를 고쳐 다시 내보냅니다 | 19 |
 | 새로 | 새 스크립트로 만듭니다. 복사할 재료 코드는 적어 두었습니다 | 14 |
 
@@ -36,7 +36,7 @@
 | D3 | 손의 나이 | 피부까지 세 벌(Look_0, 1, 3) | 소매만 바꾸면 손 메시 하나로 끝납니다 |
 | D4 | 물건을 든 손 | 80대만 쓰는 Hand_Lens, Hand_Bill 에는 손을 같이 굽습니다. Hand_Card, Hand_Wallet 은 물건만 보입니다 | Hand_Card, Hand_Wallet 에 손을 붙이면 HandRig 의 skins 를 고쳐야 합니다 |
 | D5 | 시계 손목 | Look_3, Hand_Watch, 어르신 팔, 엔딩 손에 같은 시계를 씁니다. 한 화면에 같이 나오지 않습니다 | 코드 주석은 왼 손목, Look_3 과 어르신 팔은 오른팔입니다 |
-| D6 | 버스 계단 | 앞문 안쪽 3단, 위 높이 0.6 | R1 앵커는 0.6, R4 는 0.9 입니다. 맞추려면 씬 값을 바꿉니다 |
+| D6 | 버스 계단 | 앞문 안쪽 3단, 위 높이 0.6 | 실내 바닥은 보도 기준 약 0.195 인데 계단 끝 앵커가 R1 0.6, R4 0.9 입니다. 맞추려면 씬 값을 바꿉니다 |
 | D7 | 버스 번호 | ROUND_PLAN T26 대로 세 대 모두 112 로 보입니다. 117, 172 는 기사 대사로만 나옵니다 | 표시하려면 CityBus_tex.route_sign 으로 텍스처 3벌을 만듭니다(Mac) |
 | D8 | 집 문 자리 | 각 씬 그대로 둡니다(R1 은 골목 옆벽, Ending_Home 은 골목 끝) | 같은 길로 보이게 하려면 씬 구조를 바꿉니다 |
 | D9 | E-1c 자세 | 시트는 바닥, 코드는 벽입니다. 펼친 손 모델 하나로 둘 다 됩니다 | 바닥으로 맞추려면 코드와 카메라를 고칩니다(친구 파일) |
@@ -46,6 +46,7 @@
 | D13 | 친구 파일 수정 | 고치지 않습니다. R4StopDirector.ApplySky 에 안개 색이 없으니 R 씬에는 안개를 켜지 않습니다 | 안개를 쓰려면 ApplySky 와 QualitySettings 를 고칩니다 |
 | D14 | 친구와 동시 작업 | 0단계와 씬 저장은 친구 작업이 멈춘 것을 확인하고 합니다. 친구는 Assets/Graybox, Assets/Scenes 를 수시로 크게 고칩니다 | 동시에 저장하면 한쪽 작업이 사라집니다 |
 | D15 | 4회차 지팡이(01:38 기획 추가) | 모델만 먼저 만듭니다. PH_Hand 와 HandRig 에 지팡이 자리가 없어 1인칭으로 보이려면 친구 코드가 필요합니다. 어르신 NPC 에는 씬에서 붙입니다 | 「남은 결정」 4회차 지팡이 항목입니다. 지갑, 돋보기, 지폐를 쥐는 손을 어떻게 나눌지에 따라 손 모델이 달라집니다 |
+| D16 | 4회차의 구운 글씨(01:38 기획 추가) | 시트 공통 규칙은 "4회차에는 전광판, 가게 전광판, 포스터 같은 글씨가 돋보기 없이는 흐려 보인다. 간판은 흐려지지 않는다." 입니다. 흐림은 Readable 에만 걸리므로 텍스처에 구운 글씨는 80대에도 또렷합니다. 기본값은 R4 씬 인스턴스의 재질만 흐린 BaseColor 사본으로 덮어쓰는 것입니다. 간판은 그대로 둡니다 | 흐리지 않으면 "같은 글씨, 다른 눈" 규칙이 깨집니다. "가게 전광판"이 어느 물건인지는 문서에 없습니다. 호출판 PH_PickupBoard 라면 이미 Readable 입니다 |
 
 ## 3. 재활용 지도
 
@@ -140,7 +141,7 @@ R2_Cafe 는 a607539 에서 새 공간이 됐습니다. 방은 안쪽 7.7 x 6.9 m
 | 물건 | 시트 | 판정 | 급 | 재료 | 넣을 곳 | 묶음 |
 |---|---|---|---|---|---|---|
 | 키오스크 | 2-2, 2-3, 2-6 | 색만 | 핵심 | 같은 메시, 간판 PNG, 포스터 아틀라스(kiosk_tex.py) | PH_Kiosk | C |
-| 커피 2잔과 캐리어 | 2-8 | 새로 | 핵심 | FoodDrinkCup.py:60-81 컵 프로필, M_Glass 몸통 | PH_CoffeeCups | C |
+| 커피 2잔과 캐리어 | 2-8 | 새로 | 핵심 | FoodDrinkCup.py:70-80 컵 프로필, M_Glass 몸통 | PH_CoffeeCups | C |
 | 바 카운터 | 2-5, 2-8 | 고침 | 핵심 | store_counter.py:11-61 | PH_BarCounter | C |
 | 방 벽, 바닥, 천장 | 2-1 | 새로 | 보통 | store_shell.py W(), tint_copy, 7.2절 타일 | Env_Cafe | C |
 | 카페 앞면과 차양 | 2-1 | 새로 | 보통 | sf.box2, bld.awning(bld.py:697) | PH_CafeFront | C |
@@ -164,6 +165,7 @@ PH_Curb, PH_Rail, PH_OfficeBlock 인스턴스는 스케일로 크기를 만들�
 | 바라보는 사람들 | 4-10b | 배치 | 핵심 | PH_NPC 와 같은 모델. HeadPivot 이름 유지 | 씬 Watcher0~4 | D |
 | 지나가는 쟁반 | 4-10a, 실패 | 배치 | 보통 | FoodTray, FoodBulgogiBurger, FoodFries, FoodDrinkCup_Cola(소켓 있음) | 씬 Tray_Pass/Visual | D |
 | 알바생 휴대폰 | 4-7 | 배치 | 나중 | NpcSmartphone | 씬 NPC_Staff | D |
+| 가게 안 구운 글씨의 흐린 사본 | 공통 규칙, 4-4 | 색만 | 보통 | T_Kiosk_Paper(날개 포스터, NEW 스티커), StorePosters, StoreMenuBoard, StoreOrderBoard 의 BaseColor 를 흐려 새 재질로 | R4_Store, R4_Storefront 인스턴스 재질 덮어쓰기(D16) | D |
 
 ### 3.8 4회차 정류장 (R1 과 다른 것만)
 
@@ -172,6 +174,7 @@ PH_Curb, PH_Rail, PH_OfficeBlock 인스턴스는 스케일로 크기를 만들�
 | 세 번째 버스 | 4-19, 4-21b | 배치 | 핵심 | PH_Bus__Body, DoorA, DoorB | 씬 Buses/Bus3 | B |
 | 어르신 뒷모습 | E-1 | 배치 | 핵심 | 어르신 몸(묶음 D) | 씬 Npcs/Walker | B |
 | 가로등 | 머리글, 4-21b | 고침 | 보통 | Street/street_light.py 렌즈 분리, 꺼진 재질 | 씬 Lamps/Lamp0~2 | B |
+| 정류장 구운 글씨의 흐린 사본 | 공통 규칙, 회차별 기믹 | 색만 | 나중 | 쉼터 광고, BusStopRouteMap 의 BaseColor 를 흐려 새 재질로 | R4_Stop 인스턴스 재질 덮어쓰기(D16) | B |
 
 저녁 장면은 코드가 조명과 하늘 색을 바꿉니다. 저녁용 모델은 없습니다. 가로등 Light 는 지우면 안 되고 모델 높이(7.2 m)에 맞게 옮깁니다.
 
@@ -252,7 +255,7 @@ Hand_Lens 에 손을 구울 때는 렌즈 원 밖에 둡니다. 원 안은 후�
 | PH_Poster 판 | 0.7 x 1.0 x 0.01, 앞면 z 0~+0.001 | StorePosters_Kiosk 외곽은 0.634 x 0.881 입니다. 빈 인쇄면으로 다시 만듭니다. poster_kiosk 의 "현금 결제 불가" 문구도 뺍니다 |
 | Sticker_CardOnly 판 | 0.16 x 0.06 x 0.01 | 재질만 입힙니다 |
 
-PH_Kiosk_R4 행은 PH_Kiosk 행(Visual, Wing_L/Visual, Wing_R/Visual, 빈 행들)을 복사하고 Cover/Hinge/Visual 에 PH_Kiosk__Cover 를 더합니다. Card/Visual 은 자리가 없습니다.
+PH_Kiosk_R4 행은 PH_Kiosk 행(Visual, Wing_L/Visual, Wing_R/Visual, 빈 행들)을 복사하고 Cover/Hinge/Visual 에 PH_Kiosk__Cover 를 더합니다. Card/Visual 은 자리가 없습니다. 구운 "카드 전용" 띠를 먼저 빼고 Body 를 다시 내보낸 뒤에 행을 넣습니다. 순서가 바뀌면 4회차에 돋보기 없이 읽힙니다.
 
 ### 카페 (실측 크기, 모델링목록과 다른 값은 실측이 맞습니다)
 
@@ -393,6 +396,7 @@ blender -b --factory-startup --python ArtSource/Blender/scripts/k3d.py -- valida
 ```
 
 - model 이 비어 있는 행은 그 자리의 앞선 행을 지우고 회색 메시만 비웁니다. 위 예는 PH_Map.json 의 공통 손을 지웁니다.
+- 한 프리팹은 한 맵 파일에만 씁니다(PH_Map.json 제외). 6절의 소유와 같습니다.
 - target 의 자식은 모두 지워지고 모델이 그 아래에 들어갑니다. Visual 밖의 앵커, 콜라이더, 글자는 target 으로 쓰지 않습니다.
 - 새 사람 모습은 target 이 ReactPivot/Visual, HeadPivot/Visual 이고 look 번호를 이어 갑니다(지금 0~8). 이 경우 빈 행을 쓰지 않습니다. 인스턴스의 NpcLook.look 에 번호를 넣습니다. 비우면 이름 해시로 고르므로 손님이 직원 모습이 될 수 있습니다.
 
@@ -465,8 +469,8 @@ Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap P
 
 | 문제 | 내용 | 대응 |
 |---|---|---|
-| Mac 베이크 크래시 | Blender 5.2.3 Metal 굽기가 힙 손상으로 죽고 macOS 오류 창이 뜹니다. CPU 와 GPU 를 같이 켜던 설정에서 6회 중 4회 죽어서 GPU 만 쓰게 고쳤습니다. 고친 뒤에는 39회 중 1회입니다. 완전히 없어지지는 않았습니다 | 내보내기 전에 죽으므로 창을 닫고 그 스크립트를 다시 돌립니다. `K3D_DEVICE=CPU` 를 주면 24회 중 0회였고 3~5배 느립니다 |
-| Apple 폰트 | Home/tex2d, Kiosk/kiosk_tex, Vehicles/CityBus_tex, PH/bus_tex, Characters/npcb_decals, Hands/GrandpaHand_tex, StoreProps/labels, Buildings/tex2d, Items/tex2d 가 재배포할 수 없는 폰트를 씁니다 | Windows 에서는 setup.py 가 넣은 대체 규칙으로 GothicA1-Bold 가 쓰여 글자 모양이 달라집니다. 기존 인쇄물을 다시 만드는 일은 Mac 에서 합니다. 새 텍스처는 ArtSource/_cache/fonts 의 폰트만 씁니다 |
+| Mac 베이크 크래시 | Blender 5.2.3 Metal 굽기가 힙 손상으로 죽고 macOS 오류 창이 뜹니다. CPU 와 GPU 를 같이 켜던 설정에서 6회 중 3회 죽어서 GPU 만 쓰게 고쳤습니다. 고친 뒤에는 39회 중 1회입니다. 줄었을 뿐 없어지지는 않았습니다 | 종료 코드 134, 137 이면 창을 닫고 같은 명령을 다시 돌립니다. 다시 돌려서 안 된 적은 없습니다. `K3D_DEVICE=CPU` 를 주면 24회 중 0회였고 3~5배 느립니다 |
+| Apple 폰트 | Home/tex2d, Kiosk/kiosk_tex, Vehicles/CityBus_tex, PH/bus_tex, Characters/npcb_decals, Hands/GrandpaHand_tex, StoreProps/labels, Buildings/tex2d, Items/tex2d 가 재배포할 수 없는 폰트를 씁니다 | Windows 에서는 setup.py 가 넣은 대체 규칙으로 GothicA1-Bold 가 쓰여 오류 없이 글자 모양이 달라지고, 한자는 빈 글자가 됩니다. 기존 인쇄물을 다시 만드는 일은 Mac 에서 합니다. 새 텍스처는 ArtSource/_cache/fonts 의 폰트만 씁니다 |
 | 실행 순서 | PH 스크립트는 원본 .blend 를 엽니다. 원본 그룹을 고치면 원본, PH 순서로 돌립니다. PH/bus_interior 는 PH/bus 뒤입니다 | Street 를 병렬로 돌릴 때는 `all_tiles()` 를 먼저 한 번, Vehicles 는 VEH_TEX_DONE=1 입니다 |
 | 사본 영향 | Assets/JeongWoo 는 같은 FBX 를 GUID 로 씁니다. 기존 FBX 의 이름과 계층을 바꾸면 사본이 깨질 수 있습니다 | R 전용으로 형태가 달라지면 새 파일로 만듭니다 |
 | Layouts 출력 | Layouts/*.py 는 Assets/Art3D/Layouts 에 쓰는데 실제로 쓰는 곳은 Assets/JeongWoo/Layouts 입니다 | 다시 돌렸다면 옮깁니다 |
@@ -477,7 +481,7 @@ Unity -batchmode -quit -projectPath . -executeMethod Art3DTools.FillMap -phmap P
 ## 11. 확인하지 못한 것
 
 - Windows 에서는 아직 한 번도 돌려 보지 않았습니다. 코드와 문서로만 고쳤습니다. 첫 실행이 setup.py 입니다. 실패하면 그 출력으로 판단합니다.
-- Unity 를 실행하지 않았습니다. FillMap, 폰트 설정, 메뉴 결과는 코드와 YAML 을 읽어 판단했습니다. PH_Kiosk_R4 처럼 화면 프리팹이 중첩된 프리팹을 저장했을 때의 결과는 미확인입니다.
+- Unity 를 실행하지 않았습니다. Art3DTools.cs 는 Unity 컴파일러로 컴파일만 통과했습니다. FillMap, 폰트 설정, 메뉴 결과는 코드와 YAML 을 읽어 판단했습니다. PH_Kiosk_R4 처럼 화면 프리팹이 중첩된 프리팹을 저장했을 때의 결과는 미확인입니다.
 - Unity 첫 임포트 시간, 다른 컴퓨터의 라이선스와 git 설정은 미확인입니다.
 - Windows 에서 Apply 가 .mat 을 다시 쓸 때 값이 달라지는지 미확인입니다. 내 것이 아닌 .mat 이 바뀌면 규칙 8 을 따릅니다.
 - JWDress 재사용과 Env 프리팹 구성은 제안이고 아직 돌려 보지 않았습니다.
