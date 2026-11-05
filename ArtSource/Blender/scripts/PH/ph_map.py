@@ -11,5 +11,5 @@ for n, r in ROWS.items():
             row["look"] = LOOKS.index(r["look"])
         rows.append(row)
 rows += [{"prefab": p, "target": t, "model": ""} for p, t in CLEAR]
-json.dump({"rows": rows}, open("Assets/Art3D/PH_Map.json", "w"), ensure_ascii=False, indent=1)
+json.dump({"rows": rows}, open("Assets/Art3D/PH_Map.json", "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
 print("PH_Map", len(rows), "행")

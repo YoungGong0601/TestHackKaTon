@@ -481,8 +481,8 @@ def draw(atlases):
     """아틀라스들을 Pillow 로 그린다 (venv 파이썬)."""
     jobs = [a.job() for a in atlases if a.items]
     jp = os.path.join(k3d.CACHE, f"bld_job_{os.getpid()}.json")
-    json.dump(jobs, open(jp, "w"), ensure_ascii=False)
-    r = subprocess.run([VPY, "-I", os.path.join(HERE, "tex2d.py"), jp], capture_output=True, text=True)
+    json.dump(jobs, open(jp, "w", encoding="utf-8"), ensure_ascii=False)
+    r = subprocess.run([VPY, "-I", os.path.join(HERE, "tex2d.py"), jp], capture_output=True, encoding="utf-8", errors="replace")
     print(r.stdout, r.stderr)
     if r.returncode:
         raise RuntimeError("tex2d 실패")

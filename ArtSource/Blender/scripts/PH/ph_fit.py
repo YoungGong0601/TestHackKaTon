@@ -1,7 +1,7 @@
 """친구 프리팹 실물과 PH 모델 비교 (Blender 불필요).
 python3 ph_fit.py <프리팹폴더> <bbox.json>   bbox.json 은 ph_bbox.py 가 만든다.
 PH_Map.json 의 자리마다 회색 메시 범위와 모델 범위를 프리팹 좌표로 나란히 찍는다."""
-import re, sys, json, os
+import glob, re, sys, json, os
 
 HDR = re.compile(r'^--- !u!(\d+) &(-?\d+)(?: stripped)?\s*$', re.M)
 UNIT = {'10202': ((-.5, -.5, -.5), (.5, .5, .5)), '10210': ((-.5, -.5, 0), (.5, .5, 0)), '10206': ((-.5, -1, -.5), (.5, 1, .5)),
@@ -64,7 +64,7 @@ def corners(a, b):
 
 
 def main(folder, bbox):
-    rows = json.load(open("Assets/Art3D/PH_Map.json"))["rows"]
+    rows = [r for m in sorted(glob.glob("Assets/Art3D/PH_Map*.json")) for r in json.load(open(m, encoding="utf-8"))["rows"]]
     bb = json.load(open(bbox))
     fmt = lambda v: "(" + ",".join(f"{x:.3f}" for x in v) + ")"
     for r in rows:

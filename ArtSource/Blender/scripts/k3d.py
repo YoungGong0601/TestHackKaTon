@@ -279,6 +279,8 @@ def _cycles(samples):
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'
     try:
+        if os.environ.get("K3D_DEVICE") == "CPU":
+            raise RuntimeError("CPU 지정")
         pr = bpy.context.preferences.addons['cycles'].preferences
         for kind in ('METAL', 'OPTIX', 'CUDA', 'HIP', 'ONEAPI'):
             try:
@@ -291,7 +293,7 @@ def _cycles(samples):
         else:
             raise RuntimeError("GPU 없음")
         for d in pr.devices:
-            d.use = True
+            d.use = d.type == kind  # CPU 를 같이 켜면 Metal 베이크가 힙 손상으로 죽었다
         sc.cycles.device = 'GPU'
     except Exception:
         sc.cycles.device = 'CPU'
@@ -813,7 +815,7 @@ def export(asset, category, objs, rigged=False, anim=False, notes=None):
     info = {"asset": asset, "category": category, "rigged": rigged, "materials": list(mats.values())}
     if notes:
         info["notes"] = notes
-    json.dump(info, open(os.path.join(mdir, asset + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(info, open(os.path.join(mdir, asset + ".json"), "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
     bdir = os.path.join(SRC, "Blender", category)
     os.makedirs(bdir, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(bdir, asset + ".blend"), copy=True, compress=True)

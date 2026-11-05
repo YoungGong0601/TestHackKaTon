@@ -757,5 +757,5 @@ def run(job):
 
 
 if __name__ == "__main__":
-    for j in json.load(open(sys.argv[1])):
+    for j in json.load(open(sys.argv[1], encoding="utf-8")):
         run(j)

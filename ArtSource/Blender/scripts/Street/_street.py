@@ -14,6 +14,7 @@ CAT = "Street"
 def ensure_tex():
     """Pillow 텍스처가 없으면 _textures.py 를 돌린다."""
     if not os.path.exists(os.path.join(TEX, ".done")):
+        k3d.polyhaven("clean_asphalt")  # _textures.py 가 읽는다
         subprocess.run([k3d.PY, "-I",
                         os.path.join(HERE, "_textures.py"), TEX], check=True)
 

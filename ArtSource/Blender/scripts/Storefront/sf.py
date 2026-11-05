@@ -177,7 +177,7 @@ def text(name, s, size, depth, font="BlackHanSans-Regular.ttf", bevel=0.0, res=3
     """글자 메시 (XZ 평면, 정면 -Y, 두께 depth 를 y=-depth..0 으로). 원점=글자 가운데 아래."""
     cu = bpy.data.curves.new(name, 'FONT')
     cu.body = s
-    cu.font = bpy.data.fonts.load(FONT + font if not font.startswith("/") else font, check_existing=True)
+    cu.font = bpy.data.fonts.load(font if os.path.isabs(font) else FONT + font, check_existing=True)
     cu.size, cu.extrude, cu.resolution_u = size, depth / 2, res
     cu.bevel_depth, cu.bevel_resolution = bevel, 1
     cu.align_x, cu.align_y = align, 'BOTTOM_BASELINE'

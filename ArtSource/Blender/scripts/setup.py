@@ -22,7 +22,7 @@ ImageFont.truetype = truetype
 
 if not os.path.exists(k3d.PY):
     subprocess.run([sys.executable, "-m", "venv", os.path.dirname(os.path.dirname(k3d.PY))], check=True)
-subprocess.run([k3d.PY, "-m", "pip", "install", "-q", "pillow", "numpy"], check=True)
+subprocess.run([k3d.PY, "-m", "pip", "install", "-q", "pillow==13.0.0", "numpy==2.5.4"], check=True)
 subprocess.run([k3d.PY, "-c", "import PIL, numpy; print('k3d: Pillow', PIL.__version__, 'numpy', numpy.__version__)"], check=True)
 site = subprocess.run([k3d.PY, "-c", "import site; print(site.getsitepackages()[0])"],
                       capture_output=True, text=True, check=True).stdout.strip()

@@ -136,8 +136,10 @@ def sign_head():
     p = os.path.join(k3d.ART, "Textures", "PH_BusStopSign", "T_PH_BusStopSign_Head.png")
     os.makedirs(os.path.dirname(p), exist_ok=True)
     with tempfile.TemporaryDirectory() as t:
-        subprocess.run([k3d.PY, "-I", "-c", src, "BusStopSign", t, k3d.CACHE],
-                       check=True)
+        job = os.path.join(t, "_tex.py")  # -c 로 넘기면 Windows 명령줄 한도를 넘는다
+        with open(job, "w", encoding="utf-8") as f:
+            f.write(src)
+        subprocess.run([k3d.PY, "-I", job, "BusStopSign", t, k3d.CACHE], check=True)
         shutil.copyfile(os.path.join(t, "Textures", "BusStopSign", "T_BusStopSign_Head.png"), p)
     return p
 
