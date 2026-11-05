@@ -6,8 +6,8 @@ import k3d
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEX = os.path.join(k3d.CACHE, "street_tex")
-FONT_EB = os.path.expanduser("~/Library/Fonts/NanumSquareEB.ttf")
-FONT_B = os.path.expanduser("~/Library/Fonts/NanumSquareB.ttf")
+FONT_EB = os.path.join(k3d.CACHE, "fonts", "NanumSquareEB.ttf")
+FONT_B = os.path.join(k3d.CACHE, "fonts", "NanumSquareB.ttf")
 CAT = "Street"
 
 

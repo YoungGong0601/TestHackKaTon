@@ -1023,5 +1023,4 @@ def mats(asset, sign_atlas=None, decal_atlas=None, inner_atlas=None, grime_atlas
 
 def tex2d_font(k):
     """3D 글자용 폰트 경로 (tex2d.FONT 와 같은 파일)."""
-    H = os.path.expanduser("~")
-    return {"black": f"{H}/Library/Fonts/Pretendard-Black.otf"}[k]
+    return {"black": os.path.join(k3d.CACHE, "fonts", "Pretendard-Black.otf")}[k]

@@ -12,19 +12,23 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
-# Blender: 파이썬 스크립트가 원본이다. .blend 는 스크립트를 돌릴 때마다 다시 저장되는 산출물이라 올리지 않는다
-*.blend*
+# Blender: 스크립트와 .blend 는 올린다(PH 스크립트가 .blend 를 입력으로 연다). 자동 백업과 캐시, 미리보기는 올리지 않는다
+*.blend1
 __pycache__/
 *.pyc
 .DS_Store
 ArtSource/*
 !ArtSource/PH_인계.md
 !ArtSource/Blender/
-ArtSource/Blender/*
-!ArtSource/Blender/scripts/
 !ArtSource/_cache/
 ArtSource/_cache/*
 !ArtSource/_cache/fonts/
+!ArtSource/_ref/
+ArtSource/_ref/*
+!ArtSource/_ref/img/
+!ArtSource/_ref/models/
+ArtSource/_ref/models/*
+!ArtSource/_ref/models/npc_*.glb
 
 # MemoryCaptures can get excessive in size.
 /[Mm]emoryCaptures/
