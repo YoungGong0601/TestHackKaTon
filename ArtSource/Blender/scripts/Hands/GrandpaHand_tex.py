@@ -3,7 +3,7 @@
 입력 JSON(argv[1]):
   {"out": 폴더, "side": "R"|"L", "seed": int, "rs": +1(엄지 +X)|-1,
    "maps": {"top"|"bot"|"thumb": {"N": px, "S": m, "x0": m, "y0": m, "j": {관절: [x, y]}}},
-   "knit": bool, "dial": bool}
+   "knit": bool, "dial": bool, "wrinkle": 0|1 (게임 거리에서 보이는 주름과 얼룩, 1 = 80대)}
 출력(out 폴더):
   <side>_<map>_h.png  16bit 높이 (0.5 = 0, 1 단위 = 4mm)
   <side>_<map>_m.png  RGB 마스크 (top: R 정맥 G 검버섯 B 붉은기 / bot: R 주름 G 분홍 B 굳은살 / thumb: top 과 같음)
@@ -182,6 +182,21 @@ def wrinkles(c, dr, ctr, axis, n, spacing, hw, rng, width=0.00018, bow=0.45):
             stroke(c, dr, seg, width * rng.uniform(0.8, 1.3), taper=True)
 
 
+def fbm(rng, N, cells):
+    return (_value_noise(rng, N, cells) + 0.5 * _value_noise(rng, N, cells * 2) + 0.25 * _value_noise(rng, N, cells * 4)) / 1.75
+
+
+def creases(c, rng, ang, spacing, width, warp=1.0, gaps=0.42):
+    """ang(rad) 쪽으로 쌓이는 주름 결 -> float. 등치선을 잡음으로 휘고, 줄마다 세기를 달리 하고, 군데군데 끊는다."""
+    X, Y = grid_xy(c)
+    u = (X * math.sin(ang) + Y * math.cos(ang)) / spacing + warp * (4 * (fbm(rng, c.N, 14) - 0.5) + 0.7 * (fbm(rng, c.N, 44) - 0.5))
+    k = np.round(u)
+    d = np.abs(u - k) * spacing
+    w = width * (0.55 + 0.9 * fbm(rng, c.N, 26))
+    power = rng.uniform(0.35, 1.0, 1024).astype(np.float32)[k.astype(np.int64) % 1024]
+    return np.exp(-(d / w) ** 2) * power * sstep(gaps - 0.08, gaps + 0.08, fbm(rng, c.N, 34))
+
+
 def save16(arr, path):
     a = np.clip(arr, 0, 1)
     Image.fromarray((a * 65535).astype(np.uint16)).save(path)
@@ -206,6 +221,7 @@ def paint_top(cfg, mp, rng, out, tag):
     T1 = J['thumb-phalanx-proximal']
     X = lambda x, y: v2((rs * x, y))
     mid = lambda a, b: (a + b) / 2
+    W = cfg['wrinkle']
 
     # 정맥 (손등 정맥망)
     veins = [
@@ -213,7 +229,8 @@ def paint_top(cfg, mp, rng, out, tag):
         ([mid(K['index'], K['middle']) + v2((0, 0.011)), X(0.012, -0.052), X(0.022, -0.034)], 0.0014),
         ([mid(K['middle'], K['ring']) + v2((0, 0.011)), X(-0.003, -0.056), X(-0.009, -0.041)], 0.0013),
         ([mid(K['ring'], K['pinky']) + v2((0, 0.009)), X(-0.022, -0.052), X(-0.026, -0.02), X(-0.022, 0.03)], 0.0016),
-        ([X(-0.024, -0.043), X(-0.009, -0.040), X(0.007, -0.045), X(0.023, -0.033)], 0.0015),
+        ([X(-0.024, -0.043), X(-0.009, -0.040), X(0.007, -0.045), X(0.023, -0.033)] if not W else
+         [X(-0.026, -0.034), X(-0.012, -0.044), X(0.003, -0.038), X(0.015, -0.044), X(0.026, -0.03)], 0.0015),  # 일직선이면 고무줄 자국처럼 보인다
     ]
     twigs = [
         [X(-0.004, -0.058), K['middle'] + v2((0, 0.017))],
@@ -328,8 +345,34 @@ def paint_top(cfg, mp, rng, out, tag):
     scM = c.done(sc, 0.0002)
 
     H = (0.5 + 0.11 * vH + 0.035 * tH + 0.06 * tdH - 0.035 * wH + 0.004 * sM + 0.04 * kM + 0.01 * (hL + hD) + 0.012 * scM)
+
+    # 게임 거리(1픽셀 약 0.55mm)에서 남는 주름과 얼룩. 위 잔주름은 0.2mm 이하라 밉맵에서 사라진다
+    if W:
+        q = np.random.default_rng(cfg['seed'] + 500)  # 위의 정맥과 점 자리를 바꾸지 않는다
+        jh, jd = c.layer()
+        for f in F:
+            ax = P[f] - K[f]
+            wrinkles(c, jd, P[f] - unit(ax) * 0.0008, ax, 4, 0.0022, 0.0082, q, width=0.00072)
+            wrinkles(c, jd, D[f] - unit(T[f] - D[f]) * 0.0005, T[f] - D[f], 3, 0.0018, 0.0068, q, width=0.0006)
+            wrinkles(c, jd, K[f] + unit(ax) * 0.004, ax, 3, 0.003, 0.009, q, width=0.0008, bow=0.3)
+        jenv = gauss(c, [(P[f], 1.0, 1.0) for f in F] + [(D[f], 0.75, 0.9) for f in F]
+                     + [(K[f] + unit(P[f] - K[f]) * 0.004, 1.1, 0.85) for f in F], 0.0062)
+        joints = c.done(jh, 0.00016) * np.clip(jenv * (0.7 + 0.7 * fbm(q, c.N, 40)), 0, 1)
+        folds = creases(c, q, 0.2 * rs, 0.0052, 0.00068, gaps=0.46)  # 손등 가로 큰 결
+        cross = np.maximum(creases(c, q, 0.95 * rs, 0.0018, 0.00022, warp=1.6, gaps=0.5), creases(c, q, -0.85 * rs, 0.002, 0.00022, warp=1.6, gaps=0.5))  # 마름모 잔결
+        wrist = creases(c, q, 0.03 * rs, 0.0062, 0.0007, warp=0.3, gaps=0.3) * sstep(-0.01, 0.002, GY) * (1 - sstep(0.02, 0.032, GY))  # 깊은 주름 몇 줄
+        crepe = np.maximum(0.8 * folds, 0.3 * cross) * (0.55 + 0.9 * fbm(q, c.N, 10))
+        crepe *= 1 - 0.55 * (1 - sstep(ky - 0.008, ky + 0.004, GY)) - 0.25 * sstep(-0.012, 0.006, GY)  # 손가락과 손목은 약하게: 줄무늬처럼 보인다
+        H -= 0.06 * joints + 0.055 * np.clip(crepe, 0, 1) + 0.05 * wrist
+        H += 0.12 * vH + 0.05 * tdH  # 살이 빠져 정맥과 힘줄이 도드라진다
+        # 검버섯은 새로 찍는다. 비슷한 점이 고르게 흩어지면 때처럼 보여 크기를 섞고 세 곳에 몰고 윤곽을 살린다
+        hub = [X(0.017, -0.032), X(-0.019, -0.058), X(-0.002, -0.004)]
+        sM = (0.6 + 0.4 * sstep(0.35, 0.6, fbm(q, c.N, 70))) * sstep(0.05, 0.7, spots(c, q, [(hub[i % 3] + q.normal(0, 0.01, 2), q.uniform(0.005, 0.0085) if i < 4 else q.uniform(0.0015, 0.0035),
+                                                                                   q.uniform(0.85, 1.0)) for i in range(11)]))
+        red = np.maximum(red, 0.25 * sstep(0.48, 0.66, fbm(q, c.N, 16)))
+        vM = sstep(0.1, 0.9, c.done(vh, 0.0012)) * vfade  # 넓은 색 번짐 대신 정맥 위로만
     save16(H, os.path.join(out, f'{tag}_top_h.png'))
-    save_rgb([np.maximum(vM, vH * 0.8), np.maximum(sM, kM * 0.7), red], os.path.join(out, f'{tag}_top_m.png'))
+    save_rgb([vM if W else np.maximum(vM, vH * 0.8), np.maximum(sM, kM * 0.7), red], os.path.join(out, f'{tag}_top_m.png'))
     save_rgb([hL, hD, np.maximum(scM, kM * 0.8)], os.path.join(out, f'{tag}_top_n.png'))
 
 
@@ -431,6 +474,15 @@ def paint_thumb(cfg, mp, rng, out, tag):
                val=int(rng.uniform(150, 255)))
     hL = c.done(hl)
     H = 0.5 - 0.035 * wH + 0.004 * sM + 0.01 * hL
+    if cfg['wrinkle']:  # paint_top 과 같은 굵기
+        q = np.random.default_rng(cfg['seed'] + 501)
+        jh, jd = c.layer()
+        wrinkles(c, jd, I - unit(T - I) * 0.0008, T - I, 6, 0.0017, 0.009, q, width=0.00062)
+        wrinkles(c, jd, M + unit(I - M) * 0.002, I - M, 4, 0.0026, 0.0095, q, width=0.0007, bow=0.3)
+        jenv = gauss(c, [(I, 1.0, 1.0), (M + unit(I - M) * 0.002, 1.1, 0.85)], 0.0062)
+        ang = math.atan2((I - M)[0], (I - M)[1])
+        H -= (0.085 * c.done(jh, 0.00016) * np.clip(jenv * (0.7 + 0.7 * fbm(q, c.N, 20)), 0, 1)
+              + 0.04 * creases(c, q, ang, 0.0028, 0.00034))
     save16(H, os.path.join(out, f'{tag}_thumb_h.png'))
     save_rgb([np.zeros_like(H), sM, red], os.path.join(out, f'{tag}_thumb_m.png'))
     save_rgb([hL, np.zeros_like(H), np.zeros_like(H)], os.path.join(out, f'{tag}_thumb_n.png'))

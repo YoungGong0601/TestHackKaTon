@@ -137,14 +137,14 @@ def hem(bm):
     bm.faces.new([bm.verts.new((v.co.x, v.co.y - CUFF_DEPTH, v.co.z)) for v in sorted(inner, key=ang, reverse=True)]).material_index = 1
 
 
-def pointer():
-    n = "PH_Hand__Pointer"
-    ph.load("Hands", "GrandpaHand_R")
-    arm = bpy.data.objects["GrandpaHand_R_Rig"]
-    arm.animation_data.action = bpy.data.actions["GrandpaHand_R_Point"]
+def pointer(age=""):
+    n, g = f"PH_Hand__Pointer{age}", f"GrandpaHand{age}_R"
+    ph.load("Hands", g)
+    arm = bpy.data.objects[g + "_Rig"]
+    arm.animation_data.action = bpy.data.actions[g + "_Point"]
     bpy.context.scene.frame_set(1)
-    skin = ph.posed(bpy.data.objects["GrandpaHand_R_Skin"], "Point_Skin")
-    cuff = ph.posed(bpy.data.objects["GrandpaHand_R_Sleeve"], "Point_Cuff")
+    skin = ph.posed(bpy.data.objects[g + "_Skin"], "Point_Skin")
+    cuff = ph.posed(bpy.data.objects[g + "_Sleeve"], "Point_Cuff")
 
     bm = crop(skin, Y_CUT - CUFF_DEPTH - 0.001)
     bm.to_mesh(skin.data)
@@ -182,6 +182,10 @@ def pointer():
     o = ph.part(n, [skin, cuff], M)
     t = anchor(n + "_Tip", o, M @ tip)
     done(n, o, f"Point 자세 정적 메시, 균일 스케일 {s:.3f}, 검지 축으로 {HAND_TURN}도 돌림. 실제 손끝 {n}_Tip = Unity 로컬 {unity(t.location)}.")
+
+
+def pointer80():
+    pointer("80")
 
 
 # ---------------------------------------------------------------- 영수증 종이: 글씨는 Receipt_View 의 Sharp TMP 와 Blurred 막대가 그린다
@@ -232,6 +236,6 @@ def receipt():
 
 
 args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-for row in (memo, lens, card, pointer, receipt):
+for row in (memo, lens, card, pointer, receipt, pointer80):
     if not args or row.__name__ in args:
         row()

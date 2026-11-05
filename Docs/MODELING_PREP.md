@@ -221,7 +221,7 @@ HomeCorridor 는 5층 복도라 쓸 수 없습니다. 집 앞 벽 HouseFront 는
 
 - Hand_Pointer 는 +Y 가 손가락 방향이고 손끝은 Tip (0, 0.09, 0) 입니다. Tip 은 옮기지 않습니다.
 - 소매 끝은 로컬 y -0.8 까지 늘립니다. 지금 모델은 -0.085 에서 잘려 화면 가운데에서 끝이 보입니다. 소매만 단순 원통으로 늘려도 됩니다.
-- 나이 인자는 GrandpaHand.py 에 K3D_HAND_AGE 를 더해 넣습니다. 고칠 곳은 14-16행(이름), 229행(마디 변형), 473-548행(피부), 550-590행(손톱), 662-663행(타일 이름)입니다. 기본값 80 이면 기존 결과가 유지됩니다.
+- 나이 인자 K3D_HAND_AGE 는 GrandpaHand.py 에 이미 있습니다. 비우면 기존 손 GrandpaHand_<SIDE>, 80 이면 주름과 앙상한 뼈와 누런 손톱을 더한 GrandpaHand80_<SIDE> 입니다. PH_Hand__Pointer80 은 `PH/hand.py -- pointer80` 으로 만들어 Look_3, Hold_Look_3 과 엔딩 두 손에 넣어 두었습니다. 80대 손은 이것을 바탕으로 쓰고, 20, 40 은 AGED 를 0 으로 둔 채 이름과 피부만 더합니다. Look_0, 1, 2 는 친구가 재질(M_Hand_Skin_N)로 나이를 나눠 두었습니다.
 - Look_N 행에는 look 필드를 넣지 않습니다. 넣으면 모델이 꺼집니다.
 - Card_Part, Cash_Part 는 target 을 부모로 씁니다(Hand_Wallet/Card_Part). 메시가 Visual 자체라서 Visual 을 target 으로 하면 스케일을 물려받습니다.
 - 지갑 칸 위치는 x -0.055, 0, 0.055 입니다. 코드가 이 자리를 화면에 투영해 클릭을 판정합니다.

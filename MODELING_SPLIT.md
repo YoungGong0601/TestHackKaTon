@@ -120,7 +120,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 
 1. 지폐 PH_Hand__Bill(손 없음)을 먼저 올립니다. 1번이 기다립니다.
 2. 어르신 팔 PH_Elder__Arm 을 올립니다. 1번이 기다립니다. 소매, 손, 반지, 시계가 80대 손과 같아야 하므로 바로 아래 항목의 80 손을 먼저 만들고 그것으로 팔을 만듭니다.
-3. 나이별 손 PH_Hand__Pointer20, 40, 80 입니다. GrandpaHand.py 에 K3D_HAND_AGE 를 더합니다. 소매 끝은 y -0.8 까지입니다. 80 에는 반지와 시계를 넣습니다. 맵 파일에 Hand_Pointer/Visual 빈 행을 먼저 쓰고 Look_0, 1, 3 행을 씁니다.
+3. 나이별 손 PH_Hand__Pointer20, 40, 80 입니다. K3D_HAND_AGE=80 의 주름 손은 1번이 먼저 만들어 Look_3, Hold_Look_3 과 엔딩 두 손에 넣었습니다(PREP 5절). 이 커밋을 받은 뒤 시작합니다. 소매 끝은 y -0.8 까지입니다. 80 에는 반지와 시계를 넣습니다. 맵 파일에 Hand_Pointer/Visual 빈 행을 먼저 쓰고 Look_0, 1, 3 행을 씁니다.
 4. 지갑 PH_Hand__Wallet, 칸의 카드 PH_Hand__WalletCard, 칸의 지폐 PH_Hand__WalletCash, 쪽지 PH_Hand__WalletNote 입니다. target 규칙은 PREP 5절입니다.
 5. 시계 팔 PH_Hand__Watch 와 시침 PH_Hand__WatchHour 입니다. 바늘을 메시에 합치지 않습니다. 문자판은 숫자와 요일창이 없습니다. 이렇게 하면 Apple 폰트가 필요 없습니다.
 6. D4 입니다. 80대 손을 같이 구운 PH_Hand__LensHeld, PH_Hand__BillHeld 를 만듭니다. 렌즈 원 안에 손이 들어가지 않게 합니다. 맵 파일에 Hand_Lens/Visual 빈 행을 먼저 쓰고 LensHeld 행을 씁니다. Hand_Bill/Visual 은 BillHeld 입니다.

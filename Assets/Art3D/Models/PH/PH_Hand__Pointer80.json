@@ -1,0 +1,53 @@
+{
+ "asset": "PH_Hand__Pointer80",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/GrandpaHand80_R_Skin/T_GrandpaHand80_R_Skin_BaseColor.jpg",
+    "Normal": "Textures/GrandpaHand80_R_Skin/T_GrandpaHand80_R_Skin_Normal.png",
+    "MS": "Textures/GrandpaHand80_R_Skin/T_GrandpaHand80_R_Skin_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_GrandpaHand80_R_Skin"
+  },
+  {
+   "maps": {
+    "BaseColor": "Textures/Tile/T_Tile_Hands_Rib_BaseColor.jpg",
+    "Normal": "Textures/Tile/T_Tile_Hands_Rib_Normal.jpg",
+    "MS": "Textures/Tile/T_Tile_Hands_Rib_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_Tile_Hands_Rib"
+  },
+  {
+   "baseColor": [
+    0.012,
+    0.01,
+    0.009,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.05,
+   "name": "M_PH_Hand__Pointer80_CuffInner"
+  }
+ ],
+ "notes": "Point 자세 정적 메시, 균일 스케일 0.727, 검지 축으로 20도 돌림. 실제 손끝 PH_Hand__Pointer80_Tip = Unity 로컬 (-0.0046, 0.09, -0.0023)."
+}

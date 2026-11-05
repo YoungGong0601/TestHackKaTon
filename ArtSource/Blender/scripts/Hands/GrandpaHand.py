@@ -1,6 +1,6 @@
 """할아버지 1인칭 손 (GrandpaHand_R / GrandpaHand_L). MakeHuman hm08 기본 메시(CC0) 오른팔 + 기본 리그 가중치로 만든다 (본 이름은 WebXR 25관절).
 
-실행: K3D_HAND_SIDE=R|L blender -b --factory-startup --python GrandpaHand.py   (K3D_FAST=1 이면 저해상도·굽기/내보내기 생략 시험)
+실행: K3D_HAND_SIDE=R|L [K3D_HAND_AGE=80] blender -b --factory-startup --python GrandpaHand.py   (K3D_FAST=1 이면 저해상도·굽기/내보내기 생략 시험)
 원점 = 손목 관절 (1인칭 리그 예외). 손가락 -Y, 손등 +Z. R 엄지 +X, L 엄지 -X.
 """
 import sys, os, json, math, subprocess, urllib.request
@@ -13,11 +13,13 @@ import k3d
 
 SIDE = os.environ.get('K3D_HAND_SIDE', 'R')
 FAST = os.environ.get('K3D_FAST') == '1'
-A = f'GrandpaHand_{SIDE}'
+AGE = os.environ.get('K3D_HAND_AGE', '')  # 80 = 주름, 앙상한 뼈, 누런 손톱을 더한 GrandpaHand80_<SIDE>. 비우면 기존 손
+AGED = 1.0 if AGE == '80' else 0.0
+A = f'GrandpaHand{AGE}_{SIDE}'
 MIR = 1 if SIDE == 'R' else -1
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = k3d.PY
-WORK = os.path.join(k3d.CACHE, 'hands_work', SIDE + ('_fast' if FAST else ''))
+WORK = os.path.join(k3d.CACHE, 'hands_work', SIDE + AGE + ('_fast' if FAST else ''))
 MH = os.path.join(k3d.CACHE, 'makehuman_dl')  # MakeHuman base.obj · default.mhskel · default_weights.mhw (CC0)
 MH_URL = 'https://raw.githubusercontent.com/makehumancommunity/makehuman/master/makehuman/data/'
 HAND_L = 0.192  # 손목 관절 ~ 중지 끝 (성인 남성 손 길이 ~19cm)
@@ -122,7 +124,7 @@ P0 = P0 * np.cos(ang) + np.cross(k_, P0) * np.sin(ang) + np.outer(P0 @ k_, k_) *
 ring = P0[(wsum > 0.5) & (np.abs(P0[:, 1] - 0.012) < 0.004)]
 cx, cz = ring[:, 0].mean(), ring[:, 2].mean()
 print('forearm bend deg', round(math.degrees(th_), 1), 'wrist section cm', round(np.ptp(ring[:, 0]) * 100, 1), round(np.ptp(ring[:, 2]) * 100, 1))
-k_ = 1 + 0.12 * sstep(-0.02, 0.01, P0[:, 1])
+k_ = 1 + (0.12 - 0.09 * AGED) * sstep(-0.02, 0.01, P0[:, 1])
 P0[:, 0] = cx + (P0[:, 0] - cx) * k_
 P0[:, 2] = cz + (P0[:, 2] - cz) * k_
 # 소매 속 팔뚝은 소매 입구 단면(x0.95) 원통으로 눌러 넣는다 (MH 팔뚝 근육이 소매를 뚫지 않게)
@@ -166,7 +168,7 @@ for k, v in MAP.items():
 print('faces', len(me.polygons))
 
 sub = skin.modifiers.new('sub', 'SUBSURF')
-sub.levels = sub.render_levels = 1
+sub.levels = sub.render_levels = 2 if AGED else 1  # 힘줄과 마디를 메시로 세우려면 정점이 더 필요하다
 k3d.apply_all(skin)
 for p in me.polygons:
     p.use_smooth = True
@@ -226,6 +228,21 @@ for f in FING:  # 펴는 힘줄 (손목 -> 너클)
     off += ridge(*TEND[f], 0.0018, 0.0024, 0.1, 1.05)
 for f, g in zip(FING, FING[1:]):  # 손허리뼈 사이 골
     off += ridge((TEND[f][0] + TEND[g][0]) / 2, (TEND[f][1] + TEND[g][1]) / 2, -0.0011, 0.0035, 0.15, 0.9)
+if AGED:  # 살이 빠져 뼈와 힘줄이 드러난다: 전체를 얇게 줄이고 마디, 힘줄, 골은 더 세운다
+    meta = sum(Wt[:, gi[f'{f}-finger-metacarpal']] for f in FING)
+    phal = sum(Wt[:, gi[f'{f}-finger-phalanx-{p}']] for f in FING for p in ('proximal', 'intermediate'))  # 손끝은 손톱 너비를 지킨다
+    thin = 0.0013 * meta + 0.0005 * phal + 0.005 * Wt[:, gi['thumb-metacarpal']] + 0.0009 * Wt[:, gi['wrist']]
+    off -= Nn * thin[:, None]
+    for f in FING:
+        c = chain(f)
+        off += bulge(c[1], c[0], 0.0016, 0.0062, True)
+        off += bulge(c[2], c[1], 0.0004, 0.0042, False)
+        off += bulge(c[3], c[2], 0.0005, 0.0032, False)
+        off += ridge(*TEND[f], 0.0012, 0.0019, 0.1, 1.05)
+    for f, g in zip(FING, FING[1:]):
+        off += ridge((TEND[f][0] + TEND[g][0]) / 2, (TEND[f][1] + TEND[g][1]) / 2, -0.0009, 0.0031, 0.35, 0.9)
+    off += ridge(JP['thumb-metacarpal'], JP['index-finger-phalanx-proximal'], -0.004, 0.0055, 0.25, 0.95)  # 엄지와 검지 사이 꺼짐
+    off += ridge((-0.027 * MIR, 0.01), (-0.027 * MIR, 0.034), 0.0034, 0.006)  # 손목 새끼 쪽 뼈
 P += off
 me.vertices.foreach_set('co', P.astype(np.float32).ravel())
 for g in skin.vertex_groups:
@@ -290,7 +307,7 @@ def p_thumb(p):
     return [float(q.dot(e_u)), float(q.dot(e_v))]
 
 
-cfg = {'out': WORK, 'side': SIDE, 'seed': 11 if SIDE == 'R' else 23, 'rs': MIR, 'knit': True, 'dial': SIDE == 'L',
+cfg = {'out': WORK, 'side': SIDE, 'seed': 11 if SIDE == 'R' else 23, 'rs': MIR, 'knit': True, 'dial': SIDE == 'L', 'wrinkle': AGED,
        'maps': {'top': dict(TOP, j={k: p_top(v) for k, v in JP.items()}),
                 'bot': dict(TOP, j={k: p_top(v) for k, v in JP.items()}),
                 'thumb': dict(THB, j={k: p_thumb(v) for k, v in JP.items()})}}
@@ -337,6 +354,11 @@ def set_pj(o):
 set_proj_uv(skin, 'UV_top', p_top, TOP)
 set_proj_uv(skin, 'UV_thumb', p_thumb, THB)
 set_pj(skin)
+if AGED:  # 정맥을 메시로 세운다. 노멀만으로는 게임 거리에서 칠한 자국처럼 보인다
+    vein = k3d._pixels(img(f'{SIDE}_top_m.png'))[..., 0]  # R = 정맥, 0 행이 아래
+    ij = np.clip(((P[:, [1, 0]] - (TOP['y0'], TOP['x0'])) / TOP['S'] * TEX_N).astype(int), 0, TEX_N - 1)
+    P += Nn * (0.0013 * vein[ij[:, 0], ij[:, 1]] * np.clip(Nn[:, 2], 0, 1) * (1 - thw))[:, None]
+    me.vertices.foreach_set('co', P.astype(np.float32).ravel())
 
 # ------------------------------------------------------------------ 손톱 (두껍고 누런 노인 손톱): 원위 마디 본 좌표계에서 만든 곡면 판
 bvh = BVHTree.FromObject(skin, bpy.context.evaluated_depsgraph_get())
@@ -512,14 +534,18 @@ def skin_mat():
     mid = t.noise(140, 4, 0.6, ob)
     c = t.mix(big, (0.40, 0.24, 0.16), (0.47, 0.30, 0.18))
     c = t.mix(t.math('MULTIPLY', mid, 0.35), c, (0.46, 0.22, 0.16))
+    if AGED:  # 복숭아빛이 빠져 창백해지고 큰 덩어리의 누런 얼룩이 생긴다
+        c = t.mix(0.25, c, (0.52, 0.42, 0.34))
+        patch = t.math('MULTIPLY', t.math('SUBTRACT', t.noise(45, 3, 0.55, ob), 0.5, True), 3.0, True)
+        c = t.mix(t.math('MULTIPLY', patch, 0.35), c, (0.44, 0.31, 0.17))
     f_top = t.math('MULTIPLY', wtop, fade)
     f_th = wth
     # 손등: 붉은기, 정맥(청보라 multiply), 검버섯(15~25% 어두운 황갈색 multiply), 털, 흉터
     red = t.math('MAXIMUM', t.math('MULTIPLY', tm[2], f_top), t.math('MULTIPLY', hm[2], f_th))
     c = t.mix(t.math('MULTIPLY', red, 0.38), c, (0.50, 0.17, 0.13))
-    c = t.mix(t.math('MULTIPLY', tm[0], t.math('MULTIPLY', f_top, 0.3)), c, (0.58, 0.68, 0.95), blend='MULTIPLY')
+    c = t.mix(t.math('MULTIPLY', tm[0], t.math('MULTIPLY', f_top, 0.3 + 0.18 * AGED)), c, (0.58 - 0.04 * AGED, 0.68 + 0.02 * AGED, 0.95 - 0.12 * AGED), blend='MULTIPLY')
     spot = t.math('MAXIMUM', t.math('MULTIPLY', tm[1], f_top), t.math('MULTIPLY', hm[1], f_th))
-    c = t.mix(spot, c, (0.82, 0.74, 0.62), blend='MULTIPLY')
+    c = t.mix(spot, c, (0.82 - 0.14 * AGED, 0.74 - 0.18 * AGED, 0.62 - 0.2 * AGED), blend='MULTIPLY')
     c = t.mix(t.math('MULTIPLY', tn[2], t.math('MULTIPLY', f_top, 0.35)), c, (0.30, 0.17, 0.11))
     hair_w = t.math('MAXIMUM', t.math('MULTIPLY', tn[0], f_top), t.math('MULTIPLY', hn[0], f_th))
     c = t.mix(t.math('MULTIPLY', hair_w, 0.22), c, (0.62, 0.60, 0.56))
@@ -532,11 +558,12 @@ def skin_mat():
     palm = t.mix(t.math('MULTIPLY', bmk[0], 0.6), palm, (0.28, 0.14, 0.10))
     c = t.mix(fb, c, palm)
     # 주름 골 어둡게 (높이 음수)
-    cav = t.math('MULTIPLY', t.math('MAXIMUM', t.math('MULTIPLY', H, -10.0), 0.0), 1.0, True)
-    c = t.mix(t.math('MULTIPLY', cav, 0.38), c, (0.24, 0.13, 0.09))
+    # 80대: 노멀은 게임 거리의 밉맵에서 평평해지니 주름은 색으로 남긴다
+    cav = t.math('MULTIPLY', t.math('MAXIMUM', t.math('MULTIPLY', H, -10.0 - 10.0 * AGED), 0.0), 1.0, True)
+    c = t.mix(t.math('MULTIPLY', cav, 0.38 + 0.24 * AGED), c, (0.24 - 0.1 * AGED, 0.13 - 0.06 * AGED, 0.09 - 0.04 * AGED))
     ao = t.n('ShaderNodeAmbientOcclusion', samples=16, only_local=True)
     ao.inputs['Distance'].default_value = 0.004
-    c = t.mix(t.math('MULTIPLY', t.math('SUBTRACT', 1.0, ao.outputs['AO']), 0.6), c, (0.20, 0.10, 0.07))
+    c = t.mix(t.math('MULTIPLY', t.math('SUBTRACT', 1.0, ao.outputs['AO']), 0.6 - 0.2 * AGED), c, (0.20, 0.10, 0.07))  # 80대는 골이 그을음처럼 보여 낮춘다
     t.link(c, t.p.inputs['Base Color'])
     # 거칠기: 기본 0.52, 주름·손바닥 거칠게, 손끝 약간 번들
     r = t.math('ADD', 0.50, t.math('MULTIPLY', mid, 0.08))
@@ -559,7 +586,7 @@ def nail_mat():
     n2 = t.noise(120, 2, 0.5, ob)
     rid = t.math('ADD', t.math('MULTIPLY', t.math('SINE', t.math('ADD', t.math('MULTIPLY', u, 40.0), t.math('MULTIPLY', n2, 5.0))), 0.5), 0.5)
     c = t.mix(n2, (0.47, 0.31, 0.23), (0.51, 0.36, 0.26))  # 비치는 분홍 손톱바닥 + 누런 판 (피부보다 약간 밝게)
-    c = t.mix(rid, c, (0.935, 0.935, 0.935), blend='MULTIPLY')  # 세로 골
+    c = t.mix(rid, c, (0.935 - 0.11 * AGED,) * 3, blend='MULTIPLY')  # 세로 골
     st = t.math('MULTIPLY', t.math('SUBTRACT', t.noise(55, 2, 0.5, ob), 0.58, True), 2.5)
     c = t.mix(t.math('MULTIPLY', st, 0.3), c, (0.45, 0.32, 0.17))  # 누런 세로 얼룩 (부드럽게)
     lun = t.math('SUBTRACT', 1.0, t.math('MULTIPLY', v, 6.0), True)
@@ -569,6 +596,8 @@ def nail_mat():
     fe = t.math('MULTIPLY', t.math('SUBTRACT', v, 0.875), 22.0, True)
     c = t.mix(t.math('MULTIPLY', fe, 0.75), c, (0.60, 0.52, 0.40))  # 자유연 아이보리 (~1.3mm)
     c = t.mix(t.math('SUBTRACT', 1.0, t.math('MULTIPLY', v, 18.0), True), c, (0.36, 0.21, 0.15))  # 큐티클
+    if AGED:  # 탁해져 끝의 흰 띠가 잦아든다
+        c = t.mix(0.55, c, (0.42, 0.31, 0.22))
     t.link(c, t.p.inputs['Base Color'])
     bump = t.n('ShaderNodeBump')
     bump.inputs['Distance'].default_value = 0.00012
@@ -902,6 +931,18 @@ if SIDE == 'L' and not FAST:
 # ------------------------------------------------------------------ 굽기 (휴식 자세). K3D_FAST 는 절차 머티리얼 그대로 미리보기만
 if not FAST:
     ad.pose_position = 'REST'
+    if AGED:  # k3d 는 활성 UV(UV_top) 기준으로 노멀을 구워 아틀라스 섬마다 요철 방향이 돈다. 깊은 주름은 이음매에서 끊겨 보인다
+        bake_pass = k3d._bake_pass
+
+        def atlas_normal(obj, mats, image, kind, uv, margin, socket=None):
+            uvs = obj.data.uv_layers
+            was = uvs.active
+            if kind == 'NORMAL':
+                uvs.active = uvs[uv]
+            bake_pass(obj, mats, image, kind, uv, margin, socket)
+            uvs.active = was
+
+        k3d._bake_pass = atlas_normal
     k3d.bake(skin, BAKE, keep=(hid_m.name,), samples=24)
     if watch_o:
         k3d.bake(watch_o, 1024, keep=(f'M_{A}_WatchDial',), samples=24)
@@ -1049,7 +1090,7 @@ notes = {
     'materials': '피부 2048 아틀라스(손톱 포함), 소매 = M_Tile_Hands_Rib/Knit (원통 UV, 4cm 반복), 소매 속 팔뚝 = 단색.',
 }
 if SIDE == 'L':
-    notes['watch'] = '왼 손목 아날로그 시계 (가상 브랜드 ARIRANG, 10:08, 요일창 토 15). 문자판은 M_GrandpaHand_L_WatchDial 1024 단독 텍스처, 유리 M_Glass.'
+    notes['watch'] = f'왼 손목 아날로그 시계 (가상 브랜드 ARIRANG, 10:08, 요일창 토 15). 문자판은 M_{A}_WatchDial 1024 단독 텍스처, 유리 M_Glass.'
 fbx = None
 if not FAST:
     fbx = k3d.export(A, 'Hands', [arm], rigged=True, anim=True, notes=notes)
