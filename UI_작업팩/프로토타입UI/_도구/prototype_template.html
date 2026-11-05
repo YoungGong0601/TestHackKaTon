@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>키오스크 프로토타입 UI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#2a2622;color:#eee;font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif}
+#wrap{display:flex;height:100%;gap:16px;padding:12px;justify-content:center}
+#scr{position:relative;height:100%;aspect-ratio:9/16;background:#000;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 0 0 6px #111}
+#screen{width:100%;height:100%;display:block;cursor:pointer}
+.rip{position:absolute;width:46px;height:46px;margin:-23px;border-radius:50%;border:3px solid rgba(255,255,255,.85);pointer-events:none;animation:rip .45s ease-out forwards}
+@keyframes rip{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+#side{width:330px;display:flex;flex-direction:column;gap:10px;overflow:auto;padding-right:4px}
+h2{font-size:13px;margin:6px 0 0;color:#b8ab98;font-weight:700}
+.g{display:flex;flex-direction:column;gap:6px}
+button{font:inherit;font-size:15px;padding:10px 12px;border:0;border-radius:6px;background:#4a4239;color:#fff;cursor:pointer;text-align:left}
+button:hover{background:#5c5246}
+button.p{background:#c8291f}
+label{font-size:14px;display:flex;gap:8px;align-items:center}
+#state{font-size:14px;line-height:1.6;background:#1c1916;padding:8px 10px;border-radius:6px}
+#log{font-size:14px;line-height:1.5;background:#1c1916;padding:8px 10px;border-radius:6px;min-height:120px;max-height:240px;overflow:auto}
+#log div{margin-bottom:4px;color:#d8cdbc}
+#rc{display:none;width:150px;background:#f7f4ec;border-radius:3px}
+#done{display:none;font-size:18px;font-weight:800;color:#f0c63a}
+</style></head><body>
+<div id="wrap">
+ <div id="scr"><canvas id="screen" width="1080" height="1920"></canvas></div>
+ <div id="side">
+  <div id="state"></div>
+  <div id="done">주문 완료</div>
+  <h2>본체</h2>
+  <div class="g">
+   <button id="b_cover">덮개 열기</button>
+   <button id="b_ic">카드 넣기 / IC 틈</button>
+   <button id="b_bar">카드 넣기 / 바코드 틈</button>
+   <button id="b_rec">카드 넣기 / 영수증 틈</button>
+   <button id="b_out">카드 빼기</button>
+   <button id="b_tear">영수증 떼기</button>
+   <button id="b_call">직원 호출</button>
+  </div>
+  <canvas id="rc" width="296" height="1000"></canvas>
+  <h2>보기</h2>
+  <label><input type="checkbox" id="c_mean">뜻 풀이</label>
+  <label><input type="checkbox" id="c_time">시간 제한</label>
+  <button id="b_reset" class="p">처음부터 다시</button>
+  <h2>음성과 소리</h2>
+  <div id="log"></div>
+ </div>
+</div>
+<script>
+/*MODULES*/
+</script>
+<script>
+/*GLUE*/
+</script>
+</body></html>

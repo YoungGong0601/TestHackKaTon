@@ -1,0 +1,1552 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>키오스크 프로토타입 UI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#2a2622;color:#eee;font-family:'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif}
+#wrap{display:flex;height:100%;gap:16px;padding:12px;justify-content:center}
+#scr{position:relative;height:100%;aspect-ratio:9/16;background:#000;border-radius:10px;overflow:hidden;flex:none;box-shadow:0 0 0 6px #111}
+#screen{width:100%;height:100%;display:block;cursor:pointer}
+.rip{position:absolute;width:46px;height:46px;margin:-23px;border-radius:50%;border:3px solid rgba(255,255,255,.85);pointer-events:none;animation:rip .45s ease-out forwards}
+@keyframes rip{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+#side{width:330px;display:flex;flex-direction:column;gap:10px;overflow:auto;padding-right:4px}
+h2{font-size:13px;margin:6px 0 0;color:#b8ab98;font-weight:700}
+.g{display:flex;flex-direction:column;gap:6px}
+button{font:inherit;font-size:15px;padding:10px 12px;border:0;border-radius:6px;background:#4a4239;color:#fff;cursor:pointer;text-align:left}
+button:hover{background:#5c5246}
+button.p{background:#c8291f}
+label{font-size:14px;display:flex;gap:8px;align-items:center}
+#state{font-size:14px;line-height:1.6;background:#1c1916;padding:8px 10px;border-radius:6px}
+#log{font-size:14px;line-height:1.5;background:#1c1916;padding:8px 10px;border-radius:6px;min-height:120px;max-height:240px;overflow:auto}
+#log div{margin-bottom:4px;color:#d8cdbc}
+#rc{display:none;width:150px;background:#f7f4ec;border-radius:3px}
+#done{display:none;font-size:18px;font-weight:800;color:#f0c63a}
+</style></head><body>
+<div id="wrap">
+ <div id="scr"><canvas id="screen" width="1080" height="1920"></canvas></div>
+ <div id="side">
+  <div id="state"></div>
+  <div id="done">주문 완료</div>
+  <h2>본체</h2>
+  <div class="g">
+   <button id="b_cover">덮개 열기</button>
+   <button id="b_ic">카드 넣기 / IC 틈</button>
+   <button id="b_bar">카드 넣기 / 바코드 틈</button>
+   <button id="b_rec">카드 넣기 / 영수증 틈</button>
+   <button id="b_out">카드 빼기</button>
+   <button id="b_tear">영수증 떼기</button>
+   <button id="b_call">직원 호출</button>
+  </div>
+  <canvas id="rc" width="296" height="1000"></canvas>
+  <h2>보기</h2>
+  <label><input type="checkbox" id="c_mean">뜻 풀이</label>
+  <label><input type="checkbox" id="c_time">시간 제한</label>
+  <button id="b_reset" class="p">처음부터 다시</button>
+  <h2>음성과 소리</h2>
+  <div id="log"></div>
+ </div>
+</div>
+<script>
+
+const THREE = (() => {
+  class V { constructor() { this.x = 0; this.y = 0; this.z = 0; } set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; } }
+  class Obj { constructor() { this.position = new V(); this.scale = new V(); this.rotation = new V(); this.visible = true; this.children = []; } add(c) { this.children.push(c); } }
+  class Mesh extends Obj { constructor(g, m) { super(); this.geometry = g; this.material = m || { opacity: 0 }; } }
+  class Plain { constructor(o) { Object.assign(this, o || {}); } }
+  return { Group: Obj, Mesh, PlaneGeometry: Plain, MeshBasicMaterial: Plain, CanvasTexture: class { constructor(c) { this.image = c; } },
+    AdditiveBlending: 2, SRGBColorSpace: 'srgb' };
+})();
+const M_g = (() => {
+// 전역 상태 한 곳
+const q = new URLSearchParams(location.search);
+const G = {
+  scene: null, camera: null, renderer: null, dt: 0, time: 0,
+  flags: { mute: q.has('mute'), test: q.has('test'), start: q.get('start') },
+  state: {
+    chapter: 'title', hasShoes: false,
+    order: { place: null, item: null, combo: null, side: null, drink: null, sizeUp: false, paid: false, number: 274 },
+    stats: { startAt: 0, touches: 0, wrong: 0, sorry: 0, resets: 0, blowups: 0, orderSec: 0 },
+  },
+};
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const damp = (a, b, k, dt) => lerp(a, b, 1 - Math.exp(-k * dt));
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = (arr) => arr[(Math.random() * arr.length) | 0];
+const wait = (sec) => new Promise((r) => {
+  const until = G.time + sec / (G.flags.fast || 1);
+  G._waits.push({ until, r });
+});
+G._waits = [];
+function tickWaits() {
+  if (!G._waits.length) return;
+  G._waits = G._waits.filter((w) => { if (G.time >= w.until) { w.r(); return false; } return true; });
+}
+
+return {G, clamp, damp, lerp, pick, rand, tickWaits, wait};
+})();
+const M_kit = (() => {
+// 씬 제작 도구: 상자, 평면, 간판 텍스처, 조명
+
+
+function box(w, h, d, mat, x = 0, y = 0, z = 0, parent = null) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
+  parent?.add(m);
+  return m;
+}
+function plane(w, h, mat, x = 0, y = 0, z = 0, parent = null, rx = 0, ry = 0) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  m.position.set(x, y, z); m.rotation.set(rx, ry, 0); m.receiveShadow = true;
+  parent?.add(m);
+  return m;
+}
+function cyl(rt, rb, h, mat, x = 0, y = 0, z = 0, parent = null, seg = 16) {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat);
+  m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
+  parent?.add(m);
+  return m;
+}
+const std = (color, roughness = 0.8, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness, metalness, ...extra });
+
+/** 캔버스로 그린 텍스처. draw(ctx,W,H) */
+function canvasTex(W, H, draw) {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  draw(c.getContext('2d'), W, H);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  return t;
+}
+/** 간판, 포스터: 캔버스 그림 평면. emissive>0 이면 스스로 빛남(블룸 대상) */
+function signPlane(w, h, draw, { px = 512, emissive = 0, x = 0, y = 0, z = 0, parent = null, ry = 0 } = {}) {
+  const t = canvasTex(px, Math.round(px * h / w), draw);
+  const mat = new THREE.MeshStandardMaterial({ map: t, roughness: 0.65, emissiveMap: emissive ? t : null, emissive: emissive ? 0xffffff : 0, emissiveIntensity: emissive });
+  const m = plane(w, h, mat, x, y, z, parent, 0, ry);
+  return m;
+}
+const FONT = "'Pretendard','Noto Sans KR','Malgun Gothic',sans-serif";
+const font = (px, weight = 700) => `${weight} ${px}px ${FONT}`;
+
+/** 패러디 로고: 왕관 쓴 번과 버거대왕 글자 */
+function drawLogo(ctx, cx, cy, s, { text = true, dark = false } = {}) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s, s);
+  // 번
+  ctx.fillStyle = '#d98a2b';
+  ctx.beginPath(); ctx.ellipse(0, -8, 62, 44, 0, Math.PI, 0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#6b3a1e'; ctx.fillRect(-60, -6, 120, 16);
+  ctx.fillStyle = '#d98a2b'; ctx.beginPath(); ctx.roundRect(-58, 12, 116, 22, 8); ctx.fill();
+  // 왕관
+  ctx.fillStyle = '#f0c63a';
+  ctx.beginPath(); ctx.moveTo(-30, -48); ctx.lineTo(-34, -82); ctx.lineTo(-14, -62); ctx.lineTo(0, -90); ctx.lineTo(14, -62); ctx.lineTo(34, -82); ctx.lineTo(30, -48); ctx.closePath(); ctx.fill();
+  if (text) {
+    ctx.fillStyle = dark ? '#3a2416' : '#c8291f';
+    ctx.font = font(50, 900); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('버거대왕', 0, 72);
+  }
+  ctx.restore();
+}
+
+return {FONT, box, canvasTex, cyl, drawLogo, font, plane, signPlane, std};
+})();
+const M_data = (() => {
+// 메뉴 데이터. name은 화면 글자, mean은 돋보기로만 보이는 뜻(괄호로 그림).
+const TABS = ['SIGNATURE', 'PREMIUM', 'CLASSIC', 'SIDE', 'BEVERAGE', 'DESSERT'];
+const TAB_MEAN = { SIGNATURE: '대표 메뉴', PREMIUM: '비싼 메뉴', CLASSIC: '보통 버거', SIDE: '곁들이', BEVERAGE: '마실 것', DESSERT: '후식' };
+
+const b = (id, name, mean, price, kcal, art, tag = '', desc = '') => ({ id, name, mean, price, kcal, art, tag, desc, kind: 'burger' });
+const x = (id, name, mean, price, kcal, art, kind, tag = '', desc = '') => ({ id, name, mean, price, kcal, art, tag, desc, kind });
+
+const MENU = {
+  SIGNATURE: [
+    b('crown3', '크라운 트리플 스택', '고기 세 장 버거', 11900, 1120, 'triple', 'BEST', 'Triple Flame Grilled'),
+    b('truffle', '앵거스 트러플 오 그라탕', '버섯향 소고기 버거', 12400, 980, 'truffle', 'NEW', 'Limited Reserve'),
+    b('kgrill', '더 그랜드 K-그릴 플래티넘', '구운 소고기 버거', 10900, 890, 'double', '', 'Char Broiled Edition'),
+    b('habanero', '하바네로 인페르노 비프', '아주 매운 버거', 9900, 760, 'spicy', 'HOT', 'Scoville 8,000'),
+    b('avocado', '아보카도 슈프림 그릴드', '아보카도 버거', 10400, 720, 'green', '', 'Fresh Cut Daily'),
+    b('smokehouse', '로열 스모크 하우스', '훈제 고기 버거', 11200, 930, 'double', '', 'Hickory Reserve'),
+    b('buttermilk', '버터밀크 크런치 XL', '닭고기 버거', 9400, 840, 'chicken', '', 'Southern Style'),
+    b('mushtower', '왕관 머쉬룸 타워', '버섯 버거', 10100, 790, 'mushroom', '', 'Wild Forest'),
+    b('plant', '비욘드 크라운 플랜트', '콩고기 버거', 9800, 610, 'green', 'ECO', 'Zero Animal'),
+  ],
+  PREMIUM: [
+    b('wagyu', '와규 크라운 리저브', '일본 소 버거', 14900, 1040, 'double', 'NEW', 'A5 Blend Patty'),
+    b('lobster', '랍스터 비스크 쉬림프', '새우 버거', 13900, 820, 'shrimp', '', 'Ocean Edition'),
+    b('brisket', '12H 브리스킷 멜트', '오래 삶은 고기 버거', 13400, 1010, 'double', '', 'Low and Slow'),
+    b('gorgon', '고르곤졸라 앤 허니', '꿀 치즈 버거', 12900, 870, 'truffle', '', 'Sweet Blue Cheese'),
+    b('katsu', '돈카츠 프리미엄 소스', '돈가스 버거', 11900, 910, 'chicken', '', 'Panko Crust'),
+    b('crownmax', '크라운 맥시멈', '제일 큰 버거', 15900, 1380, 'triple', 'BEST', 'Maximum Stack'),
+  ],
+  CLASSIC: [
+    b('royal', '오리지널 로열 패티', '고기 버거', 5400, 620, 'single', '', 'Since 1998'),
+    b('mushroom', '스모키 BBQ 더블 머쉬룸', '버섯 버거', 6900, 740, 'mushroom', 'BEST', 'Smoky Double'),
+    b('chicken', '크리스피 K-치킨', '닭고기 버거', 5600, 610, 'chicken', '', 'Crispy Fillet'),
+    b('bulgogi2', 'K-BBQ 스모키 비프 더블', '불고기 두 장 버거', 7900, 860, 'bulgogi2', '', 'Double Patty'),
+    b('bulgogi', 'K-BBQ 스모키 비프', '불고기 버거', 5900, 590, 'bulgogi', '', 'Sweet Soy Glaze'),
+    b('shrimp', '코리안 쉬림프 크런치', '새우 버거', 5900, 570, 'shrimp', '', 'Whole Shrimp'),
+    b('cheese', '더블 치즈 멜트', '치즈 버거', 6100, 680, 'cheese', '', 'American Melt'),
+    b('kids', '크라운 주니어', '작은 버거', 3900, 380, 'single', '', 'Junior Size'),
+    b('fish', '씨 크리스피 필레', '생선 버거', 5400, 520, 'chicken', '', 'Sea Fillet'),
+  ],
+  SIDE: [
+    x('fries_r', '프렌치 프라이 R', '감자튀김 보통', 2000, 320, 'fries', 'side'),
+    x('fries_l', '프렌치 프라이 L', '감자튀김 큰 것', 2500, 460, 'fries', 'side'),
+    x('nugget', '크라운 너겟 4PC', '닭 튀김 네 개', 2800, 290, 'nugget', 'side'),
+    x('coleslaw', '시그니처 슬로', '양배추 샐러드', 2000, 140, 'coleslaw', 'side'),
+    x('cheesestick', '모짜 스틱 2PC', '치즈 막대 튀김', 2900, 310, 'stick', 'side'),
+    x('onion', '어니언 링 6PC', '양파 튀김', 2700, 340, 'onion', 'side'),
+  ],
+  BEVERAGE: [
+    x('cola', '제로 콜라', '콜라', 2000, 0, 'cola', 'drink'),
+    x('cider', '라임 스파클링', '사이다', 2000, 140, 'lime', 'drink'),
+    x('cola_full', '오리지널 콜라', '콜라', 2000, 150, 'cola', 'drink'),
+    x('orange', '선셋 오렌지 에이드', '오렌지 음료', 2500, 170, 'orange', 'drink'),
+    x('tea', '아이스 얼그레이', '찬 홍차', 2500, 40, 'tea', 'drink'),
+    x('americano', '아메리카노 ICE', '찬 커피', 2000, 10, 'coffee', 'drink'),
+    x('shake', '바닐라 쉐이크', '우유 음료', 3000, 380, 'shake', 'drink'),
+    x('water', '미네랄 워터', '생수', 1500, 0, 'water', 'drink'),
+  ],
+  DESSERT: [
+    x('cone', '소프트 콘', '아이스크림', 1200, 180, 'cone', 'dessert'),
+    x('pie', '애플 턴오버', '사과 파이', 1800, 240, 'pie', 'dessert'),
+    x('sundae', '카라멜 선데', '컵 아이스크림', 2400, 310, 'sundae', 'dessert'),
+    x('churro', '시나몬 스틱 3PC', '계피 과자', 2200, 280, 'stick', 'dessert'),
+  ],
+};
+const ALL = Object.values(MENU).flat();
+const byId = (id) => ALL.find((i) => i.id === id);
+
+const COMBOS = [
+  { id: 'single', name: 'SINGLE', mean: '단품', add: 0, sub: 'A la carte' },
+  { id: 'combo', name: 'COMBO', mean: '세트', add: 2000, sub: 'Side + Beverage' },
+  { id: 'large', name: 'LARGE COMBO', mean: '큰 세트', add: 2800, sub: 'Side L + Beverage L' },
+];
+const SIDE_OPTS = [['fries_r', 0], ['fries_l', 500], ['nugget', 800], ['coleslaw', 0], ['cheesestick', 900], ['onion', 700]];
+const DRINK_OPTS = [['cola', 0], ['cola_full', 0], ['cider', 0], ['orange', 500], ['tea', 500], ['americano', 0], ['shake', 1000], ['water', 0]];
+const won = (n) => n.toLocaleString('ko-KR') + '원';
+
+return {ALL, COMBOS, DRINK_OPTS, MENU, SIDE_OPTS, TABS, TAB_MEAN, byId, won};
+})();
+const M_art = (() => {
+// 음식과 포장 그림. 캔버스로 그려 캐시한다.
+const cache = new Map();
+let seed = 7;
+const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+const rr = (a, b) => a + rnd() * (b - a);
+
+function grad(c, x0, y0, x1, y1, stops) {
+  const g = c.createLinearGradient(x0, y0, x1, y1);
+  stops.forEach(([p, col]) => g.addColorStop(p, col));
+  return g;
+}
+function shadow(c, cx, cy, rx, ry, a = 0.34) {
+  const g = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+  g.addColorStop(0, `rgba(60,30,10,${a})`); g.addColorStop(0.7, `rgba(60,30,10,${a * 0.45})`); g.addColorStop(1, 'rgba(60,30,10,0)');
+  c.save(); c.translate(cx, cy); c.scale(rx, ry); c.fillStyle = g; c.beginPath(); c.arc(0, 0, 1, 0, 7); c.fill(); c.restore();
+}
+function speckle(c, x, y, w, h, n, cols, r0 = 0.7, r1 = 2.2) {
+  for (let i = 0; i < n; i++) {
+    c.fillStyle = cols[(rnd() * cols.length) | 0];
+    c.beginPath(); c.arc(x + rnd() * w, y + rnd() * h, rr(r0, r1), 0, 7); c.fill();
+  }
+}
+
+// 버거 층: 아래에서 위로 쌓는다
+function bunBottom(c, cx, y, w) {
+  const h = w * 0.15;
+  c.fillStyle = grad(c, 0, y - h, 0, y, [[0, '#e9b265'], [0.45, '#d8923f'], [1, '#a9622b']]);
+  c.beginPath(); c.roundRect(cx - w / 2, y - h, w, h, [h * 0.25, h * 0.25, h * 0.8, h * 0.8]); c.fill();
+  c.fillStyle = 'rgba(255,240,200,.28)'; c.fillRect(cx - w * 0.46, y - h, w * 0.92, h * 0.16);
+  return y - h;
+}
+function patty(c, cx, y, w, tone = 'beef') {
+  const h = w * 0.125, col = { beef: ['#6a3a20', '#3d2012'], glaze: ['#5a2c16', '#2c120a'], crisp: ['#d9963c', '#9c5a1f'], shrimp: ['#ef9c5a', '#b9562a'] }[tone];
+  c.fillStyle = grad(c, 0, y - h, 0, y, [[0, col[0]], [1, col[1]]]);
+  c.beginPath(); c.moveTo(cx - w * 0.5, y - h * 0.3);
+  for (let i = 0; i <= 18; i++) { const t = i / 18; c.lineTo(cx - w * 0.5 + w * t, y - h + Math.sin(t * 19) * h * 0.09 + rr(-1, 1) * h * 0.05); }
+  c.quadraticCurveTo(cx + w * 0.53, y - h * 0.4, cx + w * 0.47, y); c.lineTo(cx - w * 0.47, y); c.quadraticCurveTo(cx - w * 0.53, y - h * 0.4, cx - w * 0.5, y - h * 0.3); c.fill();
+  const dark = tone === 'crisp' || tone === 'shrimp' ? ['#f2c070', '#b8742a', '#8f5016'] : ['#2a140a', '#7c4a2a', '#1f0e07'];
+  speckle(c, cx - w * 0.47, y - h, w * 0.94, h, 90, dark, 0.8, w * 0.012);
+  if (tone === 'glaze') { // 간장 양념 윤기와 흘러내림
+    c.fillStyle = 'rgba(255,220,170,.35)';
+    for (let i = 0; i < 9; i++) { c.beginPath(); c.ellipse(cx + rr(-0.42, 0.42) * w, y - h * rr(0.5, 0.9), w * rr(0.02, 0.05), w * 0.006, 0, 0, 7); c.fill(); }
+    c.fillStyle = '#3a1608';
+    for (let i = 0; i < 6; i++) { const x = cx + rr(-0.4, 0.4) * w; c.beginPath(); c.roundRect(x, y - h * 0.2, w * 0.022, h * rr(0.4, 0.9), w * 0.01); c.fill(); }
+  }
+  return y - h * 0.92;
+}
+function cheese(c, cx, y, w) {
+  c.fillStyle = grad(c, 0, y - w * 0.04, 0, y + w * 0.1, [[0, '#ffd451'], [1, '#f0a81e']]);
+  c.beginPath(); c.moveTo(cx - w * 0.5, y - w * 0.015);
+  c.lineTo(cx + w * 0.5, y - w * 0.015); c.lineTo(cx + w * 0.42, y + w * 0.02); c.lineTo(cx + w * 0.26, y + w * 0.03); c.lineTo(cx + w * 0.16, y + w * 0.1); c.lineTo(cx + w * 0.05, y + w * 0.03);
+  c.lineTo(cx - w * 0.18, y + w * 0.035); c.lineTo(cx - w * 0.3, y + w * 0.09); c.lineTo(cx - w * 0.38, y + w * 0.03); c.closePath(); c.fill();
+  return y - w * 0.012;
+}
+function lettuce(c, cx, y, w) {
+  c.fillStyle = grad(c, 0, y - w * 0.05, 0, y + w * 0.05, [[0, '#a7d34c'], [1, '#5b9a2c']]);
+  c.beginPath(); c.moveTo(cx - w * 0.54, y);
+  for (let i = 0; i <= 26; i++) { const t = i / 26; c.lineTo(cx - w * 0.54 + w * 1.08 * t, y + Math.sin(t * 34) * w * 0.022 + (i % 2 ? w * 0.016 : -w * 0.016)); }
+  c.lineTo(cx + w * 0.5, y - w * 0.05); c.lineTo(cx - w * 0.5, y - w * 0.05); c.closePath(); c.fill();
+  c.strokeStyle = 'rgba(230,255,170,.5)'; c.lineWidth = w * 0.005;
+  for (let i = 0; i < 14; i++) { const x = cx + rr(-0.48, 0.48) * w; c.beginPath(); c.moveTo(x, y - w * 0.04); c.lineTo(x + rr(-8, 8), y + w * 0.01); c.stroke(); }
+  return y - w * 0.04;
+}
+function tomato(c, cx, y, w) {
+  [[-0.2, 0.3], [0.2, 0.3]].forEach(([o, s]) => {
+    c.fillStyle = grad(c, 0, y - w * 0.05, 0, y, [[0, '#ec5a3d'], [1, '#b92a1e']]);
+    c.beginPath(); c.ellipse(cx + o * w, y - w * 0.025, w * s, w * 0.032, 0, 0, 7); c.fill();
+  });
+  return y - w * 0.045;
+}
+function onionRing(c, cx, y, w) {
+  c.strokeStyle = 'rgba(245,235,245,.95)'; c.lineWidth = w * 0.016;
+  [-0.28, 0.02, 0.3].forEach((o) => { c.beginPath(); c.ellipse(cx + o * w, y - w * 0.012, w * 0.13, w * 0.022, 0, 0, 7); c.stroke(); });
+  return y - w * 0.02;
+}
+function mushrooms(c, cx, y, w) {
+  for (let i = 0; i < 7; i++) {
+    const x = cx + (i - 3) * w * 0.135 + rr(-5, 5);
+    c.fillStyle = grad(c, 0, y - w * 0.07, 0, y, [[0, '#a98560'], [1, '#6e4e30']]);
+    c.beginPath(); c.ellipse(x, y - w * 0.02, w * 0.08, w * 0.042, rr(-0.2, 0.2), Math.PI, 0); c.fill();
+    c.fillStyle = '#e4d3b6'; c.fillRect(x - w * 0.016, y - w * 0.022, w * 0.032, w * 0.03);
+  }
+  return y - w * 0.05;
+}
+function bunTop(c, cx, y, w, seeds = true) {
+  const h = w * 0.38;
+  const g = c.createRadialGradient(cx - w * 0.14, y - h * 0.86, w * 0.03, cx, y - h * 0.2, w * 0.66);
+  g.addColorStop(0, '#f7cf82'); g.addColorStop(0.35, '#e3a14b'); g.addColorStop(0.8, '#b86e2c'); g.addColorStop(1, '#8e4f1e');
+  c.fillStyle = g;
+  c.beginPath(); c.moveTo(cx - w * 0.51, y);
+  c.bezierCurveTo(cx - w * 0.54, y - h * 1.12, cx + w * 0.54, y - h * 1.12, cx + w * 0.51, y);
+  c.quadraticCurveTo(cx, y + w * 0.035, cx - w * 0.51, y); c.fill();
+  c.fillStyle = 'rgba(255,245,215,.2)'; c.beginPath(); c.ellipse(cx - w * 0.15, y - h * 0.68, w * 0.2, h * 0.14, -0.3, 0, 7); c.fill();
+  if (seeds) for (let i = 0; i < 46; i++) {
+    const a = rr(-1, 1), b2 = rr(0.14, 0.95), x = cx + a * w * 0.46 * Math.sqrt(1 - b2 * b2 * 0.7), yy = y - h * b2 * 0.82;
+    c.save(); c.translate(x, yy); c.rotate(rr(0, 3)); c.fillStyle = '#f6e8c6'; c.beginPath(); c.ellipse(0, 0, w * 0.0125, w * 0.0065, 0, 0, 7); c.fill();
+    c.fillStyle = 'rgba(120,70,20,.3)'; c.beginPath(); c.ellipse(1, 1, w * 0.0125, w * 0.003, 0, 0, 7); c.fill(); c.restore();
+  }
+}
+
+const STACKS = {
+  single: ['patty', 'lettuce', 'tomato'],
+  cheese: ['patty', 'cheese', 'patty', 'cheese', 'lettuce'],
+  bulgogi: ['glaze', 'lettuce', 'onion'],
+  bulgogi2: ['glaze', 'glaze', 'lettuce', 'onion'],
+  double: ['patty', 'cheese', 'patty', 'lettuce', 'tomato'],
+  triple: ['patty', 'cheese', 'patty', 'cheese', 'patty', 'lettuce', 'tomato'],
+  truffle: ['patty', 'cheese', 'mushroom', 'lettuce'],
+  mushroom: ['patty', 'patty', 'mushroom', 'lettuce'],
+  spicy: ['patty', 'cheese', 'tomato', 'onion', 'lettuce'],
+  green: ['patty', 'tomato', 'lettuce', 'lettuce'],
+  chicken: ['crisp', 'lettuce', 'tomato'],
+  shrimp: ['shrimp', 'lettuce', 'onion'],
+};
+function burger(c, cx, base, w, kind) {
+  shadow(c, cx, base + w * 0.015, w * 0.66, w * 0.09);
+  let y = bunBottom(c, cx, base, w);
+  for (const l of STACKS[kind] || STACKS.single) {
+    if (l === 'patty') y = patty(c, cx, y, w);
+    else if (l === 'glaze') y = patty(c, cx, y, w * 1.02, 'glaze');
+    else if (l === 'crisp') y = patty(c, cx, y, w * 1.06, 'crisp');
+    else if (l === 'shrimp') y = patty(c, cx, y, w * 1.04, 'shrimp');
+    else if (l === 'cheese') y = cheese(c, cx, y, w);
+    else if (l === 'lettuce') y = lettuce(c, cx, y, w);
+    else if (l === 'tomato') y = tomato(c, cx, y, w);
+    else if (l === 'onion') y = onionRing(c, cx, y, w);
+    else if (l === 'mushroom') y = mushrooms(c, cx, y, w);
+  }
+  bunTop(c, cx, y, w);
+}
+function drawCrown(c, cx, cy, s, col = '#f0c63a') {
+  c.fillStyle = col; c.beginPath();
+  c.moveTo(cx - s, cy + s * 0.5); c.lineTo(cx - s * 1.1, cy - s * 0.55); c.lineTo(cx - s * 0.45, cy); c.lineTo(cx, cy - s * 0.8); c.lineTo(cx + s * 0.45, cy); c.lineTo(cx + s * 1.1, cy - s * 0.55); c.lineTo(cx + s, cy + s * 0.5); c.closePath(); c.fill();
+}
+function fries(c, cx, base, w) {
+  shadow(c, cx, base + 4, w * 0.5, w * 0.07);
+  const h = w * 0.62, top = base - h;
+  for (let i = 0; i < 34; i++) { // 뒷줄 감자
+    const x = cx + rr(-0.34, 0.34) * w, l = rr(0.3, 0.52) * w, a = rr(-0.16, 0.16);
+    c.save(); c.translate(x, top + h * 0.2); c.rotate(a);
+    c.fillStyle = grad(c, -6, 0, 8, 0, [[0, '#ffe07c'], [1, '#e7a93a']]); c.fillRect(-w * 0.02, -l, w * 0.04, l + 8); c.restore();
+  }
+  c.fillStyle = grad(c, cx - w * 0.4, 0, cx + w * 0.4, 0, [[0, '#a81c14'], [0.5, '#d9322a'], [1, '#a31a12']]);
+  c.beginPath(); c.moveTo(cx - w * 0.4, top + h * 0.1); c.quadraticCurveTo(cx, top + h * 0.36, cx + w * 0.4, top + h * 0.1); c.lineTo(cx + w * 0.3, base); c.lineTo(cx - w * 0.3, base); c.closePath(); c.fill();
+  drawCrown(c, cx, base - h * 0.34, w * 0.14);
+}
+function cup(c, cx, base, w, liquid, { clear = false, straw = '#fff', ice = false, label = true } = {}) {
+  shadow(c, cx, base + 3, w * 0.42, w * 0.06);
+  const h = w * 0.98, tw = w * 0.36, bw = w * 0.27, top = base - h;
+  c.fillStyle = straw; c.save(); c.translate(cx + w * 0.08, top - w * 0.02); c.rotate(0.14); c.fillRect(-w * 0.018, -w * 0.28, w * 0.036, w * 0.34); c.restore();
+  const path = () => { c.beginPath(); c.moveTo(cx - tw, top); c.lineTo(cx + tw, top); c.lineTo(cx + bw, base); c.lineTo(cx - bw, base); c.closePath(); };
+  if (clear) {
+    c.fillStyle = grad(c, cx - tw, 0, cx + tw, 0, [[0, liquid[1]], [0.45, liquid[0]], [1, liquid[1]]]); path(); c.fill();
+    if (ice) for (let i = 0; i < 9; i++) { c.fillStyle = 'rgba(255,255,255,.34)'; c.save(); c.translate(cx + rr(-0.24, 0.24) * w, top + rr(0.12, 0.8) * h); c.rotate(rr(0, 2)); c.fillRect(-w * 0.05, -w * 0.05, w * 0.1, w * 0.1); c.restore(); }
+    for (let i = 0; i < 22; i++) { c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(cx + rr(-0.27, 0.27) * w, top + rr(0.1, 0.95) * h, rr(1, 3.4), 0, 7); c.fill(); }
+    c.fillStyle = 'rgba(255,255,255,.2)'; c.fillRect(cx - tw * 0.72, top + 6, w * 0.05, h * 0.8);
+  } else {
+    c.fillStyle = grad(c, cx - tw, 0, cx + tw, 0, [[0, '#d7cdb9'], [0.4, '#fffaf0'], [1, '#c8bda6']]); path(); c.fill();
+    if (label) {
+      c.save(); path(); c.clip();
+      c.fillStyle = liquid[0]; c.fillRect(cx - tw, top + h * 0.28, tw * 2, h * 0.48);
+      drawCrown(c, cx, top + h * 0.53, w * 0.13, '#fff4de');
+      c.restore();
+    }
+  }
+  c.fillStyle = grad(c, cx - tw, 0, cx + tw, 0, [[0, '#c9c1b2'], [0.45, '#fbf7ee'], [1, '#bcb2a0']]);
+  c.beginPath(); c.roundRect(cx - tw - w * 0.02, top - w * 0.05, (tw + w * 0.02) * 2, w * 0.07, w * 0.02); c.fill();
+}
+function nugget(c, cx, base, w) {
+  shadow(c, cx, base + 2, w * 0.5, w * 0.08);
+  [[-0.24, 0, 1], [0.24, 0, 1], [0, -0.08, 1.1], [-0.1, 0.03, 1], [0.13, 0.04, 0.9]].forEach(([x, y, s]) => {
+    const px = cx + x * w, py = base - w * 0.13 + y * w, r = w * 0.17 * s;
+    c.fillStyle = grad(c, 0, py - r, 0, py + r, [[0, '#eeb65e'], [1, '#b3702a']]);
+    c.beginPath(); for (let i = 0; i <= 16; i++) { const a = i / 16 * 6.283, q = r * (0.85 + rnd() * 0.22); c.lineTo(px + Math.cos(a) * q * 1.18, py + Math.sin(a) * q * 0.84); } c.closePath(); c.fill();
+    speckle(c, px - r, py - r * 0.7, r * 2, r * 1.4, 18, ['#f7d48d', '#9a5a20'], 0.7, 2);
+  });
+}
+function bowlCup(c, cx, base, w, fill) {
+  shadow(c, cx, base + 3, w * 0.42, w * 0.06);
+  c.fillStyle = grad(c, cx - w * 0.36, 0, cx + w * 0.36, 0, [[0, '#d8ccb6'], [0.5, '#fff8ea'], [1, '#c7baa2']]);
+  c.beginPath(); c.moveTo(cx - w * 0.36, base - w * 0.34); c.lineTo(cx + w * 0.36, base - w * 0.34); c.lineTo(cx + w * 0.26, base); c.lineTo(cx - w * 0.26, base); c.closePath(); c.fill();
+  c.fillStyle = fill[0]; c.beginPath(); c.ellipse(cx, base - w * 0.35, w * 0.36, w * 0.09, 0, 0, 7); c.fill();
+  speckle(c, cx - w * 0.32, base - w * 0.42, w * 0.64, w * 0.13, 70, fill.slice(1), 1, 3.4);
+  drawCrown(c, cx, base - w * 0.16, w * 0.09, '#c8291f');
+}
+function sticks(c, cx, base, w, col) {
+  shadow(c, cx, base + 2, w * 0.48, w * 0.06);
+  [-0.2, 0.0, 0.2].forEach((x, i) => {
+    c.save(); c.translate(cx + x * w, base - w * 0.08); c.rotate(-0.28 + i * 0.05);
+    c.fillStyle = grad(c, 0, -w * 0.05, 0, w * 0.05, col); c.beginPath(); c.roundRect(-w * 0.28, -w * 0.05, w * 0.56, w * 0.1, w * 0.04); c.fill();
+    speckle(c, -w * 0.26, -w * 0.05, w * 0.52, w * 0.1, 24, ['#f6d186', '#8f5a22'], 0.7, 2); c.restore();
+  });
+}
+function rings(c, cx, base, w) {
+  shadow(c, cx, base + 2, w * 0.5, w * 0.07);
+  [[-0.2, 0.04], [0.2, 0.02], [0, -0.1]].forEach(([x, y]) => {
+    c.strokeStyle = grad(c, 0, base - w * 0.3, 0, base, [[0, '#edbb66'], [1, '#b67a2c']]); c.lineWidth = w * 0.075;
+    c.beginPath(); c.ellipse(cx + x * w, base - w * 0.16 + y * w, w * 0.18, w * 0.12, 0, 0, 7); c.stroke();
+  });
+}
+function cone(c, cx, base, w) {
+  shadow(c, cx, base + 2, w * 0.24, w * 0.04);
+  c.fillStyle = '#d3964a'; c.beginPath(); c.moveTo(cx - w * 0.17, base - w * 0.46); c.lineTo(cx + w * 0.17, base - w * 0.46); c.lineTo(cx, base); c.closePath(); c.fill();
+  c.strokeStyle = 'rgba(120,70,20,.5)'; c.lineWidth = 2;
+  for (let i = -3; i < 4; i++) { c.beginPath(); c.moveTo(cx + i * w * 0.05, base - w * 0.46); c.lineTo(cx + i * w * 0.015 + w * 0.05, base - w * 0.1); c.stroke(); }
+  [[0.21, 0.5], [0.16, 0.62], [0.1, 0.73], [0.05, 0.82]].forEach(([r, y]) => { c.fillStyle = grad(c, cx - r * w, 0, cx + r * w, 0, [[0, '#e6dcc6'], [0.5, '#fff9ec'], [1, '#d9cdb3']]); c.beginPath(); c.ellipse(cx, base - y * w, r * w, w * 0.08, 0, 0, 7); c.fill(); });
+}
+function pie(c, cx, base, w) {
+  shadow(c, cx, base + 2, w * 0.46, w * 0.06);
+  c.fillStyle = grad(c, 0, base - w * 0.3, 0, base, [[0, '#e8ad59'], [1, '#a9652a']]);
+  c.beginPath(); c.roundRect(cx - w * 0.38, base - w * 0.28, w * 0.76, w * 0.26, w * 0.06); c.fill();
+  c.strokeStyle = '#8f5220'; c.lineWidth = 4; [-0.2, 0, 0.2].forEach((x) => { c.beginPath(); c.moveTo(cx + x * w, base - w * 0.22); c.lineTo(cx + x * w + w * 0.06, base - w * 0.08); c.stroke(); });
+}
+function sundae(c, cx, base, w) {
+  shadow(c, cx, base + 3, w * 0.36, w * 0.05);
+  c.fillStyle = 'rgba(235,235,230,.85)'; c.beginPath(); c.moveTo(cx - w * 0.3, base - w * 0.5); c.lineTo(cx + w * 0.3, base - w * 0.5); c.lineTo(cx + w * 0.2, base); c.lineTo(cx - w * 0.2, base); c.closePath(); c.fill();
+  c.fillStyle = '#fff6e6'; c.beginPath(); c.ellipse(cx, base - w * 0.5, w * 0.3, w * 0.13, 0, Math.PI, 0); c.fill();
+  c.fillStyle = '#a4611f'; c.beginPath(); c.ellipse(cx, base - w * 0.56, w * 0.21, w * 0.06, 0, 0, 7); c.fill();
+  for (let i = 0; i < 5; i++) c.fillRect(cx - w * 0.2 + i * w * 0.095, base - w * 0.56, w * 0.03, w * rr(0.1, 0.22));
+}
+
+const DRINK_ART = {
+  cola: (c, cx, b, w) => cup(c, cx, b, w, ['#2b1610', '#1a0c08'], { straw: '#c8291f' }),
+  lime: (c, cx, b, w) => {
+    cup(c, cx, b, w, ['rgba(214,240,190,.92)', 'rgba(160,214,140,.92)'], { clear: true, straw: '#79b24a', ice: true });
+    c.fillStyle = '#a8d15a'; c.beginPath(); c.arc(cx - w * 0.3, b - w * 0.95, w * 0.1, 0, 7); c.fill();
+    c.fillStyle = '#e7f3bd'; c.beginPath(); c.arc(cx - w * 0.3, b - w * 0.95, w * 0.075, 0, 7); c.fill();
+  },
+  orange: (c, cx, b, w) => cup(c, cx, b, w, ['rgba(247,160,50,.95)', 'rgba(224,110,30,.95)'], { clear: true, straw: '#fff', ice: true }),
+  tea: (c, cx, b, w) => cup(c, cx, b, w, ['rgba(170,90,40,.92)', 'rgba(120,56,24,.95)'], { clear: true, straw: '#3a2416', ice: true }),
+  coffee: (c, cx, b, w) => cup(c, cx, b, w, ['rgba(70,38,22,.96)', 'rgba(38,18,10,.98)'], { clear: true, straw: '#2b1c12', ice: true }),
+  shake: (c, cx, b, w) => cup(c, cx, b, w, ['#f4e3bd', '#d6bf8e'], { straw: '#e8584a' }),
+  water: (c, cx, b, w) => cup(c, cx, b, w, ['rgba(205,228,235,.9)', 'rgba(160,196,208,.9)'], { clear: true, straw: 'rgba(0,0,0,0)' }),
+};
+
+/** 메뉴 그림 캔버스(투명 배경) 420x320 */
+function foodArt(kind) {
+  if (cache.has(kind)) return cache.get(kind);
+  const cv = document.createElement('canvas'); cv.width = 420; cv.height = 320;
+  const c = cv.getContext('2d'), cx = 210, b = 296;
+  seed = 11 + [...kind].reduce((a, ch) => a + ch.charCodeAt(0), 0) * 97;
+  if (STACKS[kind]) burger(c, cx, b, 318, kind);
+  else if (DRINK_ART[kind]) DRINK_ART[kind](c, cx, b, 230);
+  else if (kind === 'fries') fries(c, cx, b, 300);
+  else if (kind === 'nugget') nugget(c, cx, b, 330);
+  else if (kind === 'coleslaw') bowlCup(c, cx, b, 330, ['#efe9cf', '#c9dd8c', '#f3a55c', '#fff', '#b5d06c']);
+  else if (kind === 'stick') sticks(c, cx, b, 330, [[0, '#e9b45c'], [1, '#a9682a']]);
+  else if (kind === 'onion') rings(c, cx, b, 340);
+  else if (kind === 'cone') cone(c, cx, b, 330);
+  else if (kind === 'pie') pie(c, cx, b, 330);
+  else if (kind === 'sundae') sundae(c, cx, b, 330);
+  cache.set(kind, cv);
+  return cv;
+}
+/** 세트 그림: 버거, 감자, 컵 520x340 */
+function comboArt(kind, drink = 'cola', large = false) {
+  const key = `combo_${kind}_${drink}_${large}`;
+  if (cache.has(key)) return cache.get(key);
+  const cv = document.createElement('canvas'); cv.width = 520; cv.height = 340;
+  const c = cv.getContext('2d');
+  seed = 3 + key.length * 131;
+  fries(c, 110, 296, large ? 200 : 170);
+  (DRINK_ART[drink] || DRINK_ART.cola)(c, 420, 296, large ? 190 : 160);
+  burger(c, 262, 326, 270, kind);
+  cache.set(key, cv);
+  return cv;
+}
+function bagArt(c, cx, base, w) {
+  shadow(c, cx, base + 5, w * 0.6, w * 0.08);
+  const h = w * 1.2;
+  c.fillStyle = grad(c, cx - w / 2, 0, cx + w / 2, 0, [[0, '#a87e4e'], [0.5, '#caa06c'], [1, '#976d40']]);
+  c.beginPath(); c.moveTo(cx - w * 0.5, base); c.lineTo(cx - w * 0.46, base - h); c.lineTo(cx - w * 0.2, base - h - w * 0.05); c.lineTo(cx + w * 0.05, base - h + w * 0.02); c.lineTo(cx + w * 0.3, base - h - w * 0.04); c.lineTo(cx + w * 0.46, base - h); c.lineTo(cx + w * 0.5, base); c.closePath(); c.fill();
+  c.strokeStyle = 'rgba(90,55,25,.45)'; c.lineWidth = 3; c.beginPath(); c.moveTo(cx - w * 0.46, base - h * 0.86); c.lineTo(cx + w * 0.46, base - h * 0.86); c.stroke();
+  drawCrown(c, cx, base - h * 0.5, w * 0.2, '#c8291f');
+}
+function trayArt(c, cx, base, w) {
+  shadow(c, cx, base + 5, w * 0.62, w * 0.07);
+  c.fillStyle = grad(c, 0, base - w * 0.12, 0, base, [[0, '#b52a20'], [1, '#7c1610']]);
+  c.beginPath(); c.moveTo(cx - w * 0.56, base - w * 0.1); c.lineTo(cx + w * 0.56, base - w * 0.1); c.lineTo(cx + w * 0.5, base); c.lineTo(cx - w * 0.5, base); c.closePath(); c.fill();
+  c.drawImage(comboArt('single', 'cola'), cx - w * 0.5, base - w * 0.72, w, w * 0.654);
+}
+
+return {DRINK_ART, bagArt, burger, comboArt, drawCrown, foodArt, trayArt};
+})();
+const M_hw = (() => {
+const {FONT} = M_kit;
+
+const fnt = (s, w = 700) => `${w} ${s}px ${FONT}`;
+/** 영수증 그림 */
+function drawReceipt(c, W, H, lines, total, number) {
+  c.fillStyle = '#f7f4ec'; c.fillRect(0, 0, W, H);
+  c.fillStyle = '#2b2622'; c.textAlign = 'center';
+  c.font = fnt(40, 900); c.fillText('버거대왕', W / 2, 60);
+  c.font = fnt(18, 500); c.fillText('시장 입구점', W / 2, 90);
+  c.font = fnt(24, 700); c.fillText('주문번호', W / 2, 150);
+  c.font = fnt(110, 900); c.fillText(String(number), W / 2, 262);
+  c.fillRect(20, 296, W - 40, 2);
+  c.textAlign = 'left'; let y = 340;
+  for (const l of lines) { c.font = fnt(21, 600); c.fillText(l, 22, y, W - 44); y += 34; }
+  c.fillRect(20, y, W - 40, 2); y += 44;
+  c.font = fnt(26, 800); c.fillText('합계', 22, y); c.textAlign = 'right'; c.fillText(total, W - 22, y);
+  c.textAlign = 'center'; c.font = fnt(17, 500); y += 60;
+  c.fillText('신용승인 일시불', W / 2, y); y += 28; c.fillText('시장은행 **** 2841', W / 2, y); y += 56;
+  for (let i = 0; i < 44; i++) { c.fillRect(30 + i * 5.4, y, (i * 7) % 3 + 1, 70); }
+  y += 110; c.fillText('이용해 주셔서 감사합니다', W / 2, y);
+}
+
+return {drawReceipt};
+})();
+const M_screens = (() => {
+const {drawLogo, FONT} = M_kit;
+const {TABS, TAB_MEAN, MENU, COMBOS, SIDE_OPTS, DRINK_OPTS, byId, won} = M_data;
+const {foodArt, comboArt, burger, bagArt, trayArt, drawCrown} = M_art;
+// 키오스크 화면: 세로 1080x1920 캔버스에 화면 상태를 그리고 버튼을 등록한다.
+// 그릴 때 btn()으로 누를 곳을 등록하고, mean()으로 돋보기에만 보이는 뜻 풀이를 등록한다.
+
+
+
+
+
+const SW = 0.42, SH = 0.7467; // 32인치급 세로 화면(미터)
+const PW = 1080, PH = 1920;
+const BASE_BLUR = 4.6;
+
+const C = { red: '#c8291f', deep: '#8f170f', cream: '#fff6e6', cream2: '#f4e6cb', line: '#e4d3b4', brown: '#3a2416', mid: '#6b4a30', soft: '#8d7a64', gold: '#f0c63a', blue: '#1d6fd6', white: '#fffdf8' };
+const fnt = (s, w = 700) => `${w} ${s}px ${FONT}`;
+const LEGAL = '본 이미지는 연출된 것으로 실제와 다를 수 있습니다. 일부 매장 제외. 알레르기 유발 성분과 원산지 정보는 매장 내 게시물을 참고해 주십시오. 쇠고기(호주산, 뉴질랜드산) 닭고기(국내산, 브라질산) 쌀(국내산) 멤버십 약관 제12조에 따라 적립은 익영업일에 반영됩니다. 제휴 할인 중복 불가.';
+
+function T(c, s, x, y, size, o = {}) {
+  c.font = fnt(size, o.w ?? 700); c.fillStyle = o.col ?? C.brown; c.textAlign = o.al ?? 'left'; c.textBaseline = o.base ?? 'alphabetic';
+  if (o.max) { let z = size; while (c.measureText(s).width > o.max && z > 12) { z -= 1; c.font = fnt(z, o.w ?? 700); } }
+  c.fillText(s, x, y);
+}
+function wrap(c, s, x, y, w, lh, size, o = {}) {
+  c.font = fnt(size, o.w ?? 500); c.fillStyle = o.col ?? C.soft; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  let line = '';
+  for (const ch of s) {
+    if (c.measureText(line + ch).width > w) { c.fillText(line, x, y); y += lh; line = ch === ' ' ? '' : ch; } else line += ch;
+  }
+  c.fillText(line, x, y);
+  return y;
+}
+function box(c, x, y, w, h, r, fill, stroke, lw = 2) {
+  c.beginPath(); c.roundRect(x, y, w, h, r);
+  if (fill) { c.fillStyle = fill; c.fill(); }
+  if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw; c.stroke(); }
+}
+function card(c, x, y, w, h, r = 10, fill = C.white) {
+  c.save(); c.shadowColor = 'rgba(70,40,15,.18)'; c.shadowBlur = 14; c.shadowOffsetY = 5; box(c, x, y, w, h, r, fill); c.restore();
+}
+function lin(c, x0, y0, x1, y1, a, b) { const g = c.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, a); g.addColorStop(1, b); return g; }
+function fitArt(c, img, x, y, w, h) {
+  const s = Math.min(w / img.width, h / img.height), dw = img.width * s, dh = img.height * s;
+  c.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+}
+function rays(c, cx, cy, col, n = 22, R = 1500) {
+  c.save(); c.fillStyle = col;
+  for (let i = 0; i < n; i++) { const a = i / n * 6.2832, b = a + 3.1416 / n; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); c.lineTo(cx + Math.cos(b) * R, cy + Math.sin(b) * R); c.closePath(); c.fill(); }
+  c.restore();
+}
+const big = new Map();
+function bigBurger(kind) {
+  if (big.has(kind)) return big.get(kind);
+  const cv = document.createElement('canvas'); cv.width = 1000; cv.height = 860;
+  burger(cv.getContext('2d'), 500, 830, 840, kind);
+  big.set(kind, cv);
+  return cv;
+}
+// QR처럼 보이는 네모(가짜)
+function fauxQR(c, x, y, s) {
+  c.fillStyle = '#fff'; c.fillRect(x, y, s, s);
+  const n = 25, u = (s - 16) / n; let v = 12345;
+  c.fillStyle = '#2a1a10';
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { v = (v * 1103515245 + 12345) & 0x7fffffff; if ((v >> 16) & 1) c.fillRect(x + 8 + i * u, y + 8 + j * u, u + 0.5, u + 0.5); }
+  [[0, 0], [n - 7, 0], [0, n - 7]].forEach(([a, b]) => {
+    c.fillStyle = '#fff'; c.fillRect(x + 8 + a * u - u, y + 8 + b * u - u, u * 9, u * 9);
+    c.fillStyle = '#2a1a10'; c.fillRect(x + 8 + a * u, y + 8 + b * u, u * 7, u * 7);
+    c.fillStyle = '#fff'; c.fillRect(x + 8 + (a + 1) * u, y + 8 + (b + 1) * u, u * 5, u * 5);
+    c.fillStyle = '#2a1a10'; c.fillRect(x + 8 + (a + 2) * u, y + 8 + (b + 2) * u, u * 3, u * 3);
+  });
+}
+
+function createScreen(ctx, K, A) {
+  const scratch = document.createElement('canvas'); scratch.width = PW; scratch.height = PH;
+  const sc = scratch.getContext('2d');
+  let buttons = [], rv = [];
+  const btn = (id, x, y, w, h, onPress) => { buttons.push({ id, x, y, w, h, onPress }); };
+  /** 돋보기에만 보이는 뜻 풀이 */
+  const mean = (x, y, s, o = {}) => rv.push(Object.assign((c) => {
+    const size = o.size ?? 32, al = o.al ?? 'left', t = `(${s})`;
+    c.font = fnt(size, 800);
+    const w = c.measureText(t).width + 22, h = size + 16, bx = al === 'center' ? x - w / 2 : al === 'right' ? x - w : x;
+    box(c, bx, y - size - 6, w, h, 4, o.bg ?? '#fff3b4', '#3a2416', 2);
+    T(c, t, bx + 11, y, size, { w: 800, col: '#2a1a10' });
+  }, { y }));
+
+  function topbar(c, sub = '') {
+    c.fillStyle = lin(c, 0, 0, 0, 132, '#d3322a', '#b5211a'); c.fillRect(0, 0, PW, 132);
+    c.fillStyle = 'rgba(0,0,0,.12)'; c.fillRect(0, 128, PW, 4);
+    drawLogo(c, 82, 92, 0.72, { text: false });
+    T(c, '버거대왕', 150, 76, 46, { w: 900, col: C.white });
+    T(c, 'CROWN SELF ORDER', 152, 106, 19, { w: 700, col: '#ffd9c8' });
+    if (sub) { T(c, sub, 410, 84, 26, { w: 800, col: '#fff0da' }); }
+    ['KO', 'EN', '中', '日'].forEach((l, i) => {
+      box(c, 640 + i * 64, 44, 56, 44, 4, i ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.28)', 'rgba(255,255,255,.4)', 1.5);
+      T(c, l, 668 + i * 64, 75, 22, { al: 'center', col: '#fff' });
+      btn(`lang${i}`, 640 + i * 64, 44, 56, 44, () => A.dummy());
+    });
+  }
+  function stepbar(c, y, n, label) {
+    c.fillStyle = C.cream2; c.fillRect(0, y, PW, 58);
+    ['ORDER TYPE', 'MENU', 'CUSTOMIZE', 'CHECK', 'PAYMENT'].forEach((s, i) => {
+      const x = 28 + i * 208, on = i === n;
+      T(c, `${i + 1} ${s}`, x, y + 38, 22, { w: on ? 800 : 600, col: on ? C.red : '#b3a288' });
+    });
+    if (label) mean(1050, y + 40, label, { size: 28, al: 'right' });
+  }
+  function legal(c, y, h = 2) {
+    let yy = y;
+    c.save(); c.beginPath(); c.rect(0, y - 20, PW, 20 * h + 8); c.clip();
+    wrap(c, LEGAL + LEGAL, 28, yy, PW - 56, 20, 16, { col: '#a5947c', w: 500 });
+    c.restore();
+  }
+  function backBtn(c, x, y, id = 'back', w = 210, h = 92) {
+    box(c, x, y, w, h, 6, C.white, '#bda98b', 3);
+    T(c, 'BACK', x + w / 2, y + 60, 36, { al: 'center', w: 800, col: C.mid });
+    mean(x + w / 2, y - 8, '이전', { size: 28, al: 'center' });
+    btn(id, x, y, w, h, () => A.back());
+  }
+  function nextBtn(c, x, y, w, label, id, fn, disabled = false, mn = null) {
+    box(c, x, y, w, 92, 6, disabled ? '#d9cbb3' : lin(c, 0, y, 0, y + 92, '#d6332a', '#ae1f18'));
+    T(c, label, x + w / 2, y + 62, 40, { al: 'center', w: 900, col: disabled ? '#f6efe0' : C.white });
+    if (mn) mean(x + w / 2, y - 8, mn, { size: 28, al: 'center' });
+    btn(id, x, y, w, 92, fn);
+  }
+
+  // 화면들
+  const S = {
+    idle(c) {
+      const sl = K.slide % 3;
+      if (sl === 0) {
+        c.fillStyle = (() => { const g = c.createRadialGradient(540, 860, 80, 540, 860, 1200); g.addColorStop(0, '#e2483a'); g.addColorStop(0.6, '#b3201a'); g.addColorStop(1, '#6e0f0a'); return g; })(); c.fillRect(0, 0, PW, PH);
+        rays(c, 540, 870, 'rgba(255,220,170,.055)');
+        drawLogo(c, 540, 230, 1.5, { text: false });
+        T(c, 'K-BBQ SMOKY', 540, 420, 112, { al: 'center', w: 900, col: C.cream, max: 980 });
+        T(c, 'FESTA', 540, 540, 128, { al: 'center', w: 900, col: C.gold });
+        T(c, '한정 수량 11.30까지', 540, 600, 34, { al: 'center', w: 700, col: '#ffdcc4' });
+        c.drawImage(bigBurger('bulgogi2'), 40, 640, 1000, 860);
+      } else if (sl === 1) {
+        c.fillStyle = lin(c, 0, 0, 0, PH, '#fff3d9', '#f2d9a8'); c.fillRect(0, 0, PW, PH);
+        rays(c, 540, 980, 'rgba(200,41,31,.05)');
+        drawLogo(c, 540, 220, 1.3, { text: false });
+        T(c, 'CROWN', 540, 430, 150, { al: 'center', w: 900, col: C.red });
+        T(c, 'TRIPLE STACK', 540, 550, 104, { al: 'center', w: 900, col: C.brown, max: 980 });
+        c.drawImage(bigBurger('triple'), 40, 620, 1000, 860);
+      } else {
+        c.fillStyle = lin(c, 0, 0, 1080, 1920, '#3f2413', '#8f170f'); c.fillRect(0, 0, PW, PH);
+        drawLogo(c, 540, 220, 1.3, { text: false });
+        T(c, '왕관 멤버스', 540, 440, 118, { al: 'center', w: 900, col: C.cream });
+        T(c, '앱 다운로드 시 3천원 쿠폰', 540, 530, 54, { al: 'center', w: 700, col: C.gold });
+        fauxQR(c, 300, 620, 480);
+        T(c, 'SCAN', 540, 1200, 100, { al: 'center', w: 900, col: C.cream });
+        fitArt(c, comboArt('double', 'cola'), 140, 1190, 800, 340);
+      }
+      c.fillStyle = C.cream; c.fillRect(0, 1530, PW, 390);
+      c.fillStyle = C.red; c.fillRect(0, 1530, PW, 12);
+      T(c, 'TOUCH TO ORDER', 540, 1690, 112, { al: 'center', w: 900, col: C.red, max: 1000 });
+      mean(540, 1760, '화면을 손으로 누르세요', { size: 46, al: 'center' });
+      T(c, '터치하여 주문', 540, 1752, 34, { al: 'center', w: 600, col: C.soft });
+      T(c, '카드 전용 CARD ONLY  현금 불가 NO CASH', 540, 1812, 28, { al: 'center', w: 700, col: C.mid });
+      legal(c, 1862);
+      btn('start', 0, 0, PW, PH, () => A.start());
+    },
+
+    place(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c); stepbar(c, 132, 0);
+      T(c, 'Where will you enjoy', 540, 310, 66, { al: 'center', w: 900 });
+      T(c, 'your Crown Moment?', 540, 392, 66, { al: 'center', w: 900, col: C.red });
+      mean(540, 462, '어디서 드세요?', { size: 44, al: 'center' });
+      const cards = [['dine', 'DINE-IN', 'Eat-in Experience', '매장에서 먹고 가기', 56], ['takeout', 'TAKE-OUT', 'Grab and Go', '포장해서 가져가기', 556]];
+      for (const [id, name, sub, m, x] of cards) {
+        card(c, x, 480, 468, 720, 12);
+        box(c, x, 480, 468, 720, 12, null, id === 'dine' ? C.red : C.line, id === 'dine' ? 5 : 3);
+        if (id === 'dine') trayArt(c, x + 234, 980, 400); else bagArt(c, x + 234, 980, 300);
+        T(c, name, x + 234, 1070, 64, { al: 'center', w: 900, col: C.red, max: 430 });
+        T(c, sub, x + 234, 1124, 30, { al: 'center', w: 600, col: C.soft });
+        mean(x + 234, 1178, m, { size: 36, al: 'center' });
+        btn(id, x, 480, 468, 720, () => A.place(id));
+      }
+      card(c, 56, 1232, 968, 180, 10, '#fff0d8');
+      fitArt(c, foodArt('cone'), 70, 1244, 180, 156);
+      T(c, '오늘의 사이드 쿠폰', 270, 1296, 40, { w: 800, col: C.red });
+      T(c, '멤버스 전용 아이스크림 콘 100원 (세트 주문 시 1회)', 270, 1346, 28, { w: 600, col: C.mid, max: 730 });
+      T(c, 'Valid at participating locations only', 270, 1384, 20, { w: 500, col: C.soft });
+      btn('promo', 56, 1232, 968, 180, () => A.adTap());
+      box(c, 56, 1436, 470, 96, 6, C.white, '#bda98b', 3);
+      T(c, 'EASY MODE', 291, 1498, 38, { al: 'center', w: 800, col: C.mid });
+      mean(291, 1428, '쉬운 화면', { size: 28, al: 'center' });
+      btn('easy', 56, 1436, 470, 96, () => A.easy());
+      box(c, 554, 1436, 470, 96, 6, C.white, '#bda98b', 3);
+      T(c, 'ACCESSIBILITY', 789, 1498, 38, { al: 'center', w: 800, col: C.mid });
+      btn('access', 554, 1436, 470, 96, () => A.easy());
+      fitArt(c, foodArt('fries'), 40, 1570, 210, 170);
+      T(c, 'APP ORDER', 290, 1640, 42, { w: 900, col: C.brown });
+      T(c, '앱으로 미리 주문하면 줄 서지 않아도 됩니다', 290, 1690, 30, { w: 600, col: C.mid, max: 560 });
+      fauxQR(c, 860, 1556, 170);
+      legal(c, 1800, 5);
+    },
+
+    member(c) {
+      S.place(c);
+      buttons = []; rv = [];
+      c.fillStyle = 'rgba(30,16,8,.62)'; c.fillRect(0, 0, PW, PH);
+      const x = 80, y = 250, w = 920, h = 1370;
+      card(c, x, y, w, h, 12);
+      box(c, x, y, w, 150, [12, 12, 0, 0], C.red);
+      drawCrown(c, x + 80, y + 80, 36);
+      T(c, 'K-CROWN MEMBERS', x + 140, y + 94, 54, { w: 900, col: C.white, max: 720 });
+      T(c, '멤버십 적립을 위해 휴대폰 번호를 입력해 주세요', x + 50, y + 214, 34, { w: 700, col: C.brown, max: 820 });
+      mean(x + 50, y + 262, '가입 안 했으면 넘어가도 됨', { size: 32 });
+      T(c, '적립 포인트 3배 이벤트 진행 중', x + 50, y + 262, 26, { w: 600, col: C.red });
+      box(c, x + 50, y + 290, w - 100, 118, 6, '#f7efe0', C.line, 3);
+      const d = (K.phone + '________').slice(0, 8);
+      T(c, `010 - ${d.slice(0, 4)} - ${d.slice(4)}`, x + w / 2, y + 372, 58, { al: 'center', w: 800, col: K.phone ? C.brown : '#c3b49b' });
+      if (K.memberErr) { T(c, '미가입 번호입니다', x + w / 2, y + 452, 38, { al: 'center', w: 900, col: C.red }); mean(x + w / 2, y + 494, '번호가 안 되니 다른 길을 찾을 것', { size: 28, al: 'center' }); }
+      const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'DEL', '0', 'CLR'];
+      keys.forEach((k, i) => {
+        const bx = x + 90 + (i % 3) * 252, by = y + 510 + ((i / 3) | 0) * 142;
+        box(c, bx, by, 236, 128, 8, '#f3e9d6', '#d6c4a4', 2.5);
+        T(c, k, bx + 118, by + 86, k.length > 1 ? 40 : 66, { al: 'center', w: 800 });
+        btn(`key${k}`, bx, by, 236, 128, () => A.key(k));
+      });
+      box(c, x + 90, y + 1092, 740, 104, 6, lin(c, 0, y + 1092, 0, y + 1196, '#d6332a', '#ae1f18'));
+      T(c, 'CONFIRM', x + w / 2, y + 1166, 52, { al: 'center', w: 900, col: C.white });
+      btn('confirm', x + 90, y + 1092, 740, 104, () => A.confirm());
+      // 닫기: 아주 작은 회색 글자. 여러 번 틀리면 조금 진해진다.
+      const sx = x + w - 140, sy = y + h - 96, sc2 = K.memberErrs >= 3 ? '#a59782' : '#f1ece2';
+      T(c, 'SKIP', sx + 40, sy + 40, 22, { al: 'center', w: 500, col: sc2 });
+      rv.push((cc) => { T(cc, 'SKIP', sx + 40, sy + 40, 24, { al: 'center', w: 800, col: '#3a2416' }); });
+      mean(sx - 20, sy + 44, '건너뛰기', { size: 28, al: 'right' });
+      btn('skip', sx - 10, sy - 6, 110, 70, () => A.skip());
+      T(c, '개인정보 수집 이용 동의 시 적립됩니다', x + 50, y + h - 56, 20, { w: 500, col: '#c9bda8' });
+    },
+
+    menu(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, K.place === 'dine' ? 'DINE-IN' : 'TAKE-OUT');
+      // 큰 광고
+      c.fillStyle = lin(c, 0, 132, 1080, 340, '#7f150e', '#d1362b'); c.fillRect(0, 132, PW, 210);
+      rays(c, 860, 240, 'rgba(255,220,170,.06)', 16, 700);
+      T(c, 'K-BBQ SMOKY FESTA', 36, 214, 62, { w: 900, col: C.cream, max: 660 });
+      T(c, '세트 주문 시 라지 업그레이드 800원', 36, 266, 32, { w: 700, col: C.gold, max: 640 });
+      T(c, '11.30까지 일부 매장 한정', 36, 310, 22, { w: 500, col: '#ffd5bf' });
+      fitArt(c, comboArt('bulgogi2', 'cola'), 700, 136, 370, 204);
+      btn('hero', 0, 132, PW, 210, () => A.adTap());
+      // 탭
+      c.fillStyle = C.white; c.fillRect(0, 342, PW, 104);
+      TABS.forEach((t, i) => {
+        const x = i * 180, on = K.tab === t;
+        if (on) { box(c, x + 3, 346, 174, 100, [8, 8, 0, 0], C.red); }
+        T(c, t, x + 90, 408, 28, { al: 'center', w: 800, col: on ? C.white : C.mid, max: 164 });
+        mean(x + 90, 440, TAB_MEAN[t], { size: 24, al: 'center' });
+        btn(`tab_${t}`, x, 342, 180, 104, () => A.tab(t));
+      });
+      c.fillStyle = C.red; c.fillRect(0, 442, PW, 5);
+      // 정렬 줄
+      c.fillStyle = C.cream2; c.fillRect(0, 447, PW, 56);
+      ['ALL', 'NEW', 'BEST', 'LOW CAL', 'SPICY'].forEach((s, i) => {
+        T(c, s, 34 + i * 138, 484, 24, { w: i ? 600 : 800, col: i ? C.soft : C.red });
+        btn(`filter${i}`, 20 + i * 138, 447, 130, 56, () => A.dummy());
+      });
+      T(c, `${MENU[K.tab].length} ITEMS`, 1050, 484, 22, { al: 'right', w: 600, col: C.soft });
+      // 메뉴 그리드 3열 3행
+      const list = MENU[K.tab], gx = 18, gy = 518, cw = 340, ch = 366, gap = 12;
+      list.forEach((it, i) => {
+        const x = gx + (i % 3) * (cw + gap), y = gy + ((i / 3) | 0) * (ch + gap);
+        card(c, x, y, cw, ch, 8);
+        c.fillStyle = '#fbf0dc'; c.beginPath(); c.roundRect(x, y, cw, 196, [8, 8, 0, 0]); c.fill();
+        fitArt(c, foodArt(it.art), x + 22, y + 6, cw - 44, 186);
+        if (it.tag) { box(c, x, y + 10, 84, 36, [0, 4, 4, 0], it.tag === 'NEW' ? C.brown : C.red); T(c, it.tag, x + 42, y + 37, 22, { al: 'center', w: 900, col: C.white }); }
+        const nm = it.name, cut = nm.length > 11 ? nm.lastIndexOf(' ', 12) : -1;
+        if (cut > 0) { T(c, nm.slice(0, cut), x + 16, y + 238, 30, { w: 800, max: cw - 28 }); T(c, nm.slice(cut + 1), x + 16, y + 274, 30, { w: 800, max: cw - 28 }); } else T(c, nm, x + 16, y + 252, 30, { w: 800, max: cw - 28 });
+        if (it.desc) T(c, it.desc, x + 16, y + 304, 19, { w: 500, col: C.soft, max: cw - 30 });
+        T(c, won(it.price), x + 16, y + 348, 34, { w: 900, col: C.red });
+        T(c, `${it.kcal}kcal`, x + cw - 14, y + 346, 20, { al: 'right', w: 500, col: C.soft });
+        mean(x + cw / 2, y + 186, it.mean, { size: 34, al: 'center' });
+        btn(`item_${it.id}`, x, y, cw, ch, () => A.item(it));
+      });
+      footer(c);
+      if (K.ad) adBanner(c);
+    },
+
+    option(c) {
+      const it = byId(K.draft.item);
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, K.place === 'dine' ? 'DINE-IN' : 'TAKE-OUT'); stepbar(c, 132, 2);
+      c.fillStyle = '#fbf0dc'; c.fillRect(0, 190, PW, 350);
+      fitArt(c, foodArt(it.art), 40, 206, 420, 320);
+      T(c, it.name, 490, 300, 50, { w: 900, max: 560 });
+      T(c, it.desc, 490, 350, 30, { w: 500, col: C.soft });
+      T(c, `${won(it.price)}  ${it.kcal}kcal`, 490, 410, 40, { w: 800, col: C.red });
+      mean(490, 480, it.mean, { size: 38 });
+      T(c, 'BUILD YOUR MEAL', 40, 620, 58, { w: 900 });
+      mean(1040, 616, '어떻게 드릴까요?', { size: 34, al: 'right' });
+      COMBOS.forEach((o, i) => {
+        const y = 650 + i * 296;
+        card(c, 40, y, 1000, 276, 10);
+        if (o.id === 'combo') box(c, 40, y, 1000, 276, 10, null, C.red, 5);
+        if (o.id === 'single') fitArt(c, foodArt(it.art), 62, y + 18, 340, 240);
+        else fitArt(c, comboArt(it.art, 'cola', o.id === 'large'), 56, y + 14, 370, 248);
+        T(c, o.name, 450, y + 106, 62, { w: 900, col: C.red, max: 430 });
+        T(c, o.sub, 450, y + 156, 28, { w: 500, col: C.soft });
+        T(c, won(it.price + o.add), 450, y + 226, 46, { w: 900 });
+        if (o.add) T(c, `+${won(o.add)}`, 1012, y + 226, 30, { al: 'right', w: 700, col: C.soft });
+        mean(1016, y + 62, o.mean, { size: 42, al: 'right' });
+        btn(`opt_${o.id}`, 40, y, 1000, 276, () => A.combo(o.id));
+      });
+      backBtn(c, 40, 1570);
+      T(c, 'COMBO 주문 시 기본 사이드와 음료가 포함됩니다', 280, 1626, 26, { w: 600, col: C.soft, max: 760 });
+      legal(c, 1720, 8);
+    },
+
+    side(c) { optGrid(c, 'CHOOSE YOUR SIDE', '곁들일 것 고르기', SIDE_OPTS, K.draft.side, 'side', (id) => A.side(id)); },
+    drink(c) { optGrid(c, 'CHOOSE YOUR BEVERAGE', '마실 것 고르기', DRINK_OPTS, K.draft.drink, 'drink', (id) => A.drink(id)); },
+
+    upsell(c) {
+      S.drink(c);
+      buttons = []; rv = [];
+      c.fillStyle = 'rgba(30,16,8,.66)'; c.fillRect(0, 0, PW, PH);
+      const x = 70, y = 320, w = 940, h = 1200;
+      card(c, x, y, w, h, 12);
+      c.fillStyle = C.gold; c.beginPath(); c.roundRect(x, y, w, 130, [12, 12, 0, 0]); c.fill();
+      T(c, 'WAIT! 잠깐만요', x + w / 2, y + 88, 62, { al: 'center', w: 900, col: C.brown });
+      fitArt(c, comboArt(byId(K.draft.item).art, K.draft.drink === 'cider' ? 'lime' : 'cola', true), x + 120, y + 150, w - 240, 400);
+      T(c, '사이즈 UP', x + w / 2, y + 640, 96, { al: 'center', w: 900, col: C.red });
+      T(c, '감자와 음료를 라지로 단 +800원', x + w / 2, y + 704, 40, { al: 'center', w: 700 });
+      mean(x + w / 2, y + 760, '더 비싼 걸로 바꾸는 것', { size: 34, al: 'center' });
+      box(c, x + 60, y + 790, w - 120, 210, 10, lin(c, 0, y + 790, 0, y + 1000, '#2c86ee', '#1259b8'));
+      T(c, 'YES! 업그레이드', x + w / 2, y + 884, 84, { al: 'center', w: 900, col: '#fff' });
+      T(c, '+800원 추가하기', x + w / 2, y + 954, 44, { al: 'center', w: 700, col: '#dcebff' });
+      btn('up_yes', x + 60, y + 790, w - 120, 210, () => A.upsell(true));
+      T(c, '아니요, 그대로 주문', x + w / 2, y + 1090, 24, { al: 'center', w: 500, col: '#cdc3b3' });
+      rv.push((cc) => T(cc, '아니요, 그대로 주문', x + w / 2, y + 1090, 26, { al: 'center', w: 800, col: C.brown }));
+      mean(x + w / 2, y + 1134, '거절', { size: 28, al: 'center' });
+      btn('up_no', x + 230, y + 1050, w - 460, 70, () => A.upsell(false));
+    },
+
+    cart(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, K.place === 'dine' ? 'DINE-IN' : 'TAKE-OUT'); stepbar(c, 132, 3);
+      T(c, 'MY ORDER', 40, 268, 60, { w: 900 });
+      mean(380, 266, '주문 내역', { size: 34 });
+      K.cart.slice(0, 4).forEach((l, i) => {
+        const it = byId(l.item), y = 296 + i * 216;
+        card(c, 40, y, 1000, 202, 8);
+        fitArt(c, l.combo === 'single' || !l.combo ? foodArt(it.art) : comboArt(it.art, l.drink === 'cider' ? 'lime' : 'cola', l.combo === 'large'), 52, y + 12, 250, 178);
+        T(c, it.name, 320, y + 60, 38, { w: 800, max: 510 });
+        const opts = l.combo && l.combo !== 'single'
+          ? `${COMBOS.find((o) => o.id === l.combo).name} / ${byId(l.side)?.name} / ${byId(l.drink)?.name}${l.sizeUp ? ' / SIZE UP' : ''}`
+          : (l.combo === 'single' ? 'SINGLE' : '');
+        T(c, opts, 320, y + 106, 25, { w: 600, col: C.soft, max: 680 });
+        T(c, won(l.price), 320, y + 166, 42, { w: 900, col: C.red });
+        mean(540, y + 166, `${it.mean}${l.drink ? `, ${byId(l.drink).mean}` : ''}`, { size: 28 });
+        box(c, 880, y + 112, 140, 70, 6, C.white, '#bda98b', 3);
+        T(c, '삭제', 950, y + 160, 34, { al: 'center', w: 800, col: C.mid });
+        btn(`del_${i}`, 880, y + 112, 140, 70, () => A.del(i));
+      });
+      if (!K.cart.length) T(c, 'EMPTY', 540, 520, 60, { al: 'center', w: 800, col: '#c8b79c' });
+      if (K.cart.length <= 2) { // 빈자리는 광고가 차지한다
+        const y3 = 296 + K.cart.length * 216 + 10, h3 = 1140 - y3;
+        c.fillStyle = lin(c, 40, y3, 1040, y3 + h3, '#8f170f', '#d1362b'); c.beginPath(); c.roundRect(40, y3, 1000, h3, 10); c.fill();
+        rays(c, 800, y3 + h3 / 2, 'rgba(255,220,170,.07)', 16, 800);
+        fitArt(c, comboArt('triple', 'orange', true), 500, y3 + 10, 530, h3 - 20);
+        T(c, '딱 800원 더 내고', 80, y3 + h3 / 2 - 40, 44, { w: 800, col: C.cream });
+        T(c, '라지로 바꿔 보세요', 80, y3 + h3 / 2 + 30, 50, { w: 900, col: C.gold, max: 440 });
+        T(c, 'TODAY ONLY', 80, y3 + h3 / 2 + 80, 28, { w: 700, col: '#ffd5bf' });
+        btn('promo', 40, y3, 1000, h3, () => A.adTap());
+      }
+      // 같이 사세요
+      const y2 = 1176;
+      T(c, 'YOU MAY ALSO LIKE', 40, y2 + 12, 34, { w: 900, col: C.mid });
+      ['pie', 'nugget', 'cone', 'onion'].forEach((a, i) => {
+        const x = 40 + i * 254; card(c, x, y2 + 30, 238, 170, 8);
+        fitArt(c, foodArt(a), x + 20, y2 + 36, 198, 150);
+        btn(`rec${i}`, x, y2 + 30, 238, 170, () => A.adTap());
+      });
+      c.fillStyle = C.cream2; c.fillRect(0, 1400, PW, 150);
+      T(c, 'TOTAL', 40, 1492, 52, { w: 900 });
+      T(c, won(K.total()), 1040, 1498, 74, { al: 'right', w: 900, col: C.red });
+      backBtn(c, 40, 1580, 'add_more', 310, 110);
+      c.fillStyle = C.white; c.fillRect(44, 1586, 300, 96);
+      T(c, '+ ADD MORE', 195, 1650, 38, { al: 'center', w: 800, col: C.mid });
+      buttons[buttons.length - 1].onPress = () => A.addMore();
+      rv.pop(); mean(195, 1574, '메뉴 더 고르기', { size: 28, al: 'center' });
+      box(c, 370, 1580, 670, 110, 6, K.cart.length ? lin(c, 0, 1580, 0, 1690, '#d6332a', '#ae1f18') : '#d9cbb3');
+      T(c, '주문하기', 705, 1656, 56, { al: 'center', w: 900, col: C.white });
+      btn('checkout', 370, 1580, 670, 110, () => A.checkout());
+      homeBtn(c, 40, 1716);
+      legal(c, 1846, 3);
+    },
+
+    pay(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, K.place === 'dine' ? 'DINE-IN' : 'TAKE-OUT'); stepbar(c, 132, 4);
+      T(c, 'PAYMENT METHOD', 40, 286, 62, { w: 900 });
+      mean(1040, 282, '돈 내는 방법', { size: 34, al: 'right' });
+      T(c, `총 결제 금액 ${won(K.total())}`, 40, 346, 40, { w: 800, col: C.red });
+      const list = [
+        ['qr', 'QR PAY', 'K-Pay, 왕관페이, 간편결제', '휴대폰 앱', C.red, '#fff'],
+        ['coupon', '쿠폰', 'E-Voucher, 모바일 교환권', '있어야 씀', C.brown, '#fff'],
+        ['point', '제휴 포인트', '통신사 멤버십, 왕관 포인트', '있어야 씀', '#b58b1e', '#fff'],
+        ['card', '카드', 'IC CREDIT / DEBIT', '신용카드', C.white, C.mid],
+      ];
+      list.forEach(([id, name, sub, m, bg, fg], i) => {
+        const x = 40 + (i % 2) * 510, y = 390 + ((i / 2) | 0) * 470, w = 490, h = 450;
+        const small = id === 'card';
+        card(c, x, y, w, h, 10, bg);
+        if (small) box(c, x, y, w, h, 10, null, C.line, 3);
+        if (id === 'qr') fauxQR(c, x + 150, y + 40, 190);
+        if (id === 'coupon') { box(c, x + 110, y + 70, 270, 140, 8, C.gold); T(c, '%', x + 245, y + 174, 90, { al: 'center', w: 900, col: C.brown }); }
+        if (id === 'point') { c.fillStyle = '#fff2c2'; c.beginPath(); c.arc(x + 245, y + 136, 92, 0, 7); c.fill(); T(c, 'P', x + 245, y + 174, 110, { al: 'center', w: 900, col: '#b58b1e' }); }
+        if (id === 'card') { box(c, x + 150, y + 90, 190, 120, 8, '#cfc3ad'); box(c, x + 170, y + 126, 44, 34, 4, '#a89a7c'); }
+        T(c, name, x + w / 2, y + 310, small ? 44 : 64, { al: 'center', w: 900, col: fg, max: w - 40 });
+        T(c, sub, x + w / 2, y + 366, small ? 22 : 26, { al: 'center', w: 500, col: small ? C.soft : 'rgba(255,255,255,.8)', max: w - 40 });
+        mean(x + w / 2, y + 424, m, { size: 32, al: 'center' });
+        btn(`pay_${id}`, x, y, w, h, () => A.pay(id));
+      });
+      card(c, 40, 1340, 1000, 170, 10, '#fff0d8');
+      T(c, '왕관페이 첫 결제 30% 즉시 할인', 70, 1412, 42, { w: 900, col: C.red, max: 900 });
+      T(c, '앱 설치 후 본인 인증, 계좌 연결, 비밀번호 6자리 등록 필요', 70, 1464, 26, { w: 600, col: C.mid, max: 930 });
+      btn('promo', 40, 1340, 1000, 170, () => A.adTap());
+      backBtn(c, 40, 1560);
+      homeBtn(c, 270, 1560);
+      legal(c, 1720, 8);
+    },
+
+    card(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, 'PAYMENT'); stepbar(c, 132, 4);
+      T(c, 'INSERT IC CARD', 540, 330, 88, { al: 'center', w: 900, col: C.red });
+      T(c, '카드를 투입구에 삽입해 주세요', 540, 410, 46, { al: 'center', w: 800 });
+      mean(540, 476, '화면 아래 기계 어딘가에 카드 구멍', { size: 36, al: 'center' });
+      // 안내 그림: 일부러 애매한 단말기 그림
+      card(c, 190, 520, 700, 640, 12);
+      box(c, 310, 560, 460, 330, 10, '#d9d2c3');
+      box(c, 360, 600, 360, 40, 6, '#47382a'); box(c, 360, 690, 360, 40, 6, '#47382a'); box(c, 360, 780, 360, 40, 6, '#47382a');
+      box(c, 412, 830, 256, 170, 10, '#566e62', '#2f3e36', 4); box(c, 440, 880, 56, 44, 4, '#d8b96a');
+      T(c, 'IC', 610, 926, 48, { al: 'center', w: 900, col: '#e8e2d2' });
+      T(c, '칩이 위로, 앞쪽을 향하게', 540, 1060, 34, { al: 'center', w: 700, col: C.mid });
+      T(c, 'CHIP SIDE UP, FACE FORWARD', 540, 1106, 24, { al: 'center', w: 500, col: C.soft });
+      if (K.cardMsg) {
+        box(c, 90, 1200, 900, 150, 8, '#fde8e0', C.red, 4);
+        T(c, K.cardMsg, 540, 1294, 56, { al: 'center', w: 900, col: C.red, max: 840 });
+      }
+      T(c, `결제 금액 ${won(K.total())}`, 540, 1440, 54, { al: 'center', w: 900 });
+      backBtn(c, 40, 1560);
+      legal(c, 1720, 8);
+    },
+
+    paying(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, 'PAYMENT');
+      T(c, '승인 요청 중', 540, 520, 84, { al: 'center', w: 900 });
+      T(c, 'PROCESSING', 540, 590, 40, { al: 'center', w: 600, col: C.soft });
+      const p = K.payProgress ?? 0;
+      box(c, 140, 720, 800, 44, 6, C.cream2);
+      box(c, 140, 720, Math.max(20, 800 * p), 44, 6, C.red);
+      T(c, '카드를 빼지 마세요', 540, 980, 96, { al: 'center', w: 900, col: C.red, max: 980 });
+      T(c, 'DO NOT REMOVE CARD', 540, 1060, 42, { al: 'center', w: 700, col: C.mid });
+      mean(540, 1130, '기다리세요', { size: 40, al: 'center' });
+      card(c, 90, 1220, 900, 460, 10, '#fff0d8');
+      T(c, '기다리는 동안', 140, 1320, 44, { w: 800, col: C.mid });
+      T(c, '앱을 설치해 보세요', 140, 1392, 54, { w: 900, col: C.red, max: 500 });
+      T(c, '다음 주문부터 줄 서지 않아도 됩니다', 140, 1450, 26, { w: 600, col: C.mid, max: 500 });
+      fitArt(c, foodArt('fries'), 130, 1466, 260, 200);
+      fauxQR(c, 660, 1290, 280);
+      legal(c, 1800, 5);
+    },
+
+    cardout(c) {
+      c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+      topbar(c, 'PAYMENT');
+      T(c, '승인 완료', 540, 620, 120, { al: 'center', w: 900, col: C.red });
+      T(c, '카드를 제거해 주세요', 540, 860, 76, { al: 'center', w: 900 });
+      T(c, 'PLEASE REMOVE CARD', 540, 930, 40, { al: 'center', w: 700, col: C.mid });
+      legal(c, 1800, 5);
+    },
+
+    done(c) {
+      const g = c.createRadialGradient(540, 760, 60, 540, 760, 1300); g.addColorStop(0, '#d9382e'); g.addColorStop(1, '#6e0f0a');
+      c.fillStyle = g; c.fillRect(0, 0, PW, PH);
+      rays(c, 540, 760, 'rgba(255,220,170,.05)');
+      drawLogo(c, 540, 280, 1.5, { text: false });
+      T(c, 'ORDER NUMBER', 540, 520, 62, { al: 'center', w: 800, col: C.cream });
+      T(c, String(K.demoNo ?? G_ORDER_NO), 540, 880, 340, { al: 'center', w: 900, col: C.gold });
+      T(c, '영수증을 받아 가세요', 540, 1120, 74, { al: 'center', w: 900, col: C.white });
+      T(c, 'PLEASE TAKE YOUR RECEIPT', 540, 1190, 38, { al: 'center', w: 600, col: '#ffd9c8' });
+      mean(540, 1260, '아래 틈에서 나오는 종이', { size: 40, al: 'center' });
+      T(c, '감사합니다 THANK YOU', 540, 1700, 46, { al: 'center', w: 800, col: C.cream });
+    },
+  };
+  const G_ORDER_NO = 274;
+
+  function homeBtn(c, x, y) {
+    box(c, x, y, 210, 92, 6, C.white, '#bda98b', 3);
+    T(c, 'HOME', x + 105, y + 60, 36, { al: 'center', w: 800, col: C.mid });
+    mean(x + 222, y + 60, '처음으로, 다 지워짐', { size: 28 });
+    btn('home', x, y, 210, 92, () => A.home());
+  }
+
+  function footer(c) {
+    const y = 1656;
+    c.fillStyle = C.brown; c.fillRect(0, y, PW, 264);
+    c.fillStyle = C.red; c.fillRect(0, y, PW, 6);
+    const n = K.cart.length;
+    T(c, 'MY ORDER', 30, y + 56, 32, { w: 800, col: C.cream });
+    T(c, `${n} ITEM`, 30, y + 96, 26, { w: 600, col: '#d7c3a4' });
+    K.cart.slice(-3).forEach((l, i) => { const it = byId(l.item); box(c, 210 + i * 104, y + 20, 96, 84, 6, '#fbf0dc'); fitArt(c, foodArt(it.art), 214 + i * 104, y + 24, 88, 76); });
+    T(c, 'TOTAL', 760, y + 56, 26, { w: 700, col: '#d7c3a4' });
+    T(c, won(K.total()), 1050, y + 90, 56, { al: 'right', w: 900, col: C.gold });
+    // 처음으로와 장바구니가 붙어 있다
+    box(c, 30, y + 122, 250, 88, 6, '#5a4230', '#8a6f55', 2);
+    T(c, 'HOME', 155, y + 180, 34, { al: 'center', w: 800, col: C.cream });
+    mean(155, y + 208, '처음으로, 다 지워짐', { size: 24, al: 'center' });
+    btn('home', 30, y + 122, 250, 88, () => A.home());
+    box(c, 292, y + 122, 758, 88, 6, n ? lin(c, 0, y + 122, 0, y + 210, '#d6332a', '#ae1f18') : '#6e5a48');
+    T(c, 'CHECK OUT', 671, y + 182, 44, { al: 'center', w: 900, col: n ? C.white : '#a3917e' });
+    mean(671, y + 208, '장바구니 보기', { size: 24, al: 'center' });
+    btn('cart', 292, y + 122, 758, 88, () => A.toCart());
+    c.save(); c.beginPath(); c.rect(0, y + 216, PW, 46); c.clip();
+    wrap(c, LEGAL, 30, y + 234, PW - 60, 19, 15, { col: '#9f8a70' });
+    c.restore();
+  }
+
+  function adBanner(c) {
+    const x = 40, y = 800, w = 1000, h = 400;
+    rv = rv.filter((f) => !(f.y > y - 10 && f.y < y + h + 44)); // 가려진 메뉴의 뜻은 안 보인다
+    c.save(); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 30; c.shadowOffsetY = 10;
+    c.fillStyle = lin(c, x, y, x + w, y + h, '#f0b72f', '#e8892a'); c.beginPath(); c.roundRect(x, y, w, h, 12); c.fill(); c.restore();
+    rays(c, x + 760, y + 200, 'rgba(255,255,255,.07)', 14, 500);
+    c.save(); c.beginPath(); c.roundRect(x, y, w, h, 12); c.clip();
+    fitArt(c, comboArt('triple', 'orange', true), x + 500, y + 40, 490, 330);
+    T(c, '지금 앱을 받으면', x + 44, y + 110, 44, { w: 800, col: C.brown });
+    T(c, '크라운 트리플', x + 44, y + 208, 84, { w: 900, col: C.deep, max: 500 });
+    T(c, '1+1 쿠폰', x + 44, y + 300, 84, { w: 900, col: C.white });
+    T(c, 'AD', x + 44, y + 358, 22, { w: 700, col: C.brown });
+    c.restore();
+    btn('ad', x, y, w, h, () => A.adTap());
+    // 닫기: 구석의 작은 x
+    box(c, x + w - 62, y + 12, 50, 50, 25, 'rgba(60,30,10,.28)');
+    T(c, 'x', x + w - 37, y + 49, 34, { al: 'center', w: 700, col: '#fff' });
+    mean(x + w - 70, y + 50, '닫기', { size: 28, al: 'right' });
+    btn('ad_close', x + w - 72, y + 2, 70, 70, () => A.adClose());
+  }
+
+  function optGrid(c, title, m, opts, sel, key, fn) {
+    c.fillStyle = C.cream; c.fillRect(0, 0, PW, PH);
+    topbar(c, K.place === 'dine' ? 'DINE-IN' : 'TAKE-OUT'); stepbar(c, 132, 2);
+    T(c, title, 40, 284, 58, { w: 900, max: 760 });
+    mean(1040, 282, m, { size: 34, al: 'right' });
+    T(c, key === 'side' ? 'STEP 1 / 2' : 'STEP 2 / 2', 40, 330, 28, { w: 600, col: C.soft });
+    const cols = key === 'side' ? 2 : 3, cw = key === 'side' ? 490 : 326, chh = key === 'side' ? 356 : 340, gap = key === 'side' ? 20 : 11;
+    opts.forEach(([id, add], i) => {
+      const it = byId(id), x = 40 + (i % cols) * (cw + gap), y = 350 + ((i / cols) | 0) * (chh + 12), on = sel === id;
+      card(c, x, y, cw, chh, 8);
+      if (on) box(c, x, y, cw, chh, 8, null, C.red, 7);
+      fitArt(c, foodArt(it.art), x + 24, y + 12, cw - 48, chh - 150);
+      T(c, it.name, x + cw / 2, y + chh - 90, cw > 400 ? 38 : 30, { al: 'center', w: 800, max: cw - 24 });
+      T(c, add ? `+${won(add)}` : '+0원', x + cw / 2, y + chh - 46, 28, { al: 'center', w: 700, col: add ? C.red : C.soft });
+      if (on) {
+        box(c, x + cw - 92, y + 12, 80, 44, 4, C.red);
+        T(c, 'ON', x + cw - 52, y + 44, 26, { al: 'center', w: 900, col: '#fff' });
+      }
+      mean(x + cw / 2, y + 60, it.mean, { size: 34, al: 'center' });
+      btn(`${key}_${id}`, x, y, cw, chh, () => fn(id));
+    });
+    backBtn(c, 40, 1570);
+    nextBtn(c, 270, 1570, 770, 'NEXT', 'next', () => A.next(), false, '다음');
+    homeBtn(c, 40, 1700);
+    legal(c, 1838, 4);
+  }
+
+  function toast(c) {
+    if (!K.toast) return;
+    const y = 1180;
+    c.save(); c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 24;
+    box(c, 90, y, 900, 180, 10, 'rgba(46,26,14,.96)'); c.restore();
+    T(c, K.toast, 540, y + 108, 48, { al: 'center', w: 800, col: C.white, max: 840 });
+  }
+
+  function popupInfo(c) {
+    if (!K.info) return;
+    buttons = []; rv = rv.filter(() => false);
+    c.fillStyle = 'rgba(30,16,8,.62)'; c.fillRect(0, 0, PW, PH);
+    const x = 100, y = 520, w = 880, h = 760;
+    card(c, x, y, w, h, 12);
+    box(c, x, y, w, 110, [12, 12, 0, 0], C.brown);
+    T(c, K.info.title, x + 40, y + 76, 46, { w: 900, col: C.cream });
+    if (K.info.qr) fauxQR(c, x + 300, y + 150, 280);
+    let yy = K.info.qr ? y + 490 : y + 240;
+    for (const l of K.info.lines) { T(c, l, x + w / 2, yy, 38, { al: 'center', w: 700, max: w - 60 }); yy += 62; }
+    if (K.info.mean) mean(x + w / 2, yy + 6, K.info.mean, { size: 34, al: 'center' });
+    box(c, x + 240, y + h - 130, 400, 96, 6, lin(c, 0, y + h - 130, 0, y + h - 34, '#d6332a', '#ae1f18'));
+    T(c, 'CLOSE', x + w / 2, y + h - 62, 46, { al: 'center', w: 900, col: '#fff' });
+    btn('info_close', x + 240, y + h - 130, 400, 96, () => A.infoClose());
+  }
+
+  function renderAll() {
+    buttons = []; rv = [];
+    sc.setTransform(1, 0, 0, 1, 0, 0);
+    S[K.screen](sc);
+    popupInfo(sc);
+    toast(sc);
+  }
+  function draw(c, Wd, Hd, reveal) {
+    // 톤 매핑으로 빠지는 색을 미리 올린다
+    if (!reveal) renderAll();
+    c.filter = 'saturate(1.4) contrast(1.14) brightness(.96)'; c.drawImage(scratch, 0, 0); c.filter = 'none';
+    if (reveal) for (const f of rv) f(c);
+  }
+
+  const r = ctx.readables.create({ w: SW, h: SH, px: PW, draw, glow: 0.98, blur: BASE_BLUR, grime: 0, zoom: 1.45, lensRadius: 0.15 });
+
+  // 번짐 위에 얹는 작은 효과들: 남은 시간, 누름 표시, 물결
+  const fx = new THREE.Group(); r.mesh.add(fx);
+  const toLocal = (px, py) => [(px / PW - 0.5) * SW, (0.5 - py / PH) * SH];
+
+  const tcv = document.createElement('canvas'); tcv.width = 256; tcv.height = 96;
+  const ttx = new THREE.CanvasTexture(tcv); ttx.colorSpace = THREE.SRGBColorSpace;
+  const timer = new THREE.Mesh(new THREE.PlaneGeometry(0.078, 0.0293), new THREE.MeshBasicMaterial({ map: ttx, transparent: true, toneMapped: false }));
+  timer.position.set(SW / 2 - 0.046, SH / 2 - 0.0345, 0.0008); fx.add(timer);
+  let shown = -1;
+  function setTimer(sec, show = true) {
+    timer.visible = show;
+    if (!show || sec === shown) return;
+    shown = sec;
+    const c = tcv.getContext('2d');
+    c.clearRect(0, 0, 256, 96);
+    const low = sec <= 15;
+    c.filter = 'blur(1px)';
+    box(c, 6, 6, 244, 84, 6, low ? '#fff2d6' : 'rgba(255,255,255,.14)', low ? '#fff2d6' : 'rgba(255,255,255,.5)', 2);
+    T(c, 'TIME', 20, 62, 26, { w: 700, col: low ? C.red : '#ffe4d2' });
+    T(c, String(sec), 238, 70, 60, { al: 'right', w: 900, col: low ? C.red : '#fff' });
+    c.filter = 'none';
+    ttx.needsUpdate = true;
+  }
+
+  const press = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x2a1408, transparent: true, opacity: 0, depthWrite: false }));
+  press.position.z = 0.0006; press.visible = false; fx.add(press);
+  const ringTex = (() => {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 128; const c = cv.getContext('2d');
+    const g = c.createRadialGradient(64, 64, 26, 64, 64, 62); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.7, 'rgba(255,255,255,.75)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = g; c.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(cv);
+  })();
+  const ring = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: ringTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+  ring.position.z = 0.0007; ring.visible = false; fx.add(ring);
+  let pressT = 0, ringT = 0;
+
+  return {
+    readable: r, mesh: r.mesh, setTimer,
+    get buttons() { return buttons; },
+    redraw(blur) { r.redraw(blur ?? r.blur); },
+    /** 위쪽 버튼부터 찾는다 */
+    at(px, py) {
+      for (let i = buttons.length - 1; i >= 0; i--) { const b = buttons[i]; if (px >= b.x && px <= b.x + b.w && py >= b.y && py <= b.y + b.h) return b; }
+      return null;
+    },
+    find: (id) => buttons.find((b) => b.id === id),
+    flash(b) {
+      const [x, y] = toLocal(b.x + b.w / 2, b.y + b.h / 2);
+      press.position.x = x; press.position.y = y; press.scale.set(b.w / PW * SW, b.h / PH * SH, 1);
+      pressT = 1; press.visible = true;
+    },
+    ripple(px, py) {
+      const [x, y] = toLocal(px, py);
+      ring.position.x = x; ring.position.y = y; ringT = 1; ring.visible = true;
+    },
+    update(dt) {
+      if (pressT > 0) { pressT = Math.max(0, pressT - dt * 5); press.material.opacity = pressT * 0.32; press.visible = pressT > 0; }
+      if (ringT > 0) { ringT = Math.max(0, ringT - dt * 3.4); const s = 0.018 + (1 - ringT) * 0.05; ring.scale.set(s, s, 1); ring.material.opacity = ringT * 0.7; ring.visible = ringT > 0; }
+    },
+    uvToPx: (uv) => [uv.x * PW, (1 - uv.y) * PH],
+  };
+}
+
+return {BASE_BLUR, PH, PW, SH, SW, createScreen};
+})();
+const M_flow = (() => {
+const {G, wait, rand} = M_g;
+const {byId, COMBOS, SIDE_OPTS, DRINK_OPTS, won} = M_data;
+const {drawReceipt} = M_hw;
+// 주문 흐름. 화면 전환, 장바구니, 결제, 카드 틈, 영수증.
+
+
+
+
+const SAY = {
+  place: ['k_place', '드시고 가시나요, 가져가시나요?'],
+  member: ['k_member', '멤버십 적립을 원하시면 휴대폰 번호를 입력해 주세요.'],
+  menu: ['k_menu', '원하시는 메뉴를 선택해 주세요.'],
+  option: ['k_combo', '콤보로 업그레이드 하시겠습니까?'],
+  pay: ['k_pay', '결제 수단을 선택해 주세요.'],
+  card: ['k_card', '카드를 투입구에 삽입해 주세요.'],
+  paying: ['k_cardhold', '결제가 완료될 때까지 카드를 빼지 마세요.'],
+  cardout: ['k_cardout', '카드를 제거해 주세요.'],
+  done: ['k_receipt', '영수증을 받아 가세요.'],
+};
+const BACK = { option: 'menu', side: 'option', drink: 'side', cart: 'menu', pay: 'cart', card: 'pay' };
+
+function newK() {
+  return {
+    screen: 'idle', slide: 0, tab: 'SIGNATURE', cart: [], draft: null, place: null, phone: '', memberErr: false, memberErrs: 0,
+    toast: null, toastUntil: 0, ad: false, adAt: 0, adUntil: 0, info: null, cardMsg: null, payProgress: 0, timer: 90, icTried: false,
+    run: 0, canTear: false, cardWait: null, view: 'kiosk', lookingBack: false,
+    total() { return this.cart.reduce((a, l) => a + l.price, 0); },
+  };
+}
+
+function createFlow(ctx, K, hw, nun, api) {
+  const { audio, ui, hands } = ctx;
+  const st = () => G.state.stats, od = () => G.state.order;
+  const redraw = () => api.redraw();
+  const voice = (s) => { const v = SAY[s]; if (v) nun.say('kiosk', v[1], { vo: v[0] }); };
+
+  function go(s, { silent = false } = {}) {
+    K.screen = s; K.info = null;
+    if (s !== 'card') K.cardMsg = null;
+    redraw();
+    if (!silent) voice(s);
+    if (s === 'menu') K.adAt = G.time + rand(7, 11);
+  }
+  function wrong(n = 4, sound = 'kiosk_error') {
+    st().wrong++; nun.add(n);
+    if (sound) audio.play(sound, { vol: 0.8 });
+    if (Math.random() < 0.34) nun.mutter();
+  }
+  function toast(t, sec = 2) { K.toast = t; K.toastUntil = G.time + sec; redraw(); }
+
+  function syncOrder() {
+    const o = od(), cart = K.cart;
+    const main = [...cart].reverse().find((l) => byId(l.item).kind === 'burger') ?? cart[cart.length - 1];
+    o.item = main?.item ?? null; o.combo = main?.combo ?? null; o.side = main?.side ?? null; o.drink = main?.drink ?? null; o.sizeUp = !!main?.sizeUp;
+    if (!o.side) o.side = cart.find((l) => byId(l.item).kind === 'side')?.item ?? null;
+    if (!o.drink) o.drink = cart.find((l) => byId(l.item).kind === 'drink')?.item ?? null;
+    if (o.drink === 'cola_full') o.drink = 'cola';
+    o.lines = cart.length;
+  }
+  function clearOrder() {
+    Object.assign(od(), { place: null, item: null, combo: null, side: null, drink: null, sizeUp: false, paid: false, lines: 0 });
+  }
+  function resetAll() {
+    K.demoNo = null;
+    K.run++;
+    Object.assign(K, { cart: [], draft: null, place: null, phone: '', memberErr: false, memberErrs: 0, toast: null, ad: false, info: null, cardMsg: null, payProgress: 0, timer: 90, icTried: false, canTear: false, cardWait: null, tab: 'SIGNATURE' });
+    clearOrder();
+    hw.closeCover(); hw.cardHide(); hw.resetReceipt();
+    K.screen = 'idle'; redraw();
+  }
+  function finishDraft() {
+    const d = K.draft, it = byId(d.item), combo = COMBOS.find((o) => o.id === d.combo);
+    const side = SIDE_OPTS.find((s) => s[0] === d.side)?.[1] ?? 0, drink = DRINK_OPTS.find((s) => s[0] === d.drink)?.[1] ?? 0;
+    const line = { item: d.item, combo: d.combo, sizeUp: d.sizeUp, price: it.price + combo.add + (d.combo === 'single' ? 0 : side + drink) + (d.sizeUp ? 800 : 0) };
+    if (d.combo !== 'single') { line.side = d.side; line.drink = d.drink; }
+    K.cart.push(line); K.draft = null;
+    syncOrder(); go('cart');
+  }
+
+  const A = {
+    start() { audio.play('kiosk_ok', { vol: 0.5 }); go('place'); },
+    place(id) { K.place = id; od().place = id; audio.play('kiosk_popup', { vol: 0.7 }); go('member'); },
+    key(k) {
+      K.memberErr = false;
+      if (k === 'DEL') K.phone = K.phone.slice(0, -1); else if (k === 'CLR') K.phone = ''; else if (K.phone.length < 8) K.phone += k;
+      redraw();
+    },
+    confirm() { K.memberErr = true; K.memberErrs++; K.phone = ''; wrong(4); redraw(); },
+    skip() { go('menu'); },
+    tab(t) { K.tab = t; K.ad = false; redraw(); if (t === 'CLASSIC' && !K.classicSeen) { K.classicSeen = true; K.adAt = G.time + 2.2; } },
+    item(it) {
+      if (it.kind === 'burger') { K.draft = { item: it.id, combo: null, side: 'fries_r', drink: 'cola', sizeUp: false }; go('option'); return; }
+      K.cart.push({ item: it.id, combo: null, price: it.price }); syncOrder();
+      audio.play('kiosk_ok', { vol: 0.5 }); toast('장바구니에 담았습니다', 1.4);
+    },
+    combo(id) { K.draft.combo = id; if (id === 'single') finishDraft(); else go('side', { silent: true }); },
+    side(id) { K.draft.side = id; redraw(); },
+    drink(id) { K.draft.drink = id; redraw(); },
+    next() {
+      if (K.screen === 'side') go('drink', { silent: true });
+      else { audio.play('kiosk_popup', { vol: 0.7 }); go('upsell', { silent: true }); }
+    },
+    upsell(y) { K.draft.sizeUp = y; if (y) audio.play('kiosk_ok', { vol: 0.5 }); finishDraft(); },
+    back() { const b = BACK[K.screen]; if (b) go(b, { silent: true }); },
+    del(i) { K.cart.splice(i, 1); syncOrder(); redraw(); },
+    addMore() { go('menu', { silent: true }); },
+    toCart() { if (!K.cart.length) { wrong(4); toast('메뉴를 먼저 선택해 주세요'); return; } go('cart', { silent: true }); },
+    checkout() { if (!K.cart.length) { wrong(4); toast('메뉴를 먼저 선택해 주세요'); return; } go('pay'); },
+    pay(id) {
+      if (id === 'card') { K.cardMsg = null; go('card'); return; }
+      wrong(4, 'kiosk_popup');
+      K.info = {
+        qr: { title: 'QR PAY', qr: true, lines: ['왕관페이 앱에서 QR을 스캔해 주세요'], mean: '휴대폰 앱이 있어야 함' },
+        coupon: { title: '쿠폰', lines: ['쿠폰 바코드를 리더기에 읽혀 주세요', '등록된 쿠폰이 없습니다'], mean: '쿠폰 없으면 안 됨' },
+        point: { title: '제휴 포인트', lines: ['제휴사 앱 인증이 필요합니다', '조회 가능한 포인트가 없습니다'], mean: '포인트 없으면 안 됨' },
+      }[id];
+      redraw();
+    },
+    infoClose() { K.info = null; redraw(); },
+    home() { st().resets++; resetAll(); },
+    adClose() { K.ad = false; K.adAt = G.time + rand(24, 34); redraw(); },
+    adTap() { wrong(4, 'kiosk_popup'); toast('앱에서만 이용 가능합니다'); },
+    easy() { wrong(4); toast('서비스 준비 중입니다'); },
+    dummy() {},
+  };
+
+  async function runPayment() {
+    const run = ++K.run;
+    hands.equip(null);
+    hw.cardAt('ic', 'in'); audio.play('card_insert', { vol: 0.9 });
+    K.payProgress = 0; go('paying');
+    for (let i = 1; i <= 8; i++) { await wait(0.5); if (run !== K.run) return; K.payProgress = i / 8; redraw(); }
+    od().paid = true; audio.play('kiosk_ok', { vol: 0.8 });
+    go('cardout');
+    await Promise.race([new Promise((r) => { K.cardWait = r; }), wait(6)]);
+    K.cardWait = null; if (run !== K.run) return;
+    hw.cardAt('ic', 'out'); audio.play('card_insert', { vol: 0.5, rate: 1.25 });
+    await wait(0.5); if (run !== K.run) return;
+    go('done');
+    const lines = K.cart.flatMap((l) => {
+      const it = byId(l.item), out = [`${it.name}  ${won(l.price)}`];
+      if (l.side) out.push(`  ${byId(l.side).name}`);
+      if (l.drink) out.push(`  ${byId(l.drink).name}`);
+      return out;
+    });
+    hw.printReceipt((c, W, H) => drawReceipt(c, W, H, lines, won(K.total()), od().number));
+    audio.play('receipt_print', { vol: 0.9 });
+    await wait(3.1); if (run !== K.run) return;
+    hw.showPaperSpot(); K.canTear = true;
+  }
+
+  const flow = {
+    A, go, wrong, toast, resetAll, clearOrder,
+
+    /** 화면 터치 */
+    touch(px, py, { bot = false } = {}) {
+      st().touches++; K.timer = 90;
+      audio.play('kiosk_tap', { vol: 0.8, rate: rand(0.95, 1.08) });
+      // 마른 손가락: 가끔 터치가 안 먹는다
+      if (!bot && K.screen !== 'idle' && Math.random() < 0.07) { nun.mutter(); return false; }
+      api.scr.ripple(px, py);
+      const b = api.scr.at(px, py);
+      if (!b) { if (K.screen !== 'idle') wrong(4); return false; }
+      api.scr.flash(b); b.onPress();
+      return true;
+    },
+
+    /** 본체 부위 터치 */
+    spot(id, { bot = false } = {}) {
+      if (id === 'body' || id === 'poster') { if (id === 'poster') { audio.play('paper_rustle', { vol: 0.35 }); hw.nudge(); } else audio.play('kiosk_tap', { vol: 0.35, rate: 0.7 }); return false; }
+      if (id === 'cover') { st().touches++; K.timer = 90; hw.openCover(); audio.play('paper_rustle', { vol: 0.8 }); return true; }
+      if (id === 'paper') return flow.takeReceipt();
+      if (id === 'call') {
+        st().touches++; audio.play('kiosk_tap', { vol: 0.7, rate: 0.8 }); audio.play('fryer_beep', { vol: 0.3 });
+        toast('직원을 호출했습니다', 2.4); api.onCall?.();
+        return true;
+      }
+      return flow.slot(id, { bot });
+    },
+
+    /** 틈에 카드 넣기 */
+    slot(id, { bot = false } = {}) {
+      st().touches++;
+      if (K.screen === 'cardout') { if (id === 'ic') K.cardWait?.(); return true; }
+      if (K.screen !== 'card') { audio.play('kiosk_tap', { vol: 0.35, rate: 0.7 }); return false; }
+      K.timer = 90;
+      if (hands.held !== 'card') {
+        if (!bot) { nun.say('gp', '카드를 어디다 넣으라는 거야.', { vo: 'gp_card1' }); return false; }
+        hands.equip('card');
+      }
+      if (id === 'ic') {
+        if (!hw.coverOpened) return false;
+        if (!K.icTried) {
+          K.icTried = true; K.cardMsg = 'IC칩 방향을 확인하세요';
+          hw.cardAt('ic', 'bounce'); audio.play('card_reject', { vol: 0.9 }); audio.play('kiosk_error', { vol: 0.7 }); redraw();
+          return false;
+        }
+        K.cardMsg = null; runPayment();
+        return true;
+      }
+      K.cardMsg = id === 'receipt' ? '인식할 수 없는 매체입니다' : '카드를 인식할 수 없습니다';
+      hw.cardAt(id, 'bounce');
+      audio.play('card_slide_wrong', { vol: 0.9 }); wrong(6); redraw();
+      return false;
+    },
+
+    takeReceipt() {
+      if (!K.canTear) return false;
+      K.canTear = false;
+      audio.play('paper_tear', { vol: 0.9 });
+      hw.tearReceipt();
+      G.state.hasReceipt = true;
+      api.finish();
+      return true;
+    },
+
+    /** 눈치 폭발 동안 젊은 사람이 빠르게 주문하는 화면 */
+    async demo() {
+      const run = ++K.run, tap = () => audio.play('kiosk_tap', { vol: 0.5, rate: 1.2 });
+      K.demoNo = 273; // 끼어든 사람의 번호. 할아버지 번호 274는 그대로 남긴다
+      K.place = 'takeout'; K.cart = [{ item: 'crown3', combo: 'large', side: 'fries_l', drink: 'cola', price: 14700 }];
+      K.draft = { item: 'crown3', combo: 'combo', side: 'fries_r', drink: 'cola', sizeUp: false };
+      for (const s of ['place', 'menu', 'option', 'drink', 'cart', 'pay', 'card', 'paying', 'done']) {
+        await wait(0.85); if (run !== K.run) return;
+        tap(); K.screen = s; K.ad = false; redraw();
+      }
+    },
+
+    update(dt) {
+      if (K.toast && G.time > K.toastUntil) { K.toast = null; redraw(); }
+      if (K.screen === 'menu') {
+        if (!K.ad && G.time > K.adAt) { K.ad = true; K.adUntil = G.time + 12; audio.play('kiosk_popup', { vol: 0.5 }); redraw(); } else if (K.ad && G.time > K.adUntil) { K.ad = false; K.adAt = G.time + rand(20, 30); redraw(); }
+      }
+    },
+    timedOut() { nun.say('kiosk', '시간이 초과되어 처음 화면으로 돌아갑니다.', { vo: 'k_timeout' }); audio.play('kiosk_error', { vol: 0.8 }); st().resets++; resetAll(); },
+    /** 시간 제한이 도는 화면 */
+    timed: () => !['idle', 'paying', 'cardout', 'done'].includes(K.screen),
+    safe: () => !['paying', 'cardout', 'done'].includes(K.screen),
+  };
+  return flow;
+}
+
+return {createFlow, newK};
+})();
+
+</script>
+<script>
+const {G} = M_g;
+// 원본 모듈은 build_prototype.py가 위에 합쳐 둔다(M_g, M_kit, M_data, M_art, M_hw, M_screens, M_flow).
+(function () {
+  const q = new URLSearchParams(location.search);
+  if (q.get('fast')) G.flags.fast = +q.get('fast');
+  const $ = (id) => document.getElementById(id);
+  const log = (who, text) => {
+    const d = document.createElement('div'); d.textContent = (who ? who + ': ' : '') + text;
+    $('log').appendChild(d); $('log').scrollTop = 1e9;
+  };
+  const NAMES = { kiosk: '키오스크', gp: '할아버지', staff: '알바생' };
+  const noop = () => {};
+  const audio = { play: noop, stop: noop };
+  const ui = { say: (who, t) => { log(NAMES[who] || who || '', t); return Promise.resolve(); }, nunchi: noop, views: noop, prompt: noop };
+  const nun = { v: 0, say(who, t) { log(NAMES[who] || who, t); return Promise.resolve(); }, mutter: noop, add: noop, sorry: noop, update: noop };
+  const hands = { held: null, equip(v) { this.held = v; } };
+
+  let scr = null, flow = null, finished = false;
+  const sc = $('screen'), sx = sc.getContext('2d');
+  const readables = { create(o) {
+    return { mesh: new THREE.Mesh(), blur: o.blur, lensRadius: 0.15, mat: { uniforms: { glow: { value: 1 } } },
+      redraw() { o.draw(sx, o.px, o.px * 16 / 9, false); if ($('c_mean').checked) o.draw(sx, o.px, o.px * 16 / 9, true); } };
+  } };
+  const ctx = { audio, ui, hands, readables };
+
+  const K = M_flow.newK();
+  const api = { redraw: () => scr && scr.redraw(), finish() { finished = true; $('done').style.display = 'block'; $('done').textContent = '주문 완료 ' + G.state.order.number; log('', '주문 완료'); sync(); }, onCall: noop };
+  const hw = {
+    coverOpened: false, plate: {},
+    openCover() { this.coverOpened = true; sync(); },
+    closeCover() { this.coverOpened = false; },
+    cardHide: noop, nudge: noop, showPaperSpot: noop, update: noop,
+    cardAt(slot, mode) { log('', '카드 ' + slot + ' ' + mode); },
+    resetReceipt() { $('rc').style.display = 'none'; },
+    printReceipt(draw) { draw($('rc').getContext('2d'), 296, 1000); $('rc').style.display = 'block'; },
+    tearReceipt() { $('rc').style.display = 'none'; },
+  };
+  flow = M_flow.createFlow(ctx, K, hw, nun, api);
+  scr = M_screens.createScreen(ctx, K, flow.A);
+  api.scr = scr;
+  // 안 먹는 터치 연출(눈치용)은 빼고 봇 입력으로 처리
+  const touch = (px, py) => flow.touch(px, py, { bot: true });
+  const spot = (id) => flow.spot(id, { bot: true });
+
+  function sync() {
+    $('state').innerHTML = '화면: ' + K.screen + '<br>덮개: ' + (hw.coverOpened ? '열림' : '닫힘') + '<br>합계: ' + M_data.won(K.total()) + (K.cardMsg ? '<br>' + K.cardMsg : '');
+  }
+  function reset() { finished = false; $('done').style.display = 'none'; $('log').innerHTML = ''; hands.equip(null); flow.resetAll(); K.timer = 90; sync(); }
+
+  sc.addEventListener('click', (e) => {
+    const r = sc.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * 1080, py = (e.clientY - r.top) / r.height * 1920;
+    const d = document.createElement('div'); d.className = 'rip'; d.style.left = (e.clientX - r.left) + 'px'; d.style.top = (e.clientY - r.top) + 'px';
+    $('scr').appendChild(d); setTimeout(() => d.remove(), 500);
+    touch(px, py); sync();
+  });
+  $('b_cover').onclick = () => { spot('cover'); sync(); };
+  $('b_ic').onclick = () => { spot('ic'); sync(); };
+  $('b_bar').onclick = () => { spot('barcode'); sync(); };
+  $('b_rec').onclick = () => { spot('receipt'); sync(); };
+  $('b_out').onclick = () => { spot('ic'); sync(); };
+  $('b_tear').onclick = () => { spot('paper'); sync(); };
+  $('b_call').onclick = () => { spot('call'); sync(); };
+  $('b_reset').onclick = reset;
+  $('c_mean').onchange = () => scr.redraw();
+
+  let last = performance.now(), slideT = 0, lastKey = '';
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    G.dt = dt; G.time += dt;
+    M_g.tickWaits();
+    flow.update(dt);
+    if (K.screen === 'idle') { slideT += dt; if (slideT > 3.6) { slideT = 0; K.slide++; scr.redraw(); } }
+    if ($('c_time').checked && flow.timed()) { K.timer -= dt; if (K.timer <= 0) { flow.timedOut(); sync(); } }
+    const key = K.screen + K.cart.length + hw.coverOpened + K.cardMsg;
+    if (key !== lastKey) { lastKey = key; sync(); }
+    requestAnimationFrame(frame);
+  }
+  window.KIOSK = { K, flow, hw, scr, art: M_art, data: M_data, spot, touch, isDone: () => finished,
+    buttons: () => scr.buttons.map((b) => b.id),
+    press: (id) => { const b = scr.find(id); if (!b) return false; return touch(b.x + b.w / 2, b.y + b.h / 2); } };
+  reset(); scr.redraw();
+  requestAnimationFrame(frame);
+})();
+
+</script>
+</body></html>
