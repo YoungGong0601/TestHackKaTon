@@ -586,7 +586,7 @@ public abstract class RoundFixture
     /// <summary>1-7, 1-8. 포인터와 좌클릭만으로 결제까지.</summary>
     protected IEnumerator R1Kiosk()
     {
-        KioskPick.Reseed(7);   // 뽑힌 칸만 item_set, 첫 칸 불고기는 늘 품절
+        KioskPick.Reseed(7);   // 뽑힌 칸만 item_set, 첫 칸 불고기는 눌러도 담기지 않는다
         yield return EnterKiosk();
         yield return Screen("idle");
         yield return Touch("start");
@@ -594,7 +594,9 @@ public abstract class RoundFixture
         yield return Touch("dine");
         yield return Screen("menu");
         yield return Touch("item_bulgogi");
-        Assert.AreEqual("menu", Kiosk.Screen, "다른 메뉴는 품절");
+        Assert.AreEqual("menu", Kiosk.Screen, "쪽지에 없는 메뉴는 넘어가지 않음");
+        Assert.AreEqual(0, Field<KioskState>(Kiosk.Pack, "K").cart.Count, "쪽지에 없는 메뉴는 담기지 않음");
+        yield return Until(() => rec.Saw("이거 아니잖아"), 5f, "쪽지에 없는 메뉴 혼잣말");
         yield return Touch("item_set");
         yield return Screen("cart");
         Assert.AreEqual(KioskPick.SetName, Game.Order.item, "쪽지의 신메뉴");

@@ -13,3 +13,4 @@ R2_NoteSoft,2회차 쪽지 번짐,Float,0,ratio,쪽지는 돋보기 없이 읽�
 R2_ShotPrice,샷 추가 금액,Int,500,won,합계 표시
 R2_OrderWaitSec,주문 뒤 첫 호출까지,Float,15,sec,조리 소리와 다른 호출
 R2_QueueSpacing,카페 줄 간격,Float,1,m,낑기지 않음
+R2_AskHintSec,알바생에게 묻기 혼잣말 간격,Float,10,s,물어보면 멈춘다

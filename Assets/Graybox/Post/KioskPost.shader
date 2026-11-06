@@ -156,7 +156,7 @@ Shader "Hidden/Graybox/KioskPost"
 
         // 어두운 곳에 더 보이는 필름 그레인
         float n = Hash(i.positionCS.xy + frac(_PostTime) * 917.0) - 0.5;
-        g += n * _Grain * (0.45 + 0.55 * (1.0 - saturate(l))) * lerp(_GrainSub, 1.0, smoothstep(0.08, 0.3, uv.y));
+        g += n * _Grain * (0.45 + 0.55 * (1.0 - saturate(l))) * lerp(_GrainSub, 1.0, smoothstep(0.24, 0.4, uv.y));
 
         g = max(g, 0.0);
         return g * g;

@@ -563,3 +563,6 @@ Kiosk_PopJitter,80대 팝업 위치 흔들림,Float,0.06,화면 폭 비율,가�
 Lens_ReceiptZoom,영수증 볼 때 돋보기 배율,Float,1.05,배,원 안 시야가 종이에 닿게 낮춘다
 Hand_ReceiptLensX,돋보기 들 때 영수증 가로 자리,Float,0,m,렌즈 아래
 Hand_ReceiptLensY,돋보기 들 때 영수증 세로 자리,Float,0,m,렌즈 아래
+R1_NotThisGapSec,쪽지에 없는 메뉴 혼잣말 간격,Float,3,s,잇달아 눌러도 한 번
+R2_AskHintSec,알바생에게 묻기 혼잣말 간격,Float,10,s,물어보면 멈춘다
+Subtitle_MaxLines,자막 최대 줄 수,Int,3,줄,넘치면 가장 오래된 줄을 뺀다

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 // HUD. GTA 방식 자막(상자 없는 흰 글자와 외곽선, 화자와 핵심어만 색)과 프롬프트, 소지품, 눈치, 암전, 제목, 결과
 // 글자는 TextMeshProUGUI(리치 텍스트 켬), Debug만 UnityEngine.UI.Text. 폰트는 Assets/UI/Fonts의 Hud_MalgunOS SDF, 외곽선은 같은 폴더의 Outline 재질로 배치한다
 // 그리는 순서: HUD 요소들, Fade, Title, Result (제목과 결과는 암전 위)
-// 배치: subs = Subs (아래 중앙, 가운데 정렬, 흰색)
+// 배치: subs = Subs (아래 중앙, 가운데 정렬, 흰색, 아래 맞춤이라 줄이 쌓이면 위로 자란다)
 // 배치: prompt = Prompt (화면 60% 높이 중앙)
 // 배치: views = Views (왼쪽 아래)
 // 배치: itemSlots = Items 자식 Item_0..Item_3 (오른쪽 아래, HorizontalLayoutGroup)
@@ -63,7 +63,15 @@ public class Hud : MonoBehaviour
     static readonly Dictionary<char, string> Marks = new() { { 'y', "#f3d24b" }, { 'r', "#e8584a" }, { 'g', "#7fd08a" }, { 'b', "#7cc6ee" } };
     static readonly Regex MarkRegex = new(@"\{([yrgb]):([^}]*)\}");
 
-    int subToken, fadeToken;
+    // 떠 있는 자막 한 줄. 같은 문구를 맡은 Say가 모두 끝나면 내려간다
+    class SubLine
+    {
+        public string text;
+        public int holders;
+    }
+
+    readonly List<SubLine> subLines = new();
+    int fadeToken;
     float nunchiNow, nunchiWant, nunchiAlpha;
     bool titleOpen;
 
@@ -103,9 +111,8 @@ public class Hud : MonoBehaviour
 
     IEnumerator SayRoutine(string speaker, string text, string voKey, float hold, Vector3? pos, float vol, bool clear)
     {
-        int token = ++subToken;
         if (pos.HasValue && PlayerController.I != null) PlayerController.I.Gaze(pos.Value);
-        subs.text = Wrap(Name(speaker) + Mark(text));
+        var line = PushSub(Wrap(Name(speaker) + Mark(text)));
         float len = hold >= 0f ? hold : Mathf.Max(1.5f, text.Length * 0.1f);
         if (!string.IsNullOrEmpty(voKey))
         {
@@ -113,7 +120,34 @@ public class Hud : MonoBehaviour
             len = Mathf.Max(vo > 0f ? vo : len, hold >= 0f ? hold : 0.6f);
         }
         yield return new WaitForSeconds(len);
-        if (token == subToken) subs.text = "";
+        if (--line.holders == 0 && subLines.Remove(line)) DrawSubs();
+    }
+
+    // 새 줄은 맨 아래로 들어가고 앞 줄은 위로 밀린다. 넘치면 가장 오래된 줄을 뺀다. 같은 문구는 쌓지 않고 끝나는 시간만 늘어난다
+    SubLine PushSub(string rich)
+    {
+        var line = subLines.Find(l => l.text == rich);
+        if (line == null)
+        {
+            line = new SubLine { text = rich };
+            subLines.Add(line);
+            int over = subLines.Count - Mathf.Max(Bal.I("Subtitle_MaxLines", 3), 1);
+            if (over > 0) subLines.RemoveRange(0, over);
+            DrawSubs();
+        }
+        line.holders++;
+        return line;
+    }
+
+    void DrawSubs()
+    {
+        var text = new System.Text.StringBuilder();
+        foreach (var l in subLines)
+        {
+            if (text.Length > 0) text.Append('\n');
+            text.Append(l.text);
+        }
+        subs.text = text.ToString();
     }
 
     // 왼쪽 위 작은 글자. null이면 지움
@@ -124,7 +158,7 @@ public class Hud : MonoBehaviour
 
     public void ClearSubs()
     {
-        subToken++;
+        subLines.Clear();
         subs.text = "";
     }
 
