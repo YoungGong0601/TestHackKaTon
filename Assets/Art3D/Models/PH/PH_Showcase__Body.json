@@ -1,0 +1,54 @@
+{
+ "asset": "PH_Showcase__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_Showcase__Body/T_PH_Showcase__Body_BaseColor.jpg",
+    "Normal": "Textures/PH_Showcase__Body/T_PH_Showcase__Body_Normal.png",
+    "MS": "Textures/PH_Showcase__Body/T_PH_Showcase__Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_Showcase__Body"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.95,
+    0.95,
+    0.15
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "transparent": true,
+   "name": "M_Glass_PH_Showcase"
+  },
+  {
+   "baseColor": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.7,
+   "emission": [
+    1.0,
+    0.95,
+    0.85
+   ],
+   "emissionStrength": 3.0,
+   "name": "M_PH_Showcase__Body_LED"
+  }
+ ],
+ "notes": "원점 바닥 중앙, 앞면 -Z 가 플레이어 쪽, 바 위 y 1.06. 유리 M_Glass_PH_Showcase, 조명 띠는 굽지 않음. 케이크 4종, 빵 4종 포함."
+}
