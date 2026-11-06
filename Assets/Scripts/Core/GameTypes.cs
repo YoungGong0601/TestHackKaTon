@@ -15,4 +15,6 @@ public class OrderData
 public class RunStats
 {
     public float startTime, endTime = -1f;
+    public int touches, wrong, sorry, resets;
+    public bool memoOk;   // 쪽지대로 주문했는가. 4회차 주문이 끝날 때 적는다
 }

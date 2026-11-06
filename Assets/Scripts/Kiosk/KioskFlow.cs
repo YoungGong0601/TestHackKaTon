@@ -39,17 +39,23 @@ public sealed class KioskFlow
     public readonly KioskState K = new KioskState();
     readonly R4ProtoPack ctl;
     readonly KioskPresenter view;
+    readonly KioskScreens scr;
     int pop = -1;
 
     public KioskFlow(R4ProtoPack ctl, KioskScreens screens)
     {
         this.ctl = ctl;
+        scr = screens;
         view = new KioskPresenter(screens, K);
     }
 
     static float Rand(string a, float fa, string b, float fb) => Random.Range(Bal.G(a, fa), Bal.G(b, fb));
 
-    public void Redraw() => view.Redraw();
+    public void Redraw()
+    {
+        if (pop < 0) scr.MoveInfo(false);
+        view.Redraw();
+    }
 
     /// <summary>다음 손님이 쓰는 화면. 플레이어 주문 상태는 다음 차례에 ResetAll이 지운다.</summary>
     public void ShowCustomer(string id)
@@ -78,6 +84,7 @@ public sealed class KioskFlow
 
     void Wrong(float n, string sound = null, float vol = 0.8f)
     {
+        GameState.I.Stats.wrong++;
         ctl.AddNunchi(n);
         if (sound != null) ctl.Sfx(sound, vol);
         if (Random.value < Bal.G("Kiosk_WrongMutterChance", 0.7f)) ctl.Mutter();
@@ -150,7 +157,7 @@ public sealed class KioskFlow
                 Popup(0); return;
             case "info_close": CloseInfo(); return;
             case "pop_skip": ctl.Sfx("kiosk_tap", 0.8f); Go("pay"); return;
-            case "home": ResetAll(); return;
+            case "home": GameState.I.Stats.resets++; ResetAll(); return;
             case "ad_close":
                 K.ad = false; K.adAt = Time.time + Rand("Kiosk_AdCloseGapMin", 24f, "Kiosk_AdCloseGapMax", 34f); Redraw(); return;
             case "ad": case "hero": case "promo":
@@ -183,6 +190,7 @@ public sealed class KioskFlow
     {
         pop = i;
         K.info = Pops[i];
+        scr.MoveInfo(true);   // 뜰 때마다 자리를 새로 뽑는다
         ctl.Sfx("kiosk_popup", 0.8f);
         Redraw();
     }
@@ -193,6 +201,7 @@ public sealed class KioskFlow
         if (pop + 1 < Pops.Length) { Popup(pop + 1); return; }
         ctl.Sfx("kiosk_error", ErrorVol);
         ctl.Say("kiosk", "처음 화면으로 돌아갑니다.", "k_home");
+        GameState.I.Stats.resets++;
         ResetAll();
     }
 

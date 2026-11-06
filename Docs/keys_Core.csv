@@ -20,7 +20,7 @@ Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
 Age20_KioskBlur,키오스크 글씨 번짐,Float,0,px,ROUND_PLAN 7절
 Age40_KioskBlur,키오스크 글씨 번짐,Float,3,px,ROUND_PLAN 7절
 Age60_KioskBlur,키오스크 글씨 번짐,Float,7,px,ROUND_PLAN 7절
-Age80_KioskBlur,키오스크 글씨 번짐,Float,44,px,큰 글자까지 맨눈으로 못 읽음
+Age80_KioskBlur,키오스크 글씨 번짐,Float,35,px,큰 글자까지 맨눈으로 못 읽음
 Age20_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0,배,ROUND_PLAN 7절
 Age40_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.4,배,ROUND_PLAN 7절
 Age60_PostBlurMul,평온 단계 번짐이 남는 비율,Float,0.8,배,ROUND_PLAN 7절
@@ -182,3 +182,10 @@ Door_LookInSec,문 연 뒤 안쪽으로 시선,Float,0.9,sec,곡선 보간
 End_FadeSec,결과 화면 페이드,Float,1,sec,서서히
 End_FillSec,통계 숫자 차오르는 시간,Float,1.2,sec,부드럽게
 End_CopySec,카피와 출처 나오는 시간,Float,0.6,sec,숫자 뒤
+Age40_BlurEverySec,40대 눈 흐림 평균 간격,Float,27,sec,20초에서 35초 사이로 뽑는다
+Age40_BlurSec,40대 눈 흐림 길이,Float,2,sec,흐려졌다 돌아오는 전체 시간
+Age40_BlurAmount,40대 눈 흐림 세기,Float,0.6,배,시야 번짐 비율에 더한다
+Hand_OpenScale,시작 화면 펼친 손 크기,Float,1.3,배,80대 첫 장면 두 손
+Lens_ReceiptZoom,영수증 볼 때 돋보기 배율,Float,1.05,배,원 안 시야가 종이에 닿게 낮춘다
+Hand_ReceiptLensX,돋보기 들 때 영수증 가로 자리,Float,0,m,렌즈 아래
+Hand_ReceiptLensY,돋보기 들 때 영수증 세로 자리,Float,0,m,렌즈 아래

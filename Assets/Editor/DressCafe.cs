@@ -33,6 +33,9 @@ public static class DressCafe
         Move(s, "Street/Car0", new Vector3(-13f, RoadY, -11f));
         Move(s, "Street/Car1", new Vector3(11f, RoadY, -15f));
 
+        // 호출 번호를 봐야 하는 판이다. 뒤 선반 윗단이 아랫줄을 가리지 않게 올린다
+        Move(s, "Counter/PH_PickupBoard", new Vector3(-0.1f, 2.8f, 3.84f));
+
         // 버거 포스터라서 꺼 두었던 날개를 숲길 커피 포스터로 켠다
         foreach (var wing in new[] { "PH_Kiosk/Wing_L", "PH_Kiosk/Wing_R" })
         {
@@ -97,6 +100,8 @@ public static class DressCafe
             ("kiosk_far", new(1.2f, 1.6f, 0.4f), new(1.9f, 1.3f, 3.82f)),
             ("cups", new(-0.1f, 1.45f, 1.7f), new(-0.1f, 1.2f, 2.5f)),
             ("cups_close", new(-0.1f, 1.38f, 2.12f), new(-0.1f, 1.27f, 2.5f)),
+            ("machine", new(-2.2f, 1.6f, 2.05f), new(-3.1f, 1.1f, 3.7f)),
+            ("showcase", new(-3.4f, 1.6f, 1.35f), new(-3.4f, 1.3f, 2.5f)),
             ("seats", new(0.6f, 1.6f, 0.2f), new(-3f, 0.7f, -2f)),
             ("inside_out", new(-1f, 1.6f, 1.5f), new(-0.7f, 1.4f, -3f)),
         };

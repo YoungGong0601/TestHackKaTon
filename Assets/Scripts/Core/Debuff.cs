@@ -8,7 +8,7 @@ public static class Debuff
     static CharacterProfile P => GameState.I != null ? GameState.I.Profile : null;
 
     /// <summary>화면 쿼드 번짐 반지름. 눈치 BlurStep 가산은 KioskLens가 더한다.</summary>
-    public static float KioskBlur => P != null && P.kioskBlur ? Bal.Age("KioskBlur", 0f, 3f, 7f, 44f) : 0f;
+    public static float KioskBlur => P != null && P.kioskBlur ? Bal.Age("KioskBlur", 0f, 3f, 7f, 35f) : 0f;
 
     public static float MuffleCutoff => P != null && P.muffle ? Bal.Age("MuffleCutoff", OpenHz, 6000f, 3000f, 1800f) : OpenHz;
 

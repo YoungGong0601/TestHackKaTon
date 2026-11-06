@@ -112,6 +112,7 @@ public class NunchiSystem : MonoBehaviour
         Say(Speaker, NunchiLines.Sorry[i, 1], Speaker + "_" + NunchiLines.Sorry[i, 0]);
         Value = gauge - Bal.G("Nunchi_Sorry", 25f);
         Cooldown = Bal.G("Nunchi_SorryCooldown", 5f);
+        GameState.I.Stats.sorry++;
         calmUntil = Time.time + Bal.G("Nunchi_SorryHoldSec", 2f);
         hurryWait = 0f;
         Sorried?.Invoke();

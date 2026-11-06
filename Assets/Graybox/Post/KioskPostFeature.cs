@@ -169,6 +169,11 @@ class KioskPostPass : ScriptableRenderPass
 
         var profile = GameState.I != null ? GameState.I.Profile : null;
         float vision = Bal.Age("PostBlurMul", 0f, 0.4f, 0.8f, 1f);   // 평온 단계 번짐이 남는 비율
+        if (PostState.EyeFogStart >= 0f)   // 잠깐 흐려졌다 돌아오는 눈. 시간이 지나면 저절로 끝나 켜진 채 남지 않는다
+        {
+            float fog = (Time.time - PostState.EyeFogStart) / Mathf.Max(Bal.G("Age40_BlurSec", 2f), 0.01f);
+            if (fog >= 0f && fog < 1f) vision = Mathf.Clamp01(vision + Mathf.Sin(fog * Mathf.PI) * Bal.G("Age40_BlurAmount", 0.6f));
+        }
 
         material.SetFloat(Spread, Bal.G("Post_BlurSpread", 1.4f));
         material.SetFloat(PostTime, Time.unscaledTime);

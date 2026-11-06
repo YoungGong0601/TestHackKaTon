@@ -202,7 +202,7 @@ public class R1ProtoPack : KioskPack
         }
         else if (id.StartsWith("item_"))
         {
-            Ctl.Sfx("kiosk_error", 0.5f);
+            GameState.I.Stats.wrong++; Ctl.Sfx("kiosk_error", 0.5f);
             Toast("품절");
         }
         else Ctl.Sfx("kiosk_tap", 0.35f, 0.7f);
@@ -266,7 +266,7 @@ public class R1ProtoPack : KioskPack
         if (paid) return;
         if (K.screen != "card")
         {
-            Ctl.Sfx("kiosk_error", 0.5f);
+            GameState.I.Stats.wrong++; Ctl.Sfx("kiosk_error", 0.5f);
             Toast("메뉴");
             return;
         }

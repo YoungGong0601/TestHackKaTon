@@ -88,7 +88,10 @@ public class R2CafePack : KioskPack
     readonly Stack<(string screen, int cup)> trail = new Stack<(string, int)>();   // 이전 버튼이 돌아갈 화면들
     int cup, tab;
     string now;
-    bool leaving, listOpen, pulled;
+    const string MyPhone = "01055550147";   // 포스트잇 쪽지에 적힌 가상 번호
+    bool leaving, listOpen, pulled, popApp, popPoint;
+    string phone = "";
+    float fogAt;
     PayPoint pay;
     KioskScreens scr;
     KioskHardware hw;
@@ -113,7 +116,10 @@ public class R2CafePack : KioskPack
         tab = 0;
         leaving = false;
         listOpen = false;
+        popApp = popPoint = false;
         Paid = false;
+        PostState.EyeFogStart = -1f;
+        fogAt = NextFog();
         Refresh();
         To(FirstScreen);
         trail.Clear();
@@ -135,8 +141,66 @@ public class R2CafePack : KioskPack
     // 결제 창에 가기 전에 다 차면 비켜난다(공통 규칙)
     public override void OnTick(float dt)
     {
+        EyeFog();
         if (now == "pay" || now == "cardout" || now == "done") return;
         if (Ctl.Nunchi.Running && Ctl.Nunchi.Value >= Bal.G("Nunchi_Max", 100f)) Leave();
+    }
+
+    static float NextFog() => Time.time + Bal.G("Age40_BlurEverySec", 27f) * Random.Range(0.74f, 1.3f);
+
+    // 40대는 키오스크를 보는 동안 가끔 눈이 흐려진다. 후처리가 시작 시각을 보고 알아서 끝낸다
+    void EyeFog()
+    {
+        if (GameState.I.Profile.handLook != 1 || Time.time < fogAt) return;
+        PostState.EyeFogStart = Time.time;
+        fogAt = NextFog();
+    }
+
+    // 큰 수락은 앱으로 보낼 뿐 넘어가지 않는다. 작은 거절로만 닫힌다
+    void Pop(string id)
+    {
+        now = id;
+        Ctl.Sfx("kiosk_popup", 0.8f);
+        Ctl.Go(id);
+    }
+
+    void PopNo()
+    {
+        Ctl.Sfx("kiosk_tap", 0.8f);
+        if (now == "pop_app") { now = "menu"; NextDrink(-1); }
+        else { now = "coupon"; To("pay"); }
+    }
+
+    void Key(string k)
+    {
+        if (k == "del") { if (phone.Length > 0) phone = phone.Substring(0, phone.Length - 1); }
+        else if (k == "ok")
+        {
+            if (phone != MyPhone)
+            {
+                phone = "";
+                Refuse("번호 확인");
+            }
+            else
+            {
+                Ctl.Sfx("kiosk_ok", 0.5f);
+                Ctl.Toast("적립 완료");
+                now = "coupon";
+                To("pay");
+                return;
+            }
+        }
+        else if (phone.Length < MyPhone.Length) phone += k;
+        Ctl.Sfx("kiosk_tap", 0.6f);
+        ShowPhone();
+    }
+
+    void ShowPhone()
+    {
+        string p = phone;
+        if (p.Length > 7) p = p.Substring(0, 3) + "-" + p.Substring(3, 4) + "-" + p.Substring(7);
+        else if (p.Length > 3) p = p.Substring(0, 3) + "-" + p.Substring(3);
+        Scr.Get("pop_point").Text("phone", p);
     }
 
     // 처음 화면으로. 담은 잔을 비운다. 눈치는 그대로
@@ -148,6 +212,7 @@ public class R2CafePack : KioskPack
         cup = 0;
         tab = 0;
         listOpen = false;
+        popApp = popPoint = false;
         To(FirstScreen);
         trail.Clear();
         Refresh();
@@ -157,6 +222,7 @@ public class R2CafePack : KioskPack
     {
         if (leaving || Ctl.Busy) return;
         leaving = true;
+        GameState.I.Stats.resets++;
         Ctl.Finish(Bal.G("Nunchi_FullLeaveSec", 0.2f));
     }
 
@@ -166,6 +232,7 @@ public class R2CafePack : KioskPack
         if (id.StartsWith("tab_")) { tab = int.Parse(id.Substring(4)); Ctl.Sfx("kiosk_tap", 0.6f); Refresh(); return; }
         if (id.StartsWith("item_")) { Add(id.Substring(5)); return; }
         if (id.StartsWith("cart_del")) { Remove(id[8] - '0'); return; }
+        if (id.StartsWith("key_")) { Key(id.Substring(4)); return; }
         switch (id)
         {
             case "slot0": case "slot1": case "slot2":
@@ -176,13 +243,17 @@ public class R2CafePack : KioskPack
                 break;
             case "cart_close": listOpen = false; Refresh(); break;
             case "next" when !Unlocked: Blocked?.Invoke(); break;
+            case "next" when cart.Count == Cups && !popApp: popApp = true; Pop("pop_app"); break;
             case "next": if (cart.Count == Cups) NextDrink(-1); else Refuse(cart.Count == 0 ? "메뉴 미선택" : "2잔 미선택"); break;
             case "shot0": case "shot1": cart[cup].shot = id == "shot1" ? "샷 추가" : null; ToIce(); break;
             case "ice0": cart[cup].ice = "얼음 적게"; NextDrink(cup); break;
             case "ice1": cart[cup].ice = null; NextDrink(cup); break;
             case "ice2": cart[cup].ice = "얼음 많이"; NextDrink(cup); break;
-            case "coupon_none": To("point"); break;
+            case "coupon_none" when !popPoint: popPoint = true; phone = ""; ShowPhone(); Pop("pop_point"); break;
+            case "coupon_none": To("pay"); break;
             case "point_skip": To("pay"); break;
+            case "pop_yes": Refuse("앱 설치 후 이용 가능"); break;
+            case "pop_no": PopNo(); break;
             case "back": Back(); break;
             case "bg": Blank(); break;
         }
@@ -377,5 +448,5 @@ public class R2CafePack : KioskPack
         Ctl.Go(now);
         Refresh();
     }
-    void Refuse(string text) { Ctl.Sfx("kiosk_error", 0.8f); Ctl.Toast(text); }
+    void Refuse(string text) { GameState.I.Stats.wrong++; Ctl.Sfx("kiosk_error", 0.8f); Ctl.Toast(text); }
 }
