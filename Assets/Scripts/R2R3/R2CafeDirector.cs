@@ -1,11 +1,11 @@
 // R2_Cafe 진행. 2-1 도심 길을 걸어 카페로, 2-2~2-6 키오스크, 2-7 호출, 2-8 커피 2잔 받기.
-// 주문하기를 누르면 막히고 혼잣말이 나온다. 그때부터 알바생에게 말을 걸 수 있고, 물어봐야 결제로 넘어간다. 첫 대화에서 뽀샤티 뜻을 알고 쪽지에 붙는다.
+// 메뉴를 하나 담으면 혼잣말이 나온다. 그때부터 알바생에게 말을 걸 수 있고, 물어볼 때까지 주문하기는 막힌다. 첫 대화에서 뽀샤티 뜻을 알고 쪽지에 붙는다.
 // 눈치가 다 차면 비켜나 줄 맨 뒤로 갔다가 차례가 오면 처음부터 다시 주문한다.
 // 배치: queue = 같은 오브젝트의 QueueManager, kiosk = PH_Kiosk, pack = Pack_R2
 // 배치: stand, kioskLook, staffPos, pickupPos = 씬 앵커
 // 배치: board = PH_PickupBoard, shelf = 픽업 자리의 PH_CoffeeCups
 // 배치: talkStaff, orderKiosk, takeCup = Interactable
-// 배치: doorSpot = Anchor_FrontDoor, doorIn, doorOut = 문 안팎 앵커, line = NPC_Queue0..4, aside = Anchor_QueueSide0, 1(줄 옆 길)
+// 배치: doorSpot = Anchor_FrontDoor, aside = Anchor_QueueSide0, 1(줄 옆 길)
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,13 +30,11 @@ public class R2CafeDirector : MonoBehaviour
     [SerializeField] Interactable orderKiosk;
     [SerializeField] Interactable takeCup;
     [SerializeField] Transform doorSpot;
-    [SerializeField] Transform doorIn;
-    [SerializeField] Transform doorOut;
-    [SerializeField] List<NpcMover> line = new List<NpcMover>();
     [SerializeField] List<Transform> aside = new List<Transform>();
     [SerializeField] GameObject receiptView;   // 배치: Receipt_View
 
-    const string NoteText = "김 대리 아이스\n아메리카노 샷 추가\n\n신입 뽀샤티";
+    const string NoteDrinks = "김 대리 아이스\n아메리카노 샷 추가\n\n신입 뽀샤티";
+    const string NotePhone = "\n\n내 번호 010-5555-0147";
 
     static readonly List<int> NoReady = new List<int>();
 
@@ -51,6 +49,7 @@ public class R2CafeDirector : MonoBehaviour
         takeCup.onUse.AddListener(OnTake);
         kiosk.StaffCalled += OnStaffCalled;
         pack.Blocked += OnBlocked;
+        pack.Added += OnAdded;
     }
 
     void OnDisable()
@@ -60,6 +59,7 @@ public class R2CafeDirector : MonoBehaviour
         takeCup.onUse.RemoveListener(OnTake);
         kiosk.StaffCalled -= OnStaffCalled;
         pack.Blocked -= OnBlocked;
+        pack.Added -= OnAdded;
     }
 
     // 손은 씬을 건너가므로 붙인 물건은 같이 치운다
@@ -77,7 +77,7 @@ public class R2CafeDirector : MonoBehaviour
         GameState.I.Order.number = Mine;
         AudioManager.I.Ambience(("amb_city_morning", 0.5f));
         kiosk.Nunchi.Configure(new NunchiRule { onLeave = pack.Leave });   // N10: 한숨만. 다 차면 Pack이 비켜난다
-        Note.Set(NoteText, Bal.G("R2_NoteSoft", 0f), 1);
+        Note.Set(NoteDrinks + NotePhone, Bal.G("R2_NoteSoft", 0f), 1);
         yield return Round.Open();
         Note.Peek();
         SetPhase(Phase.Order);
@@ -128,26 +128,29 @@ public class R2CafeDirector : MonoBehaviour
             asked = true;
             pack.Unlocked = true;
             Hud.I.SideNote(null);
-            Note.Set(NoteText + "\n아이스티 + 샷", Bal.G("R2_NoteSoft", 0f), 1);
+            Note.Set(NoteDrinks + "\n아이스티 + 샷" + NotePhone, Bal.G("R2_NoteSoft", 0f), 1);
         }
         talking = false;
         SetPhase(phase);
     }
 
-    void OnBlocked()
+    void OnAdded()
     {
-        if (muttering) return;
-        if (wondered) AskHint();
-        else StartCoroutine(Wonder());
+        if (!wondered) StartCoroutine(Wonder());
     }
 
-    // 주문하기가 막히면 혼잣말. 그때부터 알바생에게 말을 걸 수 있다
+    void OnBlocked()
+    {
+        if (!muttering && !talking) AskHint();
+    }
+
+    // 메뉴를 담으면 혼잣말. 그때부터 알바생에게 말을 걸 수 있다
     IEnumerator Wonder()
     {
         muttering = true;
         wondered = true;
         SetPhase(phase);
-        yield return Hud.I.Say(Me, "누구 물어볼 사람 없나?", Me + "_whoask");
+        yield return Hud.I.Say(Me, "뽀샤티? 이게 뭐지. 누구 물어볼 사람 없나?", Me + "_whoask2");
         muttering = false;
         hintAt = Time.time + Bal.G("R2_AskHintSec", 10f);
         while (!asked)
@@ -214,10 +217,9 @@ public class R2CafeDirector : MonoBehaviour
         yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
         while (queue.Count > 0)
         {
-            queue.ShuffleForward();
-            yield return null;   // 맨 앞 손님이 줄에서 빠진다
+            var front = StartCoroutine(queue.ServeNext(aside));   // 맨 앞 손님이 바로 줄에서 빠진다
             yield return StoreFlow.Race(this, player.WalkTo(Tail(queue.Count), speed), 2f);
-            yield return Served(Nearest());
+            yield return front;
         }
 
         // 앞사람이 끝나면 암전으로 차례가 온다. 뒤에는 새 손님이 선다
@@ -227,33 +229,6 @@ public class R2CafeDirector : MonoBehaviour
         player.Teleport(stand.position, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg);
         yield return player.LookAt(kioskLook.position, 0.01f);
         yield return Hud.I.Fade(0f, 0.4f);
-    }
-
-    // 지금 키오스크에 가장 가까운 줄 손님
-    NpcMover Nearest()
-    {
-        NpcMover best = null;
-        float dist = float.MaxValue;
-        foreach (var n in line)
-        {
-            if (!n.isActiveAndEnabled) continue;
-            float d = (n.transform.position - stand.position).sqrMagnitude;
-            if (d < dist) { dist = d; best = n; }
-        }
-        return best;
-    }
-
-    // 앞사람은 카드로 금방 결제하고 나간다
-    IEnumerator Served(NpcMover n)
-    {
-        if (!n) yield break;
-        float walk = Bal.G("Queue_WalkSpeed", 1.25f);
-        yield return queue.UseKiosk(n);
-        n.GoVia(aside, doorIn.position, walk, () =>
-        {
-            queue.OpenDoor(2.2f);
-            n.Go(doorOut.position, walk, () => queue.Done(n));
-        });
     }
 
     // ---- 2-7 ----

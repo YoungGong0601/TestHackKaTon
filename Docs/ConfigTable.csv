@@ -87,7 +87,7 @@ Age80_CursorLagSec,커서 지연,Float,0.2,s,ROUND_PLAN 7절
 Age80_DoorStepSpeed,당기며 비켜 서는 걸음,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_ExitWalkSpeed,문 밖으로 걷는 속도,Float,0.9,m/s,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_EyeHeight,눈높이,Float,1.56,m,ROUND_PLAN 7절
-Age80_KioskBlur,키오스크 글씨 번짐,Float,35,px,큰 글자까지 맨눈으로 못 읽음
+Age80_KioskBlur,키오스크 글씨 번짐,Float,8,px,글자가 살짝 흐린 정도
 Age80_KioskEye,키오스크 앞 눈높이,Float,1.47,m,ROUND_PLAN 7절
 Age80_KioskEyeDown,아래 볼 때 눈높이,Float,1.3,m,"ROUND_PLAN 7절, Elder 값 복사"
 Age80_KioskTimeoutSec,4회차 시간 초과,Float,40,s,ROUND_PLAN 7절
@@ -121,7 +121,7 @@ Bus_RideDoorSec,내부가 보인 뒤 출발 소리까지,Float,1.6,sec,내부를
 Bus_RideEngineSec,출발 소리 뒤 안내방송까지,Float,2.4,sec,내부를 둘러볼 시간
 Bus_RideFadeSec,승차 암전,Float,0.8,sec,장면 전환
 Bus_SecondWaitSec,112번 등장 전 대기,Float,2.5,sec,기다리는 시간
-Cash_BounceCount,지폐 튕김,Int,3,번,ROUND_PLAN 7절
+Cash_BounceCount,지폐 튕김,Int,1,번,ROUND_PLAN 7절
 Chapter_FadeInSec,Director 없는 챕터의 암전 풀림,Float,1,s,PlainChapter 기본
 Cine_BlendSec,컷 시작 때 시점이 옮겨 가는 시간,Float,1,sec,순간이동 느낌 방지
 Door_AmbientBlendSec,문 지나며 매장 앰비언트로 맞추는 시간,Float,1.6,sec,들어갈 때 밝기가 튀지 않음
@@ -516,7 +516,7 @@ Kiosk_CardOutBeepSec,카드 제거 재촉 간격,Float,3,s,자동 진행 없음
 Kiosk_IcFirstBounce,첫 삽입 방향 튕김,Int,1,count,4회차 카드 경로
 Kiosk_CustomerUseSec,다음 손님이 메뉴 화면을 쓰는 시간,Float,4,sec,이용 중으로 보임
 Kiosk_CardDepth,틈에 꽂힌 카드 중심 자리,Float,-0.02,m,음수면 틈 안쪽. 끝만 보임
-Post_SignBlur,표지 레이어 번짐 세기,Float,1,0~1,1 이면 가장 먼 번짐
+Post_SignBlur,표지 레이어 번짐 세기,Float,0.75,0~1,1 이면 가장 먼 번짐
 PostSignBlurMul,표지 번짐 프로필 배율,Float,1,배,인물 키 Age20 0 Age40 0 Age60 0.8 Age80 1
 Post_Bright,화면 밝기 배율,Float,1.12,배,Post_Dim에 곱한다
 Light_SunMul,씬 태양 세기 배율,Float,1,배,밤 제외
@@ -566,3 +566,5 @@ Hand_ReceiptLensY,돋보기 들 때 영수증 세로 자리,Float,0,m,렌즈 아
 R1_NotThisGapSec,쪽지에 없는 메뉴 혼잣말 간격,Float,3,s,잇달아 눌러도 한 번
 R2_AskHintSec,알바생에게 묻기 혼잣말 간격,Float,10,s,물어보면 멈춘다
 Subtitle_MaxLines,자막 최대 줄 수,Int,3,줄,넘치면 가장 오래된 줄을 뺀다
+Npc_HairSmooth,인물 광택(머리카락 포함),Float,0.15,비율,반사 프로브와 블룸에 번쩍이지 않게
+Nunchi_ApologyList,사과마다 줄어드는 눈치(순서대로),String,25;18;12;7;3,점,쓸수록 약해지고 재도전 때 처음으로

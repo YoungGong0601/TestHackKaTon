@@ -30,9 +30,13 @@ public static class Round
         if (ProfileChanged)
         {
             ProfileChanged = false;
+            var who = GameState.I.Profile;
+            bool bag = who != null && who.briefcase;   // 서류가방을 든 나이대는 가방을 올려 손과 함께 보여 준다
+            HandRig.I.caseLift = bag ? Bal.G("Round_CaseLift", 0.12f) : 0f;
             HandRig.I.SetPointer(true);
-            yield return new WaitForSeconds(Bal.G("Round_HandShowSec", 1.5f));
+            yield return new WaitForSeconds(bag ? Bal.G("Round_CaseShowSec", 2.2f) : Bal.G("Round_HandShowSec", 1.5f));
             HandRig.I.SetPointer(false);
+            HandRig.I.caseLift = 0f;
         }
 
         pc.Freeze(false);
@@ -40,6 +44,14 @@ public static class Round
 
     /// <summary>쓰지 않는다. 목표 문구는 쪽지로 바뀌었다. 부르는 곳이 없어지면 지운다.</summary>
     public static void Goal(string text) { }
+
+    // GameState 전용. 소리를 끊고 sec 동안 검은 화면으로 둔다. 소리는 GameState가 씬을 다 불러온 뒤 되돌린다
+    public static IEnumerator Silence(float sec)
+    {
+        if (AudioManager.I != null) AudioManager.I.CutAll();
+        AudioListener.volume = 0f;   // 앞 씬에 남은 소리가 암전 중에 새로 나지 않게
+        yield return new WaitForSecondsRealtime(sec);
+    }
 
     // GameState 전용
     public static IEnumerator CloseEyes()
@@ -58,7 +70,7 @@ public static class Round
     {
         var ui = RoundUi.I;
         if (ui == null) yield break;
-        for (float t = 0f; t < sec; t += Time.unscaledDeltaTime)
+        for (float t = 0f; t < sec; t += PauseMenu.Dt)
         {
             float k = t / Mathf.Max(sec, 0.001f);
             ui.Lids(Mathf.Lerp(from, to, k * k * (3f - 2f * k)));

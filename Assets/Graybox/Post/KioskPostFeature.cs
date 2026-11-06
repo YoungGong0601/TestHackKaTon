@@ -220,7 +220,7 @@ class KioskPostPass : ScriptableRenderPass
         Shader.SetGlobalFloat(SmudgeDrift, Bal.G("Post_SmudgeDrift", 0.05f));
 
         // 표지 레이어 번짐. 키 하나와 프로필 배율. 돋보기 카메라는 후처리가 없어 또렷하다
-        float sign = Bal.G("Post_SignBlur", 1f) * Bal.Age("PostSignBlurMul", 0f, 0f, 0.8f, 1f);
+        float sign = Bal.G("Post_SignBlur", 0.75f) * Bal.Age("PostSignBlurMul", 0f, 0f, 0.8f, 1f);
         material.SetFloat(SignBlur, sign);
         if (signMask != null) signMask.SetFloat(SignNear, Bal.G("Post_SignNear", 4f));
         signOn = sign > 0.001f && signMask != null && LayerMask.NameToLayer("SignBlur") >= 0;

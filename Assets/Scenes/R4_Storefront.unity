@@ -19767,14 +19767,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1424907995389854077, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
-      propertyPath: postBlur
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1555096196407488792, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1955715147769551578, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
       propertyPath: m_Name
       value: PH_Door_Glass
@@ -19782,14 +19774,6 @@ PrefabInstance:
     - target: {fileID: 8217686757026110245, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
       propertyPath: m_CastShadows
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8560485687673211236, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 8804810749645032578, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
-      propertyPath: m_Layer
-      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8809637757709623853, guid: d6279be6fc1cf3040b7ead5151580741, type: 3}
       propertyPath: m_LocalPosition.x

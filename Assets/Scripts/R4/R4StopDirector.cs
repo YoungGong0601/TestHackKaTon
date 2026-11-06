@@ -4,6 +4,7 @@
 // 배치: rowsBefore, rowsAfter = 각 면 Sharp 아래 RowsBefore, RowsAfter
 // 배치: student, worker = Student, Worker (StreetNpc), askStudent, askWorker = 각 AskUse
 // 배치: workerStart, npcPass, npcExit = WorkerStart, NpcPass, NpcExit
+// 배치: workerLane, studentLane = Anchors의 NpcLane_A..F와 NpcPass. 쓰레기통, BIS, 쉘터, 표지판, 펜스를 비켜 가는 길
 // 배치: bus1, bus2 = Bus1(2413), Bus2(112), busStart, busStop, busEnd = BusStart, BusStop, BusEnd
 // 배치: stepBottom, stepTop = 버스 앞문 계단 아래와 위, inside = Anchor_BusInside
 using System;
@@ -27,6 +28,8 @@ public class R4StopDirector : MonoBehaviour
     [SerializeField] Transform workerStart;
     [SerializeField] Transform npcPass;
     [SerializeField] Transform npcExit;
+    [SerializeField] Transform[] workerLane;
+    [SerializeField] Transform[] studentLane;
     [SerializeField] BusMover bus1;
     [SerializeField] BusMover bus2;
     [SerializeField] Transform busStart;
@@ -167,11 +170,18 @@ public class R4StopDirector : MonoBehaviour
         askedStudent = true;
     }
 
+    // NpcMover로 걸어서 플레이어와 다른 사람을 비켜 간다
+    IEnumerator Pass(StreetNpc who, Transform[] lane, float speed)
+    {
+        bool done = false;
+        who.GetComponent<NpcMover>().GoVia(lane, npcExit.position, speed, () => done = true);
+        while (!done) yield return null;
+    }
+
     IEnumerator StudentLeave()
     {
         float speed = Bal.G("Street_StudentWalkSpeed", 1.3f);
-        yield return student.WalkTo(npcPass.position, speed);
-        yield return student.WalkTo(npcExit.position, speed);
+        yield return Pass(student, studentLane, speed);
         student.gameObject.SetActive(false);
     }
 
@@ -209,8 +219,7 @@ public class R4StopDirector : MonoBehaviour
             float speed = Bal.G("Street_WorkerWalkSpeed", 1.28f);
             worker.transform.position = workerStart.position;
             worker.gameObject.SetActive(true);
-            yield return worker.WalkTo(npcPass.position, speed);
-            yield return worker.WalkTo(npcExit.position, speed);
+            yield return Pass(worker, workerLane, speed);
             worker.gameObject.SetActive(false);
             if (ask == Ask.Worker) yield return new WaitForSeconds(Bal.G("Street_WorkerRetrySec", 2.5f));
         }

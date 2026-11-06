@@ -46,6 +46,7 @@ public class HandRig : MonoBehaviour
     public float paperRate = 9f;    // 쪽지가 올라오는 빠르기
     public bool walletOut;          // Held와 따로 든다. 돋보기와 같이 쓰기 때문
     public float? pointerDist;      // 포인터가 닿는 거리. 없으면 0.6
+    public float caseLift;          // 0보다 크면 포인터를 든 동안에도 서류가방을 이만큼 올려 보여 준다
 
     public ItemId Held { get; private set; }
     // 영수증은 돋보기와 같이 보므로 Held가 아니다. 씬의 Receipt_View를 손에 붙여 오른쪽에서 들어 올린다
@@ -70,7 +71,7 @@ public class HandRig : MonoBehaviour
 
     readonly Ray[] rim = new Ray[6];
 
-    float tap, kick, tLens, tCard, tBill, tWallet, tPaper, tPoint, tCane, tCase;
+    float tap, kick, tLens, tCard, tBill, tWallet, tPaper, tPoint, tCane, tCase, tLift;
     bool paperUp;
     float paperSoft, paperSoftNow = -1f;
     int paperKind;
@@ -163,6 +164,7 @@ public class HandRig : MonoBehaviour
         Held = ItemId.None;
         Pointer = false;
         pointerDist = null;
+        caseLift = 0f;
         tremble = 0f;
         paperRate = 9f;
         walletOut = false;
@@ -353,7 +355,7 @@ public class HandRig : MonoBehaviour
     {
         var kb = Keyboard.current;
         var mode = PlayerController.I.CurrentMode;
-        if (kb == null || !ItemsEnabled || mode == PlayerController.Mode.Locked || mode == PlayerController.Mode.Hidden) return;
+        if (kb == null || PauseMenu.On || !ItemsEnabled || mode == PlayerController.Mode.Locked || mode == PlayerController.Mode.Hidden) return;
         if (HasReceipt && ItemKeys.Pressed(kb, ItemId.Receipt))
         {
             ReceiptOn = !ReceiptOn;
@@ -453,12 +455,13 @@ public class HandRig : MonoBehaviour
         }
 
         // 서류가방: 지팡이와 같은 자리에서 빈손일 때만 윗부분이 보인다. 쪽지와 영수증을 볼 때도 내린다
-        tCase = Damp(tCase, handFree && who.briefcase && !paperUp && !ReceiptOn ? 1f : 0f, 8f, dt);
+        tCase = Damp(tCase, who != null && who.briefcase && (handFree || caseLift > 0f) && !paperUp && !ReceiptOn ? 1f : 0f, 8f, dt);
+        tLift = Damp(tLift, caseLift, 6f, dt);
         if (Show(briefcase, tCase))
         {
             float amp = player.Walk01, ph = player.Bob * 0.5f, swing = Bal.G("Hand_BriefcaseSway", 0.012f);
             briefcase.localPosition = new Vector3(Bal.G("Hand_BriefcaseX", 0.42f) + Mathf.Sin(ph) * swing * amp,
-                Bal.G("Hand_BriefcaseY", -0.27f) - (1f - tCase) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * swing * amp, Bal.G("Hand_BriefcaseZ", 0.5f));
+                Bal.G("Hand_BriefcaseY", -0.27f) + tLift - (1f - tCase) * 0.4f + Mathf.Abs(Mathf.Sin(ph)) * swing * amp, Bal.G("Hand_BriefcaseZ", 0.5f));
             briefcase.localRotation = Rad(-0.05f, Bal.G("Hand_BriefcaseYaw", 1.25f), Mathf.Sin(ph) * swing * 3f * amp);
         }
 

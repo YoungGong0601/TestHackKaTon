@@ -28,6 +28,9 @@ public class GameState : MonoBehaviour
 
     public ChapterEntry CurrentEntry => Current;
 
+    /// <summary>씬 전환 중. 이 동안 일시정지 메뉴는 뜨지 않는다.</summary>
+    public bool Loading => loading;
+
     ChapterEntry Current => flow != null && chapterIndex >= 0 && chapterIndex < flow.chapters.Count ? flow.chapters[chapterIndex] : null;
 
     void Awake()
@@ -42,6 +45,7 @@ public class GameState : MonoBehaviour
         I = this;
         string startScene = root.scene.name;   // 씬을 비동기로 불러올 때는 활성 씬이 아직 앞 씬일 수 있다
         DontDestroyOnLoad(root);
+        AudioListener.volume = 1f;   // 나이대 전환 암전 중에 플레이를 멈춰도 소리가 꺼진 채 남지 않게
         QualitySettings.realtimeReflectionProbes = true;   // 씬의 반사 프로브가 시작 때 한 번 찍는다. 공용 설정은 꺼져 있다
 
         // 어느 씬에서 시작해도 그 씬의 챕터로 맞춘다. 단 BootScene은 처음부터. 이 Awake는 게임을 켤 때만 돌고, 진행 중 80대 도착은 아래 OnSceneLoaded가 받는다
@@ -122,12 +126,13 @@ public class GameState : MonoBehaviour
         else JumpChapter(chapterIndex + 1, true);
     }
 
-    // eyes: 다음 프로필이 다르면 암전 대신 눈을 감는다. 진행만 쓰고 디버그와 처음으로는 쓰지 않는다
-    public void JumpChapter(int index, bool eyes = false)
+    // eyes: 다음 프로필이 다르면 암전 대신 눈을 감고 긴 암전으로 넘어간다. 진행만 쓰고 디버그와 처음으로는 쓰지 않는다
+    // black: 화면이 닫힌 뒤 소리를 끊고 검은 화면으로 두는 시간(초)
+    public void JumpChapter(int index, bool eyes = false, float black = 0f)
     {
         if (loading || flow == null || index < 0 || index >= flow.chapters.Count) return;
         StopEnding();
-        StartCoroutine(Load(index, eyes));
+        StartCoroutine(Load(index, eyes, black));
     }
 
     // 엔딩 중 시연자 키로 옮길 때 엔딩 화면을 걷는다
@@ -149,7 +154,7 @@ public class GameState : MonoBehaviour
         JumpChapter(0);
     }
 
-    IEnumerator Load(int index, bool eyes)
+    IEnumerator Load(int index, bool eyes, float black)
     {
         loading = true;
         if (PlayerController.I != null) PlayerController.I.Freeze(true);
@@ -159,8 +164,13 @@ public class GameState : MonoBehaviour
             Hud.I.ClearSubs();
             Hud.I.Views(null);
             Round.ProfileChanged = Current != null && flow.chapters[index].profile != Current.profile;
-            if (eyes && Round.ProfileChanged) yield return Round.CloseEyes();
+            if (eyes && Round.ProfileChanged)
+            {
+                yield return Round.CloseEyes();
+                black = Bal.G("Round_AgeCutLongSec", 4f);
+            }
             else yield return Hud.I.Fade(1f, 0.7f);
+            if (black > 0f) yield return Round.Silence(black);
         }
         chapterIndex = index;
         Profile = Current.profile;
@@ -172,6 +182,7 @@ public class GameState : MonoBehaviour
             if (PlayerController.I != null) PlayerController.I.Freeze(false);
         }
         while (op != null && !op.isDone) yield return null;
+        AudioListener.volume = 1f;
         loading = false;
     }
 
@@ -189,7 +200,7 @@ public class GameState : MonoBehaviour
     void Update()
     {
         var kb = Keyboard.current;
-        if (kb == null || !kb.ctrlKey.isPressed || !kb.shiftKey.isPressed) return;
+        if (kb == null || PauseMenu.On || !kb.ctrlKey.isPressed || !kb.shiftKey.isPressed) return;
         if (kb.f1Key.wasPressedThisFrame && Hud.I != null) Hud.I.ToggleDebug();
         if (kb.f2Key.wasPressedThisFrame) CompleteChapter();
         if (kb.f3Key.wasPressedThisFrame) JumpChapter(chapterIndex - 1);

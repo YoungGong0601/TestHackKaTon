@@ -40,7 +40,7 @@ Enter 전에 nunchi.Configure(new NunchiRule { ... }). choices가 null이면 100
 | 지갑 없음 | 3 키로 카드 |
 | 지갑 있음 | 3 키로 지갑을 열고 카드나 지폐를 클릭. 걷는 중이면 들자마자 지갑이 닫힌다 |
 
-PayPoint는 Interactable이 같이 있으면 onUse로 클릭을 받는다(PH_BusTerminal). 소리는 Core가 내고 안내 문구는 Director가 낸다. 튕김 기준은 Bal.I("Cash_BounceCount", 3)와 CashRejected의 인수를 비교한다.
+PayPoint는 Interactable이 같이 있으면 onUse로 클릭을 받는다(PH_BusTerminal). 소리는 Core가 내고 안내 문구는 Director가 낸다. 튕김 기준은 Bal.I("Cash_BounceCount", 1)와 CashRejected의 인수를 비교한다.
 
 ## 지갑과 쪽지
 4회차 시작: Round.Open 뒤 Wallet.I.SetOpen(true). 쪽지 문구는 PH_Hand의 Hand_Wallet/Note. NoteRead는 한 판에 한 번.

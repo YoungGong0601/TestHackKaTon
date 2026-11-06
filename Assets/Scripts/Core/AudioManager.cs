@@ -200,6 +200,20 @@ public class AudioManager : MonoBehaviour
         loopRate[i] = loops[i].volume / Mathf.Max(fade, 0.01f);
     }
 
+    // 나이대 전환 때: 효과음, 음성, 반복음을 페이드 없이 바로 끊는다
+    public void CutAll()
+    {
+        foreach (var s in sfx) s.Stop();
+        foreach (var s in voice) s.Stop();
+        for (int i = 0; i < loops.Length; i++)
+        {
+            loops[i].Stop();
+            loops[i].volume = 0f;
+            loopKey[i] = null;
+            loopTarget[i] = 0f;
+        }
+    }
+
     // 씬 전환 때: 목록만 남기고 나머지는 페이드아웃
     public void Ambience(params (string key, float vol)[] list)
     {

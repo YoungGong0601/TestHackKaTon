@@ -298,7 +298,7 @@ public abstract class KioskPack : MonoBehaviour {
 | Lens_FocusBlurSec | 2 | 초점 흐려짐 길이 |
 | Watch_LookSec | 2 | 손목시계 보는 시간 |
 | R4_WatchHour1, R4_WatchHour2, R4_WatchHour3 | 2, 4, 6 | 바늘 |
-| Cash_BounceCount | 3 | 지폐 튕김 |
+| Cash_BounceCount | 1 | 지폐 튕김 |
 | R3_SmsLimitSec | 30 | 문자 번호 제한 시간 |
 
 재량 값(시트 표에 없음, 플레이 후 조정):

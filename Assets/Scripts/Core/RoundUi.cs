@@ -164,7 +164,7 @@ public class RoundUi : MonoBehaviour
 
     static IEnumerator Run(float sec, System.Action<float> set)
     {
-        for (float t = 0f; t < sec; t += Time.unscaledDeltaTime)
+        for (float t = 0f; t < sec; t += PauseMenu.Dt)
         {
             float k = t / sec;
             set(k * k * (3f - 2f * k));
@@ -184,7 +184,7 @@ public class RoundUi : MonoBehaviour
         get
         {
             var mouse = Mouse.current;
-            return mouse != null && mouse.leftButton.wasPressedThisFrame;
+            return mouse != null && !PauseMenu.On && mouse.leftButton.wasPressedThisFrame;
         }
     }
 

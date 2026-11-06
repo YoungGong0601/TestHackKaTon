@@ -1,9 +1,9 @@
-// 4회차 가게. 프로토타입 StoreDirector 진행: 안 도와주는 알바생, 키오스크, 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도. 지폐가 3번 튕기면 뒷사람이 자기 카드로 결제해 주고, 호출, 수령, 대사 뒤 결과로 끝난다.
+// 4회차 가게. 프로토타입 StoreDirector 진행: 안 도와주는 알바생, 키오스크, 게이지가 다 차면 줄 맨 뒤로 갔다가 다시 시도. 지폐가 튕기면 장면 A 주인공인 뒷사람이 자기 카드로 결제해 주고, 호출, 수령, 대사 뒤 결과로 끝난다.
 // R4_Store 씬 Director 오브젝트에 부착.
 // 배치: kiosk = PH_Kiosk, pack = KioskCanvas (R4ProtoPack), queue = QueueManager
 // 배치: stand = Anchor_KioskStand, kioskLook = Anchor_KioskLook, staffPos = Anchor_Staff, exitPos = Anchor_FrontDoor, exitLook = Anchor_ExitLook
 // 배치: orderKiosk = Interact_Order, talkStaff = Interact_Staff, brokenKiosk = Interact_Broken, exitDoor = Interact_Exit (늘 꺼 둔다), takeBag = Interact_Take
-// 배치: pool = 줄 손님 NPC_Queue0~4 (맨 앞 사람이 뒷사람), tray = Tray_Pass (쟁반, 처음 꺼짐), trayFrom, trayTo = 쟁반이 지나는 양 끝
+// 배치: pool = 줄 손님 NPC_Queue1~4, 뒷사람은 QueueManager.regular (NPC_Helper), tray = Tray_Pass (쟁반, 처음 꺼짐), trayFrom, trayTo = 쟁반이 지나는 양 끝
 // 배치: pickupPos = Anchor_PickupLook, cook = NPC_Cook, cookA, cookB = Anchor_CookA, Anchor_CookB, board = PH_PickupBoard
 // 배치: shelf = Pickup_Shelf, shelfCup = 그 자식 Cup, carried = Carried_Bag, cupLabels = 두 컵의 Label
 // 배치: receiptView = Receipt_View (시작할 때 HandRoot로), receiptNumber = Sharp/Number, receiptLines = Sharp/Lines
@@ -270,8 +270,8 @@ public class R4StoreDirector : MonoBehaviour
         kiosk.Finish(Bal.G("Nunchi_FullLeaveSec", 0.2f));
     }
 
-    // 도와주는 말은 a20 남자 음성뿐이라 줄에서 가장 가까운 남자가 나선다
-    void OnHelping() => rival = Front(true);
+    // 도와주는 사람은 장면 A 주인공. 줄 손님이 아니라 고정 손님이다
+    void OnHelping() => rival = queue.Regular();
 
     // 입력 없음. 비켜서면 뒷사람이 와서 카드를 대고, 비켜 준 자리로 돌아와 지폐를 내밀며 인사한다
     IEnumerator Helped()
@@ -312,14 +312,13 @@ public class R4StoreDirector : MonoBehaviour
     }
 
     // 지금 키오스크에 가장 가까운 줄 손님. 아직 아무도 안 왔으면 줄 맨 앞에 세운다
-    NpcMover Front(bool man = false)
+    NpcMover Front()
     {
         NpcMover best = null;
         float bestDist = float.MaxValue;
         foreach (var n in pool)
         {
             if (!n.isActiveAndEnabled) continue;
-            if (man && n.TryGetComponent(out NpcPose pose) && pose.Female) continue;
             float d = (n.transform.position - stand.position).sqrMagnitude;
             if (d < bestDist) { bestDist = d; best = n; }
         }

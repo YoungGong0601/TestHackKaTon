@@ -62,6 +62,9 @@ public class R4HomeDirector : MonoBehaviour
         Sound.Ambience();
         Round.ProfileChanged = false;
         IntroBegin();
+        // 눈을 뜨는 첫 장면부터 두 손이 있어야 한다
+        HandRig.I.SetEnabled(false);
+        HandRig.I.SetPose("Pose_Open");
         yield return new WaitForSeconds(Bal.G("R4_HomeBlackSec", 3f));
         Sound.Ambience(("amb_hallway", 0.5f));
         yield return Round.Open();
@@ -133,8 +136,6 @@ public class R4HomeDirector : MonoBehaviour
     {
         var hands = HandRig.I;
         Player.Freeze(true);
-        hands.SetEnabled(false);
-        hands.SetPose("Pose_Open");
         yield return new WaitForSeconds(Bal.G("R4_IntroHandSec", 2.5f));
         hands.SetPose("Pose_Default");
         hands.SetEnabled(true);
@@ -188,7 +189,7 @@ public class R4HomeDirector : MonoBehaviour
     {
         doorT = Mathf.Lerp(doorT, doorWant, 1f - Mathf.Exp(-DoorDamp * Time.deltaTime));
         doorHinge.localRotation = doorClosed * Quaternion.Euler(0f, doorT * DoorOpenDeg, 0f);
-        if (!ready || lowered) return;
+        if (!ready || lowered || PauseMenu.On) return;
 
         var kb = Keyboard.current;
         if (!noteUp)

@@ -1,14 +1,14 @@
 # 표지 번짐 대상 (레이어 후처리 방식)
 
 방식: SignBlur 레이어(13번)가 보이는 자리를 KioskPostFeature가 마스크로 그리고(깊이 비교로 앞 물체 제외), 그 자리만 Dual Kawase 피라미드로 섞는다. 돋보기 LensEye는 후처리가 없어 선명하다.
-세기: Post_SignBlur 0.5 x 프로필 배율 PostSignBlurMul(Age20 0, Age40 0, Age60 0.8, Age80 1). 1회차는 0이다.
+세기: Post_SignBlur 0.75 x 프로필 배율 PostSignBlurMul(Age20 0, Age40 0, Age60 0.8, Age80 1). 1회차는 0이다.
 블러 이미지는 따로 만들지 않는다. Readable.postBlur를 켠 글은 판독 판정만 쓰고 Blurred 쪽은 꺼진다.
 
 | 씬 또는 프리팹 | 대상 | 처리 |
 |---|---|---|
 | R1_Stop, R4_Stop | Route_Board | 이미지 한 장(RouteMap.png), Sharp를 SignBlur 레이어로, Blurred 끔, wide |
 | R1_Stop, R4_Stop | Notice_Cashless(버스 안) | NoticeImage 쿼드를 SignBlur 레이어로, Blurred 끔 |
-| R4_Stop | BisFaceA, BisFaceB | Sharp를 SignBlur 레이어로, Blurred 끔 |
+| R4_Stop | BisFaceA, BisFaceB | 전용 처리. Readable 방식, Blurred 안 BlurBefore, BlurAfter 번진 그림 두 벌(Bis_Blur_*.png), rowsBefore, rowsAfter로 글자와 같이 바뀜 |
 | R4_Stop, R4_Storefront | 건물 간판 | 번지지 않는다. M_SignZone 간판 영역 49개(R4_Stop 36, R4_Storefront 13)를 2026-11-06에 지웠다 |
 | PH_Door_Glass | Sticker_Pull(당기세요) | Plate를 SignBlur 레이어로, Blurred 끔 |
 

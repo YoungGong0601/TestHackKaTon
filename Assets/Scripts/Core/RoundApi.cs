@@ -130,8 +130,8 @@ public static class Cine
 // 마지막 챕터의 CompleteChapter가 부른다. 암막, 통계 문구, 작은 출처, 제목, 클릭 대기, Restart
 public static class Ending
 {
-    // 임시 T32: 사용자 지시 문구(시트 문구를 대신함)
-    public const string Stat = "80~84세 노인 중 키오스크로 주문할 수 있는 사람은 2.3%입니다.";
+    // 하단 카피는 프로토타입 결과 화면 끝 줄과 같다. 숫자 2.3%는 그림 Txt_End_Number
+    public const string Stat = "65세 이상 노인 중 키오스크로\n주문할 수 있는 사람은 약 18%.";
     public const string Source = "출처: 2023년도 노인실태조사(보건복지부, 한국보건사회연구원),\n김세진, 「노인의 여가 및 정보화 현황」, 보건복지포럼 2024년 11월호";
     public const string Title = "불고기 버거 세트 하나";
 

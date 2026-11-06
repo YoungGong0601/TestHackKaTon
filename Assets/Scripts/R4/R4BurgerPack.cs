@@ -194,7 +194,7 @@ public class R4BurgerPack : KioskPack
             moneySaid = true;
             Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
         }
-        if (count < Bal.I("Cash_BounceCount", 3)) return;
+        if (count < Bal.I("Cash_BounceCount", 1)) return;
         done = true;
         Unhook();
         Bounced?.Invoke();

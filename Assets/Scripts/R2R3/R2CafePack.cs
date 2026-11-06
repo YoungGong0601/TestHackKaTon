@@ -105,6 +105,8 @@ public class R2CafePack : KioskPack
     /// <summary>알바생에게 물어봐야 켜진다. 꺼져 있으면 주문하기가 막힌다.</summary>
     public bool Unlocked { get; set; }
     public event System.Action Blocked;
+    /// <summary>메뉴를 담을 때마다.</summary>
+    public event System.Action Added;
 
     /// <summary>결제까지 끝나서 키오스크를 떠났다. false면 눈치로 비켜난 것.</summary>
     public bool Paid { get; private set; }
@@ -242,7 +244,7 @@ public class R2CafePack : KioskPack
                 Refresh();
                 break;
             case "cart_close": listOpen = false; Refresh(); break;
-            case "next" when !Unlocked: Blocked?.Invoke(); break;
+            case "next" when !Unlocked && cart.Count > 0: Blocked?.Invoke(); break;
             case "next" when cart.Count == Cups && !popApp: popApp = true; Pop("pop_app"); break;
             case "next": if (cart.Count == Cups) NextDrink(-1); else Refuse(cart.Count == 0 ? "메뉴 미선택" : "2잔 미선택"); break;
             case "shot0": case "shot1": cart[cup].shot = id == "shot1" ? "샷 추가" : null; ToIce(); break;
@@ -275,6 +277,7 @@ public class R2CafePack : KioskPack
         Ctl.Sfx("kiosk_ok", 0.5f);
         Refresh();
         Ctl.Toast($"{it.name} {cart.Count}잔째");
+        Added?.Invoke();
     }
 
     void Remove(int i)
