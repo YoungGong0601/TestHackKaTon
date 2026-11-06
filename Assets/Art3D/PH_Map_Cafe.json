@@ -11,6 +11,7 @@
  {"prefab": "PH_CoffeeCups", "target": "Visual", "model": "Models/PH/PH_CoffeeCups__Set.fbx"},
  {"prefab": "PH_BackShelf", "target": "Visual", "model": "Models/PH/PH_BackShelf__Body.fbx"},
  {"prefab": "PH_BackShelf", "target": "Visual", "model": "Models/PH/PH_BackShelf__Machine.fbx"},
+ {"prefab": "PH_Showcase", "target": "Visual", "model": "Models/PH/PH_Showcase__Body.fbx"},
  {"prefab": "PH_StreetTree", "target": "Visual", "model": "Models/PH/PH_StreetTree__Body.fbx"},
  {"prefab": "PH_OfficeBlock", "target": "Visual", "model": "Models/PH/PH_OfficeBlock__Body.fbx"}
 ]}
