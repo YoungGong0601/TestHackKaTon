@@ -1,0 +1,70 @@
+{
+ "asset": "PH_BackShelf__Body",
+ "category": "PH",
+ "rigged": false,
+ "materials": [
+  {
+   "maps": {
+    "BaseColor": "Textures/PH_BackShelf__Body/T_PH_BackShelf__Body_BaseColor.jpg",
+    "Normal": "Textures/PH_BackShelf__Body/T_PH_BackShelf__Body_Normal.png",
+    "MS": "Textures/PH_BackShelf__Body/T_PH_BackShelf__Body_MS.png"
+   },
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 1.0,
+   "smoothness": 1.0,
+   "occlusion": true,
+   "name": "M_PH_BackShelf__Body"
+  },
+  {
+   "baseColor": [
+    0.012,
+    0.01,
+    0.008,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.15,
+   "name": "M_PH_BackShelf__Body_Dark"
+  },
+  {
+   "baseColor": [
+    0.022,
+    0.075,
+    0.048,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.55,
+   "name": "M_PH_BackShelf__Body_Door"
+  },
+  {
+   "baseColor": [
+    0.02,
+    0.02,
+    0.022,
+    1.0
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.5,
+   "name": "M_PH_BackShelf__Body_Steel"
+  },
+  {
+   "baseColor": [
+    0.9,
+    0.95,
+    0.95,
+    0.15
+   ],
+   "metallic": 0.0,
+   "smoothness": 0.95,
+   "transparent": true,
+   "name": "M_Glass_PH_BackShelf"
+  }
+ ],
+ "notes": "원점 프리팹 원점(바닥 중앙), 앞면 Unity -Z. 뒤판은 y 2.36 까지. 소품 19자리. 기계 자리 x -1.25~-0.55, y 0.9~1.3 은 뒤판 말고 비움. 벽 쪽을 보는 평면은 지웠음. 문과 철제는 굽지 않는 단색"
+}
