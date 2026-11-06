@@ -263,7 +263,7 @@ public class Hud : MonoBehaviour
         float from = fade.color.a, t = 0f;
         while (t < sec)
         {
-            t += Time.unscaledDeltaTime;
+            t += PauseMenu.Dt;
             if (token == fadeToken) SetFade(Mathf.Lerp(from, to, Mathf.Clamp01(t / Mathf.Max(sec, 1e-3f))));
             yield return null;
         }
@@ -349,6 +349,8 @@ public class Hud : MonoBehaviour
         yield return new WaitForSecondsRealtime(Bal.G("Title_PopSec", 0.25f));
         adWall.gameObject.SetActive(false);
     }
+
+    public void PopIn(Transform window) => StartCoroutine(Pop(window));
 
     // 창이 튕기며 뜬다. 0.8에서 1.08을 넘었다가 1로
     IEnumerator Pop(Transform window)

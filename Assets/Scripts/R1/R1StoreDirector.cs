@@ -238,7 +238,7 @@ public class R1StoreDirector : MonoBehaviour
         Player.Freeze(true);
         queue.OpenDoor();
         AudioManager.I.Play("door_handle", chimePos.position, 0.5f);
-        GameState.I.JumpChapter(GameState.I.chapterIndex + 1);   // 20대에서 40대는 눈 감기 없이 짧은 암전
+        GameState.I.JumpChapter(GameState.I.chapterIndex + 1, false, Bal.G("Round_AgeCutSec", 2.5f));   // 20대에서 40대는 눈 감기 없이 소리를 끊은 암전
     }
 
     void Update()

@@ -89,6 +89,7 @@ public class EndingHomeDirector : MonoBehaviour
 
     void Step()
     {
+        if (PauseMenu.On) return;
         var kb = Keyboard.current;
         int f = 0, s = 0;
         if (kb != null)

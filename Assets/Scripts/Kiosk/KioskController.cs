@@ -330,7 +330,7 @@ public class KioskController : MonoBehaviour
 
     void Update()
     {
-        if (!Active) return;
+        if (!Active || PauseMenu.On) return;
         Pack.OnTick(Time.deltaTime);
         if (toastUntil > 0f && Time.time > toastUntil) Toast(null);
         if (!ctrl) return;

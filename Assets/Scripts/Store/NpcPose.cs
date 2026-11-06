@@ -10,6 +10,11 @@ public class NpcPose : MonoBehaviour
     public int look = -1;
     public string pose = "Idle";
 
+    /// <summary>켜진 모델이 여자인가. 처음 켜진 뒤에 맞는 값이 된다.</summary>
+    public bool Female { get; private set; }
+
+    static readonly int Smoothness = Shader.PropertyToID("_Smoothness");
+
     Animator anim;
     NpcMover mover;
     StreetNpc street;
@@ -46,8 +51,30 @@ public class NpcPose : MonoBehaviour
     void Bind(Transform model)
     {
         anim = model.GetComponent<Animator>();
+        Female = model.name.Contains("Woman") || model.name.Contains("Ajumma");
         foreach (var t in model.GetComponentsInChildren<Transform>(true))
             if (t.name.EndsWith("_Phone")) t.gameObject.SetActive(pose.Contains("Phone"));
+        Matte(model);
+    }
+
+    // 머리카락은 몸, 머리 재질 한 장에 같이 그려져 있어 슬롯을 따로 고를 수 없다. 그 슬롯 전체의 광택을 낮추고 반사 프로브를 받지 않는다
+    static void Matte(Transform model)
+    {
+        var block = new MaterialPropertyBlock();
+        foreach (var r in model.GetComponentsInChildren<Renderer>(true))
+        {
+            var mats = r.sharedMaterials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (!mats[i]) continue;
+                string n = mats[i].name;
+                if (!n.Contains("Hair") && !n.EndsWith("_Body") && !n.EndsWith("_Head")) continue;
+                r.GetPropertyBlock(block, i);
+                block.SetFloat(Smoothness, Bal.G("Npc_HairSmooth", 0.15f));
+                r.SetPropertyBlock(block, i);
+                r.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+            }
+        }
     }
 
     void OnEnable() => now = null;   // SetActive 로 켜면 Animator 가 기본 상태로 돌아간다

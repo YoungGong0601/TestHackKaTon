@@ -692,10 +692,13 @@ public abstract class RoundFixture
     {
         yield return Until(() => !Pc.Frozen, 30f, "카페 시작");
         yield return Until(() => Note.Opened, 5f, "2회차 쪽지");
-        // 주문하기가 막힌 뒤에야 직원에게 물을 수 있다
+        // 메뉴를 담은 뒤에야 직원에게 물을 수 있다
         yield return EnterKiosk();
+        yield return Touch("item_americano");
+        yield return Until(() => rec.Saw("누구 물어볼 사람 없나?"), 15f, "메뉴를 담으면 혼잣말");
         yield return Touch("next");
-        yield return Until(() => rec.Saw("누구 물어볼 사람 없나?"), 15f, "주문하기가 막히고 혼잣말");
+        Assert.AreEqual("menu", Kiosk.Screen, "묻기 전 주문하기는 막힘");
+        yield return Until(() => rec.Saw("알바생한테 물어보자"), 15f, "주문하기를 다시 누르면 혼잣말");
         var cafe = Object.FindAnyObjectByType<R2CafeDirector>();
         yield return Until(() => Field<bool>(cafe, "wondered"), 15f, "혼잣말이 끝나야 말을 걸 수 있음");
         yield return Tap(Key.A);
@@ -703,6 +706,8 @@ public abstract class RoundFixture
         yield return Tap(Key.E);
         yield return Until(() => rec.Saw("아이스티에... 커피를 넣는다고?"), 20f, "직원 대답");
         yield return Tap(Key.D);
+        yield return Touch("slot0");
+        yield return Touch("cart_del0");
         yield return R2Order();
         yield return WalletTake("cardPart", ItemId.Card);
         yield return ClickPay();
@@ -807,7 +812,7 @@ public abstract class RoundFixture
         for (int i = 0; i < count; i++) yield return ClickPay();
     }
 
-    /// <summary>지폐 3번 뒤 뒷사람 결제, 호출, 수령, 대사까지.</summary>
+    /// <summary>지폐 1번 뒤 뒷사람 결제, 호출, 수령, 대사까지.</summary>
     protected IEnumerator R4Finish()
     {
         yield return Lines(30f, "어르신, 이거 돈 안 들어가요.", "아, 그려?", "그러면 방법이 없는겨?", "제 카드로 결제해 드릴게요.");

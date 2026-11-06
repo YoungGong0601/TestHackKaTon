@@ -19,7 +19,6 @@ public class R4ProtoPack : KioskPack
     KioskScreens scr;
     KioskHardware hw;
     bool whatSaid, cashTold, done;
-    int cashSaid, cashWant;
     string receiptLines = "";
     int receiptTotal;
 
@@ -44,8 +43,6 @@ public class R4ProtoPack : KioskPack
     public override void OnEnter()
     {
         done = false;
-        cashSaid = 0;
-        cashWant = 0;
         cashTold = false;
         blinkT = 0f;
         hw = Ctl.GetComponent<KioskHardware>();
@@ -107,32 +104,16 @@ public class R4ProtoPack : KioskPack
         }
         Flow.CardOnly();
         blinkT = Bal.G("R4_CardOnlyBlinkSec", 1.2f);
-        // 튕길 때마다 혼잣말 하나. 말하는 중이면 끝난 뒤 차례로 나온다
-        bool idle = cashWant == cashSaid;
-        cashWant++;
-        if (idle) StartCoroutine(CashLines());   // 코루틴은 첫 yield까지 바로 돈다. cashWant를 먼저 올려야 첫 줄이 나온다
-        if (count < Bal.I("Cash_BounceCount", 3) || cashTold) return;
+        if (count < Bal.I("Cash_BounceCount", 1) || cashTold) return;
         cashTold = true;
         Stop();
         StartCoroutine(CashTalk());
     }
 
-    System.Collections.IEnumerator CashLines()
-    {
-        while (cashSaid < cashWant)
-        {
-            int i = Mathf.Min(cashSaid, 2);
-            if (i == 0) yield return Ctl.Say(Me, "돈을 어디다 넣으라는 거야.", Me + "_money");
-            else if (i == 1) yield return Ctl.Say(Me, "왜 기계가 돈을 안먹지? 이상하네", Me + "_no_eat");
-            else yield return Ctl.Say(Me, "어허, 또 나오네.", Me + "_again");
-            cashSaid++;
-        }
-    }
-
     // 혼잣말이 끝나면 뒷사람이 말을 건다. 결제는 비켜선 뒤 HelpPay가 맡는다
     System.Collections.IEnumerator CashTalk()
     {
-        while (cashSaid < cashWant) yield return null;
+        yield return Ctl.Say(Me, "왜 기계가 돈을 안먹지? 이상하네", Me + "_no_eat");
         KeepOrder();
         Helping?.Invoke();
         yield return Ctl.Say("back", "어르신, 이거 돈 안 들어가요.", "a20_cant1");

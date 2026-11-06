@@ -46,3 +46,4 @@ Nunchi_SighStepDown,처음 보는 화면으로 넘어갈 때 줄어드는 점수
 Nunchi_BackMidMul,뒷사람 반응 중간 단계 점수 배수,Float,1.5,x,기준 점수의 배수
 Nunchi_BackHighMul,뒷사람 재촉 단계 점수 배수,Float,2,x,기준 점수의 배수
 Nunchi_CrowdVolume,웅성거림 음량,Float,0.5,ratio,짧게 들림
+Nunchi_ApologyList,사과마다 줄어드는 눈치(순서대로),String,25;18;12;7;3,점,쓸수록 약해지고 재도전 때 처음으로

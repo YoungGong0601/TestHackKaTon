@@ -6,6 +6,7 @@
 // 배치: crowd = 자식 AudioSource Nunchi_Crowd (loop, playOnAwake 끔, 볼륨 0, clip crowd_murmur_tense)
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class NunchiSystem : MonoBehaviour
@@ -24,6 +25,7 @@ public class NunchiSystem : MonoBehaviour
     NunchiRule rule;
     float hurryMul = 1f, sighMul = 1f;
     bool asking;
+    int sorries;   // 이번에 키오스크 앞에 선 뒤 사과한 횟수. 재도전하면 처음으로 돌아간다
 
     /// <summary>회차 규칙. Enter 전에 부른다.</summary>
     public void Configure(NunchiRule r) => rule = r;
@@ -60,7 +62,7 @@ public class NunchiSystem : MonoBehaviour
     {
         if (!GameState.I.Profile.kioskNunchi) return;
         gauge = rule != null ? rule.start : 0f; RateMul = 1f; Cooldown = 0f; LookingBack = false;
-        hurryMul = 1f; sighMul = 1f; asking = false;
+        hurryMul = 1f; sighMul = 1f; asking = false; sorries = 0;
         hurryWait = 0f; lastBack = null; sayUntil = 0f; mutterWant = 0f; mutterReady = 0f; BlurStep = 0;
         sighScore = 0f; sighElapsed = 0f; sighReady = 0f; sameScreenSec = 0f; missAt = -1f;
         lastScreen = null;
@@ -110,10 +112,15 @@ public class NunchiSystem : MonoBehaviour
         if (!Running || Cooldown > 0f) return false;
         int i = UnityEngine.Random.Range(0, NunchiLines.Sorry.GetLength(0));
         Say(Speaker, NunchiLines.Sorry[i, 1], Speaker + "_" + NunchiLines.Sorry[i, 0]);
-        Value = gauge - Bal.G("Nunchi_Sorry", 25f);
-        Cooldown = Bal.G("Nunchi_SorryCooldown", 5f);
+        // 쓸수록 약해진다. 쿨타임과 멈춤도 줄어든 만큼 같이 줄어든다
+        var list = ConfigTableLoader.Get("Nunchi_ApologyList", "25;18;12;7;3").Split(';');
+        float first = float.Parse(list[0], CultureInfo.InvariantCulture);
+        float cut = float.Parse(list[Mathf.Min(sorries, list.Length - 1)], CultureInfo.InvariantCulture);
+        sorries++;
+        Value = gauge - cut;
+        Cooldown = Bal.G("Nunchi_SorryCooldown", 5f) * cut / first;
         GameState.I.Stats.sorry++;
-        calmUntil = Time.time + Bal.G("Nunchi_SorryHoldSec", 2f);
+        calmUntil = Time.time + Bal.G("Nunchi_SorryHoldSec", 2f) * cut / first;
         hurryWait = 0f;
         Sorried?.Invoke();
         return true;
@@ -130,14 +137,16 @@ public class NunchiSystem : MonoBehaviour
     {
         mutterWant = 0f;
         mutterReady = Time.time + Bal.G("Nunchi_MutterCooldown", 9f);
-        int i = UnityEngine.Random.Range(0, NunchiLines.Mutter.GetLength(0));
+        int i;
+        do i = UnityEngine.Random.Range(0, NunchiLines.Mutter.GetLength(0));
+        while (Array.IndexOf(NunchiLines.OldVoice, Speaker + "_" + NunchiLines.Mutter[i, 0]) >= 0);
         Say(Speaker, NunchiLines.Mutter[i, 1], Speaker + "_" + NunchiLines.Mutter[i, 0], null, Bal.G("Nunchi_MutterVolume", 0.9f));
     }
 
     /// <summary>다른 말과 겹치지 않게 시간을 기록하며 자막을 띄운다. pos가 있으면 음성은 그 자리에서 난다.</summary>
     public Coroutine Say(string who, string text, string vo = null, Vector3? pos = null, float vol = 1f, bool clear = false)
     {
-        sayUntil = Time.time + Mathf.Max(1.6f, text.Length * 0.1f);
+        sayUntil = Time.time + Mathf.Max(1.6f, text.Length * 0.1f, vo != null ? AudioManager.I.VoLength(vo) : 0f);
         return Hud.I.Say(who, text, vo, -1f, pos, vol, clear);
     }
 
@@ -230,12 +239,14 @@ public class NunchiSystem : MonoBehaviour
         if (sameScreenSec > Bal.G("Nunchi_SighStallFreeSec", 10f)) sighScore += Bal.G("Nunchi_SighStallRate", 1f) * dt;
     }
 
-    // 점수가 높을수록 센 칸에서 고른다. 같은 줄은 연속으로 나오지 않는다
+    // 점수가 높을수록 센 칸에서 고른다. 같은 줄은 연속으로 나오지 않는다. 화자와 같은 성별이 줄에 없으면 그 문구는 뺀다
     void BackReact(float limit)
     {
         int tier = sighScore >= limit * Bal.G("Nunchi_BackHighMul", 2f) ? 2 : sighScore >= limit * Bal.G("Nunchi_BackMidMul", 1.5f) ? 1 : 0;
         var pool = new List<string>(NunchiLines.Back[tier]);
         if (!GameState.I.Profile.limp) pool.Remove(NunchiLines.ElderOnly);
+        pool.RemoveAll(t => VoicePos(t) == null);
+        if (pool.Count == 0) return;
         if (pool.Count > 1) pool.Remove(lastBack);
         string text = pool[UnityEngine.Random.Range(0, pool.Count)];
         lastBack = text;
@@ -253,7 +264,7 @@ public class NunchiSystem : MonoBehaviour
             if (!LookingBack) Murmur(text, 1.3f);
             return;
         }
-        Say("back", text, VoFor(text), QueuePos, 1f, true);
+        Say("back", text, VoFor(text), VoicePos(text), 1f, true);
         if (tier == 0) return;
         PlayerController.I.AddShake(Bal.G("Nunchi_HurryShake", 0.12f));
         if (!LookingBack) hurryWait = Bal.G("Nunchi_HurryIgnoreWindow", 7f);
@@ -265,6 +276,15 @@ public class NunchiSystem : MonoBehaviour
         for (int i = 0; i < NunchiLines.Hurry.GetLength(0); i++)
             if (NunchiLines.Hurry[i, 2] == text) return NunchiLines.Hurry[i, 0];
         return null;
+    }
+
+    // 문구가 나는 자리. 표의 화자와 성별이 같은 줄 손님에게서 나고, 그런 사람이 없으면 null. 한숨과 웅성거림은 줄 맨 앞
+    Vector3? VoicePos(string text)
+    {
+        for (int i = 0; i < NunchiLines.Hurry.GetLength(0); i++)
+            if (NunchiLines.Hurry[i, 2] == text)
+                return queue != null ? queue.VoicePos(NunchiLines.Hurry[i, 1] != "yM") : (Vector3?)null;
+        return QueuePos;
     }
 
     System.Collections.IEnumerator GiveUpRun()

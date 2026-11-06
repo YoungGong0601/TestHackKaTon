@@ -26,11 +26,11 @@ public class RoundPathTests : RoundFixture
         yield return PlayR4Storefront();
         yield return EnterKiosk();
         yield return R4ToPay();
-        yield return Bounce(3);
+        yield return Bounce(1);
         yield return R4Finish();
         yield return PlayResult();
 
-        AssertSaw("왜 안 되지?", "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.", "이건 또 뭐야.", "돈을 어디다 넣으라는 거야.", "아 이보시게 잠시만요!");
+        AssertSaw("왜 안 되지?", "어서 오세요!", "274번 고객님, 주문하신 메뉴 나왔습니다.", "이건 또 뭐야.", "왜 기계가 돈을 안먹지? 이상하네", "아 이보시게 잠시만요!");
         AssertNotSaw("일단 현금은 안된다네요.", "하... 걸어가야겠구만.", "현금은 어디에 넣어요?");
         AssertCleanText();
     }
@@ -76,7 +76,7 @@ public class RoundPathTests : RoundFixture
         yield return PlayR4Storefront();
         yield return EnterKiosk();
         yield return R4ToPay();
-        yield return Bounce(3);
+        yield return Bounce(1);
         yield return R4Finish();
         var group = Field<CanvasGroup>(RoundUi.I, "endGroup");
         yield return Until(() => group.gameObject.activeSelf, 120f, "엔딩");
@@ -167,7 +167,7 @@ public class RoundPathTests : RoundFixture
         }
         yield return Real(0.5f);
         yield return R4ToPay();
-        yield return Bounce(3);
+        yield return Bounce(1);
         yield return R4Finish();
     }
 
@@ -192,7 +192,7 @@ public class RoundPathTests : RoundFixture
     // ---- 4회차 지폐 ----
 
     [UnityTest, Timeout(Limit)]
-    public IEnumerator R4_CashBounce3()
+    public IEnumerator R4_CashBounce1()
     {
         SteadyHands();
         yield return Chapter(R4Store);
@@ -211,12 +211,10 @@ public class RoundPathTests : RoundFixture
 
         yield return R4ToPay();
         Assert.IsFalse(RoundUi.I.GiveUpShown, "결제 창에서는 버튼 없음");
-        yield return Bounce(2);
-        Assert.IsTrue(Kiosk.Active && !Kiosk.Busy, "두 번까지는 남음");
+        yield return Bounce(1);
         Assert.AreEqual("카드 전용", K.cardMsg, "튕김 안내");
-        yield return ClickPay();
         yield return Until(() => !Kiosk.Active, 40f, "대화 뒤 비켜섬");
-        AssertSaw("돈을 어디다 넣으라는 거야.");
+        AssertSaw("왜 기계가 돈을 안먹지? 이상하네");
         yield return R4Finish();
         yield return PlayResult();
     }

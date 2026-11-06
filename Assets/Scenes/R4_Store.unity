@@ -9564,7 +9564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7192051827224835492, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_Name
-      value: NPC_Queue0
+      value: NPC_Helper
       objectReference: {fileID: 0}
     - target: {fileID: 7624273772489378153, guid: f52a1f31607c7da4d89852b8d30ee555, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11409,7 +11409,6 @@ MonoBehaviour:
   pickupLook: {fileID: 1305384098}
   boardLook: {fileID: 1906609116}
   pool:
-  - {fileID: 1327390793}
   - {fileID: 127305793}
   - {fileID: 1599556391}
   - {fileID: 817284556}
@@ -11418,6 +11417,7 @@ MonoBehaviour:
   - {fileID: 1590745379}
   - {fileID: 8253041}
   - {fileID: 983133165}
+  regular: {fileID: 1327390793}
   wideLine: 0
 --- !u!4 &1603332981
 Transform:
@@ -11458,7 +11458,6 @@ MonoBehaviour:
   brokenKiosk: {fileID: 1615260921}
   exitDoor: {fileID: 2090427521}
   pool:
-  - {fileID: 1327390793}
   - {fileID: 127305793}
   - {fileID: 1599556391}
   - {fileID: 817284556}

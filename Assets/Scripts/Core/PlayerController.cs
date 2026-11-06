@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
     void Follow(float dt)
     {
         idle += dt;
-        if (gaze == null && idle > Bal.G("Look_IdleSec", 2f)) gaze = Interactable.Nearest(EyePos, Bal.G("Look_IdleDist", 6f));
+        if (gaze == null && !HoldStill && idle > Bal.G("Look_IdleSec", 2f)) gaze = Interactable.Nearest(EyePos, Bal.G("Look_IdleDist", 6f));
         if (gaze == null) return;
         Vector3 d = gaze.Value - EyePos;
         float k = 1f - Mathf.Exp(-dt * 3f / Mathf.Max(Bal.G("Look_FollowSec", 0.6f), 0.01f));
@@ -196,6 +196,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (PauseMenu.On) return;
         float dt = Mathf.Min(Time.deltaTime, 0.05f);
         var mouse = Mouse.current;
         Look(dt, mouse);

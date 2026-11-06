@@ -129,6 +129,11 @@ public class Note : MonoBehaviour
 
     void Update()
     {
+        if (PauseMenu.On)
+        {
+            if (closeAt > 0f) closeAt += Time.unscaledDeltaTime;   // 쉬는 동안 접히는 시간도 멈춘다
+            return;
+        }
         if (closeAt > 0f && Time.unscaledTime >= closeAt) Show(false);
 
         var kb = Keyboard.current;

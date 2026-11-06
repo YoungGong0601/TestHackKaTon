@@ -11,7 +11,8 @@
 // 배치: pickupFront = Anchor_PickupFront (-2.2, 0, -0.85) 손님이 받는 자리
 // 배치: pickupLook = Anchor_PickupLook (-2.92, 1.08, -0.85) 픽업 대
 // 배치: boardLook = Anchor_Board (-2.72, 2.62, -0.9) 대기 손님이 보는 전광판
-// 배치: pool = NPC_Queue0..4 (NpcMover 5개, 어디 두어도 시작할 때 숨겨짐)
+// 배치: pool = 줄 손님 NPC_Queue (NpcMover 여러 개, 어디 두어도 시작할 때 숨겨짐)
+// 배치: regular = 늘 줄 맨 앞에 서는 고정 손님 (R4_Store NPC_Helper). pool에 넣지 않는다. 다른 씬은 비워 둔다
 // 배치: waiters = NPC_Wait0 (-1.72, 0, 0.25), NPC_Wait1 (-1.5, 0, -0.3), NPC_Wait2 (-1.1, 0, -2.4) 받는 자리와 나가는 길을 비운 자리
 using System.Collections;
 using System.Collections.Generic;
@@ -32,12 +33,13 @@ public class QueueManager : MonoBehaviour
     [SerializeField] Transform boardLook;
     [SerializeField] List<NpcMover> pool = new List<NpcMover>();
     [SerializeField] List<NpcMover> waiters = new List<NpcMover>();
+    [SerializeField] NpcMover regular;
 
     readonly List<NpcMover> queue = new List<NpcMover>();
 
     float nextArrive;
     float doorA, doorWant, doorUntil;
-    bool serving;
+    bool serving, regularIn;
     Quaternion doorBase;
 
     /// <summary>키오스크 조작 중에만 줄이 늘어난다.</summary>
@@ -48,6 +50,15 @@ public class QueueManager : MonoBehaviour
     public float Spacing => wideLine ? Bal.G("R2_QueueSpacing", 1f) : Bal.G("Queue_Spacing", 0.82f);
 
     public Vector3 QueuePos => Slot(0) + Vector3.up * 1.5f;
+
+    /// <summary>줄에서 이 성별인 맨 앞사람의 머리 자리. 없으면 null.</summary>
+    public Vector3? VoicePos(bool female)
+    {
+        foreach (NpcMover n in queue)
+            if (n.TryGetComponent(out NpcPose pose) && pose.Female == female)
+                return n.transform.position + Vector3.up * 1.5f;
+        return null;
+    }
 
     float WalkSpeed => Bal.G("Queue_WalkSpeed", 1.25f);
     float WaiterSpeed => Bal.G("Queue_WaiterSpeed", 1.2f);
@@ -70,6 +81,7 @@ public class QueueManager : MonoBehaviour
     {
         doorBase = doorPivot.localRotation;
         foreach (NpcMover n in pool) n.Hide();
+        if (regular) regular.Hide();
         foreach (NpcMover n in waiters) n.Face(boardLook.position);
     }
 
@@ -101,6 +113,9 @@ public class QueueManager : MonoBehaviour
         doorA = StoreFlow.Damp(doorA, doorWant, doorWant != 0f ? 5f : 3f, dt);
         doorPivot.localRotation = doorBase * Quaternion.Euler(0f, doorA * Mathf.Rad2Deg, 0f);
 
+        // 다 쓴 손님이 키오스크 앞을 벗어나야 자리가 빈다
+        if (user && userDone && Vector3.Distance(user.transform.position, stand.position) > Bal.G("Queue_ClearDist", 1.1f)) user = null;
+
         // 줄은 게이지를 따라 길어진다
         if ((KioskOn || (nunchi != null && nunchi.Running)) && nunchi != null)
         {
@@ -128,9 +143,10 @@ public class QueueManager : MonoBehaviour
     public void Done(NpcMover n)
     {
         queue.Remove(n);
+        if (user == n) user = null;
         if (n.TryGetComponent(out NpcPose pose)) pose.pose = "Idle";
         n.Hide();
-        if (!pool.Contains(n)) pool.Add(n);
+        if (n != regular && !pool.Contains(n)) pool.Add(n);
     }
 
     /// <summary>줄이 비지 않게 최소 인원까지 바로 세운다.</summary>
@@ -145,6 +161,20 @@ public class QueueManager : MonoBehaviour
             queue.Add(n);
             Settle(n);
         }
+        CloseUp();
+    }
+
+    /// <summary>고정 손님을 돌려준다. 아직 안 왔으면 줄 맨 앞에 바로 세운다.</summary>
+    public NpcMover Regular()
+    {
+        if (regularIn) return regular;
+        regularIn = true;
+        regular.Place(Slot(0));
+        regular.Show();
+        queue.Insert(0, regular);
+        Settle(regular);
+        CloseUp();
+        return regular;
     }
 
     void Arrive()
@@ -162,8 +192,14 @@ public class QueueManager : MonoBehaviour
         });
     }
 
+    // 고정 손님이 첫 손님이라 뒤에 누가 오고 가도 맨 앞이다
     NpcMover TakeFromPool()
     {
+        if (regular && !regularIn)
+        {
+            regularIn = true;
+            return regular;
+        }
         if (pool.Count == 0) return null;
         NpcMover n = pool[0];
         pool.RemoveAt(0);
@@ -184,29 +220,14 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    /// <summary>주문을 마친 뒤 줄이 앞으로 간다. 플레이어가 서 있어도 멈추지 않는다.</summary>
-    public void ShuffleForward()
-    {
-        StartCoroutine(NextUp());
-    }
-
-    IEnumerator NextUp()
-    {
-        if (queue.Count == 0) yield break;
-        NpcMover n = queue[0];
-        queue.RemoveAt(0);
-        n.Go(stand.position, WalkSpeed, () =>
-        {
-            n.Face(kioskLook.position);
-            if (n.TryGetComponent(out NpcPose pose)) pose.pose = "Tap";
-        });
-        CloseUp();
-    }
-
     // ---- 다음 손님: 플레이어가 키오스크 앞 구역을 벗어난 뒤에만 출발한다 ----
 
+    // 키오스크를 맡은 손님은 한 명뿐이다. 자리로 갈 때부터 다 쓰고 앞을 벗어날 때까지 잡는다
+    NpcMover user;
+    bool userDone;
+
     /// <summary>손님이 기계를 쓰는 중. 플레이어는 이때 키오스크를 쓰지 못한다.</summary>
-    public bool Serving { get; private set; }
+    public bool Serving => user != null;
 
     bool PlayerNear(float dist)
     {
@@ -229,20 +250,31 @@ public class QueueManager : MonoBehaviour
         while (queue.Count > 0)
         {
             while (PlayerNear(Bal.G("Queue_ClearDist", 1.1f))) yield return null;
-            NpcMover n = queue[0];
-            queue.RemoveAt(0);
-            CloseUp();
-            yield return UseKiosk(n);
-            Leave(n, via);
+            yield return ServeNext(via);
             yield return new WaitForSeconds(Bal.G("Queue_NextGapSec", 1f));
         }
         if (kiosk && kiosk.Pack) kiosk.Pack.ShowCustomer(kiosk.Pack.FirstScreen);
         serving = false;
     }
 
-    /// <summary>손님이 키오스크 앞으로 가서 실제 화면을 넘기며 쓴다. 자리에 플레이어가 있으면 비킬 때까지 멈춘다.</summary>
+    /// <summary>줄 맨 앞 손님이 키오스크를 쓰고 앞을 벗어날 때까지.</summary>
+    public IEnumerator ServeNext(IEnumerable<Transform> via = null)
+    {
+        if (queue.Count == 0) yield break;
+        NpcMover n = queue[0];
+        queue.RemoveAt(0);
+        CloseUp();
+        yield return UseKiosk(n);
+        Leave(n, via);
+        while (user == n) yield return null;
+    }
+
+    /// <summary>손님이 키오스크 앞으로 가서 실제 화면을 넘기며 쓴다. 앞 손님이 있으면 떠날 때까지, 자리에 플레이어가 있으면 비킬 때까지 멈춘다.</summary>
     public IEnumerator UseKiosk(NpcMover n)
     {
+        while (user) yield return null;
+        user = n;
+        userDone = false;
         float block = Bal.G("Queue_StandBlockDist", 0.7f);
         n.Go(stand.position, WalkSpeed);
         while (n.Walking)
@@ -258,10 +290,9 @@ public class QueueManager : MonoBehaviour
         n.Face(kioskLook.position);
         n.TryGetComponent(out NpcPose pose);
         if (pose) pose.pose = "Tap";
-        Serving = true;
         yield return kiosk.CustomerUse();
-        Serving = false;
         if (pose) pose.pose = "Idle";
+        userDone = true;
     }
 
     void Leave(NpcMover n, IEnumerable<Transform> via)
