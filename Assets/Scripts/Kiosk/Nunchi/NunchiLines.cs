@@ -36,6 +36,9 @@ public static class NunchiLines
         { "read1", "글씨가 왜 이렇게 작아." },
     };
 
+    // 새 목소리로 녹음하지 않은 혼잣말. 한 사람 목소리가 섞이지 않게 고르지 않는다
+    public static readonly string[] OldVoice = { "a20_why1", "a20_what1", "a40_why1", "a40_what1" };
+
     public static readonly string[,] Sorry =
     {
         { "sorry1", "아이고, 죄송합니다." },

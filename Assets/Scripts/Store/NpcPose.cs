@@ -10,6 +10,9 @@ public class NpcPose : MonoBehaviour
     public int look = -1;
     public string pose = "Idle";
 
+    /// <summary>켜진 모델이 여자인가. 처음 켜진 뒤에 맞는 값이 된다.</summary>
+    public bool Female { get; private set; }
+
     Animator anim;
     NpcMover mover;
     StreetNpc street;
@@ -46,6 +49,7 @@ public class NpcPose : MonoBehaviour
     void Bind(Transform model)
     {
         anim = model.GetComponent<Animator>();
+        Female = model.name.Contains("Woman") || model.name.Contains("Ajumma");
         foreach (var t in model.GetComponentsInChildren<Transform>(true))
             if (t.name.EndsWith("_Phone")) t.gameObject.SetActive(pose.Contains("Phone"));
     }

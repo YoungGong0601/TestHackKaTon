@@ -49,6 +49,15 @@ public class QueueManager : MonoBehaviour
 
     public Vector3 QueuePos => Slot(0) + Vector3.up * 1.5f;
 
+    /// <summary>줄에서 이 성별인 맨 앞사람의 머리 자리. 없으면 null.</summary>
+    public Vector3? VoicePos(bool female)
+    {
+        foreach (NpcMover n in queue)
+            if (n.TryGetComponent(out NpcPose pose) && pose.Female == female)
+                return n.transform.position + Vector3.up * 1.5f;
+        return null;
+    }
+
     float WalkSpeed => Bal.G("Queue_WalkSpeed", 1.25f);
     float WaiterSpeed => Bal.G("Queue_WaiterSpeed", 1.2f);
     Vector3 Back

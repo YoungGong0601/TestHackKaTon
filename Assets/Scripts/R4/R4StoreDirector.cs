@@ -270,7 +270,8 @@ public class R4StoreDirector : MonoBehaviour
         kiosk.Finish(Bal.G("Nunchi_FullLeaveSec", 0.2f));
     }
 
-    void OnHelping() => rival = Front();
+    // 도와주는 말은 a20 남자 음성뿐이라 줄에서 가장 가까운 남자가 나선다
+    void OnHelping() => rival = Front(true);
 
     // 입력 없음. 비켜서면 뒷사람이 와서 카드를 대고, 비켜 준 자리로 돌아와 지폐를 내밀며 인사한다
     IEnumerator Helped()
@@ -284,7 +285,7 @@ public class R4StoreDirector : MonoBehaviour
         yield return player.LookAt(kioskLook.position, Bal.G("Cine_BlendSec", 1f));
 
         float rivalSpeed = Bal.G("R4_RivalSpeed", 1.4f);
-        yield return StoreFlow.Race(this, rival.WalkTo(stand.position, rivalSpeed), Bal.G("R4_HelpWalkSec", 2.5f));
+        yield return StoreFlow.Race(this, rival.WalkTo(stand.position, rivalSpeed), Bal.G("R4_RivalWalkSec", 5f));
         rival.Face(kioskLook.position);
         rival.TryGetComponent(out NpcPose pose);
         if (pose) pose.pose = "Tap";
@@ -311,13 +312,14 @@ public class R4StoreDirector : MonoBehaviour
     }
 
     // 지금 키오스크에 가장 가까운 줄 손님. 아직 아무도 안 왔으면 줄 맨 앞에 세운다
-    NpcMover Front()
+    NpcMover Front(bool man = false)
     {
         NpcMover best = null;
         float bestDist = float.MaxValue;
         foreach (var n in pool)
         {
             if (!n.isActiveAndEnabled) continue;
+            if (man && n.TryGetComponent(out NpcPose pose) && pose.Female) continue;
             float d = (n.transform.position - stand.position).sqrMagnitude;
             if (d < bestDist) { bestDist = d; best = n; }
         }
@@ -408,7 +410,8 @@ public class R4StoreDirector : MonoBehaviour
         call = num;
         board.Show(ready, call);
         AudioManager.I.Play("pager_call", pickupPos.position, 0.8f);
-        Ui.Say("crew", $"{{g:{num}번}} 고객님.", $"staff_call_{num}", -1f, staffPos.position);
+        // 269, 271, 272는 새 목소리 파일이 없다. 키를 넘기면 JW 폴더의 옛 남자 음성이 나오니 자막만 낸다
+        Ui.Say("crew", $"{{g:{num}번}} 고객님.", null, -1f, staffPos.position);
         shelf.SetActive(true);
         PutOnShelf();
         yield return queue.WaiterPickup(() => shelf.SetActive(false));
