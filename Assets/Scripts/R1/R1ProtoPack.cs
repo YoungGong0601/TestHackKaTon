@@ -1,6 +1,6 @@
 // 1-7, 1-8 쉬운 키오스크. 4회차와 같은 가게, 같은 화면(Screen_ 프로토타입)이고 난이도만 다르다.
 // 팝업, 광고, 시간 제한, 회원 입력, 구성 고르기 없이 시작, 장소, 메뉴, 장바구니, 결제 수단, 카드, 완료로 간다.
-// 쪽지의 신메뉴(KioskPick)만 살 수 있고 첫 칸 불고기 버거 세트를 포함한 나머지는 품절이다. 결제는 PH_Kiosk_R4 의 IC 틈 PayPoint, 포스터는 처음부터 걷혀 있다.
+// 메뉴는 모두 누를 수 있지만 쪽지의 신메뉴(KioskPick)만 담기고, 첫 칸 불고기 버거 세트를 포함한 나머지는 혼잣말만 나온다. 결제는 PH_Kiosk_R4 의 IC 틈 PayPoint, 포스터는 처음부터 걷혀 있다.
 // 부착: PH_Kiosk_R4 인스턴스의 KioskCanvas (KioskScreens와 같은 오브젝트, R4ProtoPack은 뺀다)
 using System.Collections;
 using System.Collections.Generic;
@@ -31,8 +31,9 @@ public class R1ProtoPack : KioskPack
     PayPoint pay;
     KioskHardware hw;
     bool paid, pulled, canTear;
-    float progress;
+    float progress, notThisAt;
 
+    static string Me => GameState.I.Profile.speakerKey;
 
     public override string FirstScreen => "idle";
     public override bool CanGiveUp => false;
@@ -200,12 +201,18 @@ public class R1ProtoPack : KioskPack
             K.cart.Clear();
             Draw();
         }
-        else if (id.StartsWith("item_"))
-        {
-            Ctl.Sfx("kiosk_error", 0.5f);
-            Toast("품절");
-        }
+        else if (id.StartsWith("item_")) NotThis();
         else Ctl.Sfx("kiosk_tap", 0.35f, 0.7f);
+    }
+
+    // 쪽지의 메뉴가 아니다. 담기지 않는다. 1회차는 쉬우니 눈치에 닿지 않고, 잇달아 눌러도 한 번으로 친다
+    void NotThis()
+    {
+        Ctl.Sfx("kiosk_tap", 0.35f, 0.7f);
+        if (Time.time < notThisAt) return;
+        notThisAt = Time.time + Bal.G("R1_NotThisGapSec", 3f);
+        GameState.I.Stats.wrong++;
+        Ctl.Say(Me, "이거 아니잖아", null);
     }
 
     public override bool Hit(Collider col)
@@ -266,7 +273,7 @@ public class R1ProtoPack : KioskPack
         if (paid) return;
         if (K.screen != "card")
         {
-            Ctl.Sfx("kiosk_error", 0.5f);
+            GameState.I.Stats.wrong++; Ctl.Sfx("kiosk_error", 0.5f);
             Toast("메뉴");
             return;
         }

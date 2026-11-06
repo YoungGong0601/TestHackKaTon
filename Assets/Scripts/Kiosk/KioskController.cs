@@ -276,6 +276,7 @@ public class KioskController : MonoBehaviour
             return;
         }
         b.Flash();
+        GameState.I.Stats.touches++;
         Pack.OnPress(b.id);
     }
 
@@ -354,7 +355,7 @@ public class KioskController : MonoBehaviour
                 }
             }
             else if (lastSec != -1) { lastSec = -1; screens.SetTimer(0, false); }
-            if (timer <= 0f) { ResetTimer(); lastSec = -1; screens.SetTimer(0, false); Pack.OnTimeout(); }
+            if (timer <= 0f) { ResetTimer(); lastSec = -1; screens.SetTimer(0, false); GameState.I.Stats.resets++; Pack.OnTimeout(); }
         }
         else if (lastSec != -1) { lastSec = -1; screens.SetTimer(0, false); }
 

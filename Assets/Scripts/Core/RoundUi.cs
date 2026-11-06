@@ -28,6 +28,8 @@ public class RoundUi : MonoBehaviour
     [SerializeField] GameObject endStatImage, endTitleImage;   // 서울알림체 글자 그림. TMP는 투명으로 남아 문구 기록만 맡는다
     [SerializeField] UnityEngine.UI.Image endNumber;    // 배치: End/Stat_Image/Number (Filled 세로)
     [SerializeField] CanvasGroup endCopy;               // 배치: End/Stat_Image/Stat
+    [SerializeField] CanvasGroup endResult;             // 배치: End/Result (처음 꺼짐, 고정 글자는 서울알림체 그림)
+    [SerializeField] TMP_Text[] endValues = new TMP_Text[0];   // 배치: Result 안 값 글자 6개, 걸린 시간부터 차례로
     [SerializeField] CanvasGroup endFoot;               // 배치: End/Stat_Image/Source, End/Restart를 묶은 EndFoot
 
     public int ChoiceSlots => choiceRows.Length;
@@ -108,6 +110,37 @@ public class RoundUi : MonoBehaviour
         if (endTitle != null) endTitle.text = "";
         if (endStatImage != null) endStatImage.SetActive(false);
         if (endTitleImage != null) endTitleImage.SetActive(false);
+        if (endResult != null) endResult.gameObject.SetActive(false);
+    }
+
+    /// <summary>통계를 걷고 같은 배경 위에 결산을 띄운다. 항목은 프로토타입 결과 화면과 같다.</summary>
+    public IEnumerator EndResult()
+    {
+        if (!endResult) yield break;
+        var st = GameState.I.Stats;
+        string[] rows =
+        {
+            Clock((st.endTime >= 0f ? st.endTime : Time.time) - st.startTime),
+            $"{st.touches}번",
+            $"{st.wrong}번",
+            $"{st.sorry}번",
+            $"{st.resets}번",
+            st.memoOk ? "예" : "아니오",
+        };
+        for (int i = 0; i < rows.Length && i < endValues.Length; i++) endValues[i].text = rows[i];
+        float sec = Bal.G("End_CopySec", 0.6f);
+        yield return Run(sec, k => { if (endCopy) endCopy.alpha = 1f - k; if (endFoot) endFoot.alpha = 1f - k; });
+        if (endStatImage != null) endStatImage.SetActive(false);
+        if (endTitleImage != null) endTitleImage.SetActive(false);
+        endResult.gameObject.SetActive(true);
+        endResult.alpha = 0f;
+        yield return Run(sec, k => endResult.alpha = k);
+    }
+
+    static string Clock(float sec)
+    {
+        int s = Mathf.Max(0, Mathf.RoundToInt(sec)), m = s / 60;
+        return m > 0 ? $"{m}분 {s % 60}초" : $"{s}초";
     }
 
     public void EndStat(string stat, string source)

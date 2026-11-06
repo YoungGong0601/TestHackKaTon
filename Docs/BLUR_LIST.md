@@ -30,7 +30,7 @@
 
 ## 키오스크 화면
 키오스크 화면 글자는 후처리 표지 번짐 대상이 아니다. 기존 KioskReveal 레이어와 Readable 방식 그대로다.
-화면 쿼드 번짐은 Age80_KioskBlur 44px(이전 12px). 4회차 큰 글자와 가격도 맨눈으로 못 읽고 그림과 버튼 자리만 보인다. 돋보기는 RT_Sharp라 또렷하다.
+화면 쿼드 번짐은 Age80_KioskBlur 35px(이전 44px). 4회차 큰 글자와 가격도 맨눈으로 못 읽고 그림과 버튼 자리만 보인다. 돋보기는 RT_Sharp라 또렷하다.
 
 ## 쪽지
 쪽지는 번짐 대상이 아니다. R2_NoteSoft 0, NotePanel의 age20, age40, age80 soft 0. 들고 있는 동안 HandRig가 쪽지 자리를 PostState.NoteRect로 넘기고 후처리가 그 자리의 시야 번짐과 표지 번짐을 뺀다. 종이 재질은 렌더 큐 3950, 글자 M_Note_Text는 3960으로 유리보다 뒤에 그린다.

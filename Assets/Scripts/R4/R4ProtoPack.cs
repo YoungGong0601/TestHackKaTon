@@ -158,6 +158,7 @@ public class R4ProtoPack : KioskPack
         receiptLines = string.Join("  ", names);
         receiptTotal = Flow.K.Total;
         Cider = drink != null && (drink.Contains("cider") || (KioskData.ById(drink)?.name ?? "").Contains("사이다"));
+        GameState.I.Stats.memoOk = Cider;
     }
 
     /// <summary>뒷사람이 카드를 대고 끝낸다. 카드 소리, 화면 넘김, 영수증만 낸다. 키오스크 모드 밖에서 부른다.</summary>

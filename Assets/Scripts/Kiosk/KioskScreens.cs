@@ -19,6 +19,8 @@ public class KioskScreens : MonoBehaviour
     [SerializeField] KioskButton infoNo;
     [SerializeField] KioskFields timer;
 
+    Vector2? infoHome;
+
     public KioskScreen Current { get; private set; }
     public RectTransform Canvas => canvas;
 
@@ -62,6 +64,26 @@ public class KioskScreens : MonoBehaviour
         info.Text("terms", i.terms ?? "");
         if (infoSkip) infoSkip.gameObject.SetActive(i.skip);
         if (infoNo) infoNo.gameObject.SetActive(i.no != null && !i.skip);
+    }
+
+    /// <summary>안내 창 판을 가운데에서 옮긴다. jitter가 false면 제자리. 판이 화면 밖으로 나가지 않게 줄인다.</summary>
+    public void MoveInfo(bool jitter)
+    {
+        var panel = info ? info.transform.Find("Panel") as RectTransform : null;
+        if (!panel || !canvas) return;
+        if (infoHome == null) infoHome = panel.anchoredPosition;
+        panel.anchoredPosition = infoHome.Value;
+        if (!jitter) return;
+        float range = canvas.rect.width * Bal.G("Kiosk_PopJitter", 0.06f);
+        var off = new Vector2(Random.Range(-range, range), Random.Range(-range, range));
+        var corners = new Vector3[4];
+        panel.GetWorldCorners(corners);
+        Vector2 lo = canvas.InverseTransformPoint(corners[0]), hi = canvas.InverseTransformPoint(corners[2]);
+        var r = canvas.rect;
+        off.x = Mathf.Clamp(off.x, Mathf.Min(r.xMin - lo.x, 0f), Mathf.Max(r.xMax - hi.x, 0f));
+        off.y = Mathf.Clamp(off.y, Mathf.Min(r.yMin - lo.y, 0f), Mathf.Max(r.yMax - hi.y, 0f));
+        float toPanel = canvas.lossyScale.x / Mathf.Max(panel.parent.lossyScale.x, 1e-6f);   // 내용 루트 배율이 걸려 있어도 같은 거리로
+        panel.anchoredPosition = infoHome.Value + off * toPanel;
     }
 
     public void SetTimer(int sec, bool show)

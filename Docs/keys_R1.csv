@@ -65,3 +65,4 @@ R1_IntroNoteRate,쪽지 드는 빠르기,Float,2.5,배,평소 9보다 천천히
 R1_IntroNoteRiseSec,쪽지 올리고 조작 돌려줄 때까지,Float,1.2,sec,천천히
 R1_OrderWaitSec,어르신 호출 뒤 내 번호까지,Float,13,sec,조리 소리와 다른 번호 호출
 R1_IntroLookAt,걷기 중 시선을 옮기기 시작하는 시점,Float,0.4,비율,걷는 도중
+R1_NotThisGapSec,쪽지에 없는 메뉴 혼잣말 간격,Float,3,s,잇달아 눌러도 한 번

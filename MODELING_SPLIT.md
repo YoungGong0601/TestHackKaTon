@@ -152,7 +152,7 @@ DressKit 함수는 Read, Open, Save, Find, Off, Move, Look, Model, Root, Place, 
 
 ## 8. 4번 령기컴: 카페
 
-2026-11-06 변경: 카페는 령기컴 대신 정우맥과 정우컴이 맡습니다. 분담은 CAFE_SPLIT.md 입니다. 령기컴은 이 절을 시작하지 않습니다.
+2026-11-06 변경: 카페는 령기컴 대신 정우맥과 정우컴이 맡습니다. 분담은 CAFE_SPLIT.md 입니다. 령기컴은 이 절을 시작하지 않습니다. 카페는 커밋 0aacfc7 에서 끝났습니다. `[4번 끝]` 대신 `[2번 카페 끝]` 이 끝 표시입니다.
 
 소유: Assets/Art3D/PH_Map_Cafe.json, 프리팹 PH_Kiosk, PH_BarCounter, PH_Showcase, PH_BackShelf, PH_CafeTable, PH_CafeFront, PH_OfficeBlock, PH_StreetTree, PH_Crosswalk, PH_Road, PH_CoffeeCups, 씬 R2_Cafe, Env_Cafe, Assets/Editor/DressCafe.cs, 스크립트 새 PH/cafe_*.py, PH/kiosk_cafe.py, 새 Food/ 파일.
 

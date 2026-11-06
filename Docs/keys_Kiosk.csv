@@ -58,3 +58,4 @@ Kiosk_CardOutBeepSec,카드 제거 재촉 간격,Float,3,s,자동 진행 없음
 Kiosk_IcFirstBounce,첫 삽입 방향 튕김,Int,1,count,4회차 카드 경로
 Kiosk_CustomerUseSec,다음 손님이 메뉴 화면을 쓰는 시간,Float,4,sec,이용 중으로 보임
 Kiosk_CardDepth,틈에 꽂힌 카드 중심 자리,Float,-0.02,m,음수면 틈 안쪽. 끝만 보임
+Kiosk_PopJitter,80대 팝업 위치 흔들림,Float,0.06,화면 폭 비율,가운데에서 상하좌우로 옮기고 화면 안으로 제한
