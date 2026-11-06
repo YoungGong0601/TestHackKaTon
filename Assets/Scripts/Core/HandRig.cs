@@ -60,7 +60,7 @@ public class HandRig : MonoBehaviour
     static float TrembleRad => Bal.G("Tremble_Freq", 1.8f) * Mathf.PI * 2f;
 
     Transform receiptView;
-    float tReceipt;
+    float tReceipt, tReceiptLens;
     float trembleFrom = -100f, lastMove;
     bool handMoving;
 
@@ -113,7 +113,7 @@ public class HandRig : MonoBehaviour
                 lensSmall[i] = new RenderTexture(size, size, lensFull.depth, lensFull.format) { filterMode = FilterMode.Bilinear };
             }
         }
-        int step = Mathf.RoundToInt(Debuff.LensBlur01 * lensSmall.Length);
+        int step = ReceiptOn ? 0 : Mathf.RoundToInt(Debuff.LensBlur01 * lensSmall.Length);   // 영수증은 번지지 않고 읽힌다
         var want = step == 0 ? lensFull : lensSmall[step - 1];
         if (lensEye.targetTexture != want) lensEye.targetTexture = want;
     }
@@ -134,7 +134,8 @@ public class HandRig : MonoBehaviour
         Ray center = cam.ViewportPointToRay(at);
         float tan = radius * 2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
         lensEye.transform.SetPositionAndRotation(cam.transform.position, Quaternion.LookRotation(center.direction, cam.transform.up));
-        float zoom = LensHit != null && LensHit.wide ? Bal.G("Lens_BoardZoom", 1.15f) : Bal.G("Lens_Zoom", 1.45f);
+        // 영수증을 볼 때는 배율을 낮춘다. 1.45면 렌즈가 겹쳐 보여도 원 안 시야가 종이에 닿지 않는다
+        float zoom = ReceiptOn ? Bal.G("Lens_ReceiptZoom", 1.05f) : LensHit != null && LensHit.wide ? Bal.G("Lens_BoardZoom", 1.15f) : Bal.G("Lens_Zoom", 1.45f);
         lensEye.fieldOfView = 2f * Mathf.Atan(tan / Mathf.Max(zoom, 0.01f)) * Mathf.Rad2Deg;
         lensEye.clearFlags = cam.clearFlags;
         lensEye.backgroundColor = cam.backgroundColor;
@@ -221,14 +222,23 @@ public class HandRig : MonoBehaviour
         tReceipt = Damp(tReceipt, ReceiptOn ? 1f : 0f, 9f, dt);
         bool show = tReceipt > 0.01f;
         if (receiptView.gameObject.activeSelf != show) receiptView.gameObject.SetActive(show);
-        receiptView.localPosition = new Vector3(Bal.G("Hand_ReceiptX", 0.13f), Bal.G("Hand_ReceiptY", -0.06f) - (1f - tReceipt) * 0.34f, 0.4f);
+        // 돋보기를 들면 종이를 렌즈 아래로 가져온다. 돋보기는 평소 화면 가운데에 있다
+        tReceiptLens = Damp(tReceiptLens, Held == ItemId.Lens ? 1f : 0f, 9f, dt);
+        float x = Mathf.Lerp(Bal.G("Hand_ReceiptX", 0.13f), Bal.G("Hand_ReceiptLensX", 0f), tReceiptLens);
+        float y = Mathf.Lerp(Bal.G("Hand_ReceiptY", -0.06f), Bal.G("Hand_ReceiptLensY", 0f), tReceiptLens);
+        receiptView.localPosition = new Vector3(x, y - (1f - tReceipt) * 0.34f, 0.4f);
     }
 
     /// <summary>손 자세 자리를 켠다. Pose_ 로 시작하는 자식 중 이름이 맞는 것만 켠다. Pose_Open은 반전 짝(Pose_Open_Mirror)도 같이 켠다.</summary>
     public void SetPose(string pose)
     {
         foreach (Transform c in transform)
-            if (c.name.StartsWith("Pose_")) c.gameObject.SetActive(c.name.StartsWith(pose));
+            if (c.name.StartsWith("Pose_"))
+            {
+                c.gameObject.SetActive(c.name.StartsWith(pose));
+                var open = c.Find("Visual/Hand_Open");   // 어깨가 아니라 손 자리에서 키워야 화면에서 커진다
+                if (open) open.localScale = Vector3.one * Bal.G("Hand_OpenScale", 1.3f);
+            }
     }
 
     public void Tap() => tap = 1f;
@@ -501,7 +511,8 @@ public class HandRig : MonoBehaviour
         if (lensEye != null)
         {
             int handMask = LayerMask.GetMask("HandModel");
-            lensEye.cullingMask = walletOut ? lensEye.cullingMask | handMask : lensEye.cullingMask & ~handMask;
+            bool handInLens = walletOut || tPaper > 0.01f || tReceipt > 0.01f;
+            lensEye.cullingMask = handInLens ? lensEye.cullingMask | handMask : lensEye.cullingMask & ~handMask;
         }
         // 초점이 나간 동안에는 글이 읽히지 않는다
         bool focused = Debuff.LensFocused;

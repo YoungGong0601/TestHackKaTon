@@ -79148,7 +79148,10 @@ PrefabInstance:
       value: Dress_R4_Stop_C
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1465238127625586603, guid: 5e674da24e8c741488cbd7f991925edc, type: 3}
+    - {fileID: 3544579424465698555, guid: 5e674da24e8c741488cbd7f991925edc, type: 3}
+    - {fileID: 5548295246703606378, guid: 5e674da24e8c741488cbd7f991925edc, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e674da24e8c741488cbd7f991925edc, type: 3}

@@ -155,6 +155,9 @@ public static class Ending
             yield return ui.EndReveal();
             yield return new WaitForSeconds(Bal.G("End_StatSec", 5f));
             while (!RoundUi.Clicked) yield return null;
+            yield return null;
+            yield return ui.EndResult();
+            while (!RoundUi.Clicked) yield return null;
             ui.End(false);
         }
         GameState.I.Restart();
