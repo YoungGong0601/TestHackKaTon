@@ -20,7 +20,7 @@ public class NpcMover : MonoBehaviour
     readonly Queue<Vector3> route = new Queue<Vector3>();
     Vector3 heading;
     int side;
-    float bestDist, stuck, stepAcc;
+    float bestDist, stuck, stepAcc, pace;
     StreetNpc look;
     Transform hand;
 
@@ -38,6 +38,7 @@ public class NpcMover : MonoBehaviour
         token++;
         route.Clear();
         SetTarget(world);
+        if (!walking) pace = 0f;
         speed = walkSpeed;
         onArrive = arrive;
         walking = true;
@@ -74,6 +75,7 @@ public class NpcMover : MonoBehaviour
     {
         token++;
         walking = false;
+        pace = 0f;
         onArrive = null;
         route.Clear();
     }
@@ -178,7 +180,11 @@ public class NpcMover : MonoBehaviour
             else
             {
                 heading = Steer(p, d / dist);
-                Vector3 step = Block(p, heading * Mathf.Min(dist, speed * dt));
+                // 출발은 서서히, 마지막 자리 앞에서는 줄여서 선다
+                float blend = Mathf.Max(Bal.G("Npc_BlendSec", 0.25f), 0.01f);
+                float want = passing ? speed : Mathf.Min(speed, Mathf.Max(0.2f, dist / blend));
+                pace = Mathf.MoveTowards(pace, want, speed / blend * dt);
+                Vector3 step = Block(p, heading * Mathf.Min(dist, pace * dt));
                 transform.position = p + step;
                 TurnToward(Mathf.Atan2(heading.x, heading.z) * Mathf.Rad2Deg, 8f, dt);
             }
@@ -205,6 +211,7 @@ public class NpcMover : MonoBehaviour
             if (o.walking && Vector3.Dot(o.heading, dir) > 0.5f) continue;   // 같은 쪽으로 가는 사람은 따라간다
             Consider(o.transform.position - p, dir, right, gap, ref along, ref lateral, ref hit);
         }
+        if (PlayerController.I != null) Consider(PlayerController.I.transform.position - p, dir, right, gap, ref along, ref lateral, ref hit);
 
         if (!hit)
         {
@@ -236,6 +243,7 @@ public class NpcMover : MonoBehaviour
         float min = Bal.G("Npc_MinGap", 0.5f);
         foreach (NpcMover o in everyone)
             if (o != this) step = BlockOne(o.transform.position - p, step, min);
+        if (PlayerController.I != null) step = BlockOne(PlayerController.I.transform.position - p, step, min);
         return step;
     }
 
@@ -277,6 +285,19 @@ public static class StoreFlow
     {
         while (work.MoveNext()) yield return work.Current;
         done();
+    }
+
+    /// <summary>주문 뒤 기다리는 시간. 픽업대 쪽에서 조리 소리가 나고 중간에 otherCall이 불린다.</summary>
+    public static IEnumerator Kitchen(Vector3 at, float sec, Action otherCall)
+    {
+        float step = sec / 4f;
+        yield return new WaitForSeconds(step);
+        AudioManager.I.Play("fryer_beep", at, 0.5f);
+        yield return new WaitForSeconds(step);
+        otherCall();
+        yield return new WaitForSeconds(step);
+        AudioManager.I.Play("tray_put", at, 0.35f);
+        yield return new WaitForSeconds(step);
     }
 
     /// <summary>three.js 쪽 damp와 같은 지수 감쇠.</summary>

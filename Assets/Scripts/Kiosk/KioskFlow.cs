@@ -1,4 +1,4 @@
-// 4회차 주문 흐름: 프로토타입 화면 전환, 버튼 처리, 장바구니, 팝업. 지폐는 틈에서 튕기고 4회차에는 카드가 없어 결제되지 않는다.
+// 4회차 주문 흐름: 프로토타입 화면 전환, 버튼 처리, 장바구니, 팝업. 지폐는 틈에서 튕기고 결제는 뒷사람 카드로 끝난다(R4ProtoPack.HelpPay).
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ public sealed class KioskFlow
     };
     static readonly Dictionary<string, string> Back = new Dictionary<string, string>
     {
-        ["option"] = "menu", ["side"] = "option", ["drink"] = "side", ["cart"] = "menu", ["pay"] = "cart", ["card"] = "pay",
+        ["place"] = "idle", ["member"] = "place", ["menu"] = "member", ["option"] = "menu", ["side"] = "option", ["drink"] = "side", ["cart"] = "menu", ["pay"] = "cart", ["card"] = "pay",
     };
     static readonly Dictionary<string, KioskInfo> Infos = new Dictionary<string, KioskInfo>
     {
@@ -62,6 +62,9 @@ public sealed class KioskFlow
 
     /// <summary>무입력 시간이 도는 화면.</summary>
     public bool Timed => K.screen != "idle";
+
+    /// <summary>뒷사람이 결제하는 동안 화면만 넘긴다.</summary>
+    public void Show(string s) => Go(s, true);
 
     void Go(string s, bool silent = false)
     {

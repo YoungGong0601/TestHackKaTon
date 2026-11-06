@@ -50,6 +50,7 @@ public class R1HomeDirector : MonoBehaviour
         }
         doorHinge.localRotation = to;
         doorBlock.enabled = false;
+        StartCoroutine(player.LookArc(exitPoint.position + Vector3.up * 1.5f, Bal.G("Door_LookInSec", 0.9f)));
         yield return StoreFlow.Race(this, player.WalkTo(exitPoint.position, Bal.F("MoveSpeed", 2.2f)), 1.6f);
         GameState.I.CompleteChapter();
     }

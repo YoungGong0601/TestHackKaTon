@@ -8,6 +8,7 @@ using UnityEngine;
 public static class BusRide
 {
     static bool riding;
+    static float rideStart, rideEnd;
 
     static PlayerController Player => PlayerController.I;
     static AudioManager Sound => AudioManager.I;
@@ -16,6 +17,8 @@ public static class BusRide
     {
         Transform aisle = Named("Anchor_BusSeatAisle"), seat = Named("Anchor_BusSeat"), outside = Named("BusOutside");
         float end = Time.time + Bal.G("Bus_RideSec", 12f);
+        rideStart = Time.time;
+        rideEnd = end;
 
         Player.Freeze(true);
         Player.HoldStill = true;
@@ -33,10 +36,11 @@ public static class BusRide
         Player.Freeze(false);
 
         while (Time.time < end - Bal.G("Bus_AnnounceLeadSec", 4f)) yield return null;
-        yield return Hud.I.Say(null, "이번 정류장은, 시장 입구입니다.", "bus_ann");
+        yield return Hud.I.Say("announce", "이번 정류장은, 시장 입구입니다.", "bus_ann");
+        while (Time.time < end - Bal.G("Bus_BrakeSec", 3f)) yield return null;
+        Sound.Play("bus_arrive", null, 0.5f);   // 앞부분이 브레이크 소리다
         while (Time.time < end) yield return null;
 
-        Sound.Play("bus_arrive", null, 0.5f);
         yield return Hud.I.Fade(1f, Bal.G("Bus_RideFadeSec", 0.8f));
         riding = false;
         Player.Freeze(true);
@@ -66,11 +70,25 @@ public static class BusRide
         Player.MoveTo(to);
     }
 
+    // 0 정지, 1 최고 속도. 출발은 천천히 올리고 도착 전에 천천히 내린다
+    static float Pace
+    {
+        get
+        {
+            float up = (Time.time - rideStart) / Mathf.Max(Bal.G("Bus_AccelSec", 3f), 0.01f);
+            float down = (rideEnd - Time.time) / Mathf.Max(Bal.G("Bus_BrakeSec", 3f), 0.01f);
+            return Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(Mathf.Min(up, down)));
+        }
+    }
+
+    // 진동과 엔진음도 속도를 따른다
     static IEnumerator Rumble()
     {
         while (riding)
         {
-            Player.AddShake(Bal.G("Bus_RideShake", 0.6f) * Time.deltaTime);
+            float k = Pace;
+            Player.AddShake(Bal.G("Bus_RideShake", 0.6f) * k * Time.deltaTime);
+            Sound.SetLoop("bus_idle", Bal.G("Bus_RideEngineVol", 0.7f) * Mathf.Lerp(Bal.G("Bus_RideEngineIdle", 0.55f), 1f, k), 0.1f);
             yield return null;
         }
     }
@@ -78,10 +96,10 @@ public static class BusRide
     // 버스 대신 거리를 뒤로 민다
     static IEnumerator Scroll(Transform outside, Vector3 dir)
     {
-        float top = Bal.G("Bus_RideSpeed", 8f), accel = Bal.G("Bus_RideAccel", 2f);
-        for (float v = 0f; riding; v = Mathf.Min(top, v + accel * Time.deltaTime))
+        float top = Bal.G("Bus_RideSpeed", 8f);
+        while (riding)
         {
-            outside.position += dir * (v * Time.deltaTime);
+            outside.position += dir * (top * Pace * Time.deltaTime);
             yield return null;
         }
     }

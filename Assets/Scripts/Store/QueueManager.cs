@@ -43,6 +43,10 @@ public class QueueManager : MonoBehaviour
     /// <summary>키오스크 조작 중에만 줄이 늘어난다.</summary>
     public bool KioskOn { get; set; }
     public int Count => queue.Count;
+    [SerializeField] bool wideLine;   // 카페처럼 사람이 낑기는 곳은 R2_QueueSpacing을 쓴다
+
+    public float Spacing => wideLine ? Bal.G("R2_QueueSpacing", 1f) : Bal.G("Queue_Spacing", 0.82f);
+
     public Vector3 QueuePos => Slot(0) + Vector3.up * 1.5f;
 
     float WalkSpeed => Bal.G("Queue_WalkSpeed", 1.25f);
@@ -59,7 +63,7 @@ public class QueueManager : MonoBehaviour
 
     Vector3 Slot(int i)
     {
-        return queueFront.position + Back * (i * Bal.G("Queue_Spacing", 0.82f));
+        return queueFront.position + Back * (i * Spacing);
     }
 
     void Awake()
@@ -92,7 +96,7 @@ public class QueueManager : MonoBehaviour
         if (doorWant != 0f && Time.time > doorUntil)
         {
             doorWant = 0f;
-            AudioManager.I.Play("door_glass_open", doorPivot.position, 0.35f, 0.8f);
+            AudioManager.I.Play("door_handle", doorPivot.position, 0.2f);
         }
         doorA = StoreFlow.Damp(doorA, doorWant, doorWant != 0f ? 5f : 3f, dt);
         doorPivot.localRotation = doorBase * Quaternion.Euler(0f, doorA * Mathf.Rad2Deg, 0f);
@@ -111,11 +115,13 @@ public class QueueManager : MonoBehaviour
         }
     }
 
+    // 이미 열렸거나 열리는 중이면 시간만 늘린다. 소리는 닫혀 있던 문이 열릴 때 한 번만 난다
     public void OpenDoor(float sec = 1.6f)
     {
+        bool shut = doorWant == 0f && doorA < 0.03f;
         doorWant = Bal.G("Door_StoreOpenAngle", 1.15f);
-        doorUntil = Time.time + sec;
-        AudioManager.I.Play("door_chime", doorPivot.position + Vector3.up * 2f, 0.55f);
+        doorUntil = Mathf.Max(doorUntil, Time.time + sec);
+        if (shut) AudioManager.I.Play("door_chime", doorPivot.position + Vector3.up * 2f, 0.55f);
     }
 
     /// <summary>주문을 끝내고 나간 손님을 풀로 돌린다.</summary>

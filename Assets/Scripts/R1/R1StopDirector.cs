@@ -122,7 +122,6 @@ public class R1StopDirector : MonoBehaviour
     {
         HandRig.I.Equip(ItemId.None);
         Hud.I.CardName = "카드";
-        yield return new WaitForSeconds(Bal.G("Bus_NoticeLookSec", 2f));
         yield return BusRide.Run(this);
         TrafficMover.BusBusy = false;
         GameState.I.CompleteChapter();

@@ -3,7 +3,7 @@
 // 배치: elder = R1ElderScene (같은 오브젝트)
 // 배치: board = PH_PickupBoard, shelf = Pickup_Shelf, carried = Carried_Bag(시작할 때 HandRoot로)
 // 배치: talkStaff = Interact_Staff, orderKiosk = Interact_Order, takeBag = Interact_Take
-// 배치: exitDoor = Interact_Exit (label 나가기, 문 앞)
+// 배치: exitDoor = Interact_Exit (label 나가기, 문 앞), receiptView = Receipt_View
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +28,7 @@ public class R1StoreDirector : MonoBehaviour
     [SerializeField] Interactable orderKiosk;
     [SerializeField] Interactable takeBag;
     [SerializeField] Interactable exitDoor;
+    [SerializeField] GameObject receiptView;
 
     Phase phase;
     bool talking, early;
@@ -35,6 +36,7 @@ public class R1StoreDirector : MonoBehaviour
 
     static PlayerController Player => PlayerController.I;
     int Number => Bal.I("R1_OrderNumber", 274);
+    int ElderNumber => Bal.I("R1_ElderNumber", 273);
     string CallLine => Number + "번 고객님, 주문하신 메뉴 나왔습니다.";
 
     void OnEnable()
@@ -61,6 +63,7 @@ public class R1StoreDirector : MonoBehaviour
     {
         // 손은 씬을 건너가므로 붙인 물건은 같이 치운다
         if (carried) Destroy(carried.gameObject);
+        if (receiptView) Destroy(receiptView);
     }
 
     IEnumerator Start()
@@ -68,6 +71,7 @@ public class R1StoreDirector : MonoBehaviour
         shelf.SetActive(false);
         carried.gameObject.SetActive(false);
         carried.SetParent(Player.HandRoot, false);
+        HandRig.I.SetReceiptView(receiptView.transform);
         ShowBoard(268);
         SetPhase(Phase.Queue);
         AudioManager.I.Ambience(("amb_restaurant", 0.36f), ("amb_kitchen", 0.5f));
@@ -77,7 +81,7 @@ public class R1StoreDirector : MonoBehaviour
         Player.Freeze(false);
         SetPhase(Phase.Order);
         yield return new WaitForSeconds(Bal.G("R1_GreetDelaySec", 0.5f));
-        Hud.I.Say(null, "어서 오세요!", "staff_hello", -1f, staffPos.position);
+        Hud.I.Say("staff", "어서 오세요!", "staff_hello", -1f, staffPos.position);
     }
 
     void SetPhase(Phase p)
@@ -92,6 +96,7 @@ public class R1StoreDirector : MonoBehaviour
     void ShowBoard(int call)
     {
         var ready = new List<int> { 269, 271, 272 };
+        if (call < ElderNumber) ready.Add(ElderNumber);
         if (call != Number) ready.Add(Number);
         board.Show(ready, call);
     }
@@ -114,17 +119,17 @@ public class R1StoreDirector : MonoBehaviour
         staffQuietUntil = Time.time + Bal.G("R1_StaffQuietSec", 6f);
         if (phase == Phase.Pickup)
         {
-            yield return Hud.I.Say(null, "아직입니다", "staff_wait", -1f, staffPos.position);
+            yield return Hud.I.Say("staff", "아직입니다", "staff_wait", -1f, staffPos.position);
         }
         else if (phase == Phase.Called || phase == Phase.Taken)
         {
-            yield return Hud.I.Say(null, CallLine, "staff_call2", -1f, staffPos.position);
+            yield return Hud.I.Say("crew", CallLine, "staff_call2", -1f, staffPos.position);
         }
         else
         {
             var pack = kiosk.GetComponentInChildren<R1ProtoPack>(true);
             if (pack && phase == Phase.Kiosk) pack.Hint();
-            yield return Hud.I.Say(null, "여기 누르시면 돼요. 제가 도와드릴게요.", "staff_help", -1f, staffPos.position);
+            yield return Hud.I.Say("staff", "여기 누르시면 돼요. 제가 도와드릴게요.", "staff_help", -1f, staffPos.position);
         }
         talking = false;
     }
@@ -158,9 +163,17 @@ public class R1StoreDirector : MonoBehaviour
     IEnumerator Pickup()
     {
         SetPhase(Phase.Pickup);
+        HandRig.I.FillReceipt(Number, GameState.I.Order.item);
+        HandRig.I.GiveReceipt();
         queue.ServeWhenClear();
         CookWalk();
-        yield return new WaitForSeconds(Bal.G("R1_PickupWaitSec", 5f));
+        // 먼저 주문한 어르신이 받아 나간다. 음성이 없어 자막만 나온다
+        yield return new WaitForSeconds(Bal.G("R1_ElderCallSec", 1f));
+        ShowBoard(ElderNumber);
+        AudioManager.I.Play("pager_call", pickupPos.position, 0.9f);
+        Hud.I.Say("crew", ElderNumber + "번 고객님, 주문하신 메뉴 나왔습니다.", "staff_call2_" + ElderNumber, -1f, pickupPos.position);
+        elder.TakeOrder();
+        yield return StoreFlow.Kitchen(pickupPos.position, Bal.G("R1_OrderWaitSec", 13f), CallOther);
         ShowBoard(Number);
         shelf.SetActive(true);
         AudioManager.I.Play("tray_put", pickupPos.position, Bal.G("Pickup_TrayVolume", 0.6f));
@@ -168,9 +181,18 @@ public class R1StoreDirector : MonoBehaviour
         while (phase == Phase.Called)
         {
             AudioManager.I.Play("pager_call", pickupPos.position, 0.9f);
-            Hud.I.Say(null, CallLine, "staff_call2", -1f, pickupPos.position);
+            Hud.I.Say("crew", CallLine, "staff_call2", -1f, pickupPos.position);
             yield return new WaitForSeconds(Bal.G("Pickup_RecallSec", 13f));
         }
+    }
+
+    // 내 번호 앞에 다른 손님 번호가 한 번 불린다. 음성이 없어 자막만 나온다
+    void CallOther()
+    {
+        const int other = 272;
+        ShowBoard(other);
+        AudioManager.I.Play("pager_call", pickupPos.position, 0.6f);
+        Hud.I.Say("crew", other + "번 고객님, 주문하신 메뉴 나왔습니다.", "staff_call2_" + other, -1f, pickupPos.position);
     }
 
     // 요리사가 받는 곳으로 간다. 씬 필드를 늘리지 않고 이름으로 찾고, 없으면 건너뛴다
@@ -191,6 +213,7 @@ public class R1StoreDirector : MonoBehaviour
         }
         if (phase != Phase.Called) return;
         SetPhase(Phase.Taken);
+        HandRig.I.TakeReceipt();
         Hud.I.ClearSubs();
         AudioManager.I.Play("bag_rustle", null, 0.9f);
         shelf.SetActive(false);
@@ -202,7 +225,7 @@ public class R1StoreDirector : MonoBehaviour
     {
         early = true;
         AudioManager.I.Play("kiosk_error", pickupPos.position, 0.4f);
-        yield return Hud.I.Say(null, "아직입니다", "staff_wait", -1f, pickupPos.position);
+        yield return Hud.I.Say("staff", "아직입니다", "staff_wait", -1f, pickupPos.position);
         early = false;
     }
 
@@ -214,8 +237,8 @@ public class R1StoreDirector : MonoBehaviour
         SetPhase(Phase.End);
         Player.Freeze(true);
         queue.OpenDoor();
-        AudioManager.I.Play("door_glass_open", chimePos.position, 0.7f);
-        GameState.I.CompleteChapter();
+        AudioManager.I.Play("door_handle", chimePos.position, 0.5f);
+        GameState.I.JumpChapter(GameState.I.chapterIndex + 1);   // 20대에서 40대는 눈 감기 없이 짧은 암전
     }
 
     void Update()

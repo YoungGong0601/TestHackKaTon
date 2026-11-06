@@ -12,6 +12,7 @@ public class CharacterProfile : ScriptableObject
     public ItemId[] items;
     public bool canRun;         // Shift로 달리기
     public bool limp;
+    public bool briefcase;      // 빈손일 때 오른손에 서류가방
     public bool visionBlur;
     public bool kioskBlur;
     public bool kioskNunchi;

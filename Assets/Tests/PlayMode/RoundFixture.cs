@@ -25,9 +25,7 @@ public abstract class RoundFixture
     protected class Recorder : MonoBehaviour
     {
         public readonly HashSet<string> Lines = new();
-        public readonly List<int> Hours = new();
         int tick;
-        bool watchWas;
 
         static string Clean(string s) => Regex.Replace(Regex.Replace(s, "<[^>]+>", ""), @"\s+", "");
 
@@ -39,14 +37,16 @@ public abstract class RoundFixture
             if (++tick % 20 == 0)
                 foreach (var t in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None))
                     if (!string.IsNullOrEmpty(t.text)) Lines.Add(Clean(t.text));
-            if (HandRig.I == null) return;
-            bool up = Field<bool>(HandRig.I, "watchUp");
-            if (up && !watchWas)
+        }
+
+        /// <summary>앞 회차에서 나온 같은 대사를 지운다. 다시 나오기를 기다릴 때 쓴다.</summary>
+        public void Forget(params string[] lines)
+        {
+            foreach (string line in lines)
             {
-                var hand = Field<Transform>(HandRig.I, "watchHour");
-                Hours.Add(hand != null ? Mathf.RoundToInt(Mathf.Repeat(-hand.localEulerAngles.z, 360f) / 30f) : -1);
+                string want = Clean(line);
+                Lines.RemoveWhere(l => l.Contains(want));
             }
-            watchWas = up;
         }
 
         public bool Saw(string line)
@@ -70,6 +70,7 @@ public abstract class RoundFixture
     InputSettings.BackgroundBehavior savedBackground;
     InputSettings.EditorInputBehaviorInPlayMode savedEditorInput;
     readonly List<string> overrides = new();
+    InputDevice realMouse, realKeyboard, testMouse, testKeyboard;
 
     protected static PlayerController Pc => PlayerController.I;
     protected static GameState Game => GameState.I;
@@ -83,17 +84,31 @@ public abstract class RoundFixture
         savedVolume = AudioListener.volume;
         AudioListener.volume = 0f;
         Time.timeScale = 1f;
-        Hud.SkipTitle = true;
+        Hud.AutoTitle = true;
         savedBackground = InputSystem.settings.backgroundBehavior;
         savedEditorInput = InputSystem.settings.editorInputBehaviorInPlayMode;
         InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
         InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+
+        // 실제 장치가 움직이면 게임 커서가 그 자리로 튀므로 시험 동안 끄고 가상 장치만 쓴다
+        realMouse = Mouse.current;
+        realKeyboard = Keyboard.current;
+        if (realMouse != null) InputSystem.DisableDevice(realMouse);
+        if (realKeyboard != null) InputSystem.DisableDevice(realKeyboard);
+        testMouse = InputSystem.AddDevice<Mouse>("TestMouse");
+        testKeyboard = InputSystem.AddDevice<Keyboard>("TestKeyboard");
+        testMouse.MakeCurrent();
+        testKeyboard.MakeCurrent();
 
         yield return Until(() => ConfigTableLoader.IsLoaded, 20f, "설정 로드");
         yield return SceneManager.LoadSceneAsync("R1_Home", LoadSceneMode.Single);
         yield return null;
         yield return null;
         Assert.IsNotNull(GameState.I, "GameState 없음");
+        yield return Until(() => !GameState.I.Booting, 20f, "부팅 씬에서 첫 챕터로");
+        yield return null;
+        yield return null;
+        yield return Until(() => !Hud.I.TitleOpen, 20f, "시작 화면과 오류 페이지");
         var host = new GameObject("TestRecorder");
         Object.DontDestroyOnLoad(host);
         rec = host.AddComponent<Recorder>();
@@ -103,10 +118,14 @@ public abstract class RoundFixture
     public IEnumerator TearDown()
     {
         Time.timeScale = 1f;
-        Hud.SkipTitle = false;
+        Hud.AutoTitle = false;
         AudioListener.volume = savedVolume;
         InputSystem.settings.backgroundBehavior = savedBackground;
         InputSystem.settings.editorInputBehaviorInPlayMode = savedEditorInput;
+        if (testMouse != null) InputSystem.RemoveDevice(testMouse);
+        if (testKeyboard != null) InputSystem.RemoveDevice(testKeyboard);
+        if (realMouse != null) { InputSystem.EnableDevice(realMouse); realMouse.MakeCurrent(); }
+        if (realKeyboard != null) { InputSystem.EnableDevice(realKeyboard); realKeyboard.MakeCurrent(); }
         ClearOverrides();
         if (rec != null) Object.Destroy(rec.gameObject);
 
@@ -492,8 +511,10 @@ public abstract class RoundFixture
     /// <summary>시트 공통 규칙: 호칭, 나이 숫자, 금지 기호.</summary>
     protected void AssertCleanText()
     {
-        var bad = new Regex(@"^:|손님:|알바생:|키오스크:|어르신|할아버지|할머니|학생|[2468]0대|·|—|→|×|[①-⑳]");
-        var hits = rec.Lines.Where(l => bad.IsMatch(l)).ToArray();
+        var bad = new Regex(@"^:|손님:|알바생:|키오스크:|할아버지|할머니|[2468]0대|·|—|→|×|[①-⑳]");
+        // Hud가 붙이는 화자 라벨은 빼고 본다. 시트의 말머리가 대사 본문에 새는 것을 막는 판정이다
+        var label = new Regex("^(알바생|키오스크):");
+        var hits = rec.Lines.Where(l => bad.IsMatch(label.Replace(l, ""))).ToArray();
         Assert.IsEmpty(hits, "금지 문구: " + string.Join(" / ", hits));
     }
 
@@ -555,53 +576,11 @@ public abstract class RoundFixture
         }
     }
 
-    /// <summary>1-0 현관. 쪽지를 보고 문을 열고 나간다.</summary>
-    protected IEnumerator PlayR1Home()
-    {
-        yield return InChapter(0);
-        var d = Object.FindAnyObjectByType<R1HomeDirector>();
-        var door = Field<Interactable>(d, "doorUse");
-        yield return Until(() => door.active && !Pc.Frozen, 20f, "현관 시작");
-
-        // 쪽지는 1 키로 접고 편다
-        Assert.IsTrue(Note.Available, "1회차 쪽지");
-        bool was = Note.Opened;
-        Assert.AreEqual(1, ItemKeys.Of(ItemId.Memo), "쪽지 번호");
-        Assert.AreEqual(2, ItemKeys.Of(ItemId.Card), "돋보기 없는 회차 카드 번호");
-        yield return Tap(ItemKey(ItemId.Memo));
-        Assert.AreNotEqual(was, Note.Opened, "쪽지 키");
-
-        yield return Use(door);
-        yield return InChapter(1);
-    }
-
-    protected IEnumerator PlayR1Stop()
-    {
-        yield return InChapter(1);
-        var d = Object.FindAnyObjectByType<R1StopDirector>();
-        yield return Until(() => !Pc.Frozen, 20f, "1회차 시작");
-
-        // 1-0 골목에서 정류장까지 걷는다
-        var zone = Field<Collider>(d, "stopZone");
-        yield return WalkW(() => zone.bounds.center, () => zone.bounds.Contains(Pc.transform.position), 40f, "1-0");
-        yield return Until(() => rec.Saw("112번버스를탄다"), 10f, "1-1 안내");
-
-        // 연타 없이 탄다. 승차 물체가 켜져 있으면 한 번 누르고, 없으면 자동 승차를 기다린다
-        bool Inside() => HandRig.I.Held == ItemId.Card && !Pc.Frozen;
-        yield return Until(() => Inside() || (Usable("버스 타기") != null && !Pc.Frozen), 60f, "버스 도착");
-        if (!Inside()) yield return Use("버스 타기", 10f);
-        yield return Until(Inside, 40f, "버스 안 카드");
-        yield return Use(Field<PayPoint>(d, "terminal").GetComponent<Interactable>());
-
-        // 입력 없이 좌석까지 가서 창밖을 보다 내린다
-        yield return Until(() => rec.Saw("이번 정류장은, 시장 입구입니다."), 40f, "버스 안내방송");
-        yield return InChapter(2);
-    }
-
     protected IEnumerator PlayR1Storefront()
     {
+        yield return InChapter(0);
         yield return Use("당기기", 30f);
-        yield return InChapter(3);
+        yield return InChapter(1);
     }
 
     /// <summary>1-7, 1-8. 포인터와 좌클릭만으로 결제까지.</summary>
@@ -659,8 +638,7 @@ public abstract class RoundFixture
 
     protected IEnumerator PlayR1Store()
     {
-        yield return Pick(KioskData.CashLines[0], 60f);
-        yield return Lines(20f, KioskData.CashLines[0], "아, 그려?", "그러면 방법이 없는겨?", "일단 현금은 안된다네요.", "그려? 어쩔 수 없구만...");
+        yield return Lines(60f, "어르신, 이거 돈 안 들어가요.", "아, 그려?", "그러면 방법이 없는겨?", "제 카드로 결제해 드릴게요.", "아이고, 고맙구먼.");
         var staff = Field<Interactable>(Object.FindAnyObjectByType<R1StoreDirector>(), "talkStaff");
         yield return Until(() => staff.active && !Pc.Frozen && rec.Saw("어서 오세요!"), 90f, "알바생 인사");
         yield return Real(0.5f);
@@ -676,13 +654,12 @@ public abstract class RoundFixture
         var exit = Field<Interactable>(d, "exitDoor");
         yield return Until(() => exit.active, 10f, "나가기 켜짐");
         yield return Use(exit);
-        yield return InChapter(4);
+        yield return InChapter(2);
     }
 
     /// <summary>2-3, 2-4. 쪽지대로 2잔을 담고 잔마다 옵션을 고른다.</summary>
     protected IEnumerator R2Order()
     {
-        yield return EnterKiosk();
         yield return Screen("menu");
         yield return Touch("next");
         Assert.AreEqual("menu", Kiosk.Screen, "메뉴 없이 다음");
@@ -711,13 +688,19 @@ public abstract class RoundFixture
 
     protected IEnumerator PlayR2()
     {
-        var staff = Field<Interactable>(Object.FindAnyObjectByType<R2CafeDirector>(), "talkStaff");
-        yield return Until(() => staff.active && !Pc.Frozen, 30f, "카페 알바생 물을 수 있음");
+        yield return Until(() => !Pc.Frozen, 30f, "카페 시작");
         yield return Until(() => Note.Opened, 5f, "2회차 쪽지");
-        yield return Use(staff);
-        yield return Until(() => rec.Saw("키오스크를 이용해 주세요."), 15f, "카페 알바생");
-        yield return Use(Field<Interactable>(Object.FindAnyObjectByType<R2CafeDirector>(), "askRookie"));
-        yield return Until(() => rec.Saw("아이스티에... 커피를 넣는다고?"), 20f, "신입 대답");
+        // 주문하기가 막힌 뒤에야 직원에게 물을 수 있다
+        yield return EnterKiosk();
+        yield return Touch("next");
+        yield return Until(() => rec.Saw("누구 물어볼 사람 없나?"), 15f, "주문하기가 막히고 혼잣말");
+        var cafe = Object.FindAnyObjectByType<R2CafeDirector>();
+        yield return Until(() => Field<bool>(cafe, "wondered"), 15f, "혼잣말이 끝나야 말을 걸 수 있음");
+        yield return Tap(Key.A);
+        yield return Real(0.4f);
+        yield return Tap(Key.E);
+        yield return Until(() => rec.Saw("아이스티에... 커피를 넣는다고?"), 20f, "직원 대답");
+        yield return Tap(Key.D);
         yield return R2Order();
         yield return WalletTake("cardPart", ItemId.Card);
         yield return ClickPay();
@@ -729,16 +712,31 @@ public abstract class RoundFixture
         var cup = Field<Interactable>(Object.FindAnyObjectByType<R2CafeDirector>(), "takeCup");
         yield return Until(() => Object.FindAnyObjectByType<R2CafeDirector>() != null && rec.Saw("...번 고객..."), 40f, "카페 호출");
         yield return Use(cup);
-        yield return InChapter(5);
+        yield return InChapter(3);
+    }
+
+    /// <summary>80대 집. 시작 연출 뒤 쪽지를 들어 맨눈으로 읽고 내리고, 신발을 신고 문을 연다.</summary>
+    protected IEnumerator PlayR4Home()
+    {
+        yield return InChapter(3);
+        yield return Until(() => rec.Saw("뭐라고 썼더라."), 30f, "시작 연출 뒤 혼잣말");
+        yield return Tap(ItemKey(ItemId.Memo));
+        Assert.IsTrue(Note.Opened, "쪽지 듦");
+        yield return Until(() => rec.Saw("불고기 버거 세트... 사이다로. 그래, 그거."), 15f, "쪽지 읽음");
+        var prompt = Field<TMP_Text>(Hud.I, "prompt");
+        yield return Until(() => prompt.text.Contains("쪽지 내리기"), 20f, "쪽지 내리기 프롬프트");
+        yield return Tap(Key.E);
+        Assert.IsFalse(Note.Opened, "쪽지 내림");
+        yield return Use("신발 신기", 15f);
+        yield return Use("문 열기", 20f);
+        yield return Until(() => rec.Saw("자, 나가볼까."), 15f, "문 앞 대사");
+        yield return InChapter(4);
     }
 
     protected IEnumerator PlayR4Storefront()
     {
+        yield return InChapter(5, 90f);
         var d = Object.FindAnyObjectByType<R4StorefrontDirector>();
-        yield return Real(0.8f);
-
-        // 쪽지는 맨눈으로 읽히고 잠깐 뒤 걷는다
-        yield return Until(() => Note.Opened, 30f, "쪽지 듦");
         yield return Free(20f);
 
         // 민다. 안 열린다
@@ -797,6 +795,8 @@ public abstract class RoundFixture
     /// <summary>지폐를 count번 넣는다.</summary>
     protected IEnumerator Bounce(int count)
     {
+        // 1회차 어르신 장면과 같은 대사라 지워 두어야 R4Finish가 이번 대화를 기다린다
+        rec.Forget("어르신, 이거 돈 안 들어가요.", "아, 그려?", "그러면 방법이 없는겨?", "제 카드로 결제해 드릴게요.", "아이고, 고맙구먼.");
         if (HandRig.I.Held != ItemId.Cash)
         {
             yield return WalletTake("cashPart", ItemId.Cash);
@@ -805,21 +805,49 @@ public abstract class RoundFixture
         for (int i = 0; i < count; i++) yield return ClickPay();
     }
 
-    /// <summary>지폐 3번 뒤 대화와 돌아서기, 뒷사람 결제를 지나 문까지 나간다.</summary>
-    protected IEnumerator R4Leave()
+    /// <summary>지폐 3번 뒤 뒷사람 결제, 호출, 수령, 대사까지.</summary>
+    protected IEnumerator R4Finish()
     {
-        yield return Use("나가기", 90f);
-        yield return InChapter(7);
+        yield return Lines(30f, "어르신, 이거 돈 안 들어가요.", "아, 그려?", "그러면 방법이 없는겨?", "제 카드로 결제해 드릴게요.");
+        yield return Until(() => rec.Saw("아이고, 고맙구먼."), 60f, "뒷사람 결제 뒤 인사");
+        yield return Free(20f);
+        var take = Field<Interactable>(Object.FindAnyObjectByType<R4StoreDirector>(), "takeBag");
+        yield return Until(() => take.active, 120f, "호출");
+        Assert.AreEqual(273, Game.Order.number, "주문 번호");
+        yield return Use(take);
+        yield return Until(() => rec.Saw("됐다... 됐어."), 15f, "받은 뒤 대사");
+        yield return Until(() => rec.Saw("이거 하나 사기가 이렇게 힘들어서야."), 20f, "마지막 대사");
     }
 
-    /// <summary>4회차 귀가. 입력 없이 첫 버스를 놓치고 112번에 자동으로 올라 기사와 말하고 내려 걷기 컷까지 간다.</summary>
+    /// <summary>가는 길. 골목을 걸어 전광판을 보고, 행인 둘에게 묻고, 첫 버스를 놓치고, 돋보기로 읽고, 112번에 자동으로 탄다.</summary>
     protected IEnumerator PlayR4Stop()
     {
+        yield return InChapter(4);
+        var d = Object.FindAnyObjectByType<R4StopDirector>();
+        yield return Until(() => !Pc.Frozen, 20f, "정류장 장면 시작");
+
+        var zone = Field<Collider>(d, "stopZone");
+        yield return WalkW(() => zone.bounds.center, () => zone.bounds.Contains(Pc.transform.position), 120f, "골목 걷기");
+        yield return Until(() => rec.Saw("안 보이네... 몇 번이 온다는 거야."), 20f, "전광판 안 보임");
+        var student = Field<Interactable>(d, "askStudent");
+        yield return Until(() => student.active, 10f, "학생에게 물을 수 있음");
+        yield return Use(student);
+        yield return Until(() => rec.Saw("아, 저도 잘 모르겠어요."), 15f, "학생 답");
+        var worker = Field<Interactable>(d, "askWorker");
+        yield return Until(() => worker.active, 40f, "직장인에게 물을 수 있음");
+        yield return Use(worker);
+        yield return Until(() => rec.Saw("저 바빠서요."), 15f, "직장인 답");
+
         yield return Until(() => rec.Saw("아 이보시게 잠시만요!"), 60f, "첫 버스 놓침");
-        yield return Until(() => rec.Saw("벌써 이렇게 됐구먼."), 20f, "손목시계");
-        yield return Until(() => rec.Saw("현금은 어디에 넣어요?"), 90f, "112번 자동 승차");
-        yield return Lines(20f, "현금밖에 없는데요.", "저희는 카드밖에 받지 않습니다.");
-        yield return Until(() => rec.Saw("하... 걸어가야겠구만."), 60f, "하차 뒤 걷기");
+        var faces = Field<Readable[]>(d, "bisFaces");
+        var look = Field<Transform>(d, "bisLook");
+        var at = look.position;
+        at.y = Pc.transform.position.y;
+        Pc.Teleport(at + (Pc.transform.position - at).normalized * 4f, Pc.Yaw);
+        yield return Free(10f);
+        yield return LensOn(faces[0]);
+        yield return Until(() => rec.Saw("이번 정류장은, 시장 입구입니다."), 90f, "112번 승차 뒤 안내방송");
+        yield return InChapter(5, 30f);
     }
 
     protected void AssertNotSaw(params string[] lines)
@@ -828,31 +856,17 @@ public abstract class RoundFixture
         Assert.IsEmpty(hit, "없어진 문구가 나옴: " + string.Join(" / ", hit));
     }
 
-    protected IEnumerator PlayEnding()
+    /// <summary>버거를 받은 뒤 결과. 문구, 제목, 클릭으로 처음으로.</summary>
+    protected IEnumerator PlayResult()
     {
-        yield return InChapter(8, 120f);
-        var d = Object.FindAnyObjectByType<EndingHomeDirector>();
-        yield return Until(() => !Pc.Frozen, 30f, "엔딩 걷기 시작");
-
-        // 멈추면 그대로 기다린다
-        Vector3 at = Pc.transform.position;
-        yield return Real(1f);
-        Assert.Less((Pc.transform.position - at).magnitude, 0.05f, "입력 없이 걸어감");
-
-        var reach = Field<Transform>(d, "doorReach");
-        // 문 왼쪽(x 6.6)에서 시작해 문 앞까지 걷는다
-        yield return WalkW(() => reach.position, () => Pc.Frozen, 150f, "E-1a");
-        yield return Until(() => Pc.Frozen, 5f, "현관 앞 E-1b 시작");
-        var ball = Field<GameObject>(d, "noteBall");
-        yield return Until(() => ball.activeSelf, 60f, "E-1b 쪽지 구김");
-
         var ui = RoundUi.I;
         var group = Field<CanvasGroup>(ui, "endGroup");
-        yield return Until(() => group.gameObject.activeSelf, 60f, "E-2 시작");
-        yield return Until(() => rec.Saw(Ending.Title), 30f, "엔딩 제목");
+        yield return Until(() => group.gameObject.activeSelf, 30f, "결과 시작");
+        yield return Until(() => rec.Saw(Ending.Title), 30f, "결과 제목");
         AssertSaw(Ending.Stat, Ending.Source);
-        yield return Real(1.2f);
+        yield return Real(Bal.G("End_StatSec", 5f) / Time.timeScale + 0.5f);   // 이 시간이 지나야 클릭을 받는다
         yield return Click();
         yield return InChapter(0, 30f);
+        Assert.IsFalse(group.gameObject.activeSelf, "처음으로 뒤 결과 화면이 남음");
     }
 }

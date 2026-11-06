@@ -85,6 +85,7 @@ public class R2CafePack : KioskPack
     [SerializeField] Image[] rowArt = new Image[0];
 
     readonly List<Cup> cart = new List<Cup>();
+    readonly Stack<(string screen, int cup)> trail = new Stack<(string, int)>();   // 이전 버튼이 돌아갈 화면들
     int cup, tab;
     string now;
     bool leaving, listOpen, pulled;
@@ -98,11 +99,12 @@ public class R2CafePack : KioskPack
     public override bool CanGiveUp => false;   // 다 차면 버튼 없이 비켜난다
     public override bool Timed => !leaving && !Paid && (now != FirstScreen || cart.Count > 0);
 
+    /// <summary>알바생에게 물어봐야 켜진다. 꺼져 있으면 주문하기가 막힌다.</summary>
+    public bool Unlocked { get; set; }
+    public event System.Action Blocked;
+
     /// <summary>결제까지 끝나서 키오스크를 떠났다. false면 눈치로 비켜난 것.</summary>
     public bool Paid { get; private set; }
-
-    /// <summary>쪽지대로 샷 추가한 아메리카노와 샷 추가한 아이스티를 담았다.</summary>
-    public bool Correct => cart.Count == Cups && cart.Exists(c => c.item.id == Answer1 && c.shot != null) && cart.Exists(c => c.item.id == Answer2 && c.shot != null);
 
     public override void OnEnter()
     {
@@ -114,6 +116,7 @@ public class R2CafePack : KioskPack
         Paid = false;
         Refresh();
         To(FirstScreen);
+        trail.Clear();
         Refresh();
         hw = Ctl.GetComponent<KioskHardware>();
         if (pay) return;
@@ -146,6 +149,7 @@ public class R2CafePack : KioskPack
         tab = 0;
         listOpen = false;
         To(FirstScreen);
+        trail.Clear();
         Refresh();
     }
 
@@ -153,7 +157,7 @@ public class R2CafePack : KioskPack
     {
         if (leaving || Ctl.Busy) return;
         leaving = true;
-        Ctl.Finish();
+        Ctl.Finish(Bal.G("Nunchi_FullLeaveSec", 0.2f));
     }
 
     public override void OnPress(string id)
@@ -171,6 +175,7 @@ public class R2CafePack : KioskPack
                 Refresh();
                 break;
             case "cart_close": listOpen = false; Refresh(); break;
+            case "next" when !Unlocked: Blocked?.Invoke(); break;
             case "next": if (cart.Count == Cups) NextDrink(-1); else Refuse(cart.Count == 0 ? "메뉴 미선택" : "2잔 미선택"); break;
             case "shot0": case "shot1": cart[cup].shot = id == "shot1" ? "샷 추가" : null; ToIce(); break;
             case "ice0": cart[cup].ice = "얼음 적게"; NextDrink(cup); break;
@@ -178,6 +183,7 @@ public class R2CafePack : KioskPack
             case "ice2": cart[cup].ice = "얼음 많이"; NextDrink(cup); break;
             case "coupon_none": To("point"); break;
             case "point_skip": To("pay"); break;
+            case "back": Back(); break;
             case "bg": Blank(); break;
         }
     }
@@ -281,7 +287,7 @@ public class R2CafePack : KioskPack
             if (c.ice != null) s += " " + c.ice;
             lines.Add(s);
         }
-        GameState.I.Order.item = string.Join(", ", lines);
+        GameState.I.Order.item = string.Join("\n", lines);
         To("coupon");
     }
 
@@ -353,6 +359,23 @@ public class R2CafePack : KioskPack
         Ctl.Finish();
     }
 
-    void To(string id) { now = id; Ctl.Go(id); }
+    void To(string id)
+    {
+        if (now != null && now != id) trail.Push((now, cup));
+        now = id;
+        Ctl.Go(id);
+    }
+
+    // 바로 앞 화면으로. 담은 잔과 고른 값은 그대로 둔다
+    void Back()
+    {
+        if (trail.Count == 0) return;
+        var step = trail.Pop();
+        cup = step.cup;
+        if (step.screen == "shot" || step.screen == "ice") Label(step.screen);
+        now = step.screen;
+        Ctl.Go(now);
+        Refresh();
+    }
     void Refuse(string text) { Ctl.Sfx("kiosk_error", 0.8f); Ctl.Toast(text); }
 }

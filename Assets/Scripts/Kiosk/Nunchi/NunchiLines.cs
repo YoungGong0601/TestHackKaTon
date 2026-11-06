@@ -12,7 +12,18 @@ public static class NunchiLines
         { "y_hurry6", "yF", "왜 저렇게 오래 걸려." },
         { "y_hurry7", "yM", "아, 늦었는데." },
         { "y_hurry8", "yM", "아, 좀 빨리요." },
-        { "y_hurry9", "yF", "영화 시작하는데요." },
+        { "y_hurry9", "yM", "시간 없는데..." },
+    };
+
+    public const string Sigh = "(한숨 소리)", Crowd = "(웅성거림)";
+    public const string ElderOnly = "어르신, 그거 아니에요.";   // 어르신이 조작할 때만
+
+    // 뒷사람 반응. 답답함 점수가 오를수록 뒤 칸으로 간다
+    public static readonly string[][] Back =
+    {
+        new[] { Sigh, Crowd, "뭐 하시는 거야...", "왜 저렇게 오래 걸려.", "시간 없는데..." },
+        new[] { Sigh, "아, 진짜.", "아, 늦었는데.", "뒤에 사람 기다려요." },
+        new[] { "저기요, 빨리 좀 해요.", "아, 좀 빨리요.", "뒤에 사람 기다려요.", ElderOnly },
     };
 
     // 음성 키 뒷부분(앞은 프로필 화자 키), 문구
