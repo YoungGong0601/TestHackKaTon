@@ -42,6 +42,7 @@ public class R2CafeDirector : MonoBehaviour
 
     Phase phase;
     bool talking, inside, asked, wondered, muttering;
+    float hintAt;
 
     void OnEnable()
     {
@@ -135,7 +136,9 @@ public class R2CafeDirector : MonoBehaviour
 
     void OnBlocked()
     {
-        if (!muttering) StartCoroutine(Wonder());
+        if (muttering) return;
+        if (wondered) AskHint();
+        else StartCoroutine(Wonder());
     }
 
     // 주문하기가 막히면 혼잣말. 그때부터 알바생에게 말을 걸 수 있다
@@ -146,6 +149,19 @@ public class R2CafeDirector : MonoBehaviour
         SetPhase(phase);
         yield return Hud.I.Say(Me, "누구 물어볼 사람 없나?", Me + "_whoask");
         muttering = false;
+        hintAt = Time.time + Bal.G("R2_AskHintSec", 10f);
+        while (!asked)
+        {
+            if (!talking && Time.time >= hintAt) AskHint();
+            yield return null;
+        }
+    }
+
+    // 음성 없이 자막만. 물어볼 때까지 간격마다, 주문하기를 다시 눌러도 나온다
+    void AskHint()
+    {
+        hintAt = Time.time + Bal.G("R2_AskHintSec", 10f);
+        kiosk.Say(Me, "알바생한테 물어보자");
     }
 
     // ---- 2-2~2-6 ----
